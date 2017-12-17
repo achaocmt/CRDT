@@ -1,0 +1,28 @@
+%!TEX root = draft.tex
+
+\section{Eventual Consistency for Simulation Proof}
+\label{sec:eventual consistency for simulation proof} 
+
+In this paper, we intend to use the definition of eventual consistency in \cite{Bouajjani:2014}. Simulation is a way to prove eventual consistency. However, it is hard to use simulation to prove eventual consistency in \cite{Bouajjani:2014}. The reason is that, the definition of eventual consistency in \cite{Bouajjani:2014} covers both a correctness part and a liveness part, while simulation concerns only one step of transitions and seems not able to state properties of infinite length (liveness part).
+
+Intuitively, out method is as follows: 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] To prove with simulation, we use a operational-style specification $\textit{OPSpec}$ of object, which covers a subset of possible and correct executions of a object. 
+
+Here, $\textit{OPSpec}$ explicitly record deliver of messages. If necessary, such as in the case of list specification, other necessary information can be also recorded. 
+
+\item[-] In \cite{Bouajjani:2014}, to deal with speculation, each operation must have its local interpretation. To ensure convergence, there is a global interpretation and it is required that, for each operation, only finite number of local interpretation diverge from global operation.
+    
+    In our method, since we only concern CRDT, where speculation is not used. We require that, if operation $o$ and $o'$ are of same replica and $o$ is earlier, then the local interpretation of $o$ is contained in the local interpretation of $o'$.
+
+\item[-] The local interpretation of replica $k$, $li(k)$, depends only on $rb$ relation and $del$ relation. 
+
+\item[-] If $lo(k)$ and $lo(k')$ contains the same set of operations, then they answer same question for each read-only operation. Or we can say, they are in the same abstract state. 
+\end{itemize} 
+
+In short, we use the third, forth and fifth condition to get rid of global interpretation in \cite{Bouajjani:2014}. 
+
+
+
