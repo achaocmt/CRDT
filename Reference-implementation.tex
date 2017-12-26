@@ -1,36 +1,46 @@
 %!TEX root = draft.tex
 
 \section{Reference Implementation}
-\label{sec:reference implementation} 
+\label{sec:reference implementation}
 
-In this section, we propose an operational style specification called reference implementation. Based on reference implementation, we can then prove eventual consistency by forward simulation. 
-
-Recall that the notion of local interpretation Section \ref{sec:preliminary}, 
+In this section, we propose an abstract implementation called reference implementation, which will be used as specification in simulation proof of later section.
 
 
+\subsection{Reference Implementation Definition}
+\label{subsec:reference implementation definition} 
 
+An labeled transition system (LTS, for short) is a tuple $A = (Q,\Sigma,\rightarrow,q_0)$, where $Q$ is a set of states, $\Sigma$ is an alphabet of transition labels, $\rightarrow \subseteq Q \times \Sigma \times Q$ is a transition relation and $q_0$ is the initial state. In this paper, the specification and the semantics of CRDT implementation will be modelled as LTS. Then, checking eventual consistency is a instance of a more general notion of refinement between LTS where only actions in a specific alphabet $\Sigma$ is observable. It has been shown that refinement is equivalent to the existence of backward simulations, modulo the addition of history variables that record events in the implementation, and to the existence of forward simulations provided that the right-hand side LTS B is $\Sigma$-deterministic \cite{Abadi:1991,Lynch:1995}. In this paper we focus on proofs based on forward simulations because they are easier to automatize, and we need to ensure that reference implementations are deterministic. 
 
+In this paper, we focus on operation-based CRDT algorithm, where each operation is done locally (without communication between replicas), and when a replica does a update operation, it will broadcast the operation to all other replica. Here we assume the set of replica identifier is already fixed into $RId=\{1,\ldots,n\}$. 
 
-In this paper, we intend to use the definition of eventual consistency in \cite{Bouajjani:2014}. Simulation is a way to prove eventual consistency. However, it is hard to use simulation to prove eventual consistency in \cite{Bouajjani:2014}. The reason is that, the definition of eventual consistency in \cite{Bouajjani:2014} covers both a correctness part and a liveness part, while simulation concerns only one step of transitions and seems not able to state properties of infinite length (liveness part).
-
-Intuitively, out method is as follows:
+The operations of a CRDT are divided into two kinds: query operation and update operation. 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] To prove with simulation, we use a operational-style specification $\textit{OPSpec}$ of object, which covers a subset of possible and correct executions of a object.
+\item[-] A query operation does not influence ``abstract state''. Or we can say, if $(A,<) \in Spec(o)$ for some and $A' \subseteq A$ is obtained from $A$ by erasing some query operations, then $(A',< \cap (A' \times A')) \in Spec(o)$. 
 
-Here, $\textit{OPSpec}$ explicitly record deliver of messages. If necessary, such as in the case of list specification, other necessary information can be also recorded.
+\item[-] A update operation influences ``abstract state''. 
+\end{itemize} 
 
-\item[-] In \cite{Bouajjani:2014}, to deal with speculation, each operation must have its local interpretation. To ensure convergence, there is a global interpretation and it is required that, for each operation, only finite number of local interpretation diverge from global operation.
+%Let $qry(M,D,RId,OId)$ (resp., $upd(M,D,RId,OId)$) be the set of query operations (resp., update operations) using method in $M$, arguments and return values in $D$, replica identifiers in $RId$ and operation identifiers in $OId$. 
 
-    In our method, since we only concern CRDT, where speculation is not used. We require that, if operation $o$ and $o'$ are of same replica and $o$ is earlier, then the local interpretation of $o$ is contained in the local interpretation of $o'$.
+Given a specification $Spec$, its reference implementation is given as an LTS $RImp(Spec) = (Q,\Sigma,\rightarrow,q_0,li,vis)$, where 
 
-\item[-] The local interpretation of replica $k$, $li(k)$, depends only on $rb$ relation and $del$ relation.
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $Q = (uO,ro,del)$ is the set of states. Here $updOp$ is a set of update operations, $ro$ is the replica order among operations in $updOp$, and $del \subseteq uO \times uO$ is the deliver order. Deliver order only relate operations with different replica identifier. 
+    
+    We require that the tuple of $Q$ enough for checking correctness of operations. Sometimes, if $Spec$ use more information when checking correctness of operations, $Q$ should contain more information. For example, in distributed list specification \cite{Attiya:2016}, a list order is added to tuples of $Q$. 
+    
+\item[-] $\Sigma$ is the set of operations using method in $M$, arguments and return values in $D$, replica identifiers in $RId$ and operation identifiers in $OId$. 
 
-\item[-] If $lo(k)$ and $lo(k')$ contains the same set of operations, then they answer same question for each read-only operation. Or we can say, they are in the same abstract state.
+\item[-] 
 \end{itemize}
 
-In short, we use the third, forth and fifth condition to get rid of global interpretation in \cite{Bouajjani:2014}.
+
+
+
+
 
 
 

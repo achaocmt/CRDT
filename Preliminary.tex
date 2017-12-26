@@ -3,53 +3,53 @@
 \section{Preliminary}
 \label{sec:preliminary}
 
-In this section, we introduce the definition of eventual consistency in \cite{Bouajjani:2014}, and related notation. 
+In this section, we introduce the definition of eventual consistency in \cite{Bouajjani:2014}, and related notation.
 
 
-\subsection{trace}
+\subsection{Trace}
 \label{subsec:trace}
 
-Given a finite set $M$ of method names, a possibly infinite set $D$ of data domain, a finite set $RId=\{1,\ldots,n\}$ of replica identifiers and a possibly infinite set $OId$ of operation identifiers, an operation is a tuple $o=(m,a,b,rid,oid)$, where $m \in M$, $a,b \in D$, $rid \in RId$ and $oid \in OId$. Here $o$ represents that it calls method $m$ with argument $a$ and obtains return values $b$, and it happens on replica $rid$. This definition extends naturally to the case when there are more than one arguments. 
+Given a finite set $M$ of method names, a possibly infinite set $D$ of data domain, a finite set $RId=\{1,\ldots,n\}$ of replica identifiers and a possibly infinite set $OId$ of operation identifiers, an operation is a tuple $o=(m,a,b,rid,oid)$, where $m \in M$, $a,b \in D$, $rid \in RId$ and $oid \in OId$. Here $o$ represents that it calls method $m$ with argument $a$ and obtains return values $b$, and it happens on replica $rid$. This definition extends naturally to the case when there are more than one arguments.
 
 A partial-ordered set (poset, for short) is a tuple $(A,<)$ contains a possibly infinite set $A$ and a partial-order $<$ of $A$. A trace $\tau$ is a possibly infinite poset $(Os,ro)$, where
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $Os$ is a set of operations. Here we assume that a trace does not contain two operations with the same identifier. 
+\item[-] $Os$ is a set of operations. Here we assume that a trace does not contain two operations with the same identifier.
 
-\item[-] $ro$ is called the replica order. For each replica identifier $k$, $ro$ is a irreflexive total order over operations with replica identifier $k$. It does not relate operations with different replica identifiers. We also require that for each $o \in Os$, $ro^{-1}(o)$ is a finite set. 
-\end{itemize}  
+\item[-] $ro$ is called the replica order. For each replica identifier $k$, $ro$ is a irreflexive total order over operations with replica identifier $k$. It does not relate operations with different replica identifiers. We also require that for each $o \in Os$, $ro^{-1}(o)$ is a finite set.
+\end{itemize}
 
 A poset $(A_1,<_1)$ is called a prefix of a poset $(A_2,<_2)$, denoted by $(A_1,<_1) \preceq (A_2,<_2)$, if $A_1 \subseteq A_2$, $<_1$ is the intersection of $<_2$ and $A_1 \times A_1$, and $A_1 = <_2^{-1}(A)$. A $\Sigma$-labeled poset is a tuple $(A,<,l)$, where $(A,<)$ is a poset and $l:A \rightarrow \Sigma$ is a function that labels each element of $A$ with an element in $\Sigma$. The set of all $\Sigma$-labeled poset is denoted as $PoSet_{\Sigma}$.
 
 
 \subsection{Eventual Consistency}
-\label{subsec:eventual consistency} 
+\label{subsec:eventual consistency}
 
-For a set $A$, let $P(A)$ denotes the set of all subsets of $A$. Let $\Sigma(M,D) = \{ m(a,b) \vert m \in M, a,b, \in D \}$. A specification $Spec$ is a function $Spec: \Sigma(M,D) \rightarrow P(PoSet_{\Sigma(M,D)})$. 
+For a set $A$, let $P(A)$ denotes the set of all subsets of $A$. Let $\Sigma(M,D) = \{ m(a,b) \vert m \in M, a,b, \in D \}$. A specification $Spec$ is a function $Spec: \Sigma(M,D) \rightarrow P(PoSet_{\Sigma(M,D)})$.
 
-%The requirement of each operation returns correct value is given by the notion local interpretation explained below: 
+%The requirement of each operation returns correct value is given by the notion local interpretation explained below:
 Given a trace $\tau = (Os,ro)$, for each operation $o \in Os$, its local interpretation, denoted $li(o) = (O_o,<_o)$, is a poset of operations. The local interpretation defines another relation between operations, called executed-before and denoted by $eb$. $(o,o') \in eb$, if $o'$ is in the local interpretation of $o$. We say that the return value of an operation $o = (m,a,b,rid,oid) \in Os$ is correct, if the labeled poset defined by $li(o)$, where every operation $(m',a',b',rid',oid')$ is labeled by $(m',a',b')$, belongs to $Spec(m(a,b))$. Then, a trace $\tau$ is safe if the return value of every operations of $\tau$ is correct.
 
-%The requirement for liveness is given by the notion global interpretation explained below: 
+%The requirement for liveness is given by the notion global interpretation explained below:
 Given trace $\tau$, its global interpretation is a partial-order over all the operations of $\tau$.
 
-\begin{definition}[Eventual Consistency \cite{Bouajjani:2014}] 
-A trace $\tau = (Os,ro)$ is called eventual consistency w.r.t a specification $Spec$, if:  
+\begin{definition}[Eventual Consistency \cite{Bouajjani:2014}]
+A trace $\tau = (Os,ro)$ is called eventual consistency w.r.t a specification $Spec$, if:
 
-$\exists gi$ an irreflexive partial order over $Os$, such that $\forall o \in Os$, $\exists li[o]$ an irreflexive poset, such that 
+$\exists gi$ an irreflexive partial order over $Os$, such that $\forall o \in Os$, $\exists li[o]$ an irreflexive poset, such that
 
-$\textit{GIpf} \wedge \textit{THINAIR} \wedge \textit{RVAL} \wedge \textit{EVENTUAL}$ hold. 
+$\textit{GIpf} \wedge \textit{THINAIR} \wedge \textit{RVAL} \wedge \textit{EVENTUAL}$ hold.
 \end{definition}
 
-Here, $GIpf$, $THINAIR$, $RVAL$ and $EVENTUAL$ is given as follows: 
+Here, $GIpf$, $THINAIR$, $RVAL$ and $EVENTUAL$ is given as follows:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\textit{GIpf}$: $\forall o \in Os$, $<^{-1}_{gi}(o)$ is finite. 
+\item[-] $\textit{GIpf}$: $\forall o \in Os$, $<^{-1}_{gi}(o)$ is finite.
 
-\item[-] $\textit{THINAIR}$: $eb \cup ro$ is acyclic. 
+\item[-] $\textit{THINAIR}$: $eb \cup ro$ is acyclic.
 
 \item[-] $\textit{RVAL}$: $\forall o = (m,a,b,rid,oid) \in Os$, $li_{\Sigma(M,D)}(o) \in Spec(m,a,b)$. Here $li_{\Sigma(M,D)}(o)$ is obtained from $li(o)$ by labeling each $(m',a',b',rid',oid')$ with $(m,a,b)$.
 
-\item[-] $\textit{EVENTUAL}$: For any finite prefix $P$ of the poset $(Os,gi)$, $\{ o \vert o \in Os, P \npreceq li(o) \}$ is finite. 
-\end{itemize} 
+\item[-] $\textit{EVENTUAL}$: For any finite prefix $P$ of the poset $(Os,gi)$, $\{ o \vert o \in Os, P \npreceq li(o) \}$ is finite.
+\end{itemize}
