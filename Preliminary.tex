@@ -34,6 +34,7 @@ Given a trace $\tau = (Os,ro)$, for each operation $o \in Os$, its local interpr
 Given trace $\tau$, its global interpretation is a partial-order over all the operations of $\tau$.
 
 \begin{definition}[Eventual Consistency \cite{Bouajjani:2014}]
+\label{definition:eventual consistency}
 A trace $\tau = (Os,ro)$ is called eventual consistency w.r.t a specification $Spec$, if:
 
 $\exists gi$ an irreflexive partial order over $Os$, such that $\forall o \in Os$, $\exists li[o]$ an irreflexive poset, such that

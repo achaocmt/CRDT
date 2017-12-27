@@ -7,39 +7,99 @@ In this section, we propose an abstract implementation called reference implemen
 
 
 \subsection{Reference Implementation Definition}
-\label{subsec:reference implementation definition} 
+\label{subsec:reference implementation definition}
 
-An labeled transition system (LTS, for short) is a tuple $A = (Q,\Sigma,\rightarrow,q_0)$, where $Q$ is a set of states, $\Sigma$ is an alphabet of transition labels, $\rightarrow \subseteq Q \times \Sigma \times Q$ is a transition relation and $q_0$ is the initial state. In this paper, the specification and the semantics of CRDT implementation will be modelled as LTS. Then, checking eventual consistency is a instance of a more general notion of refinement between LTS where only actions in a specific alphabet $\Sigma$ is observable. It has been shown that refinement is equivalent to the existence of backward simulations, modulo the addition of history variables that record events in the implementation, and to the existence of forward simulations provided that the right-hand side LTS B is $\Sigma$-deterministic \cite{Abadi:1991,Lynch:1995}. In this paper we focus on proofs based on forward simulations because they are easier to automatize, and we need to ensure that reference implementations are deterministic. 
+An labeled transition system (LTS, for short) is a tuple $A = (Q,\Sigma,\rightarrow,q_0)$, where $Q$ is a set of states, $\Sigma$ is an alphabet of transition labels, $\rightarrow \subseteq Q \times \Sigma \times Q$ is a transition relation and $q_0$ is the initial state. In this paper, the specification and the semantics of CRDT implementation will be modelled as LTS. Then, checking eventual consistency is a instance of a more general notion of refinement between LTS where only actions in a specific alphabet $\Sigma$ is observable. It has been shown that refinement is equivalent to the existence of backward simulations, modulo the addition of history variables that record events in the implementation, and to the existence of forward simulations provided that the right-hand side LTS B is $\Sigma$-deterministic \cite{Abadi:1991,Lynch:1995}. In this paper we focus on proofs based on forward simulations because they are easier to automatize, and we need to ensure that reference implementations are deterministic.
 
-In this paper, we focus on operation-based CRDT algorithm, where each operation is done locally (without communication between replicas), and when a replica does a update operation, it will broadcast the operation to all other replica. Here we assume the set of replica identifier is already fixed into $RId=\{1,\ldots,n\}$. 
+In this paper, we focus on operation-based CRDT algorithm, where each operation is done locally (without communication between replicas), and when a replica does a update operation, it will broadcast the operation to all other replica. Here we assume the set of replica identifier is already fixed into $RId=\{1,\ldots,n\}$.
 
-The operations of a CRDT are divided into two kinds: query operation and update operation. 
+The operations of a CRDT are divided into two kinds: query operation and update operation.
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] A query operation does not influence ``abstract state''. Or we can say, if $(A,<) \in Spec(o)$ for some and $A' \subseteq A$ is obtained from $A$ by erasing some query operations, then $(A',< \cap (A' \times A')) \in Spec(o)$. 
+\item[-] A query operation does not influence ``abstract state''. Or we can say, if $(A,<) \in Spec(o)$ for some and $A' \subseteq A$ is obtained from $A$ by erasing some query operations, then $(A',< \cap (A' \times A')) \in Spec(o)$.
 
 \item[-] A update operation influences ``abstract state''. 
-\end{itemize} 
+\end{itemize}
 
-%Let $qry(M,D,RId,OId)$ (resp., $upd(M,D,RId,OId)$) be the set of query operations (resp., update operations) using method in $M$, arguments and return values in $D$, replica identifiers in $RId$ and operation identifiers in $OId$. 
+%Let $qry(M,D,RId,OId)$ (resp., $upd(M,D,RId,OId)$) be the set of query operations (resp., update operations) using method in $M$, arguments and return values in $D$, replica identifiers in $RId$ and operation identifiers in $OId$.
 
-Given a specification $Spec$, its reference implementation is given as an LTS $RImp(Spec) = (Q,\Sigma,\rightarrow,q_0,li,vis)$, where 
+Given a specification $Spec$, its reference implementation is given as an tuple $RImp(Spec) = (Q,\Sigma,vis,,q_0,li,\rightarrow,livReq)$, where
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $Q = (uO,ro,del)$ is the set of states. Here $updOp$ is a set of update operations, $ro$ is the replica order among operations in $updOp$, and $del \subseteq uO \times uO$ is the deliver order. Deliver order only relate operations with different replica identifier. 
-    
-    We require that the tuple of $Q$ enough for checking correctness of operations. Sometimes, if $Spec$ use more information when checking correctness of operations, $Q$ should contain more information. For example, in distributed list specification \cite{Attiya:2016}, a list order is added to tuples of $Q$. 
-    
-\item[-] $\Sigma$ is the set of operations using method in $M$, arguments and return values in $D$, replica identifiers in $RId$ and operation identifiers in $OId$. 
+\item[-] Each state $(uO,ro,del) \in Q$ contains three tuple. Here $uO$ is a set of update operations, $ro$ is the replica order among operations in $uO$, and $del \subseteq (uO \times uO) \cup (uO \times RId)$ is the deliver order. $(o_1,o_2) \in del$ represents that the effect of $o_1$ (its message) is delivered to the replica of $o_2$ just before the time point $o_2$ happens. $(o,r) \in del$ represents that the effect of $o$ is delivered to replica $r$ after the time point of the last operation of replica $r$. We require that $(ro \cup del)^*$ being acyclic and irreflexive, and we require $del$ to only relate operations with different replica identifier. We assume that $uO$ does not contain two operations with the same identifier. Note that we only record update operations in state.
 
-\item[-] $vis = del \cdot ro$ is the visibility relation. 
+    We require that the tuple of $Q$ contain enough information for checking correctness of operations. Sometimes, if $Spec$ use more information (than operations and $ro$) when checking correctness of operations, $Q$ should contain more information. For example, to deal with distributed list specification \cite{Attiya:2016}, a list order is added to tuples of $Q$.
 
-\item[-] 
+\item[-] $\Sigma = \Sigma_{op} \cup \Sigma_{del}$ is the set of transition labels. Here $\Sigma_{op}$ is the set of operations using method in $M$, arguments and return values in $D$, replica identifiers in $RId$ and operation identifiers in $OId$. $\Sigma_{del}=\{ addDel(o,r) \vert o \in OId, r \in RId \}$. 
+
+\item[-] $vis : Q \rightarrow (uO \times uO) \cup (uo \times RId)$ is the visibility relation. $vis$ is irreflexive and acyclic. $(o_1,o_2) \in vis$ represents that the effect of $o_1$ is visible to $o_2$. $(o,r)$ represents that the effect of $o$ become visible to replica $r$ after the time point of the last operation of replica $r$.
+    
+    Since we are dealing with operation-based CRDT, we fix $vis$ relation to be $del \cdot ro$.  
+
+\item[-] $li: Q \times RId \rightarrow PoSet_{\Sigma(M,D)}$ is a function that maps each replica identifier into a poset of operations. Note that, we do not give local interpretation for each operation in $uO$. The reason is that intuitively, CRDT algorithms do not have speculative execution and it is enough to give local interpretation for the newest operation of each replica, and keep the local interpretation of other operations unchanged. we explain how to achieve this below.
+    
+    Here we leave enough freedom for defining different local interpretation for different algorithms. The only requirements to $li(q,r) = (O_{li},<_{li})$ is:
+    
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    %\item[-] The union of local interpretation of each replica is acyclic. 
+    \item[-] $O_{li}$ contains all operations visible to replica $r$. 
+    
+    \item[-] $<_{li}$ is a subset of $vis_q$ of replica $r$, where $vis_q$ is the visibility relation of $q$. Moreover, we require that if $o_1,o_2 \in O_{li}$, $o_1$ is visible to $o_2$ via $o'_1,\ldots,o'_n$, and $o'_1,\ldots,o'_n \in O_{li}$, then $(o_1,o_2) \in <_{li}$. Here we say $o_1$ is visible to $o_2$ via $o'_1,\ldots,o'_n$, if one of the following cases holds: (1) $o'_1$ (resp., $o'_{\textit{i+1}}$, $o_2$)is the immediate successor of $o_1$ (resp., $o'_i$, $o'_n$) w.r.t $ro$, or (2) $(o_1,o'_1) \in del$, $o'_{\textit{i+1}}$ (resp., $o_2$)is the immediate successor of $o'_i$ (resp., $o'_n$) w.r.t $ro$.
+    \end{itemize}
+       
+\item[-] $\rightarrow \subseteq Q \times \Sigma \times Q$ is the transition relation. It contains three kinds of transitions: adding a deliver relation, doing a query operation, and doing an update operation. 
+
+    \begin {itemize}
+    \item[-] Adding a deliver relation: 
+    
+     $\begin{array}{l c} \bigfrac{o \in uO, \neg(o \xrightarrow{vis} r)} {(uO,ro,del) {\xrightarrow{addDel(o,r)}} (uO,ro,del \cup \{ (o,r) \})} \end{array}$
+
+    \item[-] Doing a query operation: Let $m(a,b)$ be a query operation. 
+
+     $\begin{array}{l c} \bigfrac{li((uO,ro,del),r) \in Spec(m,a,b)} {(uO,ro,del) {\xrightarrow{m(a,b,r,o)}} (uO,ro,del)}  \end{array}$ 
+     
+     \item[-] Doing an update operation: Let $m(a,b)$ be an update operation.
+
+     $\begin{array}{l c} \bigfrac{o = (m,a,b,r,oid) \notin uO} {(uO,ro,del) {\xrightarrow{m(a,b,r,o)}} (uO \cup \{ o \},ro \oplus o ,del \oplus o)}  \end{array}$
+
+     $ro \oplus o = ro \cup \{ (o',o) \vert o'$ is of replica $r \}$, $del \oplus o$ is obtained from $del$ by transforming each $(o',r)$ in $del$ into $(o',o)$. 
+    \end{itemize} 
+    
+    {\color {red}Note that, in query and update operation transition, we make operation to be argument. This is because that, in $livReq$, we need to check whether an operation has been delivered to a replica. When the context is clear, we may omit this argument.}
+    
+\item[-] $q_0=(\emptyset,\emptyset,\emptyset)$ is the initial state. 
+    
+\item[-] With above tuple we could make each operation correct, while still unable to ensure $\textit{EVENTUAL}$ property in Definition \ref{definition:eventual consistency}. Let $\Sigma^{'\infty}$ be the set of finite and infinite sequences over $\Sigma'$. $livReq: (\Sigma_{op} \cup \Sigma_{del})^{ \infty } \rightarrow \{ \textit{true},\textit{false} \}$ is a predicate used to select only a subset of executions.
+    
+    Since we are dealing with operation-based CRDT, we fix $livReq$ to be that, $livReq(t) = \textit{true}$, if either $t$ is finite, or for each operation $o$ in $t$ and each replica identifier $r$, $addDel(o,r) \in t$. Or we can say, for each execution with infinite actions, we require each operation to be eventually delivered to each replica. We also assume that $t$ does not contain two operations with the same identifier. 
+\end{itemize}
+
+The set of executions of $RImp(Spec) = (Q,\Sigma,vis,,q_0,li,gi,\rightarrow,livReq)$, denoted $\llbracket RImp(Spec) \rrbracket$, is the set of all executions starts from $q_0$ and conforms $livReq$. Formally, $t = \alpha_1 \cdot \ldots \in \llbracket RImp(Spec) \rrbracket$, if there exists $q_1,\ldots \in Q$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 {\xrightarrow{\alpha_2}} \ldots$, and $livReq(t) = \textit{true}$. 
+
+Given an execution $t \in \llbracket RImp(Spec) \rrbracket$, its global interpretation $gi(t) \in PoSet_{\Sigma(M,D)}$ is its ``visibility relation'' among all of its operations and is formally defined as follows: $gi(t) = (O_{gi},<_{gi})$, where 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $O_{gi}$ is the set of operations of $t$. 
+
+\item[-]  
 \end{itemize}
 
 
+
+Assume that for each $i$, $q_i=(uO_i,ro_i,del_i)$ and let $li_i$ be its corresponding local interpretation, then $gi(t)$ is the union of $\{ li_i \vert i \in RId \}$ for each $i$. Since local interpretation contains less or equal tuples than visibility relation, and since visibility relation is irreflexive and acyclic, it is easy to see that the global interpretation is also irreflexive and acyclic.
+
+Given a sequence $t = \alpha_1 \cdots \alpha_n \in \llbracket RImp(Spec) \rrbracket$, let $poSet(t)=(O_t,<_t)$ be that: (1) $O_t$ is the set of query and update operations of $t$, and (2) $<_t = <_{t1} \cup \ldots \cup <_{tn}$, where for each $i \in RId$, $<_{ri}$ is the projection of $t$ on query and update operations of replica $i$. The following lemma states that, executions in $\llbracket RImp(Spec) \rrbracket$ are eventual consistent w.r.t $Spec$. Its proof can be found in Appendix \ref{subsec:proof of lemma executions of reference implementation are eventual consistent}.
+
+\begin{lemma}
+\label{lemma:executions of reference implementation are eventual consistent}
+$\forall t \in \llbracket RImp(Spec) \rrbracket$, $poSet(t)$ is eventual consistent w.r.t $Spec$. 
+\end{lemma}
+
+Note that the opposite direction of this lemma does not hold: there may exists executions which is eventual consistent w.r.t $Spec$ but not in $\llbracket RImp(Spec) \rrbracket$.
 
 
 
