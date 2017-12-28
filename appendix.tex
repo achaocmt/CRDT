@@ -8,42 +8,33 @@
 \subsection{Proof of Lemma \ref{lemma:executions of reference implementation are eventual consistent}}
 \label{subsec:proof of lemma executions of reference implementation are eventual consistent}
 
-{\noindent \bf Lemma \ref{lemma:executions of reference implementation are eventual consistent}}: $\forall t \in \llbracket RImp(Spec) \rrbracket$, $poSet(t)$ is eventual consistent w.r.t $Spec$. 
+{\noindent \bf Lemma \ref{lemma:executions of reference implementation are eventual consistent}}: $\forall t \in \llbracket RImp(Spec) \rrbracket$, $poSet(t)$ is eventual consistent w.r.t $Spec$.
 
-\begin {proof} 
+\begin {proof}
 
-Assume $RImp(Spec) = (Q,\Sigma,vis,,q_0,li,gi,\rightarrow,livReq)$, $t = \alpha_1, \ldots, $ and $\exists q_1,\ldots$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 {\xrightarrow{\alpha_2}} \ldots$, and $livReq(t) = \textit{true}$.
+Assume $RImp(Spec) = (Q,\Sigma,vis,,q_0,li,\rightarrow,livReq)$, let $t = \alpha_1, \ldots, $ and $\exists q_1,\ldots$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 {\xrightarrow{\alpha_2}} \ldots$, and $livReq(t) = \textit{true}$. Let $poSet(t)=(O_t,<_t)$. Let $gi = (O_t,<_{gi})$ be the global interpretation of $t$. 
 
-We prove this lemma by consider the four requirements individually: 
+For each operation $o$, assume $o$ is first introduced by a transition from $q_i$ to $q_{i+1}$, then, the local interpretation of $o$ is $li(q_i,r)$, where $r$ is the replica of $o$.
+
+We prove this lemma by consider the four requirements individually:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\textit{GIpf}$: $gi$ is defined as the union of local interpretation of each replica. Recall that for 
+\item[-] $\textit{GIpf}$: Let us consider two kinds of operations $o$. 
 
-From the construction of $\llbracket RImp(Spec) \rrbracket$, it is easy to see that $\forall q_i = (uO_i,ro_i,del_i)$ and its corresponding visibility relation $vis_i$, $\forall o \in uO_i$, $vis^{-1}(o)$ is finite.
+If $\exists o'$, such that $o' <_{gi} o$, then $\exists i < j$, such that $o'$ and $o$ are the operations of $\alpha_i$ and $\alpha_j$, respectively, and one of the following cases holds: (1) $o'$ and $o$ are of same replica, or (2) $\exists i', i < i' < j$, $\alpha_{i'}=addDel(o',r')$ and $r'$ is the replica of $o$. In each case, it is easy to see that $<^{-1}_{gi}(o)$ contains lee or equal operations than the set of operations in $t[1,j]$ and its number is obviously finite.
     
+    If $\neg \exists o'$, such that $o' <_{gi} o$, then it is easy to see that $o$ is the first operation of its replica and no operation is delivered to that replica before $o$. In this case, it is obvious that $<^{-1}_{gi}(o)$ is finite.
 
-\item[-] $\textit{THINAIR}$: $eb \cup ro$ is acyclic.
+\item[-] $\textit{THINAIR}$: According to the definition, we could see that on each state $q_i$, local interpretation is a subset of visibility relation, and $ro$ is also a subset of visibility relation. It is easy to prove that on each state, $vis$ is acyclic.
 
-\item[-] $\textit{RVAL}$: $\forall o = (m,a,b,rid,oid) \in Os$, $li_{\Sigma(M,D)}(o) \in Spec(m,a,b)$. Here $li_{\Sigma(M,D)}(o)$ is obtained from $li(o)$ by labeling each $(m',a',b',rid',oid')$ with $(m,a,b)$.
+\item[-] $\textit{RVAL}$: We only need to consider query operations for $\textit{RVAL}$ property, since only query operations have return values. According to construction of $\llbracket RImp(Spec) \rrbracket$, to launch a query operation $(m,a,b,rid,oid)$ transition of replica $r$ from state $q_i$, we already check whether $li(q_i,r)$, the local interpretation w.r.t $q_i$ and $r$, is in $Spec(m,a,b)$. 
 
-\item[-] $\textit{EVENTUAL}$: For any finite prefix $P$ of the poset $(Os,gi)$, $\{ o \vert o \in Os, P \npreceq li(o) \}$ is finite.
-\end{itemize}
+\item[-] $\textit{EVENTUAL}$: Let $P=(O_P,<_P)$ be a finite prefix of $gi$. 
 
+We can see that $<_P$ is the visibility relation of operations in $O_P$. Let $O'_P = \{ o \vert \exists o_1,o_2 \in O_P,$ $o_1$ is visible to $o_2$ via $o'_1,\ldots,o'_m$, and $o \in \{ o'_1,\ldots,o'_n \} \}$. It is easy to see that $O'_P$ is finite, and assume that operations of $O_P \cup O'_P$ are chosen before $\alpha_{idx}$
 
-
-
-According to definition of $li$, it has same point as $vis$ and has less or equal transition than $vis$. From the construction of $\llbracket RImp(Spec) \rrbracket$ and initial state of $RImp(Spec)$, it is easy to see that for
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] $\textit{GIpf}$: $\forall o \in Os$, $<^{-1}_{gi}(o)$ is finite.
-
-\item[-] $\textit{THINAIR}$: $eb \cup ro$ is acyclic.
-
-\item[-] $\textit{RVAL}$: $\forall o = (m,a,b,rid,oid) \in Os$, $li_{\Sigma(M,D)}(o) \in Spec(m,a,b)$. Here $li_{\Sigma(M,D)}(o)$ is obtained from $li(o)$ by labeling each $(m',a',b',rid',oid')$ with $(m,a,b)$.
-
-\item[-] $\textit{EVENTUAL}$: For any finite prefix $P$ of the poset $(Os,gi)$, $\{ o \vert o \in Os, P \npreceq li(o) \}$ is finite.
+Since $livReq(t)=true$, $\exists idx1$, such that in $t[1,idx1]$, all operations in $t[1,idx]$ has been delivered to every replica. According to our construction of $li$, this implies that for each state after $\alpha_{idx1}$ and each replica (1) its local interpretation contains $O_P$ and $O'_P$, and (2) the relation of local interpretation then contains the visibility relation between operations in $O_P$. 
 \end{itemize}
 
 This completes the proof of this lemma. $\qed$
