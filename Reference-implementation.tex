@@ -114,6 +114,29 @@ Note that the opposite direction of this lemma does not hold: there may exists e
 
 
 
+\subsection{Reference Implementation with Causal Delivery}
+\label{subsec:reference implementation with causal delivery}
+
+We say operation $o_1$ happen-before \cite{Lamport:1978} operation $o_2$, denoted $o_1 <_{hb} o_2$, if $o_1 {\xrightarrow{ (vis \cup ro)^* }} o_2$. Some CRDT algorithm use an assumption called causal delivery. Causal delivery require that, for each pair of operations $(o_1,o_2)$, if $o_1 <_{hb} o_2$, then for each replica $r$, $o_2$ can be delivered to replica $r$ if $o_1$ has already been delivered to replica $r$. 
+
+Given a specification $Spec$, its reference implementation with causal delivery is given as an tuple $RImp_{cd}(Spec) = (Q,\Sigma,vis,,q_0,li,\rightarrow,livReq)$. $RImp_{cd}(Spec)$ can be obtained from $RImp(Spec)$ by only changing the transition rules of delivering operations into follows: 
+
+\begin {itemize}
+\item[-] Adding a deliver relation:
+
+$\begin{array}{l c} \bigfrac{o \in uO, o \ is \ minimal \ w.r.t \ <_{hb} \ among \ operations \ not \ visible \ to \ replica \ r} {(uO,ro,del) {\xrightarrow{addDel(o,r)}} (uO,ro,del \cup \{ (o,r) \})} \end{array}$
+
+\end{itemize}
+
+It is easy to see that $RImp_{cd}(Spec)$ contains all the traces of $RImp(Spec)$ that are causal delivery, as stated by the following lemma. Its proof is obvious and omitted. 
+
+\begin{lemma}
+\label{lemma:RImpcdSpec contains all the traces of RImpSpec that are causal delivery} 
+
+$RImp(Spec)_{cd} = \{ t \vert t \in \llbracket RImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$. 
+\end{lemma} 
 
 
 
+\subsection{Plus-Minus Specification and its Compacted Reference Implementation}
+\label{subsec:plus-minus specification and its compacted reference implementation}
