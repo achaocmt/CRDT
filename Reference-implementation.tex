@@ -17,11 +17,11 @@ The operations of a CRDT are divided into two kinds: query operation and update 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] A query operation is used only for reading the content of ``abstract state'' and does not influence ``abstract state''. Or we can say, if $(A,<) \in Spec(o)$ for some and $A' \subseteq A$ is obtained from $A$ by erasing some query operations, then $(A',< \cap (A' \times A')) \in Spec(o)$. 
-    
-    %We require query method to be happen unconditionally. Or we can say, if $m$ is a query method, then the union of $Spec(m,\_,\_)$ is $PoSet_{\Sigma(M,D)}$.  
+\item[-] A query operation is used only for reading the content of ``abstract state'' and does not influence ``abstract state''. Or we can say, if $(A,<) \in Spec(o)$ for some and $A' \subseteq A$ is obtained from $A$ by erasing some query operations, then $(A',< \cap (A' \times A')) \in Spec(o)$.
 
-\item[-] A update operation influences ``abstract state'' while it does not return value. {\color {red}Note that in some case, a update operation can happen if some condition is satisfied, such as $ins(itm,pos)$ of distributed list. However, this can be done by checking if its local interpretation is in the specification.} 
+    We require query method to be happen unconditionally. Or we can say, if $m$ is a query method, then the union of $Spec(m,\_,\_)$ is $PoSet_{\Sigma(M,D)}$.
+
+\item[-] A update operation influences ``abstract state'' while it does not return value. {\color {red}Note that in some case, a update operation can happen if some condition is satisfied, such as $ins(itm,pos)$ of distributed list. However, this can be done by checking if its local interpretation is in the specification.}
 \end{itemize}
 
 %Let $qry(M,D,RId,OId)$ (resp., $upd(M,D,RId,OId)$) be the set of query operations (resp., update operations) using method in $M$, arguments and return values in $D$, replica identifiers in $RId$ and operation identifiers in $OId$.
@@ -48,8 +48,8 @@ Given a specification $Spec$, its reference implementation is given as an tuple 
     \item[-] $O_{li}$ contains all operations visible to replica $r$.
 
     \item[-] $<_{li}$ is a subset of $vis_q$ of replica $r$ and is constructed only upon $ro$ and $del$, where $vis_q$ is the visibility relation of $q$. Moreover, we require that if $o_1,o_2 \in O_{li}$, $o_1$ is visible to $o_2$ via $o'_1,\ldots,o'_m$, and $o'_1,\ldots,o'_m \in O_{li}$, then $(o_1,o_2) \in <_{li}$. Here we say $o_1$ is visible to $o_2$ via $o'_1,\ldots,o'_m$, if one of the following cases holds: (1) $o'_1$ (resp., $o'_{\textit{i+1}}$, $o_2$)is the immediate successor of $o_1$ (resp., $o'_i$, $o'_m$) w.r.t $ro$, or (2) $(o_1,o'_1) \in del$, $o'_{\textit{i+1}}$ (resp., $o_2$)is the immediate successor of $o'_i$ (resp., $o'_m$) w.r.t $ro$.
-        
-    \item[-] $l_{li}$ is a labeling function that maps each operation $(m,a,b,ird,oid)$ into $(m,a,b)$. 
+
+    \item[-] $l_{li}$ is a labeling function that maps each operation $(m,a,b,ird,oid)$ into $(m,a,b)$.
     \end{itemize}
 
 \item[-] $\rightarrow \subseteq Q \times \Sigma \times Q$ is the transition relation. It contains three kinds of transitions: adding a deliver relation, doing a query operation, and doing an update operation.
@@ -88,20 +88,20 @@ Given an execution $t \in \llbracket RImp(Spec) \rrbracket$, its global interpre
 \item[-] $O_{gi}$ is the set of operations of $t$.
 
 \item[-] Assume $t = \alpha_1 \cdot \ldots$ and $\exists q_1,\ldots$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 {\xrightarrow{\alpha_2}} \ldots$ and $livReq(t) = \textit{true}$. Let function $ord$ be a relation constructed as follows:
-    
+
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] $ord(0) = \emptyset$.  
-    
-    \item[-] If $\alpha_i = addDel(o,r)$, then $ord(i) = ord(i-1) \cup \{ (o,r) \}$. 
-    
-    \item[-] If $\alpha_i = m(a,b,r,o)$, then $ord(i) = ord(i-1) \cup \{ (o',o) \vert (o',r) \in ord(i-1) \vee (o',(\_,\_,\_,r,\_)) \in ord(i-1) \}$. 
+    \item[-] $ord(0) = \emptyset$.
+
+    \item[-] If $\alpha_i = addDel(o,r)$, then $ord(i) = ord(i-1) \cup \{ (o,r) \}$.
+
+    \item[-] If $\alpha_i = m(a,b,r,o)$, then $ord(i) = ord(i-1) \cup \{ (o',o) \vert (o',r) \in ord(i-1) \vee (o',(\_,\_,\_,r,\_)) \in ord(i-1) \}$.
     \end{itemize}
-    
-    Then, $<_{gi} = (ord(1) \cup \ldots) - \{(o,r) \vert o \in OId, r \in RId\}$. 
-    
-\item[-] $l_{gi}$ is a labeling function that maps each operation $(m,a,b,ird,oid)$ into $(m,a,b)$.   
-\end{itemize} 
+
+    Then, $<_{gi} = (ord(1) \cup \ldots) - \{(o,r) \vert o \in OId, r \in RId\}$.
+
+\item[-] $l_{gi}$ is a labeling function that maps each operation $(m,a,b,ird,oid)$ into $(m,a,b)$.
+\end{itemize}
 
 Given a sequence $t = \alpha_1 \cdots \in \llbracket RImp(Spec) \rrbracket$, let $poSet(t)=(O_t,<_t)$ be that: (1) $O_t$ is the set of operations of $t$, and (2) $<_t = <_{t1} \cup \ldots \cup <_{tn}$, where for each $i \in RId$, $<_{ti}$ is the projection of $t$ on operations of replica $i$. The following lemma states that, executions in $\llbracket RImp(Spec) \rrbracket$ are eventual consistent w.r.t $Spec$. Its proof can be found in Appendix \ref{subsec:proof of lemma executions of reference implementation are eventual consistent}. To prove this lemma, for each operation $o$ which is first introduced by a transition from $q_i$ to $q_{i+1}$, the local interpretation of $o$ is chosen to be $li(q_i,r)$, where $r$ is the replica of $o$.
 
