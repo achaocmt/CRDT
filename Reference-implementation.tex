@@ -117,9 +117,9 @@ Note that the opposite direction of this lemma does not hold: there may exists e
 \subsection{Reference Implementation with Causal Delivery}
 \label{subsec:reference implementation with causal delivery}
 
-We say operation $o_1$ happen-before \cite{Lamport:1978} operation $o_2$, denoted $o_1 <_{hb} o_2$, if $o_1 {\xrightarrow{ (vis \cup ro)^* }} o_2$. Some CRDT algorithm use an assumption called causal delivery. Causal delivery require that, for each pair of operations $(o_1,o_2)$, if $o_1 <_{hb} o_2$, then for each replica $r$, $o_2$ can be delivered to replica $r$ if $o_1$ has already been delivered to replica $r$. 
+We say operation $o_1$ happen-before \cite{Lamport:1978} operation $o_2$, denoted $o_1 <_{hb} o_2$, if $o_1 {\xrightarrow{ (vis \cup ro)^* }} o_2$. Some CRDT algorithm use an assumption called causal delivery. Causal delivery require that, for each pair of operations $(o_1,o_2)$, if $o_1 <_{hb} o_2$, then for each replica $r$, $o_2$ can be delivered to replica $r$ if $o_1$ has already been delivered to replica $r$.
 
-Given a specification $Spec$, its reference implementation with causal delivery is given as an tuple $RImp_{cd}(Spec) = (Q,\Sigma,vis,,q_0,li,\rightarrow,livReq)$. $RImp_{cd}(Spec)$ can be obtained from $RImp(Spec)$ by only changing the transition rules of delivering operations into follows: 
+Given a specification $Spec$, its reference implementation with causal delivery is given as an tuple $RImp_{cd}(Spec) = (Q,\Sigma,vis,,q_0,li,\rightarrow,livReq)$. $RImp_{cd}(Spec)$ can be obtained from $RImp(Spec)$ by only changing the transition rules of delivering operations into follows:
 
 \begin {itemize}
 \item[-] Adding a deliver relation:
@@ -128,30 +128,29 @@ $\begin{array}{l c} \bigfrac{o \in uO, o \ is \ minimal \ w.r.t \ <_{hb} \ among
 
 \end{itemize}
 
-It is easy to see that $RImp_{cd}(Spec)$ contains all the traces of $RImp(Spec)$ that are causal delivery, as stated by the following lemma. Its proof is obvious and omitted. 
+It is easy to see that $RImp_{cd}(Spec)$ contains all the traces of $RImp(Spec)$ that are causal delivery, as stated by the following lemma. Its proof is obvious and omitted.
 
 \begin{lemma}
-\label{lemma:RImpcdSpec contains all the traces of RImpSpec that are causal delivery} 
+\label{lemma:RImpcdSpec contains all the traces of RImpSpec that are causal delivery}
 
-$RImp(Spec)_{cd} = \{ t \vert t \in \llbracket RImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$. 
-\end{lemma} 
+$\llbracket RImp(Spec)_{cd} \rrbracket = \{ t \vert t \in \llbracket RImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$.
+\end{lemma}
 
 
 
 \subsection{Plus-Minus Specification and its Compacted Reference Implementation}
-\label{subsec:plus-minus specification and its compacted reference implementation} 
+\label{subsec:plus-minus specification and its compacted reference implementation}
 
-We say that poset $ps_1$ and $ps_2$ are equivalent in specification $Spec$, if and only if for each operation $o$, $ps_1 \in Spec(o)$, if and only if $ps_2 \in Spec(o)$. We say a specification $Spec$ is a plus-minus specification, if 
+We say that poset $ps_1$ and $ps_2$ are equivalent in specification $Spec$, if and only if for each operation $o$, $ps_1 \in Spec(o)$, if and only if $ps_2 \in Spec(o)$. We say a specification $Spec$ is a plus-minus specification, if
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] It contains two kinds of update operations. The first kind is ``add operation'', which intuitively add some item into ``abstract state''. The second kind is ``minus operation'', which intuitively remove some item from ``abstract state''. 
+\item[-] It contains a query method and two update method. Let us temporally call the query method ``read'' and two update method ``plus'' and ``minus''. (They may use different name. For example, the plus method may be called insert or put, while the minus method may be called remove). 
     
+\item[-] The plus method and minus methods are distinguished as follows: given a state of $\llbracket RImp(Spec) \rrbracket$, if we do plus method at each replica, then the read method of each replica is either unchanged or returns ``more information'' (for example, an item is insert into a set); while if we do minus method at each replica, then the read method of each replica is either unchanged or returns ``less information'' (for example, an item is removed from a set). 
+
+\item[-] Given a state $(uO,ro,del)$ of $\llbracket RImp(Spec) \rrbracket$ and a plus operation $o_p \in uO$, its direct-minus operations, denoted $dirM(o_p)$, is a set of minus operations. 
     
+    A operation $o_m$ is in $dirM(o)$, if $o_p {\xrightarrow{ vis }} o_m$, and
 
-\item[-] $\textit{THINAIR}$: $eb \cup ro$ is acyclic.
-
-\item[-] $\textit{RVAL}$: $\forall o = (m,a,b,rid,oid) \in Os$, $li_{\Sigma(M,D)}(o) \in Spec(m,a,b)$. Here $li_{\Sigma(M,D)}(o)$ is obtained from $li(o)$ by labeling each $(m',a',b',rid',oid')$ with $(m,a,b)$.
-
-\item[-] $\textit{EVENTUAL}$: For any finite prefix $P$ of the poset $(Os,gi)$, $\{ o \vert o \in Os, P \npreceq li(o) \}$ is finite.
 \end{itemize}
