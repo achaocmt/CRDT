@@ -139,4 +139,19 @@ $RImp(Spec)_{cd} = \{ t \vert t \in \llbracket RImp(Spec) \rrbracket \wedge t$ s
 
 
 \subsection{Plus-Minus Specification and its Compacted Reference Implementation}
-\label{subsec:plus-minus specification and its compacted reference implementation}
+\label{subsec:plus-minus specification and its compacted reference implementation} 
+
+We say that poset $ps_1$ and $ps_2$ are equivalent in specification $Spec$, if and only if for each operation $o$, $ps_1 \in Spec(o)$, if and only if $ps_2 \in Spec(o)$. We say a specification $Spec$ is a plus-minus specification, if 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] It contains two kinds of update operations. The first kind is ``add operation'', which intuitively add some item into ``abstract state''. The second kind is ``minus operation'', which intuitively remove some item from ``abstract state''. 
+    
+    
+
+\item[-] $\textit{THINAIR}$: $eb \cup ro$ is acyclic.
+
+\item[-] $\textit{RVAL}$: $\forall o = (m,a,b,rid,oid) \in Os$, $li_{\Sigma(M,D)}(o) \in Spec(m,a,b)$. Here $li_{\Sigma(M,D)}(o)$ is obtained from $li(o)$ by labeling each $(m',a',b',rid',oid')$ with $(m,a,b)$.
+
+\item[-] $\textit{EVENTUAL}$: For any finite prefix $P$ of the poset $(Os,gi)$, $\{ o \vert o \in Os, P \npreceq li(o) \}$ is finite.
+\end{itemize}
