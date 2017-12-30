@@ -1,12 +1,12 @@
 %!TEX root = draft.tex
 
 \section{Definitions and Proofs of Section \ref{sec:reference implementation}}
-\label{sec:definitions and proofs of section reference implementation}
+\label{sec:appendix definitions and proofs of section reference implementation}
 
 
 
 \subsection{Proof of Lemma \ref{lemma:executions of reference implementation are eventual consistent}}
-\label{subsec:proof of lemma executions of reference implementation are eventual consistent}
+\label{subsec:appendix proof of lemma executions of reference implementation are eventual consistent}
 
 {\noindent \bf Lemma \ref{lemma:executions of reference implementation are eventual consistent}}: $\forall t \in \llbracket RImp(Spec) \rrbracket$, $poSet(t)$ is eventual consistent w.r.t $Spec$.
 
@@ -43,3 +43,20 @@ This completes the proof of this lemma. $\qed$
 
 
 
+
+
+
+
+\section{Definitions and Proofs of Section \ref{sec:implementation}}
+\label{sec:appendix definitions and proofs of section implementation} 
+
+
+
+{\noindent \bf Lemma \ref{lemma:semantics of imp cd contains the set of causal delivery executions of semantics of imp}}: $\llbracket imp \rrbracket_{cd} = \{ t \vert t \in \llbracket imp \rrbracket \wedge t$ satisfies causal delivery $\}$. 
+
+\begin {proof} 
+
+Given $t = \alpha_1 \cdot \ldots \in \llbracket imp \rrbracket_{cd}$, if there exists $q_1,\ldots \in Q$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 {\xrightarrow{\alpha_2}} \ldots$. 
+
+$\qed$
+\end {proof}

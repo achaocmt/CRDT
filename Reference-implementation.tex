@@ -104,7 +104,7 @@ Given an execution $t \in \llbracket RImp(Spec) \rrbracket$, its global interpre
 \item[-] $l_{gi}$ is a labeling function that maps each operation $(m,a,b,rid,oid)$ into $(m,a,b)$.
 \end{itemize}
 
-Given a sequence $t = \alpha_1 \cdots \in \llbracket RImp(Spec) \rrbracket$, let $poSet(t)=(O_t,<_t)$ be that: (1) $O_t$ is the set of operations of $t$, and (2) $<_t = <_{t1} \cup \ldots \cup <_{tn}$, where for each $i \in RId$, $<_{ti}$ is the projection of $t$ on operations of replica $i$. The following lemma states that, executions in $\llbracket RImp(Spec) \rrbracket$ are eventual consistent w.r.t $Spec$. Its proof can be found in Appendix \ref{subsec:proof of lemma executions of reference implementation are eventual consistent}. To prove this lemma, for each operation $o$ which is first introduced by a transition from $q_i$ to $q_{i+1}$, the local interpretation of $o$ is chosen to be $li(q_i,r)$, where $r$ is the replica of $o$.
+Given a sequence $t = \alpha_1 \cdots \in \llbracket RImp(Spec) \rrbracket$, let $poSet(t)=(O_t,<_t)$ be that: (1) $O_t$ is the set of operations of $t$, and (2) $<_t = <_{t1} \cup \ldots \cup <_{tn}$, where for each $i \in RId$, $<_{ti}$ is the projection of $t$ on operations of replica $i$. The following lemma states that, executions in $\llbracket RImp(Spec) \rrbracket$ are eventual consistent w.r.t $Spec$. Its proof can be found in Appendix \ref{subsec:appendix proof of lemma executions of reference implementation are eventual consistent}. To prove this lemma, for each operation $o$ which is first introduced by a transition from $q_i$ to $q_{i+1}$, the local interpretation of $o$ is chosen to be $li(q_i,r)$, where $r$ is the replica of $o$.
 
 \begin{lemma}
 \label{lemma:executions of reference implementation are eventual consistent}
@@ -118,7 +118,7 @@ Note that the opposite direction of this lemma does not hold: there may exists e
 \subsection{Reference Implementation with Causal Delivery}
 \label{subsec:reference implementation with causal delivery}
 
-According to \cite{Lamport:1978}, an operation $o_1$ happen-before an operation $o_2$, denoted $o_1 <_{hb} o_2$, if $o_1 {\xrightarrow{ (vis \cup ro)^* }} o_2$. Some CRDT algorithm use an assumption called causal delivery. Causal delivery require that, for each pair of operations $(o_1,o_2)$, if $o_1 <_{hb} o_2$, then for each replica $r$, $o_2$ can be delivered to replica $r$ if $o_1$ has already been delivered to replica $r$.
+According to \cite{Lamport:1978}, an operation $o_1$ happen-before an operation $o_2$, denoted $o_1 <_{hb} o_2$, if $o_1 {\xrightarrow{ (vis \cup ro)^* }} o_2$. Some CRDT algorithm use an assumption called causal delivery. Causal delivery require that, for each pair of update operations $(o_1,o_2)$, if $o_1 <_{hb} o_2$, then for each replica $r$, $o_2$ can be delivered to replica $r$ if $o_1$ has already been delivered to replica $r$.
 
 Given a specification $Spec$, its reference implementation with causal delivery is given as an tuple $RImp_{cd}(Spec) = (Q,\Sigma,vis,,q_0,li,\rightarrow,livReq)$. $RImp_{cd}(Spec)$ can be obtained from $RImp(Spec)$ by only changing the transition rules of delivering operations into follows:
 
