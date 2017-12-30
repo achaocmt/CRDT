@@ -1,0 +1,26 @@
+%!TEX root = draft.tex
+
+\section{Implementation}
+\label{sec:implementation}
+
+In this section, we give our formation of CRDT algorithms (implementation) and their semantics. 
+
+In a CRDT algorithm, each replica stores a copy of shared data and possibly some auxiliary data. For example, in OR-set algorithm of \cite{Bieniusa:2012}, the shared data consists of a set $E$ of current item and a set $T$ of tombstone, and the auxiliary data is a counter used to ensure the uniqueness of item identifier.
+
+Let $RepD$ be the set of shared data and auxiliary data. Let $Msg$ be the set of messages. Then a CRDT implementation $imp$ is defined as a tuple $(Mth,Apl)$, where 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $Mth: M \times D \times PRD \rightarrow D \times PRD \times Mes$. $(b,d',msgs) = Mth(m,a,d)$ means that, if the current replica data is $d$ and we call method with argument $a$, then the resulting replica data is $d'$, we obtain return value $b$, and generate a set $msgs$ of messages. 
+
+\item[-] $Apl: RepD \times Msg \rightarrow RepD$. $Apl(d,msg) = d'$ means that, if the current replica data is $d$ and we apply message $msg$, then we obtain replica data $d'$. 
+\end{itemize} 
+
+The semantics of $imp$ is given as an LTS $\llbracket imp \rrbracket = (Q,\Sigma,\rightarrow,q_0)$, where 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] 
+\end{itemize}
+
+
