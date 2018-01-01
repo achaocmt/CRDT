@@ -7,22 +7,22 @@ In this section, we give our formation of CRDT algorithms (implementation) and t
 
 In a CRDT algorithm, each replica stores a copy of shared data and possibly some auxiliary data. For example, in OR-set algorithm of \cite{Bieniusa:2012}, the shared data consists of a set $E$ of current item and a set $T$ of tombstone, and the auxiliary data is a counter used to ensure the uniqueness of item identifier.
 
-Let $RepD$ be the set of data of replica. Let $Msg$ be the set of messages. Each message is of the from $msg=(dat,sorR,desR)$ and is generated since some replica does an operation. Here $dat$ is some information, and we assume that we can use a function $op(dat)$ to obtain the operation that generates $msg$, $sorR \in RId$ indicates that which replica launches this operation, and $desR \in RId$ indicates the destination replica identifier of this message. Let $data(msg)=dat$ be a function that reads the data of a message.
+Let $RepD$ be the set of data of replica. Let $Msg$ be the set of messages. Each message is of the from $msg=(dat,sorR,desR)$ and is generated since some replica does an operation. Here $dat$ is some information, and we assume that we can use a function $op(dat)$ to obtain the operation that generates $msg$, $sorR \in RId$ indicates that which replica launches this operation, and $desR \in RId$ indicates the destination replica identifier of this message. %Let $data(msg)=dat$ be a function that reads the data of a message.
 
 Then a CRDT implementation $imp$ is defined as a tuple $(Mth,Apl,InitD)$, where
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $Mth: M \times D \times PRD \times RId \rightarrow D \times PRD \times Pow(Mes)$. $Mth(m,a,d,rid) = (b,d',msgs)$ means that, if the current replica data is $d$ and we call method with argument $a$ in replica $rid$, then the resulting replica data is $d'$, we obtain return value $b$, and generate a set $msgs$ of messages. Here we assume that if $m(a,b)$ is an update operation, then $msgs = \{ (dat,rid,r') \vert r' \in RId \wedge r \neq r' \}$ for some $dat$ where $op(dat)$ uses method $m$ with argument $a$ and return value $b$.
-    
-    We also assume that, if $m(a,b)$ is a query operation, then $msgs = \emptyset$. 
+\item[-] $Mth: M \times D \times PRD \times RId \rightarrow D \times PRD \times Pow(Mes)$. $Mth(m,a,d,rid) = (b,d',msgs)$ means that, if the current replica data is $d$ and we call method $m$ with argument $a$ in replica $rid$, then the resulting replica data is $d'$, we obtain return value $b$, and generate a set $msgs$ of messages. Here we assume that if $m(a,b)$ is an update operation, then $msgs = \{ (dat,rid,r') \vert r' \in RId \wedge r \neq r' \}$ for some $dat$ where $op(dat)$ uses method $m$ with argument $a$ and return value $b$.
+
+    We also assume that, if $m(a,b)$ is a query operation, then $msgs = \emptyset$.
 
 \item[-] $Apl: RepD \times Msg \rightarrow RepD$. $Apl(d,msg) = d'$ means that, if the current replica data is $d$ and we apply message $msg$, then we obtain replica data $d'$.
 
 \item[-] $InitD \in RepD$ is the initial replica data.
 \end{itemize}
 
-The semantics of $imp$ is given as an LTS $\llbracket imp \rrbracket = (Q,\Sigma,\rightarrow,q_0)$, where
+The semantics of $imp$ is given as an LTS $\llbracket imp \rrbracket = (Q,\Sigma,\rightarrow,q_0)$ \footnote{{\color {red} For some implementations, more information may be used as tuple of state of $\llbracket imp \rrbracket$. Such information are only for make transition labels clear and do not influence execution. For example, for distributed list algorithm, the order of all known items may be used as a argument. Similarly, we may add more information into transition labels when it is necessary.}}, where 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
@@ -36,9 +36,9 @@ The semantics of $imp$ is given as an LTS $\llbracket imp \rrbracket = (Q,\Sigma
     \setlength{\itemsep}{0.5pt}
     \item[-] Doing an operation:
 
-    $\begin{array}{l c} \bigfrac{ Mth(m,a,repD[r]) = (b,d,msgs') } {(repD,msgs) {\xrightarrow{m(a,b,r)}} (repD[r:d],msgs \cup msgs')} \end{array}$ 
-    
-    Recall that, if $m(a,b)$ is a query operation, then $msgs' = \emptyset$. 
+    $\begin{array}{l c} \bigfrac{ Mth(m,a,repD[r]) = (b,d,msgs') } {(repD,msgs) {\xrightarrow{m(a,b,r)}} (repD[r:d],msgs \cup msgs')} \end{array}$
+
+    Recall that, if $m(a,b)$ is a query operation, then $msgs' = \emptyset$.
 
     \item[-] Applying a message:
 
@@ -54,7 +54,7 @@ We say that an execution of $\llbracket imp \rrbracket$ satisfies causal deliver
 \setlength{\itemsep}{0.5pt}
 \item[-] Each state of $Q_{cd}$ is for the from $(repD,msgs,<)$, where $repD$ and $msgs$ is the same as that in $\llbracket imp \rrbracket$, and $< \subseteq (msgs \times msgs) \cup (msgs \times RId)$ is a transitive, acyclic and irreflexive relation. $<$ is used to record the happen-before relation between operations of messages. $(m_1,m_2) \in <$ represents that the $op(m_1)$ happen before $op(m_2)$, while $(m,r) \in <$ represents that $op(m)$ is visible to replica $r$ and does not happen before any operation of replica $r$ that we could know.
 
-\item[-] $\rightarrow_{cd}$ is the transition relation and contains three kinds of operations: 
+\item[-] $\rightarrow_{cd}$ is the transition relation and contains three kinds of operations:
 
     The first kind is transitions of query operation. In this situation, messages and $<$ relations do not change:
 
@@ -85,10 +85,10 @@ We say that an execution of $\llbracket imp \rrbracket$ satisfies causal deliver
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] First, remove $m$ from $<$ while keep orders of other elements in $<$ unchanged. 
-    
-    \item[-] Then, $\forall k' \neq r$, if $(dat,r_1,k') \in msgs(k')$, then add $((dat,r_1,k'),k')$. 
-    
+    \item[-] First, remove $m$ from $<$ while keep orders of other elements in $<$ unchanged.
+
+    \item[-] Then, $\forall k' \neq r$, if $(dat,r_1,k') \in msgs(k')$, then add $((dat,r_1,k'),k')$.
+
     \item[-] Make the transitive closure.
     \end{itemize}
 
