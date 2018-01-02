@@ -33,7 +33,7 @@ Given a specification $Spec$, its reference implementation is given as an tuple 
 \item[-] Each state $(uO,ro,del) \in Q$ contains three tuples. Here $uO$ is a set of update operations, $ro$ is the replica order among operations in $uO$, and $del \subseteq (uO \times uO) \cup (uO \times RId)$ is the deliver order. $(o_1,o_2) \in del$ represents that the effect of $o_1$ (its message) is delivered to the replica of $o_2$ just before the time point $o_2$ happens. $(o,r) \in del$ represents that the effect of $o$ is delivered to replica $r$ after the time point of the last operation of replica $r$. We require that $(ro \cup del)^*$ being acyclic and irreflexive. %$(ro \cup del)^{*-1}$ to be finite,
     and we require $del$ to only relate operations with different replica identifier. We assume that $uO$ does not contain two operations with the same identifier. Note that we only record update operations in state. \footnote{{\color {red}We require that the tuple of $Q$ contain enough information for checking correctness of operations. Sometimes, if $Spec$ use additional information to check correctness of operations, $Q$ should contain more information. For example, to deal with distributed list specification \cite{Attiya:2016}, a list order is added to tuples of $Q$. Similarly, when needed, we add more information into $\Sigma$ and extended the transition relation $\rightarrow$.}}
 
-\item[-] $\Sigma = \Sigma_{op} \cup \Sigma_{del}$ is the set of transition labels. Here $\Sigma_{op}$ is the set of operations using method in $M$, arguments and return values in $D$, and replica identifiers in $RId$. %and operation identifiers in $OId$. 
+\item[-] $\Sigma = \Sigma_{op} \cup \Sigma_{del}$ is the set of transition labels. Here $\Sigma_{op}$ is the set of operations using method in $M$, arguments and return values in $D$, and replica identifiers in $RId$. %and operation identifiers in $OId$.
     $\Sigma_{del}=\{ addDel(o,r) \vert o \in OId, r \in RId \}$.
 
 \item[-] $vis : Q \rightarrow (uO \times uO) \cup (uo \times RId)$ is the visibility relation. $vis$ is irreflexive and acyclic. $(o_1,o_2) \in vis$ represents that the effect of $o_1$ is visible to $o_2$. $(o,r)$ represents that the effect of $o$ become visible to replica $r$ after the time point of the last operation of replica $r$.
@@ -87,7 +87,7 @@ Given an execution $t \in \llbracket RImp(Spec) \rrbracket$, its global interpre
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $O_{gi}$ is the set of operations of $t$. Or we could say, $O_{gi}$ is the set of operations introduced into some $uO$ during $t$. 
+\item[-] $O_{gi}$ is the set of operations of $t$. Or we could say, $O_{gi}$ is the set of operations introduced into some $uO$ during $t$.
 
 \item[-] Assume $t = \alpha_1 \cdot \ldots$ and $\exists q_1,\ldots$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 {\xrightarrow{\alpha_2}} \ldots$ and $livReq(t) = \textit{true}$. Let function $ord$ be a relation constructed as follows:
 

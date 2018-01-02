@@ -22,11 +22,13 @@ Then a CRDT implementation $imp$ is defined as a tuple $(Mth,Apl,InitD)$, where
 \item[-] $InitD \in RepD$ is the initial replica data.
 \end{itemize}
 
-The semantics of $imp$ is given as an LTS $\llbracket imp \rrbracket = (Q,\Sigma,\rightarrow,q_0)$ \footnote{{\color {red} For some implementations, more information may be used as tuple of state of $\llbracket imp \rrbracket$. Such information are only for make transition labels clear and do not influence execution. For example, for distributed list algorithm, the order of all known items may be used as a argument. Similarly, we may add more information into transition labels when it is necessary.}}, where 
+The semantics of $imp$ is given as an LTS $\llbracket imp \rrbracket = (Q,\Sigma,\rightarrow,q_0)$ \footnote{{\color {red} For some implementations, more information may be used as tuple of state of $\llbracket imp \rrbracket$. Such information are only for make transition labels clear and do not influence execution. For example, for distributed list algorithm, the order of all known items may be used as a argument. Similarly, we may add more information into transition labels when it is necessary.}}, where
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] Each state $(repD,msgs) \in Q$ contains two tuples. Here $repD: RId \rightarrow RepD$ is the replica data of each replica, $msgs \subseteq Msg$ is the set of messages.
+\item[-] Each state $(repD,msgs,<_{ro}) \in Q$ contains three tuples. Here $repD: RId \rightarrow RepD$ is the replica data of each replica, $msgs \subseteq Msg$ is the set of messages, $<_{ro} \subseteq Meg \times Msg$ is used to record the $ro$ order of operations of messages. 
+
+Let $msgs(r) = \{ (\_,\_,r) \in msgs \}$ denote the set of messages in $msgs$ whose destination replica is $r$. $\forall r \in RId$, $<_{ro}$ is a irreflexive and acyclic total order on $msgs(r)$. We also require that the transitive closure of $<_{ro}$ on operations being acyclic.  
 
 \item[-] $\Sigma = \{ m(a,b,r), apply(msg) \vert m \in M, a,b \in D, r \in RId, msg \in Msg \}$ is the set of transition labels.
 
@@ -36,13 +38,15 @@ The semantics of $imp$ is given as an LTS $\llbracket imp \rrbracket = (Q,\Sigma
     \setlength{\itemsep}{0.5pt}
     \item[-] Doing an operation:
 
-    $\begin{array}{l c} \bigfrac{ Mth(m,a,repD[r]) = (b,d,msgs') } {(repD,msgs) {\xrightarrow{m(a,b,r)}} (repD[r:d],msgs \cup msgs')} \end{array}$
+    $\begin{array}{l c} \bigfrac{ Mth(m,a,repD[r]) = (b,d,msgs') } {(repD,msgs,<_{ro}) {\xrightarrow{m(a,b,r)}} (repD[r:d],msgs \cup msgs',<_{ro} \odot msgs')} \end{array}$ 
+    
+    Here $<_{ro} \odot msgs'$ is obtained from $<_{ro}$ by adding  $(m_1,m_2)$, when $m_1 \in msgs$, $m_2 \in msgs'$, the destination replica of $m_1$ is the same as that of $m_2$. 
 
     Recall that, if $m(a,b)$ is a query operation, then $msgs' = \emptyset$.
 
     \item[-] Applying a message:
 
-    $\begin{array}{l c} \bigfrac{ m = (\_,\_,r) \in msgs,Apl(repD[r],m) = d } {(repD,msgs) {\xrightarrow{apply(m)}} (repD[r:d],msgs - \{ m \} )} \end{array}$
+    $\begin{array}{l c} \bigfrac{ m = (\_,\_,r) \in msgs,Apl(repD[r],m) = d } {(repD,msgs) {\xrightarrow{apply(m)}} (repD[r:d],msgs - \{ m \},<_{ro}-m )} \end{array}$
     \end{itemize}
 
 \item[-] $q_0$ is the initial state, which maps each replica identifier into $(InitD,\emptyset)$.
@@ -66,7 +70,7 @@ We say that an execution of $\llbracket imp \rrbracket$ satisfies causal deliver
 
     $\begin{array}{l c} \bigfrac{ Mth(m,a,repD[r]) = (b,d,msgs'), msgs' = \{ (dat,r,r') \vert r' \in RId \wedge r \neq r' \} \ for \ some \ dat} {(repD,msgs,<) {\xrightarrow{m(a,b,r)}} (repD[r:d],msgs \cup msgs',< \otimes dat)} \end{array}$
 
-    Let us explain $< \otimes dat$. Let $msgs(r) = \{ (\_,\_,r) \in msgs \}$ denote the set of messages in $msgs$ whose destination replica is $r$. $< \otimes dat$ will change $<$ as follows:
+    Let us explain $< \otimes dat$. $< \otimes dat$ will change $<$ as follows:
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
