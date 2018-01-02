@@ -60,11 +60,11 @@ Given $t = \alpha_1 \cdot \ldots \in \llbracket imp \rrbracket_{cd}$, if there e
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $P_1$: $msgs_i = \{ (dat,r,r') \vert$ the update operation $op(dat)$ is launched by replica $r$ and its message has not been applied to replica $r'$ in $t[1,i]\}$.
+\item[-] $P_1$: $msgs_i = \{ (dat,r,r') \vert$ the operation generating this message is launched by replica $r$ and its message has not been applied to replica $r'$ in $t[1,i]\}$.
 
-\item[-] $P_2$: $m_1 <_i m_2$, iff  $m_1 = (d_1,r_1,r')$, $m_2 = (d_2,r_2,r')$, and $op(d_1)$ happen before $op(d_2)$ in $t[1,i]$.
+\item[-] $P_2$: $m_1 <_i m_2$, iff $m_1$ and $m_2$ have same destination replica, and the operation generating $m_1$ happens before the operation generating $m_2$ in $t[1,i]$.
 
-\item[-] $P_3$: $m <_i r$, iff $m=(d,r_1,r_2)$, $op(d)$ is visible to replica $r$ in $t[1,i]$, and $op(d)$ does not happen before any operation in $t[1,i]$.
+\item[-] $P_3$: $m <_i r$, iff the destination replica of $m$ is not $r$, and the operation generating $m$ is visible to replica $r$ in $t[1,i]$, and does not happen before ``any operation that launched by replica $r$'' in $t[1,i]$.
 \end{itemize}
 
 Once we prove that $P_1$, $P_2$ and $P_3$ holds for each $q_i$, let us prove this lemma by contradiction: Assume that update operations $o_1 <_{hb} o_2$, messages of $o_1$ are $\{ (d_1,r_1,\_) \}$, messages of $o_2$ are \{ $(d_2,r_2,\_) \}$, $\alpha_i = apply((d_2,r_2,r'),r')$, $\alpha_j = apply((d_1,r_1,r'),r')$, and $i<j$. Then in $q_i=(repD_i,msgs_i,<_i)$, since $o_1 <_{hb} o_2$ and transition rules of $\llbracket imp \rrbracket_{cd}$, we could not launch $apply((d_2,r_2,r'),r')$ transition, which is the contradiction.
@@ -77,27 +77,35 @@ Let us begin to prove that each state $q_i=(repD_i,msgs_i,<_i)$ satisfies proper
 \setlength{\itemsep}{0.5pt}
 \item[-] It is obvious that $q_0$ satisfies properties $P_1$, $P_2$ and $P_3$.
 
-\item[-] Since $\alpha_1$ must be either a query transition or an update transition, it is easy to see that $<_1 = \emptyset$ and $q_1$ satisfies properties $P_1$, $P_2$ and $P_3$. 
+\item[-] Since $\alpha_1$ must be either a query transition or an update transition, it is easy to see that $<_1 = \emptyset$ and $q_1$ satisfies properties $P_1$, $P_2$ and $P_3$.
 
-\item[-] Assume that $q_i=(repD_i,msgs_i,<_i)$ satisfies properties $P_1$, $P_2$ and $P_3$. let us consider $q_{i+1}= (repD_{i+1},msgs_{i+1},<_{i+1})$, 
+\item[-] Assume that $q_i=(repD_i,msgs_i,<_i)$ satisfies properties $P_1$, $P_2$ and $P_3$. let us consider $q_{i+1}= (repD_{i+1},msgs_{i+1},<_{i+1})$,
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] If $q_{i+1}$ is obtained from $q_i$ by a query transition, then this holds obviously. 
-    
-    \item[-] Else, if $q_{i+1}$ is obtained from $q_i$ by a update transition. Then we can see that $(repD_i,msgs_i,<_i) {\xrightarrow{m(a,b,r)}} (repD_{i+1},msgs_{i+1}=msgs \cup \{ (dat,r,r') \vert  r' \in RId \wedge r \neq r' \},<_{i+1} = <_i \otimes dat)$. 
-        
-        Since we add messages $\{ (dat,r,r') \vert  r' \in RId \wedge r \neq r' \}$ into $msgs_i$, we can see that $P_1$ holds. 
-        
-        To satisfy $P_2$ and $P_3$, we need to make operations in $msgs_{i+1}$ which are ``visible to replica $r$ in $q_i$'' to be visible to $op(dat)$ in $q_{i+1}$ and still keep transitivity, which is done by $<_i \otimes dat$. 
-    
-    \item[-] Else, $q_{i+1}$ is obtained from $q_i$ by a applying transition. Then we can see that $(repD_i,msgs_i,<_i) {\xrightarrow{apply(m=(dat,r_1,r))}} (repD_{i+1},msgs_{i+1} = msgs_i - \{ m \}, <_{i+1} = <_i \otimes m )$, where $m$ is minimal w.r.t $<_i$ among messages in $msgs_i(r)$. 
-        
-        Since we use one message $m$ in this process and remove it from $msgs_i$, we can see that $P_1$ holds. 
-        
-        Applying message will introduce new visibility relation. To satisfy $P_2$ and $P_3$, we need to first forget $m$, record the newly introduced visibility relation, and still keep transitivity. This is done by $<_i \otimes m$. 
-    \end{itemize} 
+    \item[-] If $q_{i+1}$ is obtained from $q_i$ by a query transition, then this holds obviously.
+
+    \item[-] Else, if $q_{i+1}$ is obtained from $q_i$ by a update transition. Then we can see that $(repD_i,msgs_i,<_i) {\xrightarrow{m(a,b,r)}} (repD_{i+1},msgs_{i+1}=msgs \cup \{ (dat,r,r') \vert  r' \in RId \wedge r \neq r' \},<_{i+1} = <_i \otimes dat)$.
+
+        Since we add messages $\{ (dat,r,r') \vert  r' \in RId \wedge r \neq r' \}$ into $msgs_i$, we can see that $P_1$ holds.
+
+        To satisfy $P_2$ and $P_3$, we need to make newly add messages maximal w.r.t $<$ and still keep transitivity, which is done by $<_i \otimes dat$.
+
+    \item[-] Else, $q_{i+1}$ is obtained from $q_i$ by a applying transition. Then we can see that $(repD_i,msgs_i,<_i) {\xrightarrow{apply(m=(dat,r_1,r))}} (repD_{i+1},msgs_{i+1} = msgs_i - \{ m \}, <_{i+1} = <_i \otimes m )$, where $m$ is minimal w.r.t $<_i$ among messages in $msgs_i(r)$.
+
+        Since we use one message $m$ in this process and remove it from $msgs_i$, we can see that $P_1$ holds.
+
+        Applying message will introduce new visibility relation. To satisfy $P_2$ and $P_3$, we need to first forget $m$, record the newly introduced visibility relation, and still keep transitivity. This is done by $<_i \otimes m$.
+    \end{itemize}
 \end{itemize}
 
 This completes the proof of this lemma. $\qed$
 \end {proof}
+
+
+
+
+
+\section{Definitions and Proofs of Section \ref{sec:simulation relation}}
+\label{sec:appendix definitions and proofs of section simulation relation}
+
