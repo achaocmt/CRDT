@@ -3,9 +3,9 @@
 \section{Simulation Relation}
 \label{sec:simulation relation}
 
-In this section, we give our simulation relation between a implementation $\llbracket imp \rrbracket$ and a reference implementation (with causal delivery) $A$. Such simulation relation is via a function that maps messages into operations. For plus-minus specification and its compacted reference implementation $A'$, we give our simulation relation between $\llbracket imp \rrbracket$ and $A'$, and prove that from this simulation relation, we could obtain a simulation relation between $\llbracket imp \rrbracket$ and $A$, the non-compacted version of $A'$. 
+In this section, we give our simulation relation between a implementation $\llbracket imp \rrbracket$ and a reference implementation (with causal delivery) $A$. Such simulation relation is via a function that maps messages into operations. For plus-minus specification and its compacted reference implementation $A'$, we give our simulation relation between $\llbracket imp \rrbracket$ and $A'$, and prove that from this simulation relation, we could obtain a simulation relation between $\llbracket imp \rrbracket$ and $A$, the non-compacted version of $A'$.
 
-Given $\llbracket imp \rrbracket = (Q_{imp},\Sigma_{imp},\rightarrow_{imp},q_{0imp})$ and $RImp(Spec) = (Q_s,\Sigma_s,vis,q_{0s},li,\rightarrow_s,livReq)$, we say that $R \subseteq Q_{imp} \times Q_s$ is a simulation relation, if given $(q_i,q_s) \in R$ 
+Given $\llbracket imp \rrbracket = (Q_{imp},\Sigma_{imp},\rightarrow_{imp},q_{0imp})$ and $RImp(Spec) = (Q_s,\Sigma_s,vis,q_{0s},li,\rightarrow_s,livReq)$, we say that $R \subseteq Q_{imp} \times Q_s$ is a simulation relation, if given $(q_i,q_s) \in R$
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
@@ -18,23 +18,23 @@ Given $\llbracket imp \rrbracket = (Q_{imp},\Sigma_{imp},\rightarrow_{imp},q_{0i
 
 
 \forget{
-Given $\llbracket imp \rrbracket = (Q_{imp},\Sigma_{imp},\rightarrow_{imp},q_{0imp})$ (not assuming causal delivery) and $RImp(Spec) = (Q_s,\Sigma_s,vis,q_{0s},li,\rightarrow_s,livReq)$, we say that $R \subseteq Q_{imp} \times Q_s$ is a simulation relation, if given $(q_i,q_s) \in R$ where $q_i = (repD,msgs,<_{roi})$ and $q_s = (uO,ro,del)$, 
+Given $\llbracket imp \rrbracket = (Q_{imp},\Sigma_{imp},\rightarrow_{imp},q_{0imp})$ (not assuming causal delivery) and $RImp(Spec) = (Q_s,\Sigma_s,vis,q_{0s},li,\rightarrow_s,livReq)$, we say that $R \subseteq Q_{imp} \times Q_s$ is a simulation relation, if given $(q_i,q_s) \in R$ where $q_i = (repD,msgs,<_{roi})$ and $q_s = (uO,ro,del)$,
 
 \begin{itemize}
-\setlength{\itemsep}{0.5pt} 
+\setlength{\itemsep}{0.5pt}
 \item[-] Let $MsgToOp(q_i) = \{ o \vert \exists m = (dat,\_,\_) \in msgs, o=op(dat) \}$ be the set of operations of messages in $q_i$. Let $AOpS(q_s) = \{ o \vert o \in uO, \exists r, \neg (o {\xrightarrow{vis}} r) \}$ be the set of operations in $q_s$ that are not delivered into all replicas. Given $r \in RId$, let $MsgToOp(q_i)(r) = \{ o \vert \exists m = (dat,\_,r) \in msgs, o=op(dat) \}$ and $AOpS(q_s)(r) = \{ o \vert o \in uO, \neg (o {\xrightarrow{vis}} r) \}$. We require that,
-    
+
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] $\forall r \in RId$, $\vert MsgToOp(q_i)(r) \vert = \vert AOpS(q_s)(r) \vert$. 
-    
+    \item[-] $\forall r \in RId$, $\vert MsgToOp(q_i)(r) \vert = \vert AOpS(q_s)(r) \vert$.
+
     \item[-] There is a function $f_{(q_i,q_s)}$ that maps the $i-th$ op of $MsgToOp(q_i)(r)$ w.r.t $<_{roi}$ into the $i-th$ op of $AOpS(q_s)(r)$ w.r.t $ro$ for each $i$. Moreover, $o_1 = OpMsgI(q_i)(r_1)$, $o_2 = OpMsgI(q_i)(r_2)$, $r_1 \neq r_2$, and $o_1$ and $o_2$ are mapped from same $dat$, if and only if $f_{(q_i,q_s)}(o_1)=f_{(q_i,q_s)}(o_2)$. We can see that such $f_{(q_i,q_s)}$ is unique if it exists.
     \end{itemize}
 
-\item[-] If $q_i {\xrightarrow{m(a,b,r)}}_{imp} q'_i$, then $q_s {\xrightarrow{m(a,b,r)}}_s q'_s$ and $(q'_i,q'_s)$.  
+\item[-] If $q_i {\xrightarrow{m(a,b,r)}}_{imp} q'_i$, then $q_s {\xrightarrow{m(a,b,r)}}_s q'_s$ and $(q'_i,q'_s)$.
 
-\item[-] If $q_i {\xrightarrow{apply(m)}}_{imp} q'_i$, $m=(dat,\_,r)$ and $f_{(q_i,q_s)}(op(dat))=o$, then $q_s {\xrightarrow{addDel(o,r)}}_s q'_s$ and $(q'_i,q'_s)$. 
-\end{itemize} 
+\item[-] If $q_i {\xrightarrow{apply(m)}}_{imp} q'_i$, $m=(dat,\_,r)$ and $f_{(q_i,q_s)}(op(dat))=o$, then $q_s {\xrightarrow{addDel(o,r)}}_s q'_s$ and $(q'_i,q'_s)$.
+\end{itemize}
 
 }
 
@@ -47,24 +47,26 @@ Given a sequence $t_{imp} = \alpha_1 \cdot \ldots \in \llbracket imp \rrbracket$
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] If $\alpha_i$ is an operation, then $\beta_i = \alpha_i$. 
+\item[-] If $\alpha_i$ is an operation, then $\beta_i = \alpha_i$.
 
-\item[-] Else, $\alpha_i = apply(m)$ and $\beta_i = addDel(o,r)$. Here $o$ and $r$ are obtained as follows: Assume after doing $\alpha_1 \cdot \ldots \cdot \alpha_{i-1}$, $m=(\_,r',r)$ is the $i-th$ among ``messages with source replica $r'$ and destination replica $r$ and still not applied'' w.r.t the occurring order of $t_{imp}$. Here we assume that the set of newly generated messages could be seen as ghost variable. 
-    
-    Then, after doing $\beta_1 \cdot \ldots \cdot \beta_{i-1}$, $o$ is the $i-th$ among ``operations which happens on replica $r'$ and not visible to replica $r$'' w.r.t the occurring order of $t_s$. 
+\item[-] Else, $\alpha_i = apply(m)$ and $\beta_i = addDel(o,r)$. Here $o$ and $r$ are obtained as follows: Assume after doing $\alpha_1 \cdot \ldots \cdot \alpha_{i-1}$, $m=(\_,r',r)$ is the $i-th$ among ``messages with source replica $r'$ and destination replica $r$ and still not applied'' w.r.t the occurring order of $t_{imp}$. {\color {red}Here we assume that in $\llbracket imp \rrbracket$, the set of newly generated messages could be seen as ghost variable of $m(a,b,r)$ transitions.}
+
+    Then, after doing $\beta_1 \cdot \ldots \cdot \beta_{i-1}$, $o$ is the $i-th$ among ``operations which happens on replica $r'$ and not visible to replica $r$'' w.r.t the occurring order of $t_s$. {\color {red} Here we assume that in $RImp(Spec)$, the newly generated operation could be seen as ghost variable of $m(a,b,r)$ transitions.} 
 \end{itemize}
 
-We say that $\llbracket imp \rrbracket$ trace refines $RImp(Spec)$, if $\forall t_{imp} \in \llbracket imp \rrbracket$, we can 
+We can prove that, given $t_{imp}$, there exists at most one $t_s$, such that $t_{imp}$ and $t_s$ correspond. The reason is that, (1) $RImp(Spec)$ is deterministic, and (2) to deal with $apply(m)$ transition, there is only one possible selection of operation $o$. 
+
+We say that $RImp(Spec)$ trace refines $\llbracket imp \rrbracket$, if $\forall t_{imp} \in \llbracket imp \rrbracket$, $\exists t_s \in RImp(Spec)$, such that $t_{imp}$ and $t_s$ correspond. It is obvious that our simulation relation implies trace inclusion. Since $RImp(Spec)$ is deterministic, similarly as that of \cite{Abadi:1991,Lynch:1995}, we could prove that the opposite direction also holds. Therefore, our simulation relation is a sound and complete method to prove trace refinement, as states by the following theorem:
+
+\begin{theorem}
+\label{theorem:equivalence of our simulation relation and sequence inclusion}
+$RImp(Spec)$ trace refines $\llbracket imp \rrbracket$, if and only if there exists a simulation relation between $\llbracket imp \rrbracket$ and $RImp(Spec)$. 
+\end{theorem}
 
 
 
-It is obvious that our simulation relation implies sequence inclusion (of operation and deliver). Since $RImp(Spec)$ is deterministic, according to \cite{Abadi:1991,Lynch:1995}, sequence inclusion also implies our simulation relation. This implies the following lemma:
+When we consider implementation and reference implementation with causal delivery, above definitions and lemmas still hold. The reason is that, we could easily obtain $<_{sd}$ order from $<$ order in state of implementation. 
 
-\begin{lemma}
-\label{lemma:equivalence of our simulation relation and sequence inclusion}
-A
-\end{lemma}
-
-
+ 
 
 
