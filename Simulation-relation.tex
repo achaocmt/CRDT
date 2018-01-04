@@ -3,7 +3,7 @@
 \section{Simulation Relation}
 \label{sec:simulation relation}
 
-In this section, we give our simulation relation between a implementation $\llbracket imp \rrbracket$ and a reference implementation (with causal delivery) $A$. Such simulation relation is via a function that maps messages into operations. For plus-minus specification and its compacted reference implementation $A'$, we give our simulation relation between $\llbracket imp \rrbracket$ and $A'$, and prove that from this simulation relation, we could obtain a simulation relation between $\llbracket imp \rrbracket$ and $A$, the non-compacted version of $A'$.
+In this section, we give our simulation relation between a implementation $\llbracket imp \rrbracket$ and a reference implementation (with causal delivery) $A$. For plus-minus specification and its compacted reference implementation $A'$, we give our simulation relation between $\llbracket imp \rrbracket$ and $A'$. For both simulation relations, we prove that they are sound and complete for refinement checking. 
 
 Given $\llbracket imp \rrbracket = (Q_{imp},\Sigma_{imp},\rightarrow_{imp},q_{0imp})$ and $RImp(Spec) = (Q_s,\Sigma_s,vis,q_{0s},li,\rightarrow_s,livReq)$, we say that $R \subseteq Q_{imp} \times Q_s$ is a simulation relation, if given $(q_i,q_s) \in R$
 
@@ -51,28 +51,69 @@ Given a sequence $t_{imp} = \alpha_1 \cdot \ldots \in \llbracket imp \rrbracket$
 
 \item[-] Else, $\alpha_i = apply(m)$ and $\beta_i = addDel(o,r)$. Here $o$ and $r$ are obtained as follows: Assume after doing $\alpha_1 \cdot \ldots \cdot \alpha_{i-1}$, $m=(\_,r',r)$ is the $i-th$ among ``messages with source replica $r'$ and destination replica $r$ and still not applied'' w.r.t the occurring order of $t_{imp}$. {\color {red}Here we assume that in $\llbracket imp \rrbracket$, the set of newly generated messages could be seen as ghost variable of $m(a,b,r)$ transitions.}
 
-    Then, after doing $\beta_1 \cdot \ldots \cdot \beta_{i-1}$, $o$ is the $i-th$ among ``operations which happens on replica $r'$ and not visible to replica $r$'' w.r.t the occurring order of $t_s$. {\color {red} Here we assume that in $RImp(Spec)$, the newly generated operation could be seen as ghost variable of $m(a,b,r)$ transitions.} 
+    Then, after doing $\beta_1 \cdot \ldots \cdot \beta_{i-1}$, $o$ is the $i-th$ among ``operations which happens on replica $r'$ and not visible to replica $r$'' w.r.t the occurring order of $t_s$. {\color {red} Here we assume that in $RImp(Spec)$, the newly generated operation could be seen as ghost variable of $m(a,b,r)$ transitions.}
 \end{itemize}
 
-We can prove that, given $t_{imp}$, there exists at most one $t_s$, such that $t_{imp}$ and $t_s$ correspond. The reason is that, (1) $RImp(Spec)$ is deterministic, and (2) to deal with $apply(m)$ transition, there is only one possible selection of operation $o$. 
+We can prove that, given $t_{imp}$, there exists at most one $t_s$, such that $t_{imp}$ and $t_s$ correspond. The reason is that, (1) $RImp(Spec)$ is deterministic, and (2) to deal with $apply(m)$ transition, there is only one possible selection of operation $o$.
 
 We say that $RImp(Spec)$ trace refines $\llbracket imp \rrbracket$, if $\forall t_{imp} \in \llbracket imp \rrbracket$, $\exists t_s \in RImp(Spec)$, such that $t_{imp}$ and $t_s$ correspond. It is obvious that our simulation relation implies trace inclusion. Since $RImp(Spec)$ is deterministic, similarly as that of \cite{Abadi:1991,Lynch:1995}, we could prove that the opposite direction also holds. Therefore, our simulation relation is a sound and complete method to prove trace refinement, as states by the following theorem:
 
 \begin{theorem}
 \label{theorem:equivalence of our simulation relation and sequence inclusion}
-$RImp(Spec)$ trace refines $\llbracket imp \rrbracket$, if and only if there exists a simulation relation between $\llbracket imp \rrbracket$ and $RImp(Spec)$. 
+$RImp(Spec)$ trace refines $\llbracket imp \rrbracket$, if and only if there exists a simulation relation between $\llbracket imp \rrbracket$ and $RImp(Spec)$.
 \end{theorem}
 
 
 
-When we consider implementation and reference implementation with causal delivery, above definitions and lemmas still hold. The reason is that, we could easily obtain $<_{sd}$ order from $<$ order in state of implementation. 
+When we consider implementation and reference implementation with causal delivery, above definitions and lemmas still hold. The reason is that, we could easily obtain $<_{sd}$ order from $<$ order in state of implementation.
 
 
 
 
 \subsection{Simulation Relation for Plus-Minus Specification}
-\label{subsec:simulation relation for plus-minus specification} 
+\label{subsec:simulation relation for plus-minus specification}
 
-To deal plus-minus specification and its compacted reference implementation, 
+Let $\llbracket imp \rrbracket_{pm}$ be obtained from $\llbracket imp \rrbracket$ by making applying of some messages invisible. Formally, 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] Each state is of the form $(repD,msgs,<_{sd})$. We change $msgs$ such that there are two kinds of messages: $(dat,r,r')$ and $(data,r,r')_{inv}$.  
+
+\item[-] $\Sigma = \{ \epsilon, m(a,b,r), apply(msg) \vert m \in M, a,b \in D, r \in RId, msg \in Msg \}$ is the set of transition labels. 
+
+\item[-] When doing operation transitions, some message is transformed into invisible. For example, if $(redD,msgs,<_{sd}) {\xrightarrow{m(a,b,r)}} (redD',msgs',<'_{sd})$ is a transition of $\llbracket imp \rrbracket$, then $(redD,msgs,<_{sd}) {\xrightarrow{m(a,b,r)}} (redD',f(msgs'),<'_{sd})$ is a transition of $\llbracket imp \rrbracket_{pm}$. Here $f(msgs')$ is obtained from $msgs'$ by adding subfix $inv$ into some messages. 
+\item[-] When applying a message $(\_,\_,\_)$, same as before. 
+
+When applying a message $(\_,\_,\_)_{inv}$, use $\epsilon$ as transition label.  
+\end{itemize} 
 
 
+Given $\llbracket imp \rrbracket_{pm} = (Q_{imp},\Sigma_{imp},\rightarrow_{imp},q_{0imp})$ and $CRImp(Spec) = (Q_s,\Sigma_s,vis,q_{0s},li,\rightarrow_s,livReq)$, we say that $R \subseteq Q_{imp} \times Q_s$ is a weak simulation relation, if given $(q_i,q_s) \in R$
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] If $q_i {\xrightarrow{m(a,b,r)}}_{imp} q'_i$, then $q_s {\xrightarrow{m(a,b,r)}}_s q'_s$ and $(q'_i,q'_s) \in R$.
+
+\item[-] If $q_i {\xrightarrow{apply(m)}}_{imp} q'_i$, $m=(\_,r',r)$, then $q_s {\xrightarrow{addDel(o,r)}}_s q'_s$ and $(q'_i,q'_s) \in R$. Here $o$ is obtained as follows: Assume $m$ is the $i-th$ among messages of $q_i$ with source replica $r'$, destination replica $r$ and are visible w.r.t $<_{sd}$. Then, $o$ is the $i-th$ among operations of $q_s$ which happens on replica $r'$ and not visible to replica $r$ w.r.t $ro$. 
+
+\item[-] If $q_i {\xrightarrow{apply(m)}}_{imp} q'_i$, $m=(\_,r',r)_{inv}$, then $(q'_i,q_s) \in R$. 
+\end{itemize}
+
+
+Given a sequence $t_{imp} = \alpha_1 \cdot \ldots \in \llbracket imp \rrbracket_{pl}$ and a sequence $t_s = \beta_1 \cdot \ldots \in CRImp(Spec)$, we say that $t_{imp}$ and $t_s$ correspond, if 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] If $\alpha_i$ is an operation, then $\beta_i = \alpha_i$.
+
+\item[-] Else, if $\alpha_i = apply(m=(\_,r',r))$ and $\beta_i = addDel(o,r)$. Here $o$ is obtained as follows: Assume after doing $\alpha_1 \cdot \ldots \cdot \alpha_{i-1}$, $m$ is the $i-th$ among ``messages with source replica $r'$ and destination replica $r$ and still not applied and are visible'' w.r.t the occurring order of $t_{imp}$. Then, after doing $\beta_1 \cdot \ldots \cdot \beta_{i-1}$, $o$ is the $i-th$ among ``operations which happens on replica $r'$ and not visible to replica $r$'' w.r.t the occurring order of $t_s$. 
+    
+\item[-] Else, $\alpha_i = apply(m=(\_,r',r)_{inv})$ and $\beta_i = \epsilon$. 
+\end{itemize}
+
+We say that $CRImp(Spec)$ weak trace refines $\llbracket imp \rrbracket_{pl}$, if $\forall t_{imp} \in \llbracket imp \rrbracket_{pl}$, $\exists t_s \in CRImp(Spec)$, such that $t_{imp}$ and $t_s$ correspond. It is obvious that our weak simulation relation implies trace inclusion. Since $RImp(Spec)$ is deterministic, similarly as that of \cite{Abadi:1991,Lynch:1995}, we could prove that the opposite direction also holds. Therefore, our weak simulation relation is a sound and complete method to prove trace refinement, as states by the following theorem:
+
+\begin{theorem}
+\label{theorem:equivalence of our simulation relation and sequence inclusion for add-plus specification and its compacted reference implementation}
+$CRImp(Spec)$ trace refines $\llbracket imp \rrbracket_{pl}$, if and only if there exists a weak simulation relation between $\llbracket imp \rrbracket_{pl}$ and $CRImp(Spec)$.
+\end{theorem}
