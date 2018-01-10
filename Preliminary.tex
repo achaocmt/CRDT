@@ -1,7 +1,119 @@
 %!TEX root = draft.tex
 
-\section{Preliminary}
-\label{sec:preliminary}
+\section{Specifications and Consistencies}
+\label{sec:specifications and consistencies}
+
+In this section, we introduce our formation of specification and the definition of eventual consistency in \cite{Bouajjani:2014}. Then, we propose strong-return-value consistency, which is a sub-notion of eventual consistency that strengthen the ``safety part'' specific for intuition of CRDT algorithms and ignores the ``liveness part''. When we add ``liveness part'' into strong-return-value consistency, we obtained a sub-notion of eventual consistency called strong eventual consistency.
+
+
+\subsection{Specification}
+\label{subsec:specification}
+
+Given
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $\mathbb{M}$ be a finite set of method names,
+
+\item[-] $\mathbb{D}$ be a possibly infinite set of data domain for argument and return values,
+
+\item[-] $\mathbb{R}$ be a finite set of replica identifiers, and
+
+\item[-] $\mathbb{O}$ be a infinite set of operation identifiers.
+\end{itemize}
+
+An operation $o$ is a tuple $(x,rid,oid)$, where $x =  m(a,b) \in \mathbb{M} \times \mathbb{D} \times \mathbb{D}$ is called operation content, $rid \in \mathbb{R}$ and $oid \in \mathbb{O}$. Here $o$ is called with argument $a$ and returns $b$. This definition extends naturally to the case when there are more than one arguments.
+
+A partial-order set (poset, for short) is a tuple $(O,<,<_{\textit{arb}})$ contains a possibly infinite set $O$ of operations and two partial-orders $<$ and $<_{\textit{arb}}$ of $A$. Here $<_{\textit{arb}}$ is called arbitration order, and we require no two operations in $O$ has identical operation identifiers. A $\Sigma$-labeled poset is a tuple $(O,<,<_{\textit{arb}},l)$, where $(O,<,<_{\textit{arb}})$ is a poset and $l:O \rightarrow \Sigma$ is a labeling function. The set of all $\Sigma$-labeled poset is denoted as $PoSet_{\Sigma}$.
+
+CRDT has two kinds of method: query and update: Operations of query methods take effect only in one replica, while operations of update methods will be delivered to other replicas. Let $\Sigma(\mathbb{M},\mathbb{D}) = \{ m(a,b) \vert m \in \mathbb{M}$ is an update method, $a,b, \in \mathbb{D} \}$ be the set of operation contents of update methods. Let $P(A)$ denotes the powerset of $A$. {\color {red}A specification $Spec$ is a function $Spec: \Sigma(\mathbb{M},\mathbb{D}) \rightarrow P(PoSet_{\Sigma(\mathbb{M},\mathbb{D})})$. Two labeled posets are isomorphic if there exists a bijection of operations that preserve operation contents, labels and orders. Here we require $Spec$ to be isomorphic closed: if $x \in Spec$ and $x$ and $y$ are isomorphic, then $y \in Spec$.} 
+
+Some specific specifications are called plus-minus specifications and have the following features:
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] It contains two update method, one is ``plus method'' and one is ``minus method'' (The names are not fixed). Intuitively, plus method intends to insert new elements, while minus method intends to remove elements.
+
+\item[-] When the insertion as well as removing of an item is known by all replica, it is ``equivalent'' to the situation where such insertion and removing never happens.
+\end{itemize}
+
+Let us give several examples:
+
+\noindent {\bf Example 1. OR-set}: Observed-Remove Set (OR-set for short) \cite{Shapiro:2011,Bieniusa:2012} contains four methods: (1) $add(a,\top)$ inserts $a$ into set, (2) $rem(\top,a)$ remove $a$ from set, (3) $lookup(a, b \in \{ \textit{true}, \textit{false} \})$ checks whether $a$ is in set, and $elements(\top, S \subseteq \mathbb{D})$ returns all the elements in set with a set $S$. Here $\top$ is a specific value of $\mathbb{D}$. OR-set is a plus-minus specification, while $add$ is the ``plus method'', $rem$ is the ``minus method'', and $lookup$ and $elements$ are query methods.
+
+Let $\Sigma_{\textit{ORS}} = \{ add(a,\top),rem(\top,a) \vert a \in \mathbb{D} \}$ be the set of contents of update operations. The specification $S_{\textit{ORS}}$ is as follows: (1) For $x = add(a,\top)$ or $x = rem(\top,a)$, $S_{\textit{ORS}}(x)$ is the set of all $\Sigma_{\textit{ORS}}$- labeled posets with $<_{\textit{arb}} = \emptyset$, (2) For $x=lookup(x,\textit{true})$ (resp., $x=lookup(x,\textit{false})$), $S_{\textit{ORS}}(x)$ is the set of all $\Sigma_{\textit{ORS}}$- labeled posets $\rho$ with $<_{\textit{arb}} = \emptyset$, such that the projection of operations of $x$ contains a maximal element labeled by $add(x,\top)$ (resp., contains no maximal element labeled by $add(x,\top)$), and (3) For $x=elements(\top,S)$ $S_{\textit{ORS}}(x)$ is the $\Sigma_{\textit{ORS}}$- labeled posets that is in $S_{\textit{ORS}}(lookup(a,\textit{true}))$ for each $a \in S$, and is in $S_{\textit{ORS}}(lookup(a,\textit{false}))$ for each $a \notin S$. 
+
+\noindent {\bf Example 2. Distributed list}: Distributed list \cite{Attiya:2016} 
+
+Observed-Remove Set (OR-set for short) \cite{Shapiro:2011,Bieniusa:2012} contains four methods: (1) $add(a,\top)$ inserts $a$ into set, (2) $rem(\top,a)$ remove $a$ from set, (3) $lookup(a, b \in \{ \textit{true}, \textit{false} \})$ checks whether $a$ is in set, and $elements(\top, S \subseteq \mathbb{D})$ returns all the elements in set with a set $S$. Here $\top$ is a specific value of $\mathbb{D}$. OR-set is a plus-minus specification, while $add$ is the ``plus method'', $rem$ is the ``minus method'', and $lookup$ and $elements$ are query methods.
+
+Our distributed list 
+
+
+
+
+
+
+
+
+\subsection{Trace}
+\label{subsec:trace}
+
+Given a finite set $M$ of method names, a possibly infinite set $D$ of data domain, a finite set $RId=\{1,\ldots,n\}$ of replica identifiers and a possibly infinite set $OId$ of operation identifiers, an operation is a tuple $o=(m,a,b,rid,oid)$, where $m \in M$, $a,b \in D$, $rid \in RId$ and $oid \in OId$. Here $o$ represents that it calls method $m$ with argument $a$ and obtains return values $b$, and it happens on replica $rid$. This definition extends naturally to the case when there are more than one arguments.
+
+A partial-ordered set (poset, for short) is a tuple $(A,<)$ contains a possibly infinite set $A$ and a partial-order $<$ of $A$. A trace $\tau$ is a possibly infinite poset $(Os,ro)$, where
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $Os$ is a set of operations. Here we assume that a trace does not contain two operations with the same identifier.
+
+\item[-] $ro$ is called the replica order. For each replica identifier $k$, $ro$ is a irreflexive total order over operations with replica identifier $k$. It does not relate operations with different replica identifiers. We also require that for each $o \in Os$, $ro^{-1}(o)$ is a finite set.
+\end{itemize}
+
+A poset $(A_1,<_1)$ is called a prefix of a poset $(A_2,<_2)$, denoted by $(A_1,<_1) \preceq (A_2,<_2)$, if $A_1 \subseteq A_2$, $<_1$ is the intersection of $<_2$ and $A_1 \times A_1$, and $A_1 = <_2^{-1}(A)$. A $\Sigma$-labeled poset is a tuple $(A,<,l)$, where $(A,<)$ is a poset and $l:A \rightarrow \Sigma$ is a function that labels each element of $A$ with an element in $\Sigma$. The set of all $\Sigma$-labeled poset is denoted as $PoSet_{\Sigma}$.
+
+
+\subsection{Eventual Consistency}
+\label{subsec:eventual consistency}
+
+For a set $A$, let $P(A)$ denotes the set of all subsets of $A$. Let $\Sigma(M,D) = \{ m(a,b) \vert m \in M, a,b, \in D \}$. A specification $Spec$ is a function $Spec: \Sigma(M,D) \rightarrow P(PoSet_{\Sigma(M,D)})$.
+
+Given a trace $\tau = (Os,ro)$, for each operation $o \in Os$, its local interpretation, denoted $li(o) = (O_o,<_o)$, is a poset of operations. The local interpretation defines another relation between operations, called executed-before and denoted by $eb$. $(o,o') \in eb$, if $o'$ is in the local interpretation of $o$. We say that the return value of an operation $o = (m,a,b,rid,oid) \in Os$ is correct, if the labeled poset defined by $li(o)$, where every operation $(m',a',b',rid',oid')$ is labeled by $(m',a',b')$, belongs to $Spec(m(a,b))$. Then, a trace $\tau$ is safe if the return value of every operations of $\tau$ is correct.
+
+Given trace $\tau$, its global interpretation is a partial-order over all the operations of $\tau$.
+
+\begin{definition}[Eventual Consistency \cite{Bouajjani:2014}]
+\label{definition:eventual consistency}
+A trace $\tau = (Os,ro)$ is called eventual consistency w.r.t a specification $Spec$, if:
+
+$\exists gi$ an irreflexive partial order over $Os$, such that $\forall o \in Os$, $\exists li[o]$ an irreflexive poset, such that
+
+$\textit{GIpf} \wedge \textit{THINAIR} \wedge \textit{RVAL} \wedge \textit{EVENTUAL}$ hold.
+\end{definition}
+
+Here, $GIpf$, $THINAIR$, $RVAL$ and $EVENTUAL$ is given as follows:
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $\textit{GIpf}$: $\forall o \in Os$, $<^{-1}_{gi}(o)$ is finite.
+
+\item[-] $\textit{THINAIR}$: $eb \cup ro$ is acyclic.
+
+\item[-] $\textit{RVAL}$: $\forall o = (m,a,b,rid,oid) \in Os$, $li_{\Sigma(M,D)}(o) \in Spec(m,a,b)$. Here $li_{\Sigma(M,D)}(o)$ is obtained from $li(o)$ by labeling each $(m',a',b',rid',oid')$ with $(m,a,b)$.
+
+\item[-] $\textit{EVENTUAL}$: For any finite prefix $P$ of the poset $(Os,gi)$, $\{ o \vert o \in Os, P \npreceq li(o) \}$ is finite.
+\end{itemize}
+
+
+
+
+
+
+
+
+\forget
+{
+\section{Strong Return Value Consistency}
+\label{sec:strong return value consistency}
 
 In this section, we introduce the definition of eventual consistency in \cite{Bouajjani:2014}, and related notation.
 
@@ -27,10 +139,8 @@ A poset $(A_1,<_1)$ is called a prefix of a poset $(A_2,<_2)$, denoted by $(A_1,
 
 For a set $A$, let $P(A)$ denotes the set of all subsets of $A$. Let $\Sigma(M,D) = \{ m(a,b) \vert m \in M, a,b, \in D \}$. A specification $Spec$ is a function $Spec: \Sigma(M,D) \rightarrow P(PoSet_{\Sigma(M,D)})$.
 
-%The requirement of each operation returns correct value is given by the notion local interpretation explained below:
 Given a trace $\tau = (Os,ro)$, for each operation $o \in Os$, its local interpretation, denoted $li(o) = (O_o,<_o)$, is a poset of operations. The local interpretation defines another relation between operations, called executed-before and denoted by $eb$. $(o,o') \in eb$, if $o'$ is in the local interpretation of $o$. We say that the return value of an operation $o = (m,a,b,rid,oid) \in Os$ is correct, if the labeled poset defined by $li(o)$, where every operation $(m',a',b',rid',oid')$ is labeled by $(m',a',b')$, belongs to $Spec(m(a,b))$. Then, a trace $\tau$ is safe if the return value of every operations of $\tau$ is correct.
 
-%The requirement for liveness is given by the notion global interpretation explained below:
 Given trace $\tau$, its global interpretation is a partial-order over all the operations of $\tau$.
 
 \begin{definition}[Eventual Consistency \cite{Bouajjani:2014}]
@@ -54,3 +164,4 @@ Here, $GIpf$, $THINAIR$, $RVAL$ and $EVENTUAL$ is given as follows:
 
 \item[-] $\textit{EVENTUAL}$: For any finite prefix $P$ of the poset $(Os,gi)$, $\{ o \vert o \in Os, P \npreceq li(o) \}$ is finite.
 \end{itemize}
+}
