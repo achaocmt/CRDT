@@ -1,49 +1,49 @@
-%!TEX root = draft.tex 
+%!TEX root = draft.tex
 \section{Definitions and Proofs of Section \ref{sec:simulation and refinement}}
 \label{sec:appendix definitions and proofs of section simulation and refinement}
 
 
-{\noindent \bf Theorem \ref{theorem:equivalence of our simulation and refinement}}: Given LTS $A$ and deterministic $B$, and functions $f_s,f_t$, such that $P_{(f_s,f_t)}$ holds. Then, B $f_t$-refines $A$, if and only if there exists a $f_s$-simulation relation between $A$ and $B$. 
+{\noindent \bf Theorem \ref{theorem:equivalence of our simulation and refinement}}: Given LTS $A$ and deterministic $B$, and functions $f_s,f_t$, such that $P_{(f_s,f_t)}$ holds. Then, B $f_t$-refines $A$, if and only if there exists a $f_s$-simulation relation between $A$ and $B$.
 
 \begin {proof}
-Assume $A = (Q_A,\Sigma_A,\rightarrow_a,q_{0A})$ and $B = (Q_B,\Sigma_B,\rightarrow_b,q_{0B})$. 
+Assume $A = (Q_A,\Sigma_A,\rightarrow_a,q_{0A})$ and $B = (Q_B,\Sigma_B,\rightarrow_b,q_{0B})$.
 
-For the $\textit{if}$ direction. Assume $R$ is a $f_s$-simulation relation between $A$ and $B$. Given $q_{1A},\ldots,q_{kA} \in Q_A$, $q_{1B},\ldots,q_{kB}$, $\alpha_1,\ldots,\alpha_k$, such that 
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] $\forall 0 \leq i < k$, $q_{iA} {\xrightarrow{\alpha_{i+1}}}_a q_{i+1A}$, 
-
-\item[-] $\forall 0 \leq i \leq k$, $(q_{iA},q_{iB}) \in R$, and 
-
-\item[-] $\forall 0 \leq i < k$, $q_{iB} {\xrightarrow{f_s(q_{iA},q_{iB},\alpha_{i+1})}}_b q_{i+1B}$.  
-\end{itemize} 
-
-We can see that, given execution $t_A = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $A$, by $f_s$-simulation, we have execution $t_b = f_s(q_{0A},q_{0B},\alpha_1) \cdot \ldots \cdot f_s(q_{k-1A},q_{k-1B},\alpha_k)$ of $B$. 
-
-Since $P_{(f_s,f_t)}$ holds, we can see that 
+For the $\textit{if}$ direction. Assume $R$ is a $f_s$-simulation relation between $A$ and $B$. Given $q_{1A},\ldots,q_{kA} \in Q_A$, $q_{1B},\ldots,q_{kB}$, $\alpha_1,\ldots,\alpha_k$, such that
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $f_t(\alpha_1) = f_s(q_{0A},q_{0B},\alpha_1)$. 
+\item[-] $\forall 0 \leq i < k$, $q_{iA} {\xrightarrow{\alpha_{i+1}}}_a q_{i+1A}$,
 
-\item[-] $f_t(\alpha_1 \cdot \alpha_2) = f_s(q_{1A},q'_{1B},\alpha_2)$. Here $q'_{1B}$ is obtained from $q_{B0}$ by doing $\alpha_1$ transitions. Since $B$ is deterministic, it is easy to see that $q'_{1B} = q_{1B}$, and $f_t(\alpha_1 \cdot \alpha_2) = f_s(q_{1A},q_{1B},\alpha_2)$. 
-    
-$\ldots$ 
+\item[-] $\forall 0 \leq i \leq k$, $(q_{iA},q_{iB}) \in R$, and
 
-\item[-] $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k) = f_s(q_{k-1A},q'_{k-1B},\alpha_k)$. Here $q'_{k-1B}$ is obtained from $q_{B0}$ by doing $\alpha_1 \cdot \ldots \cdot \alpha_{k-1}$ transitions. Since $B$ is deterministic, it is easy to see that $q'_{k-1B} = q_{k-1B}$, and $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k) = f_s(q_{k-1A},q_{k-1B},\alpha_k)$. 
-\end{itemize} 
+\item[-] $\forall 0 \leq i < k$, $q_{iB} {\xrightarrow{f_s(q_{iA},q_{iB},\alpha_{i+1})}}_b q_{i+1B}$.
+\end{itemize}
 
-We can see that $t_B = f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)$. Therefore, by definition of $f_t$-refinement, we can see that B $f_t$-refines $A$. 
+We can see that, given execution $t_A = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $A$, by $f_s$-simulation, we have execution $t_b = f_s(q_{0A},q_{0B},\alpha_1) \cdot \ldots \cdot f_s(q_{k-1A},q_{k-1B},\alpha_k)$ of $B$.
+
+Since $P_{(f_s,f_t)}$ holds, we can see that
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $f_t(\alpha_1) = f_s(q_{0A},q_{0B},\alpha_1)$.
+
+\item[-] $f_t(\alpha_1 \cdot \alpha_2) = f_s(q_{1A},q'_{1B},\alpha_2)$. Here $q'_{1B}$ is obtained from $q_{B0}$ by doing $\alpha_1$ transitions. Since $B$ is deterministic, it is easy to see that $q'_{1B} = q_{1B}$, and $f_t(\alpha_1 \cdot \alpha_2) = f_s(q_{1A},q_{1B},\alpha_2)$.
+
+$\ldots$
+
+\item[-] $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k) = f_s(q_{k-1A},q'_{k-1B},\alpha_k)$. Here $q'_{k-1B}$ is obtained from $q_{B0}$ by doing $\alpha_1 \cdot \ldots \cdot \alpha_{k-1}$ transitions. Since $B$ is deterministic, it is easy to see that $q'_{k-1B} = q_{k-1B}$, and $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k) = f_s(q_{k-1A},q_{k-1B},\alpha_k)$.
+\end{itemize}
+
+We can see that $t_B = f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)$. Therefore, by definition of $f_t$-refinement, we can see that B $f_t$-refines $A$.
 
 
-For the $\textit{only if}$ direction. Assume $B$ $f_t$-refines $A$. Let a relation $R_t$ be defined as follows: Given $q_A \in Q_A$ and $q_B \in Q_B$, $(q_A,q_B) \in R_t$, if $\exists \alpha_1, \ldots, \alpha_k \in \Sigma_A$, $\exists q_{1A},\ldots,q_{k-1A} \in Q_A$, and $\exists q_{1B},\ldots,q_{k-1B} \in Q_B$, such that $q_{0A} {\xrightarrow{\alpha_1}}_a q_{1A} \ldots {\xrightarrow{\alpha_{k-1}}}_a q_{k-1A} {\xrightarrow{\alpha_k}}_a q_A$, and $q_{0B} {\xrightarrow{f_t(\alpha_1)}}_b q_{1B} \ldots$ ${\xrightarrow{f_t(\alpha_1 \cdot \cdot \ldots \cdot \alpha_{k-1})}}_b q_{k-1B} {\xrightarrow{f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)}}_b q_B$. 
+For the $\textit{only if}$ direction. Assume $B$ $f_t$-refines $A$. Let a relation $R_t$ be defined as follows: Given $q_A \in Q_A$ and $q_B \in Q_B$, $(q_A,q_B) \in R_t$, if $\exists \alpha_1, \ldots, \alpha_k \in \Sigma_A$, $\exists q_{1A},\ldots,q_{k-1A} \in Q_A$, and $\exists q_{1B},\ldots,q_{k-1B} \in Q_B$, such that $q_{0A} {\xrightarrow{\alpha_1}}_a q_{1A} \ldots {\xrightarrow{\alpha_{k-1}}}_a q_{k-1A} {\xrightarrow{\alpha_k}}_a q_A$, and $q_{0B} {\xrightarrow{f_t(\alpha_1)}}_b q_{1B} \ldots$ ${\xrightarrow{f_t(\alpha_1 \cdot \cdot \ldots \cdot \alpha_{k-1})}}_b q_{k-1B} {\xrightarrow{f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)}}_b q_B$.
 
-Let us now prove that $R_t$ is a $f_s$-simulation relation. Assume that $q_A {\xrightarrow{\alpha}}_a q'_A$. Then we can see that $q_{0A} {\xrightarrow{\alpha_1}}_a q_{1A} \ldots {\xrightarrow{\alpha_{k-1}}}_a q_{k-1A} {\xrightarrow{\alpha_k}}_a q_A {\xrightarrow{\alpha}}_A q'_A$ and $\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha$ is an execution of $A$. 
+Let us now prove that $R_t$ is a $f_s$-simulation relation. Assume that $q_A {\xrightarrow{\alpha}}_a q'_A$. Then we can see that $q_{0A} {\xrightarrow{\alpha_1}}_a q_{1A} \ldots {\xrightarrow{\alpha_{k-1}}}_a q_{k-1A} {\xrightarrow{\alpha_k}}_a q_A {\xrightarrow{\alpha}}_A q'_A$ and $\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha$ is an execution of $A$.
 
-By assumption, $B$ $f_t$-refines $A$. Therefore, $f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k) \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha)$ is an execution of $B$. Since $B$ is deterministic, we can see that $\exists q'_B$, such that $q_{0B} {\xrightarrow{f_t(\alpha_1)}}_b q_{1B} \ldots$ ${\xrightarrow{f_t(\alpha_1 \cdot \cdot \ldots \cdot \alpha_{k-1})}}_b q_{k-1B} {\xrightarrow{f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)}}_b q_B {\xrightarrow{f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha)}}_b q'_B$. By definition, we can see that $(q'_A,q'_B) \in R_t$. 
+By assumption, $B$ $f_t$-refines $A$. Therefore, $f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k) \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha)$ is an execution of $B$. Since $B$ is deterministic, we can see that $\exists q'_B$, such that $q_{0B} {\xrightarrow{f_t(\alpha_1)}}_b q_{1B} \ldots$ ${\xrightarrow{f_t(\alpha_1 \cdot \cdot \ldots \cdot \alpha_{k-1})}}_b q_{k-1B} {\xrightarrow{f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)}}_b q_B {\xrightarrow{f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha)}}_b q'_B$. By definition, we can see that $(q'_A,q'_B) \in R_t$.
 
-Since $P_{(f_s,f_t)}$ holds, we have that $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha) = f_s(q_A,q''_B,\alpha)$, where $q''_B$ is obtained from $q_{0B}$ by doing $f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)$ transitions. Since $B$ is deterministic, we can see that $q''_B = q_B$ and $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha) = f_s(q_A,q_B,\alpha)$. We can see that $q_B {\xrightarrow{f_s(q_A,q_B,\alpha)}}_b q'_B$. Therefore, $R_t$ is a $f_s$-simulation relation. \qed 
+Since $P_{(f_s,f_t)}$ holds, we have that $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha) = f_s(q_A,q''_B,\alpha)$, where $q''_B$ is obtained from $q_{0B}$ by doing $f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)$ transitions. Since $B$ is deterministic, we can see that $q''_B = q_B$ and $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha) = f_s(q_A,q_B,\alpha)$. We can see that $q_B {\xrightarrow{f_s(q_A,q_B,\alpha)}}_b q'_B$. Therefore, $R_t$ is a $f_s$-simulation relation. \qed
 \end {proof}
 
 \forget
@@ -75,6 +75,68 @@ Let us prove that such $m$, $o$ and $r$ satisfies the requirements in definition
 Let us prove that $(q'_{imp},q'_s) \in R$. From above discussion, it is not hard to see that $t'_{imp}$ and $t'_s$ correspond. Therefore, $(q'_{imp},q'_s) \in R$.
 \end{itemize}
 }
+
+
+
+
+
+
+
+
+\section{Definitions of Section \ref{sec:specifications and consistencies}}
+\label{sec:appendix definitions of section specifications and consistencies} 
+
+Let us give the definition of specification $S_{\textit{list}}$ of distributed list specification. $(O,<,<_{\textit{arb}}) \in S_{\textit{list}}(x)$, if 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $<^{-1}$ contains finite elements, $<$ is acyclic and $<_{\textit{arb}}$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin O$ and $o$ is in domain of $<_{\textit{arb}}$. By definition of poset we can see that $cont(o)=x$. Let $KnownRemoved=\emptyset$. 
+
+\item[-] Step $1$: For each minimal operation $o_1$ w.r.t $<$, let $Op(o_1)=\{ o_1 \}$, $seq(o_1)$ be obtained by ordering elements of $Op(o_1)$ with $<_{\textit{arb}}$ order. We require $cont(o_1)=add(\_,1)$. 
+    
+\item[-] Step $i+1$: For each $o_2$, which are immediate successor of some $o_1$ of step $i$. 
+
+    If $<^{-1}(o_2)$ does not contain $rem$ operations: 
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] Let $Op(o_2)$ be the set of $add$ operations in $<^{-1}(o_2) \cup \{ o_2 \}$, and let $seq(o_2)$ be obtained by ordering elements of $Op(o_2)$ with $<_{\textit{arb}}$ order. 
+    
+    \item[-] If $cont(o_2) = add(a,pos)$, then $seq(o_2)[pos] = o_2$. 
+    
+    \item[-] Else, if $cont(o_2) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$. Let $o_a=seq(o_2)[pos]$. Let $KnownRemoved = KnownRemoved \cup \{ (o_a,o_2) \}$. 
+    \end{itemize} 
+
+    If $<^{-1}(o_2)$ contains $rem$ operations: 
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] Let $O_r$ be the set of $rem$ operations in $<^{-1}(o_2)$. According to our construction, $\forall o_r \in O_r$, $\exists o_p$, such that $(o_p,o_r) \in KnownRemoved$. 
+    
+    \item[-] Let $Op(o_2) = \{ o' \vert o'$ is a $add$ operation in $<^{-1}(o_2) \cup \{ o_2 \} \} - \{ o'_p \vert \exists o', (o'_p,o') \in KnownRemoved \}$. Let $seq(o_2)$ be obtained by ordering elements of $Op(o_2)$ with $<_{\textit{arb}}$ order. 
+        
+    \item[-] If $cont(o_2) = add(a,pos)$, then $seq(o_2)[pos] = o_2$. 
+
+    \item[-] Else, if $cont(o_2) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$. Let $o_a=seq(o_2)[pos]$. Let $KnownRemoved = KnownRemoved \cup \{ (o_a,o_2) \}$. 
+    \end{itemize} 
+
+\item[-] Assume we have investigated all operations in $O$. 
+    
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] Let $O_r$ be the set of $rem$ operations in $O$. According to our construction, $\forall o_r \in O_r$, $\exists o_p$, such that $(o_p,o_r) \in KnownRemoved$.
+
+    \item[-] Let $Op(o) = \{ o' \vert o'$ is a $add$ operation in $O \cup \{ o \} \} - \{ o'_p \vert \exists o', (o'_p,o') \in KnownRemoved \}$. Let $seq(o)$ be obtained by ordering elements of $Op(o)$ with $<_{\textit{arb}}$ order. 
+
+    \item[-] If $cont(o) = add(a,pos)$, then $seq(o)[pos] = o$.
+
+    \item[-] Else, if $cont(o) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$. 
+    
+    \item[-] Else, if $cont(o)=read(\top,l)$, then is the sequence of operation contents of $seq(o)$. 
+    \end{itemize} 
+\end{itemize}
+
+
 
 
 
