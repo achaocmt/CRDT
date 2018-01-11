@@ -84,56 +84,56 @@ Let us prove that $(q'_{imp},q'_s) \in R$. From above discussion, it is not hard
 
 
 \section{Definitions of Section \ref{sec:specifications and consistencies}}
-\label{sec:appendix definitions of section specifications and consistencies} 
+\label{sec:appendix definitions of section specifications and consistencies}
 
-Let us give the definition of specification $S_{\textit{list}}$ of distributed list specification. $(O,<,<_{\textit{arb}}) \in S_{\textit{list}}(x)$, if 
+Let us give the definition of specification $S_{\textit{list}}$ of distributed list specification. $(O,<,<_{\textit{arb}}) \in S_{\textit{list}}(x)$, if
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $<^{-1}$ contains finite elements, $<$ is acyclic and $<_{\textit{arb}}$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin O$ and $o$ is in domain of $<_{\textit{arb}}$. By definition of poset we can see that $cont(o)=x$. Let $KnownRemoved=\emptyset$. 
+\item[-] $<^{-1}$ contains finite elements, $<$ is acyclic and $<_{\textit{arb}}$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin O$ and $o$ is in domain of $<_{\textit{arb}}$. By definition of poset we can see that $cont(o)=x$. Let $KnownRemoved=\emptyset$.
 
-\item[-] Step $1$: For each minimal operation $o_1$ w.r.t $<$, let $Op(o_1)=\{ o_1 \}$, $seq(o_1)$ be obtained by ordering elements of $Op(o_1)$ with $<_{\textit{arb}}$ order. We require $cont(o_1)=add(\_,1)$. 
-    
-\item[-] Step $i+1$: For each $o_2$, which are immediate successor of some $o_1$ of step $i$. 
+\item[-] Step $1$: For each minimal operation $o_1$ w.r.t $<$, let $Op(o_1)=\{ o_1 \}$, $seq(o_1)$ be obtained by ordering elements of $Op(o_1)$ with $<_{\textit{arb}}$ order. We require $cont(o_1)=add(\_,1)$.
 
-    If $<^{-1}(o_2)$ does not contain $rem$ operations: 
+\item[-] Step $i+1$: For each $o_2$, which are immediate successor of some $o_1$ of step $i$.
 
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] Let $Op(o_2)$ be the set of $add$ operations in $<^{-1}(o_2) \cup \{ o_2 \}$, and let $seq(o_2)$ be obtained by ordering elements of $Op(o_2)$ with $<_{\textit{arb}}$ order. 
-    
-    \item[-] If $cont(o_2) = add(a,pos)$, then $seq(o_2)[pos] = o_2$. 
-    
-    \item[-] Else, if $cont(o_2) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$. Let $o_a=seq(o_2)[pos]$. Let $KnownRemoved = KnownRemoved \cup \{ (o_a,o_2) \}$. 
-    \end{itemize} 
-
-    If $<^{-1}(o_2)$ contains $rem$ operations: 
+    If $<^{-1}(o_2)$ does not contain $rem$ operations:
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] Let $O_r$ be the set of $rem$ operations in $<^{-1}(o_2)$. According to our construction, $\forall o_r \in O_r$, $\exists o_p$, such that $(o_p,o_r) \in KnownRemoved$. 
-    
-    \item[-] Let $Op(o_2) = \{ o' \vert o'$ is a $add$ operation in $<^{-1}(o_2) \cup \{ o_2 \} \} - \{ o'_p \vert \exists o', (o'_p,o') \in KnownRemoved \}$. Let $seq(o_2)$ be obtained by ordering elements of $Op(o_2)$ with $<_{\textit{arb}}$ order. 
-        
-    \item[-] If $cont(o_2) = add(a,pos)$, then $seq(o_2)[pos] = o_2$. 
+    \item[-] Let $Op(o_2)$ be the set of $add$ operations in $<^{-1}(o_2) \cup \{ o_2 \}$, and let $seq(o_2)$ be obtained by ordering elements of $Op(o_2)$ with $<_{\textit{arb}}$ order.
 
-    \item[-] Else, if $cont(o_2) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$. Let $o_a=seq(o_2)[pos]$. Let $KnownRemoved = KnownRemoved \cup \{ (o_a,o_2) \}$. 
-    \end{itemize} 
+    \item[-] If $cont(o_2) = add(a,pos)$, then $seq(o_2)[pos] = o_2$.
 
-\item[-] Assume we have investigated all operations in $O$. 
-    
+    \item[-] Else, if $cont(o_2) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$. Let $o_a=seq(o_2)[pos]$. Let $KnownRemoved = KnownRemoved \cup \{ (o_a,o_2) \}$.
+    \end{itemize}
+
+    If $<^{-1}(o_2)$ contains $rem$ operations:
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] Let $O_r$ be the set of $rem$ operations in $<^{-1}(o_2)$. According to our construction, $\forall o_r \in O_r$, $\exists o_p$, such that $(o_p,o_r) \in KnownRemoved$.
+
+    \item[-] Let $Op(o_2) = \{ o' \vert o'$ is a $add$ operation in $<^{-1}(o_2) \cup \{ o_2 \} \} - \{ o'_p \vert \exists o', (o'_p,o') \in KnownRemoved \}$. Let $seq(o_2)$ be obtained by ordering elements of $Op(o_2)$ with $<_{\textit{arb}}$ order.
+
+    \item[-] If $cont(o_2) = add(a,pos)$, then $seq(o_2)[pos] = o_2$.
+
+    \item[-] Else, if $cont(o_2) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$. Let $o_a=seq(o_2)[pos]$. Let $KnownRemoved = KnownRemoved \cup \{ (o_a,o_2) \}$.
+    \end{itemize}
+
+\item[-] Assume we have investigated all operations in $O$.
+
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
     \item[-] Let $O_r$ be the set of $rem$ operations in $O$. According to our construction, $\forall o_r \in O_r$, $\exists o_p$, such that $(o_p,o_r) \in KnownRemoved$.
 
-    \item[-] Let $Op(o) = \{ o' \vert o'$ is a $add$ operation in $O \cup \{ o \} \} - \{ o'_p \vert \exists o', (o'_p,o') \in KnownRemoved \}$. Let $seq(o)$ be obtained by ordering elements of $Op(o)$ with $<_{\textit{arb}}$ order. 
+    \item[-] Let $Op(o) = \{ o' \vert o'$ is a $add$ operation in $O \cup \{ o \} \} - \{ o'_p \vert \exists o', (o'_p,o') \in KnownRemoved \}$. Let $seq(o)$ be obtained by ordering elements of $Op(o)$ with $<_{\textit{arb}}$ order.
 
     \item[-] If $cont(o) = add(a,pos)$, then $seq(o)[pos] = o$.
 
-    \item[-] Else, if $cont(o) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$. 
-    
-    \item[-] Else, if $cont(o)=read(\top,l)$, then is the sequence of operation contents of $seq(o)$. 
-    \end{itemize} 
+    \item[-] Else, if $cont(o) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$.
+
+    \item[-] Else, if $cont(o)=read(\top,l)$, then is the sequence of operation contents of $seq(o)$.
+    \end{itemize}
 \end{itemize}
 
 
@@ -148,6 +148,142 @@ Let us give the definition of specification $S_{\textit{list}}$ of distributed l
 
 
 
+
+\section{Definitions and Proofs of Section \ref{sec:reference implementation}}
+\label{sec:appendix definitions and proofs of section reference implementation}
+
+
+
+{\noindent \bf Theorem \ref{lemma:executions of reference implementation are SRV consistent}}: $\forall t \in \llbracket RImp(Spec) \rrbracket$, $absT(t)$ is SRV consistent w.r.t $Spec$. 
+
+\begin {proof} 
+
+Assume $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow,\textit{li-s},cor)$, $t = \alpha_1, \ldots, $ and $q_1,\ldots \in Q$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$. Let $absT(t) = (O_t,<_{\textit{ro-t}},<_{\textit{vis-t}},<_{\textit{arb-t}})$. 
+
+According to the construction of $absT(t)$, it is easy to see that $<_{\textit{ro-t}} \subseteq <_{\textit{vis-t}}$ and $<_{\textit{vis-t}}$ is acyclic. Then, $\textit{THINAIR}$ holds. 
+
+Given $i$, let $t[1,i] = \alpha_1 \cdot \ldots \cdot \alpha_i$. We define $absT(t[1,i]) = (O_\textit{t1i},<_{\textit{ro-t1i}},<_{\textit{vis-t1i}},<_{\textit{arb-t1i}})$ as follows: 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $O_\textit{t1i}$ is the set of operations generated during $t[1,i]$.
+
+\item[-] $<_{\textit{ro-t1i}} = <_{r_1} \cup \ldots \cup <_{r_{\vert \mathbb{R} \vert}}$, where for each $i$, $<_i$ is the occurring order of operations with the $i$-th identifier in $\mathbb{R}$ over $t[1,i]$.
+
+\item[-] $(o_1,o_2) \in <_{\textit{vis-t1i}}$, if one of the following case holds: (1) $o_1$ is delivered into replica of $o_2$, and then $o_2$ happens, (2) $o_1$ and $o_2$ are of same replica and $o_1$ happens earlier than $o_2$. 
+
+\item[-] $<_{\textit{arb-t1i}}$ is the union of arbitration order of $q_1,\ldots,q_i$.   
+\end{itemize} 
+ 
+
+When $m$ is a query method and assume that $absT(t)[j]=(m(a,b),rid,oid)=o$. By construction of $RImp(Spec)$, we can see that (1) $(O,ro,del,arb,vis) {\xrightarrow{m(a,b,r,arb)}} (O,ro,del,arb,vis)$, (2) $q_{\textit{i-1}} = q_i = (O,ro,del,arb,vis)$, and (3) $\textit{li-s}((O,ro,del,arb,vis),r,o) = (O',<',arb \uparrow_{O'}) \in Spec(m(a,b))$ and $o \notin O$ for some $O'$.
+
+Assume $absT(t[1,j]) = (O_\textit{t1j},<_{\textit{ro-t1j}},<_{\textit{vis-t1j}},<_{\textit{arb-t1j}})$. It is easy to see that (1) $O$ is the set of update operations of $O_\textit{t1j}$, (2) $<_{\textit{ro-t1j}} \uparrow_{O} = ro$, (3) $<_{\textit{vis-t1j}} \uparrow_{O} = vis$, and $<_{\textit{arb-t1j}} = arb$. It is easy to see that $\textit{li-s}((O,ro,del,arb,vis),r,o)$ can be used as local interpretation of $o$. 
+
+
+When $m$ is an update method and assume that $absT(t)[j]=(m(a,b),rid,oid)=o$. By construction of $RImp(Spec)$, we can see that (1) $q_{\textit{i-1}} = (O,ro,del,arb,vis) {\xrightarrow{m(a,b,r,arb')}} q_i = (O \cup \{ o \},ro \oplus o ,del \oplus o,arb',(del \oplus o) \cdot (ro \oplus o))$, (2) $li((O,ro,del,arb,vis),r,o) = (O',\_,arb' \uparrow_{(O' \cup \{ o \})}) \in Spec(m(a,b))$ for some $O'$ and $o \notin O$, and (3) $cor(arb')$. 
+
+Assume $absT(t[1,j]) = (O_\textit{t1j},<_{\textit{ro-t1j}},<_{\textit{vis-t1j}},<_{\textit{arb-t1j}})$. It is easy to see that (1) $O$ is the set of update operations of $O_\textit{t1j}$, (2) $<_{\textit{ro-t1j}} \uparrow_{O} = ro \oplus o$, (3) $<_{\textit{vis-t1j}} \uparrow_{O} = (del \oplus o) \cdot (ro \oplus o)$, and $<_{\textit{arb-t1j}} = arb'$. It is easy to see that $\textit{li-s}((O,ro,del,arb,vis),r,o)$ can be used as local interpretation of $o$. 
+
+Therefore, $\textit{RVAL}$ holds. 
+
+Note that, since in every step of transitions of $RImp(Spec)$ from $(O,ro,del,arb,vis)$ to $(O',ro',del',arb',vis')$, if $(o_1,o_2) \in arb$, then $(o_2,o_1) \notin arb'$. This is the reason of $<_{\textit{arb-t1j}} = arb$. $\qed$
+\end {proof} 
+
+
+
+{\noindent \bf Lemma \ref{lemma:RImpcdSpec contains all the sequences of RImpSpec that are causal delivery}}: $\llbracket RImp(Spec)_{\textit{cd}} \rrbracket = \{ t \vert t \in \llbracket RImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$.
+
+\begin {proof} 
+
+Let us prove the $\sqsubseteq$ direction. We prove it by contradiction. Assume $\exists t =\alpha_1 \cdot \ldots \cdot \alpha_k \in \llbracket RImp(Spec)_{\textit{cd}} \rrbracket$ and $t$ does not satisfy causal delivery. Then there exists operations $o_1,o_2$ and replica $r$, such that $o_1 <_{hb} o_2$ and in $t$, when $o_2$ is delivered to replica $r$, $o_1$ has not been delivered to replica $r$ yet.
+
+Let $q_1,\ldots,q_k$ be the states, such that $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots {\xrightarrow{\alpha_k}} q_k$. It is easy to prove by induction that, for each $i$, when both $o_1$ and $o_2$ are in $q_i$, $(o_1,o_2)$ is in the $(ro \cup del)^*$ of $q_i$. Let $\alpha_j$ be the delivery of $o_2$ to replica $r$. In $q_{\textit{j-1}} = (O_{\textit{j-1}},ro_{\textit{j-1}},del_{\textit{j-1}},arb_{\textit{j-1}},vis_{\textit{j-1}})$, we can see that $(o_1,o_2) \in (ro_{\textit{j-1}} \cup del_{\textit{j-1}})^*$ and both $o_1,o_2 \in \{ o' \vert (o',r) \notin vis_{\textit{j-1}}, \forall o'' \in O_{\textit{j-1}}$  with replica $r, (o',o'') \notin vis_{\textit{j-1}} \}$. Then we can not do $addDel(o_2,r)$ transition, contradiction happens.
+
+Let us prove the $\sqsupseteq$ direction. We prove its contrapositive. Assume that $t_1 =\alpha_1 \cdot \ldots \cdot \alpha_k \notin \llbracket RImp(Spec)_{\textit{cd}} \rrbracket$, we need to prove that $t_1 \notin \{ t \vert t \in \llbracket RImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$. This holds trivially when $t_1 \notin \llbracket RImp(Spec) \rrbracket$.
+
+Let us consider the case when $t \in \llbracket RImp(Spec) \rrbracket$ and $t_1 \notin \llbracket RImp(Spec)_{\textit{cd}} \rrbracket$. Let $\alpha_j$ be the first label of $t$ that makes $t$ not in $\llbracket RImp(Spec)_{\textit{cd}} \rrbracket$. Such $\alpha_j$ must be $addDel$ transition that violates the requirements of $RImp(Spec)_{\textit{cd}}$. Assume that $q_{\textit{j-1}} = (O_{\textit{j-1}},ro_{\textit{j-1}},del_{\textit{j-1}},arb_{\textit{j-1}},vis_{\textit{j-1}})$. There must exists $o_3,o_4 \in O_{\textit{j-1}}$, such that $(o_3,o_4) \in (ro_{\textit{j-1}} \cup del_{\textit{j-1}})^*$, $o_3,o_4 \in \{ o' \vert (o',r) \notin vis_{\textit{j-1}}, \forall o'' \in O_{\textit{j-1}}$  with replica $r, (o',o'') \notin vis_{\textit{j-1}} \}$, and $\alpha_j$ adds delivery of $o_2$. This violates the causal delivery. $\qed$  
+\end {proof} 
+
+
+
+
+
+
+
+\section{Definitions and Proofs of Section \ref{sec:implementation}}
+\label{sec:appendix definitions and proofs of section implementation}
+
+
+
+{\noindent \bf Lemma \ref{lemma:semantics of imp cd contains the set of causal delivery executions of semantics of imp}}: $\llbracket imp \rrbracket_{cd} = \{ t \vert t \in \llbracket imp \rrbracket \wedge t$ satisfies causal delivery $\}$.
+
+\begin {proof}
+
+Given $t = \alpha_1 \cdot \ldots \in \llbracket imp \rrbracket_{cd}$, if there exists $q_1,\ldots \in Q$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 {\xrightarrow{\alpha_2}} \ldots$. We need to prove the following property: On each state $q_i=(repD_i,msgs_i,<_i)$,
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $P_1$: $msgs_i = \{ (dat,r,r') \vert$ the operation generating this message is launched by replica $r$ and its message has not been applied to replica $r'$ in $t[1,i]\}$.
+
+\item[-] $P_2$: $m_1 <_i m_2$, iff $m_1$ and $m_2$ have same destination replica, and the operation generating $m_1$ happens before the operation generating $m_2$ in $t[1,i]$.
+
+\item[-] $P_3$: $m <_i r$, iff the destination replica of $m$ is not $r$, and the operation generating $m$ is visible to replica $r$ in $t[1,i]$, and does not happen before ``any operation that launched by replica $r$'' in $t[1,i]$.
+\end{itemize}
+
+Once we prove that $P_1$, $P_2$ and $P_3$ holds for each $q_i$, let us prove this lemma by contradiction: Assume that update operations $o_1 <_{hb} o_2$, messages of $o_1$ are $\{ (d_1,r_1,\_) \}$, messages of $o_2$ are \{ $(d_2,r_2,\_) \}$, $\alpha_i = apply((d_2,r_2,r'),r')$, $\alpha_j = apply((d_1,r_1,r'),r')$, and $i<j$. Then in $q_i=(repD_i,msgs_i,<_i)$, since $o_1 <_{hb} o_2$ and transition rules of $\llbracket imp \rrbracket_{cd}$, we could not launch $apply((d_2,r_2,r'),r')$ transition, which is the contradiction.
+
+
+
+Let us begin to prove that each state $q_i=(repD_i,msgs_i,<_i)$ satisfies properties $P_1$, $P_2$ and $P_3$. We prove this by induction on $t$.
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] It is obvious that $q_0$ satisfies properties $P_1$, $P_2$ and $P_3$.
+
+\item[-] Since $\alpha_1$ must be either a query transition or an update transition, it is easy to see that $<_1 = \emptyset$ and $q_1$ satisfies properties $P_1$, $P_2$ and $P_3$.
+
+\item[-] Assume that $q_i=(repD_i,msgs_i,<_i)$ satisfies properties $P_1$, $P_2$ and $P_3$. let us consider $q_{i+1}= (repD_{i+1},msgs_{i+1},<_{i+1})$,
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] If $q_{i+1}$ is obtained from $q_i$ by a query transition, then this holds obviously.
+
+    \item[-] Else, if $q_{i+1}$ is obtained from $q_i$ by a update transition. Then we can see that $(repD_i,msgs_i,<_i) {\xrightarrow{m(a,b,r)}} (repD_{i+1},msgs_{i+1}=msgs \cup \{ (dat,r,r') \vert  r' \in RId \wedge r \neq r' \},<_{i+1} = <_i \otimes dat)$.
+
+        Since we add messages $\{ (dat,r,r') \vert  r' \in RId \wedge r \neq r' \}$ into $msgs_i$, we can see that $P_1$ holds.
+
+        To satisfy $P_2$ and $P_3$, we need to make newly add messages maximal w.r.t $<$ and still keep transitivity, which is done by $<_i \otimes dat$.
+
+    \item[-] Else, $q_{i+1}$ is obtained from $q_i$ by a applying transition. Then we can see that $(repD_i,msgs_i,<_i) {\xrightarrow{apply(m=(dat,r_1,r))}} (repD_{i+1},msgs_{i+1} = msgs_i - \{ m \}, <_{i+1} = <_i \otimes m )$, where $m$ is minimal w.r.t $<_i$ among messages in $msgs_i(r)$.
+
+        Since we use one message $m$ in this process and remove it from $msgs_i$, we can see that $P_1$ holds.
+
+        Applying message will introduce new visibility relation. To satisfy $P_2$ and $P_3$, we need to first forget $m$, record the newly introduced visibility relation, and still keep transitivity. This is done by $<_i \otimes m$.
+    \end{itemize}
+\end{itemize}
+
+This completes the proof of this lemma. $\qed$
+\end {proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\forget
+{
 \section{Definitions and Proofs of Section \ref{sec:reference implementation}}
 \label{sec:appendix definitions and proofs of section reference implementation}
 
@@ -249,7 +385,7 @@ Let us begin to prove that each state $q_i=(repD_i,msgs_i,<_i)$ satisfies proper
 
 This completes the proof of this lemma. $\qed$
 \end {proof}
-
+}
 
 
 
