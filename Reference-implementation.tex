@@ -9,6 +9,200 @@ In this section, we propose an abstract implementation called reference implemen
 \subsection{Reference Implementation Definition}
 \label{subsec:reference implementation definition}
 
+Given a specification $Spec$, its reference implementation is given as an tuple $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow,li)$, where
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] Each state $(O,ro,del,arb,vis) \in Q$ contains five tuples. Here $O$ is a set of update operations, and we assume that no two operations in $O$ have same operation identifier. $ro$ is the replica order over operations in $O$. $del \subseteq (O \times O) \cup (O \times \mathbb{R})$ is the deliver order. $(o_1,o_2) \in del$ represents that the effect of $o_1$ is delivered to the replica of $o_2$ before $o_2$ happens, while $(o,r) \in del$ represents that the effect of $o$ is delivered to replica $r$ after the time point of the last operation of replica $r$. we require $del$ to only relate operations with different replica identifier. $arb \subseteq O \times O$ is the arbitration order. 
+    
+    $vis = del \cdot ro$ is the visibility relation. $(o_1,o_2) \in vis$ represents that the effect of $o_1$ is visible to $o_2$, while $(o,r)$ represents that the effect of $o$ becomes visible to replica $r$ after the time point of the last operation of replica $r$. We require $vis$ to be acyclic and irreflexive, and $vis^{-1}$ to be finite. 
+
+\item[-] $\Sigma = \Sigma_1 \cup \Sigma_2$ is the set of transition labels, where $\Sigma_1 = \{ (m,a,b,r,ar) \vert m \in \mathbb{M}, a,b \in \mathbb{D}, r \in \mathbb{R},$ $ar$ is an arbitration order $\}$ and $\Sigma_2 = \{ addDel(o,r) \vert o \in \mathbb{O}, r \in \mathbb{R} \}$. 
+
+\item[-] $li$ is a function that maps $q = (O,ro,del,arb,vis) \in Q$, $r \in \mathbb{R}$ and $o \notin O$ into a tuple $( O_l ,<_l, <_{\textit{l-arb}} )$. $li$ give local interpretation only for the latest time point of each replica. Here $O_l = vis^{-1}(r)$, $<_{\textit{l-arb}}$ is a partial order over $O_1 \cup \{ o \}$, and $<_l \subseteq vis \uparrow_{(O_l,O_l)}$. we also require that
+    
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt} 
+    \item[-] $<_l \subseteq vis \uparrow_{(O_l \times O_l)}$. If $o_1,o_2 \in O_l$, $(o_1,o_2) \in <_vis$ via $o'_1,\ldots,o'_m$, and $o'_1,\ldots,o'_m \in O_l$, then $(o_1,o_2) \in <_l$. 
+        
+    \item[-] $<_l$ is determined by $vis$ over $O_l$. Therefore, $\forall r_1,r_2 \in \mathbb{R}$, if $vis^{-1}(r_1)$ and $vis^{-1}(r_2)$ contain same set of update operations, then their corresponding $<_l$ is the same. 
+    \end{itemize} 
+
+\item[-] $\rightarrow \subseteq Q \times \Sigma \times Q$ is the transition relation. It contains three kinds of transitions: adding a deliver relation, doing a query operation, and doing an update operation.
+
+    \begin {itemize}
+    \item[-] Adding a deliver relation:
+
+     $\begin{array}{l c} \bigfrac{o \in O, \neg(o \xrightarrow{vis} r)} {(O,ro,del,arb,vis) {\xrightarrow{addDel(o,r)}} (O,ro,del \cup \{ (o,r) \},arb,vis)} \end{array}$
+
+    \item[-] Doing a query operation: Let $m$ be a query method.
+
+     $\begin{array}{l c} \bigfrac{ o=(m(a,b),rid,oid) \notin O, li((O,ro,del,arb,vis),r,o) \in Spec(m(a,b))} {(O,ro,del,arb,vis) {\xrightarrow{m(a,b,r,arb)}} (O,ro,del,arb,vis)}  \end{array}$
+
+     \item[-] Doing an update operation: Let $m$ be an update method, let $arb'$ be obtained from $arb$ by adding $o$ and possibly relations, and $correct$ be a function that is specific for each specification.
+
+     $\begin{array}{l c} \bigfrac{o = (m(a,b),r,oid) \notin O, li((O,ro,del,arb,vis),r,o) \in Spec(m(a,b)),correct(arb')} {(O,ro,del,arb,vis) {\xrightarrow{m(a,b,r,arb')}} (O \cup \{ o \},ro \oplus o ,del \oplus o,arb',vis \oplus o)}  \end{array}$
+
+     $ro \oplus o = ro \cup \{ (o',o) \vert o'$ is of replica $r \}$, $del \oplus o$ is obtained from $del$ by transforming each $(o',r)$ in $del$ into $(o',o)$, and $vis \oplus o$ is defined as $(del \oplus o) \cdot (ro \oplus o)$. 
+    \end{itemize}
+
+\item[-] $q_0=(\emptyset,\emptyset,\emptyset)$ is the initial state. 
+\end{itemize}
+
+The set of executions of $RImp(Spec) = (Q,\Sigma,vis,q_0,li,\rightarrow,livReq)$, denoted $\llbracket RImp(Spec) \rrbracket$, is the set of all executions starts from $q_0$ and conforms $livReq$. Formally, $t = \alpha_1 \cdot \ldots \in \llbracket RImp(Spec) \rrbracket$, if there exists $q_1,\ldots \in Q$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 {\xrightarrow{\alpha_2}} \ldots$, and $livReq(t) = \textit{true}$.
+
+Given an execution $t \in \llbracket RImp(Spec) \rrbracket$, its global interpretation $gi(t) \in PoSet_{\Sigma(M,D)}$ is its ``visibility relation'' among all of its operations and is formally defined as follows: $gi(t) = (O_{gi},<_{gi},l_{gi})$, where
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $O_{gi}$ is the set of operations of $t$. Or we could say, $O_{gi}$ is the set of operations introduced into some $uO$ during $t$.
+
+\item[-] Assume $t = \alpha_1 \cdot \ldots$ and $\exists q_1,\ldots$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 {\xrightarrow{\alpha_2}} \ldots$ and $livReq(t) = \textit{true}$. Let function $ord$ be a relation constructed as follows:
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] $ord(0) = \emptyset$.
+
+    \item[-] If $\alpha_i = addDel(o,r)$, then $ord(i) = ord(i-1) \cup \{ (o,r) \}$.
+
+    \item[-] If $\alpha_i = m(a,b,r)$ and let $o$ be the operation introduced into $uO$ because of $\alpha_i$ transition, then $ord(i) = ord(i-1) \cup \{ (o',o) \vert (o',r) \in ord(i-1) \vee (o',(\_,\_,\_,r,\_)) \in ord(i-1) \}$.
+    \end{itemize}
+
+    Then, $<_{gi} = (ord(1) \cup \ldots) - \{(o,r) \vert o \in OId, r \in RId\}$.
+
+\item[-] $l_{gi}$ is a labeling function that maps each operation $(m,a,b,rid,oid)$ into $(m,a,b)$.
+\end{itemize}
+
+Given a sequence $t = \alpha_1 \cdots \in \llbracket RImp(Spec) \rrbracket$, let $poSet(t)=(O_t,<_t)$ be that: (1) $O_t$ is the set of operations of $t$, and (2) $<_t = <_{t1} \cup \ldots \cup <_{tn}$, where for each $i \in RId$, $<_{ti}$ is the projection of $t$ on operations of replica $i$. The following lemma states that, executions in $\llbracket RImp(Spec) \rrbracket$ are eventual consistent w.r.t $Spec$. Its proof can be found in Appendix \ref{subsec:appendix proof of lemma executions of reference implementation are eventual consistent}. To prove this lemma, for each operation $o$ which is first introduced by a transition from $q_i$ to $q_{i+1}$, the local interpretation of $o$ is chosen to be $li(q_i,r)$, where $r$ is the replica of $o$.
+
+\begin{lemma}
+\label{lemma:executions of reference implementation are eventual consistent}
+$\forall t \in \llbracket RImp(Spec) \rrbracket$, $poSet(t)$ is eventual consistent w.r.t $Spec$.
+\end{lemma}
+
+Note that the opposite direction of this lemma does not hold: there may exists executions which is eventual consistent w.r.t $Spec$ but not in $\llbracket RImp(Spec) \rrbracket$.
+
+
+
+\subsection{Reference Implementation with Causal Delivery}
+\label{subsec:reference implementation with causal delivery}
+
+According to \cite{Lamport:1978}, an operation $o_1$ happen-before an operation $o_2$, denoted $o_1 <_{hb} o_2$, if $o_1 {\xrightarrow{ (vis \cup ro)^* }} o_2$. Some CRDT algorithm use an assumption called causal delivery. Causal delivery require that, for each pair of update operations $(o_1,o_2)$, if $o_1 <_{hb} o_2$, then for each replica $r$, $o_2$ can be delivered to replica $r$ if $o_1$ has already been delivered to replica $r$.
+
+Given a specification $Spec$, its reference implementation with causal delivery is given as an tuple $RImp_{cd}(Spec) = (Q,\Sigma,vis,q_0,li,\rightarrow,livReq)$. $RImp_{cd}(Spec)$ can be obtained from $RImp(Spec)$ by only changing the transition rules of delivering operations into follows:
+
+\begin {itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] Adding a deliver relation:
+
+$\begin{array}{l c} \bigfrac{o \in uO, o \ is \ minimal \ w.r.t \ <_{hb} \ among \ operations \ not \ visible \ to \ replica \ r} {(uO,ro,del) {\xrightarrow{addDel(o,r)}} (uO,ro,del \cup \{ (o,r) \})} \end{array}$
+
+\end{itemize}
+
+It is easy to see that $RImp_{cd}(Spec)$ contains all the traces of $RImp(Spec)$ that are causal delivery, as stated by the following lemma. Its proof is obvious and omitted.
+
+\begin{lemma}
+\label{lemma:RImpcdSpec contains all the traces of RImpSpec that are causal delivery}
+
+$\llbracket RImp(Spec)_{cd} \rrbracket = \{ t \vert t \in \llbracket RImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$.
+\end{lemma}
+
+
+
+\subsection{Plus-Minus Specification and its Compacted Reference Implementation}
+\label{subsec:plus-minus specification and its compacted reference implementation}
+
+%Two states $q_1,q_2$ of $\llbracket RImp(Spec) \rrbracket$ are equivalent, if for each execution $t_1$ starts from $q_1$, there exists execution $t_2$ starts from $q_2$, such that $t_1$ and $t_2$ contains the same operation sequence.
+
+Two states $q_1,q_2$ of $\llbracket RImp(Spec) \rrbracket$ are equivalent, if they are weak bisimilar on $\llbracket RImp(Spec) \rrbracket_o$, which is obtained from $\llbracket RImp(Spec) \rrbracket$ by transforming $addDel$ transitions into $\epsilon$ transitions.
+
+A specification $Spec$ is said to be a plus-minus specification, if
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $Spec$ contains a query method called read and two update method called plus and minus. (They may use different name. For example, the plus method may be called insert or put, while the minus method may be called remove).
+
+\item[-] Given a state $q = (uO,ro,del)$ of $\llbracket RImp(Spec) \rrbracket$ and a plus operation $o_p \in uO$, its direct-minus operations, denoted $dirM(o_p)$, is a set of minus operations. $dirM(o_p)$ satisfy the following requirements:
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] Let $ToPent_p(q)$ be the set of plus operations, such that $o \in ToPent_p$, if for each replica $r$, $\exists o' \in dirM(o)$ and $o'$ is visible to replica $r$ in $q$.
+
+    \item[-] Let $ToPent_m(q) = \{ o \vert  \{ o' \vert o \in dirM(o') \} \subseteq ToPent_p \}$.
+
+    \item[-] $q$ and $pent(q)$ are equivalent. Here $pent(q)$ is obtained from $q$ by ``penetrating operations in $ToPent_p(q)$ and $ToPent_m(q)$ one by one'' (explained below).
+    \end{itemize}
+\end{itemize}
+
+Let us explain how to penetrate an operation $o$ in a state $q$. Let $o_{ip}(o)$ be the immediate predecessor of $o$ w.r.t $ro$, $o_{is}(o)$ be the immediate successor of $o$ w.r.t $ro$, $O_{to}(o) = \{o_1 \vert o_1 {\xrightarrow{ del }} o \}$ and $O_{from} = \{o_1 \vert o {\xrightarrow{ del }} o_1 \}$. To penetrate $o$ in $q$, we (1) remove $o$, $O_{to}$ and $O_{from}$ from $q$, and (2) add $o_{ip}(o) {\xrightarrow{ ro }} o_{is}(o)$ and $\{ o_1 {\xrightarrow{ ro }} o_{is}(o) \vert o_1 \in O_{to}(o)\}$.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.8 \textwidth]{figures/PIC-Example-CompactProcess.pdf}
+%\vspace{-10pt}
+  \caption{The process of penetrating operations $+a_2$ and $-a_2$}
+  \label{fig:the process of penetrate operations}
+\end{figure}
+
+\figurename~\ref{fig:the process of penetrate operations} shows an example of first penetrate $+a_2$ (from \figurename~\ref{fig:the process of penetrate operations} (a) to \figurename~\ref{fig:the process of penetrate operations} (b)) and then penetrate $-a_2$(from \figurename~\ref{fig:the process of penetrate operations} (b) to \figurename~\ref{fig:the process of penetrate operations} (c)). This is an practical example for the case of OR-set algorithm \cite{Shapiro:2011,Bieniusa:2012}. In \figurename~\ref{fig:the process of penetrate operations} (a), $o_{ip}(+a_2) = o_2$, $o_{is}(+a_2) = +c$, and we explicitly draw $O_{to}(+a_2)$ and $O_{to}(+a_2)$ with blue and red color, respectively. In \figurename~\ref{fig:the process of penetrate operations} (b), $o_{ip}(-a_2) = +c$, $o_{is}(-a_2) = \epsilon$, $O_{to}(-a_2) = \emptyset$ and we explicitly draw $O_{to}(-a_2)$ with red color.
+
+It is not hard to see that, the visibility among operations not penetrated remains the same after penetrating. Therefore, penetrating using different order lead to same consequence.
+
+Given a plus-minus specification $Spec$, its compacted reference implementation is given as an tuple $CRImp(Spec) = (Q,\Sigma,vis,q_0,li,\rightarrow_c,livReq)$. $CRImp(Spec)$ can be obtained from $RImp(Spec) = (Q,\Sigma,vis,q_0,li,\rightarrow,livReq)$ by only changing the transition rules as follows:  $\rightarrow_c = \{ q_1 {\xrightarrow{\alpha}}_c q_2 \vert q_1 {\xrightarrow{\alpha}} q_3 \wedge q_2 = pent(q_3) \}$.
+
+Let $poSet(\llbracket CRImp(Spec) \rrbracket)$ (resp., $poSet(\llbracket RImp(Spec) \rrbracket)$) be the sets of sequences obtained by using poset upon sequences in $\llbracket CRImp(Spec) \rrbracket$ (resp., $\llbracket RImp(Spec) \rrbracket$). The following lemma stats that $poSet(\llbracket CRImp(Spec) \rrbracket) = poSet(\llbracket RImp(Spec) \rrbracket)$. It is not hard to prove this since when defining transition relation of $CRImp(Spec)$ from that of $CRImp(Spec)$, we replace a state with a equivalent state. Its proof is obvious and omitted.
+
+\begin{lemma}
+\label{lemma:CRImpcdSpec and RImpcdSpec contain the same set of trace}
+$poSet(\llbracket CRImp(Spec) \rrbracket) = poSet(\llbracket RImp(Spec) \rrbracket)$.
+\end{lemma}
+
+Similar as the case of reference implementation, we can add the restriction of causal-delivery into compacted reference implementation.
+
+Given a plus-minus specification $Spec$, its compacted reference implementation with causal delivery is given as an tuple $CRImp_{cd}(Spec) = (Q,\Sigma,vis,q_0,li,\rightarrow_{cd},livReq)$. $CRImp_{cd}(Spec)$ can be obtained from $CRImp(Spec) = (Q,\Sigma,vis,q_0,li,\rightarrow_c,livReq)$ by only changing the transition rules of delivering operations as follows: $\rightarrow_{cd} = \{ q_1 {\xrightarrow{addDel(o,r)}}_{cd} q_2 \vert q_1 {\xrightarrow{addDel(o,r)}}_c q_2 \wedge$ $o$ is minimal w.r.t $<_{hb}$ among operations not visible to replica $r$ in $q_1 \}$.
+
+It is easy to see that $CRImp_{cd}(Spec)$ contains all the traces of $CRImp(Spec)$ that are causal delivery, as stated by the following lemma. Its proof is obvious and omitted.
+
+\begin{lemma}
+\label{lemma:CRImpcdSpec contains all the traces of CRImpSpec that are causal delivery}
+
+$\llbracket CRImp(Spec)_{cd} \rrbracket = \{ t \vert t \in \llbracket CRImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$.
+\end{lemma}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\forget
+{
+\section{Reference Implementation}
+\label{sec:reference implementation}
+
+In this section, we propose an abstract implementation called reference implementation, which will be used as specification in simulation proof of later section.
+
+
+\subsection{Reference Implementation Definition}
+\label{subsec:reference implementation definition}
+
 An labeled transition system (LTS, for short) is a tuple $A = (Q,\Sigma,\rightarrow,q_0)$, where $Q$ is a set of states, $\Sigma$ is an alphabet of transition labels, $\rightarrow \subseteq Q \times \Sigma \times Q$ is a transition relation and $q_0$ is the initial state. In this paper, the specification and the semantics of CRDT implementation will be modelled as LTS. Then, checking eventual consistency is a instance of a more general notion of refinement between LTS where only actions in a specific alphabet $\Sigma$ is observable. It has been shown that refinement is equivalent to the existence of backward simulations, modulo the addition of history variables that record events in the implementation, and to the existence of forward simulations provided that the right-hand side LTS B is $\Sigma$-deterministic \cite{Abadi:1991,Lynch:1995}. In this paper we focus on proofs based on forward simulations because they are easier to automatize, and we need to ensure that reference implementations are deterministic.
 
 In this paper, we focus on operation-based CRDT algorithm, where each operation is done locally (without communication between replicas), and when a replica does a update operation, it will broadcast the operation to all other replica. Here we assume the set of replica identifier is already fixed into $RId=\{1,\ldots,n\}$.
@@ -144,9 +338,9 @@ $\llbracket RImp(Spec)_{cd} \rrbracket = \{ t \vert t \in \llbracket RImp(Spec) 
 \subsection{Plus-Minus Specification and its Compacted Reference Implementation}
 \label{subsec:plus-minus specification and its compacted reference implementation}
 
-%Two states $q_1,q_2$ of $\llbracket RImp(Spec) \rrbracket$ are equivalent, if for each execution $t_1$ starts from $q_1$, there exists execution $t_2$ starts from $q_2$, such that $t_1$ and $t_2$ contains the same operation sequence. 
+%Two states $q_1,q_2$ of $\llbracket RImp(Spec) \rrbracket$ are equivalent, if for each execution $t_1$ starts from $q_1$, there exists execution $t_2$ starts from $q_2$, such that $t_1$ and $t_2$ contains the same operation sequence.
 
-Two states $q_1,q_2$ of $\llbracket RImp(Spec) \rrbracket$ are equivalent, if they are weak bisimilar on $\llbracket RImp(Spec) \rrbracket_o$, which is obtained from $\llbracket RImp(Spec) \rrbracket$ by transforming $addDel$ transitions into $\epsilon$ transitions. 
+Two states $q_1,q_2$ of $\llbracket RImp(Spec) \rrbracket$ are equivalent, if they are weak bisimilar on $\llbracket RImp(Spec) \rrbracket_o$, which is obtained from $\llbracket RImp(Spec) \rrbracket$ by transforming $addDel$ transitions into $\epsilon$ transitions.
 
 A specification $Spec$ is said to be a plus-minus specification, if
 
@@ -200,3 +394,4 @@ It is easy to see that $CRImp_{cd}(Spec)$ contains all the traces of $CRImp(Spec
 
 $\llbracket CRImp(Spec)_{cd} \rrbracket = \{ t \vert t \in \llbracket CRImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$.
 \end{lemma}
+}

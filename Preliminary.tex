@@ -3,7 +3,7 @@
 \section{Specifications and Consistencies}
 \label{sec:specifications and consistencies}
 
-In this section, we introduce our formation of specification and the definition of eventual consistency in \cite{Bouajjani:2014}. Then, we propose strong-return-value consistency, which is a sub-notion of eventual consistency that strengthen the ``safety part'' specific for intuition of CRDT algorithms and ignores the ``liveness part''. When we add ``liveness part'' into strong-return-value consistency, we obtained a sub-notion of eventual consistency called strong eventual consistency.
+In this section, we introduce our formation of specification. Then, we propose strong-return-value consistency, which is a sub-notion of eventual consistency of \cite{Bouajjani:2014} that strengthen the ``safety part'' specific for intuition of CRDT algorithms and ignores the ``liveness part''. 
 
 
 \subsection{Specification}
@@ -24,7 +24,7 @@ Given
 
 An operation $o$ is a tuple $(x,rid,oid)$, where $x =  m(a,b) \in \mathbb{M} \times \mathbb{D} \times \mathbb{D}$ is called operation content, $rid \in \mathbb{R}$ and $oid \in \mathbb{O}$. Here $o$ is called with argument $a$ and returns $b$. Let $cont(o)$ be the operation content of operation $o$. This definition extends naturally to the case when there are more than one arguments.
 
-CRDT has two kinds of method: query methods and update methods: Operations of query methods take effect only in one replica, while operations of update methods will be delivered to other replicas. A specification $Spec$ is a function that maps each operation content $x$ into a set of tuples $(O,<,<_{\textit{arb}},l)$, where {\color {red}$O$ is a set of update operations}, $<$ is a partial over $O$, {\color {red}$<_{\textit{arb}}$ is a partial order over $O \cup \{ o \}$ called arbitration order, where $cont(o)=x$}, and $l$ map each operation of $O$ with its operation content. Here we require that each operation in $O \cup \{ o \}$ has unique operation identifier. Such $(O,<,<_{\textit{arb}},l)$ tuples are called ($\Sigma$-labeled) partial-ordered set (poset, for short), where $\Sigma$ is a set of update operation contents contains that of $O$. Two labeled posets are isomorphic if there exists a bijection of operations that preserve operation contents, labels and orders. Here we require $Spec$ to be isomorphic closed: if $x \in Spec$ and $x$ and $y$ are isomorphic, then $y \in Spec$. Since the labeling function of poset is fixed, we could ignore it when the context is clear. 
+CRDT has two kinds of method: query methods and update methods: Operations of query methods take effect only in one replica, while operations of update methods will be delivered to other replicas. A specification $Spec$ is a function that maps each operation content $x$ into a set of tuples $(O,<,<_{\textit{arb}},l)$, where {\color {red}$O$ is a set of update operations}, $<$ is a partial over $O$, {\color {red}$<_{\textit{arb}}$ is a partial order over $O \cup \{ o \}$ called arbitration order, where $cont(o)=x$}, and $l$ map each operation of $O$ with its operation content. Here we require that each operation in $O \cup \{ o \}$ has unique operation identifier. Such $(O,<,<_{\textit{arb}},l)$ tuples are called ($\Sigma$-labeled) partial-ordered set (poset, for short), where $\Sigma$ is a set of update operation contents contains that of $O$. Two labeled posets are isomorphic if there exists a bijection of operations that preserve operation contents, labels and orders. Here we require $Spec$ to be isomorphic closed: if $x \in Spec$ and $x$ and $y$ are isomorphic, then $y \in Spec$. Since the labeling function of poset is fixed, we could ignore it when the context is clear.
 
 
 Some specific specifications are called plus-minus specifications and have the following features:
@@ -40,82 +40,82 @@ Let us give several examples:
 
 \noindent {\bf Example 1. OR-set}: Observed-Remove Set (OR-set for short) \cite{Shapiro:2011,Bieniusa:2012} contains four methods: (1) $add(a,\top)$ inserts $a$ into set, (2) $rem(\top,a)$ remove $a$ from set, (3) $lookup(a, b \in \{ \textit{true}, \textit{false} \})$ checks whether $a$ is in set, and $elements(\top, S \subseteq \mathbb{D})$ returns all the elements in set with a set $S$. Here $\top$ is a specific value of $\mathbb{D}$. OR-set is a plus-minus specification, while $add$ is the ``plus method'', $rem$ is the ``minus method'', and $lookup$ and $elements$ are query methods.
 
-Let $\Sigma_{\textit{ORS}} = \{ add(a,\top),rem(\top,a) \vert a \in \mathbb{D} \}$ be the set of contents of update operations. The specification $S_{\textit{ORS}}$ is as follows: (1) For $x=add(a,\top)$ or $x = rem(\top,a)$, $S_{\textit{ORS}}(x)$ is the set of all $\Sigma_{\textit{ORS}}$- labeled posets with $<_{\textit{arb}} = \emptyset$, (2) For $x=lookup(a,\textit{true})$ (resp., $x=lookup(a,\textit{false})$), $S_{\textit{ORS}}(x)$ is the set of all $\Sigma_{\textit{ORS}}$- labeled posets $\rho$ with $<_{\textit{arb}} = \emptyset$, such that the projection of operations of $a$ contains a maximal element labeled by $add(a,\top)$ (resp., contains no maximal element labeled by $add(a,\top)$), and (3) $S_{\textit{ORS}}(elements(\top,S))$ is the $\Sigma_{\textit{ORS}}$- labeled posets that is in $S_{\textit{ORS}}(lookup(a,\textit{true}))$ for each $a \in S$, and is in $S_{\textit{ORS}}(lookup(a,\textit{false}))$ for each $a \notin S$. 
+Let $\Sigma_{\textit{ORS}} = \{ add(a,\top),rem(\top,a) \vert a \in \mathbb{D} \}$ be the set of contents of update operations. The specification $S_{\textit{ORS}}$ is as follows: (1) For $x=add(a,\top)$ or $x = rem(\top,a)$, $S_{\textit{ORS}}(x)$ is the set of all $\Sigma_{\textit{ORS}}$- labeled posets with $<_{\textit{arb}} = \emptyset$, (2) For $x=lookup(a,\textit{true})$ (resp., $x=lookup(a,\textit{false})$), $S_{\textit{ORS}}(x)$ is the set of all $\Sigma_{\textit{ORS}}$- labeled posets $\rho$ with $<_{\textit{arb}} = \emptyset$, such that the projection of operations of $a$ contains a maximal element labeled by $add(a,\top)$ (resp., contains no maximal element labeled by $add(a,\top)$), and (3) $S_{\textit{ORS}}(elements(\top,S))$ is the $\Sigma_{\textit{ORS}}$- labeled posets that is in $S_{\textit{ORS}}(lookup(a,\textit{true}))$ for each $a \in S$, and is in $S_{\textit{ORS}}(lookup(a,\textit{false}))$ for each $a \notin S$.
 
 \noindent {\bf Example 2. Distributed list}: Distributed list has three methods: (1) $add(a,pos,\top)$ inserts $a$ into position $pos \in \mathbb{N}$. (2) $rem(pos,a)$ removes the item of position $pos$, which is $a$. (3) $read(\top,\Sigma^*)$ returns the list content. Here we assume that for $add$ and $rem$, $pos$ is less than the length of list seen by calling replica. Distributed list is a plus-minus specification, while $add$ is the ``plus method'', $rem$ is the ``minus method'', and $read$ is query method.
 
-%Let $\Sigma_{\textit{list}} = \{ add(a,pos,\top),rem(\top,a) \vert a \in \mathbb{D},pos \in \mathbb{N} \}$ be the set of contents of update operations. 
+%Let $\Sigma_{\textit{list}} = \{ add(a,pos,\top),rem(\top,a) \vert a \in \mathbb{D},pos \in \mathbb{N} \}$ be the set of contents of update operations.
 The specification $S_{\textit{list}}$ is defined as follows: $(O,<,<_{\textit{arb}}) \in S_{\textit{list}}(x)$, if
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $<^{-1}$ contains finite elements, $<$ is acyclic and $<_{\textit{arb}}$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin O$ and $o$ is in domain of $<_{\textit{arb}}$. By definition of poset we can see that $cont(o)=x$. 
-    
+\item[-] $<^{-1}$ contains finite elements, $<$ is acyclic and $<_{\textit{arb}}$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin O$ and $o$ is in domain of $<_{\textit{arb}}$. By definition of poset we can see that $cont(o)=x$.
+
 \item[-] We can go through operations of $O$ by first investigate minimal (w.r.t $<$) operations, and then their immediate successors (w.r.t $<$), and so on. During this process, for each operation $o'$, let $Op(o')$ be the set of $add$ operations in $<^{-1}(o') \cup \{ o' \}$ and not been deactivated by $rem$ operations in $<^{-1}(o')$ (The formal definition could be found in Appendix \ref{sec:appendix definitions of section specifications and consistencies}). Let $seq(o')$ be obtained by ordering elements of $Op(o')$ with $<_{\textit{arb}}$ order. We require each $o'$ to be correct: If $cont(o')=add(a,pos)$, then $o'$ is the $pos$-th in $seq(o')$; if $cont(o')=rem(pos,a)$, then the content of $pos$-th element of $seq(o')$ is $add(a,\_)$.
 
 \item[-] {\color {red}Let $Op(o)$ be the set of $add$ operations in $O \cup \{ o \}$ and not been deactivated by $rem$ operations in $O$, and let $seq(o)$ be obtained by ordering elements of $Op(o)$ with $<_{\textit{arb}}$ order.} If $cont(o)=add(a,pos)$, then $o$ is the $pos$-th in $seq(o)$; if $cont(o)=rem(pos,a)$, then the content of $pos$-th element of $seq(o)$ is $add(a,\_)$; if $cont(o)=read(\top,l)$, then $l$ is the sequence of operation contents of $seq(o)$.
 \end{itemize}
 
-In our definition of distributed list specification, the arbitration order works similarly as the list order of strong list specification in \cite{Attiya:2016}. 
+In our definition of distributed list specification, the arbitration order works similarly as the list order of strong list specification in \cite{Attiya:2016}.
 
 
 
 
 
 \subsection{Consistencies}
-\label{subsec:consistencies} 
+\label{subsec:consistencies}
 
-An abstract trace is a tuple $(O,<_{\textit{ro}},<_{\textit{vis}},<_{\textit{arb}})$, where 
+An abstract trace is a tuple $(O,<_{\textit{ro}},<_{\textit{vis}},<_{\textit{arb}})$, where
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $O$ is a set of operations. 
+\item[-] $O$ is a set of operations.
 
 \item[-] $<_{\textit{ro}}$ is called the replica order. $\forall r \in \mathbb{R}$, $<_{\textit{ro}}$ is a irreflexive total order over operations with replica identifier $r$. $<_{\textit{ro}}$ does not relate operations with different replica identifiers. We also require that $\forall o \in O$, $<_{\textit{ro}}^{-1}(o)$ is finite.
 
-\item[-] $<_{\textit{vis}}$ is called the visibility order. We require that $\forall o \in O$, $<_{\textit{vis}}^{-1}(o)$ is finite. 
+\item[-] $<_{\textit{vis}}$ is called the visibility order. We require that $\forall o \in O$, $<_{\textit{vis}}^{-1}(o)$ is finite.
 
-\item[-] $<_{\textit{arb}}$ is the arbitration order. {\color {red}It only relate update operations.}    
-\end{itemize} 
+\item[-] $<_{\textit{arb}}$ is the arbitration order. {\color {red}It only relate update operations.}
+\end{itemize}
 
 Given an abstract trace $t = (O,<_{\textit{ro}}<_{\textit{vis}},<_{\textit{arb}})$ and $o \in O$, {\color {red}the local interpretation of $o$ is a tuple $li(o) = ( O_{li} ,<_{li(o)}, <_{\textit{li-arb}} )$}, where
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] {\color {red}$O_{li}$ is the set of update operations in $<_{\textit{vis}}^{-1}(o)$,} 
+\item[-] {\color {red}$O_{li}$ is the set of update operations in $<_{\textit{vis}}^{-1}(o)$,}
 
-\item[-] {\color {red}$<_{\textit{li-arb}}$ is the projection of $<_{\textit{arb}}$ over update operations of $<_{\textit{vis}}^{-1}(o) \cup \{ o \}$. } 
+\item[-] {\color {red}$<_{\textit{li-arb}}$ is the projection of $<_{\textit{arb}}$ over update operations of $<_{\textit{vis}}^{-1}(o) \cup \{ o \}$. }
 
 \item[-] $<_{li(o)} \subseteq <_{\textit{vis}} \uparrow_{(O_{li} \times O_{li})}$ is irreflexive. {\color {red}If $o_1,o_2 \in O_{li}$, $(o_1,o_2) \in <_{\textit{vis}}$ via $o'_1,\ldots,o'_m$, and $o'_1,\ldots,o'_m \in O_{li}$, then $(o_1,o_2) \in <_{li(o)}$.} Here we say $(o_1,o_2) \in <_{\textit{vis}}$ via $o'_1,\ldots,o'_m$, if $(o_1,o'_1),(o'_1,o'_2),\ldots,(o'_{\textit{m-1}},o'_m),(o'_m,o_2) \in <_{\textit{vis}}$.
 
-\item[-] {\color {red} $<_{li(o)}$ is determined by $O_{li}$ and $<_{\textit{vis}}$ over $O_{li}$. Therefore, if $<_{\textit{vis}}^{-1}(o_1)$ and $<_{\textit{vis}}^{-1}(o_2)$ contain same set of update operations, then $<_{li(o_1)} = <_{li(o_2)}$,} where $li(o_1) = ( O_{li} ,<_{li(o_1)}, <_{\textit{li-arb1}} )$ and $li(o_2) = ( O_{li} ,<_{li(o_2)}, <_{\textit{li-arb1}} )$.
-\end{itemize} 
+\item[-] {\color {red} $<_{li(o)}$ is determined by $<_{\textit{vis}}$ over $O_{li}$. Therefore, if $<_{\textit{vis}}^{-1}(o_1)$ and $<_{\textit{vis}}^{-1}(o_2)$ contain same set of update operations, then $<_{li(o_1)} = <_{li(o_2)}$,} where $li(o_1) = ( O_{li} ,<_{li(o_1)}, <_{\textit{li-arb1}} )$ and $li(o_2) = ( O_{li} ,<_{li(o_2)}, <_{\textit{li-arb1}} )$. This property represents the intuition of commutative of CRDT.
+\end{itemize}
 
-Let us define strong-return-value consistency (SRV consistency, for short) as follows: 
+Let us define strong-return-value consistency (SRV consistency, for short) as follows:
 
 \begin{definition}[Strong-return-value consistency]
-\label{definition:strong return value consistency} 
+\label{definition:strong return value consistency}
 Given an abstract trace $t = (O,<_{\textit{ro}},<_{\textit{vis}},<_{\textit{arb}})$ and $o \in O$, we say that $t$ is strong-return-value consistent w.r.t specification $Spec$, if there exists local interpretation $li$, such that $\textit{THINAIR} \wedge \textit{RVAL}$ hold, where
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\textit{THINAIR}$: $<_{\textit{ro}} \cup <_{\textit{vis}}$ is acyclic. 
+\item[-] $\textit{THINAIR}$: $<_{\textit{ro}} \cup <_{\textit{vis}}$ is acyclic.
 
-\item[-] $\textit{RVAL}: \forall o \in O$, $li(o) \in Spec(cont(o))$. 
-\end{itemize} 
+\item[-] $\textit{RVAL}: \forall o \in O$, $li(o) \in Spec(cont(o))$.
+\end{itemize}
 \end{definition}
 
 
-{\color {blue}TODO: 
+{\color {blue}TODO:
 
 \begin{definition}[Weak eventual consistency \cite{Bouajjani:2014}]
 \label{definition:eventual consistency}
-An abstract trace $t = (O,<_{\textit{ro}},<_{\textit{vis}},<_{\textit{arb}})$ is called weak eventual consistency w.r.t a specification $Spec$, if there exists local interpretation $li$, such that $\textit{THINAIR} \wedge \textit{RVAL} \wedge \textit{WEAKEVENTUAL}$ hold, where 
+An abstract trace $t = (O,<_{\textit{ro}},<_{\textit{vis}},<_{\textit{arb}})$ is called weak eventual consistency w.r.t a specification $Spec$, if there exists local interpretation $li$, such that $\textit{THINAIR} \wedge \textit{RVAL} \wedge \textit{WEAKEVENTUAL}$ hold, where
 
 \begin{itemize}
-\setlength{\itemsep}{0.5pt} 
-\item[-] $\textit{WEAKEVENTUAL}$: $\forall o \in O, \{ o' \vert (o,o') \notin <_{\textit{vis}} \}$ is finite. 
-\end{itemize} 
+\setlength{\itemsep}{0.5pt}
+\item[-] $\textit{WEAKEVENTUAL}$: $\forall o \in O, \{ o' \vert (o,o') \notin <_{\textit{vis}} \}$ is finite.
+\end{itemize}
 \end{definition}
 
 }
