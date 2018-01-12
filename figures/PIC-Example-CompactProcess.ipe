@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70107" creator="Ipe 7.1.7">
-<info created="D:20151003110714" modified="D:20171229161424"/>
+<info created="D:20151003110714" modified="D:20180112010510"/>
 <preamble>\usepackage[version=0.96]{pgf}
 \usepackage{tikz}
 \usetikzlibrary{arrows,shapes,snakes,automata,backgrounds,petri}
@@ -266,7 +266,7 @@ h
 <path matrix="1 0 0 1 -332 64" stroke="black">
 16 0 0 16 352 384 e
 </path>
-<text matrix="1 0 0 1 -48.795 8" transformations="translations" pos="64 436" stroke="black" type="label" width="9.298" height="4.294" depth="1.49" valign="baseline">$o_1$</text>
+<text matrix="1 0 0 1 -48.795 8" transformations="translations" pos="64 436" stroke="black" type="label" width="12.388" height="5.812" depth="0.83" valign="baseline">$+e$</text>
 <path matrix="1 0 0 1 0 -48" stroke="black" arrow="normal/normal">
 36 448 m
 64 448 l
@@ -278,7 +278,7 @@ h
 <path matrix="1 0 0 1 -332 16" stroke="black">
 16 0 0 16 352 384 e
 </path>
-<text matrix="1 0 0 1 -48.795 -40" transformations="translations" pos="64 436" stroke="black" type="label" width="9.298" height="4.294" depth="1.49" valign="baseline">$o_2$</text>
+<text matrix="1 0 0 1 -48.795 -40" transformations="translations" pos="64 436" stroke="black" type="label" width="13.699" height="6.926" depth="1.93" valign="baseline">$+f$</text>
 <path matrix="1 0 0 1 0 -96" stroke="black" arrow="normal/normal">
 36 448 m
 64 448 l
@@ -290,7 +290,7 @@ h
 <path matrix="1 0 0 1 -332 -32" stroke="black">
 16 0 0 16 352 384 e
 </path>
-<text matrix="1 0 0 1 -48.795 -88" transformations="translations" pos="64 436" stroke="black" type="label" width="9.298" height="4.294" depth="1.49" valign="baseline">$o_3$</text>
+<text matrix="1 0 0 1 -48.795 -88" transformations="translations" pos="64 436" stroke="black" type="label" width="12.858" height="5.819" depth="1.93" valign="baseline">$+g$</text>
 <path stroke="blue" arrow="normal/normal">
 36 448 m
 64 400 l
@@ -327,11 +327,11 @@ h
 148 448 m
 176 448 l
 </path>
-<path stroke="red" arrow="normal/normal">
+<path stroke="black" arrow="normal/normal">
 96 400 m
 116 448 l
 </path>
-<path stroke="red" arrow="normal/normal">
+<path stroke="black" arrow="normal/normal">
 96 400 m
 176 352 l
 </path>
@@ -386,11 +386,11 @@ h
 <path matrix="1 0 0 1 -16 64" stroke="black">
 16 0 0 16 352 384 e
 </path>
-<text matrix="1 0 0 1 267.205 8" transformations="translations" pos="64 436" stroke="black" type="label" width="9.298" height="4.294" depth="1.49" valign="baseline">$o_1$</text>
+<text matrix="1 0 0 1 267.205 8" transformations="translations" pos="64 436" stroke="black" type="label" width="12.388" height="5.812" depth="0.83" valign="baseline">$+e$</text>
 <path matrix="1 0 0 1 -16 16" stroke="black">
 16 0 0 16 352 384 e
 </path>
-<text matrix="1 0 0 1 267.205 -40" transformations="translations" pos="64 436" stroke="black" type="label" width="9.298" height="4.294" depth="1.49" valign="baseline">$o_2$</text>
+<text matrix="1 0 0 1 267.205 -40" transformations="translations" pos="64 436" stroke="black" type="label" width="13.699" height="6.926" depth="1.93" valign="baseline">$+f$</text>
 <path matrix="1 0 0 1 316 -96" stroke="black" arrow="normal/normal">
 36 448 m
 64 448 l
@@ -402,7 +402,7 @@ h
 <path matrix="1 0 0 1 -16 -32" stroke="black">
 16 0 0 16 352 384 e
 </path>
-<text matrix="1 0 0 1 267.205 -88" transformations="translations" pos="64 436" stroke="black" type="label" width="9.298" height="4.294" depth="1.49" valign="baseline">$o_3$</text>
+<text matrix="1 0 0 1 267.205 -88" transformations="translations" pos="64 436" stroke="black" type="label" width="12.858" height="5.819" depth="1.93" valign="baseline">$+g$</text>
 <path matrix="1 0 0 1 316 0" stroke="black" arrow="normal/normal">
 36 400 m
 64 448 l
@@ -467,7 +467,7 @@ h
 240 400 m
 256 352 l
 </path>
-<path matrix="1 0 0 1 316 0" stroke="red" arrow="normal/normal">
+<path matrix="1 0 0 1 316 0" stroke="black" arrow="normal/normal">
 240 400 m
 256 352 l
 </path>
@@ -498,11 +498,11 @@ h
 <path matrix="1 0 0 1 -256 -112" stroke="black">
 16 0 0 16 352 384 e
 </path>
-<text matrix="1 0 0 1 27.205 -168" transformations="translations" pos="64 436" stroke="black" type="label" width="9.298" height="4.294" depth="1.49" valign="baseline">$o_1$</text>
+<text matrix="1 0 0 1 27.205 -168" transformations="translations" pos="64 436" stroke="black" type="label" width="12.388" height="5.812" depth="0.83" valign="baseline">$+e$</text>
 <path matrix="1 0 0 1 -256 -160" stroke="black">
 16 0 0 16 352 384 e
 </path>
-<text matrix="1 0 0 1 27.205 -216" transformations="translations" pos="64 436" stroke="black" type="label" width="9.298" height="4.294" depth="1.49" valign="baseline">$o_2$</text>
+<text matrix="1 0 0 1 27.205 -216" transformations="translations" pos="64 436" stroke="black" type="label" width="13.699" height="6.926" depth="1.93" valign="baseline">$+f$</text>
 <path matrix="1 0 0 1 76 -272" stroke="black" arrow="normal/normal">
 36 448 m
 64 448 l
@@ -514,7 +514,7 @@ h
 <path matrix="1 0 0 1 -256 -208" stroke="black">
 16 0 0 16 352 384 e
 </path>
-<text matrix="1 0 0 1 27.205 -264" transformations="translations" pos="64 436" stroke="black" type="label" width="9.298" height="4.294" depth="1.49" valign="baseline">$o_3$</text>
+<text matrix="1 0 0 1 27.205 -264" transformations="translations" pos="64 436" stroke="black" type="label" width="12.858" height="5.819" depth="1.93" valign="baseline">$+g$</text>
 <path matrix="1 0 0 1 76 -176" stroke="black" arrow="normal/normal">
 36 400 m
 64 448 l
