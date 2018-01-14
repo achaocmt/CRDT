@@ -209,28 +209,68 @@ Let us consider the case when $t \in \llbracket RImp(Spec) \rrbracket$ and $t_1 
 
 {\noindent \bf Lemma \ref{lemma:Minus for OR-set is correct}}: Our definition of $Minus$ for OR-set is correct.
 
-\begin {proof}
+\begin {proof} 
 
-Let us prove the requirements one by one: 
+Let us prove the following properties: 
+
+\noindent $Prop_1$: Given path $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ of $RImp(Spec)$, let $O_i$ be the set of operations of operations penetrated during the transition from $q_{i-1}$ to $q_i$. Then after $q_i$, no matter how $O_i$ operations are delivered, the $Minus$ relation between operations not in $O_r$ and operations in $O_r$ does not change.  
+
+\noindent $Prop_2$: Given path $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ of $RImp(Spec)$, let $O_i$ be the set of operations of operations penetrated during the transition from $q_{i-1}$ to $q_i$. Then after $q_i$, no matter how $O_i$ operations are delivered, $add$ operations of $O_r$ are redundant, and $Minus$ relation of operations in $O_r$ does not change.
+
+\noindent $Prop_3$: Given path $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ of $RImp(Spec)$, let $O_i$ be the set of operations of operations penetrated during the transition from $q_{i-1}$ to $q_i$. Then after $q_i$, no matter how $O_i$ operations are delivered, no $Minus$ operations over operations not in $O_r$ will change.
+
+Proof of $Prop_1$:  
+
+
+
+Then, let us prove the following properties: 
+
+The first property: Given path $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ of $RImp(Spec)$, if (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)$ is not in this path, then, for $j>i$, $t=\alpha_1 \cdot \ldots \cdot \alpha_j \cdot addDel(o,r) \cdot alpha_{j+1} \cdot \ldots \in \llbracket RImp(Spec) \rrbracket$. This holds since:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] We need to prove that, given path $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ of $RImp(Spec)$, if (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)$ is not in this path, then, for $j>i$, $\alpha_1 \cdot \ldots \cdot \alpha_j \cdot addDel(o,r) \cdot \ldots$ is an execution of $RImp(Spec)$.
-    
-    This holds since (1) when we do $(add,a,\top,\_,\_)$ transitions, we always succeed, (2) when we do $(rem,\top,a,r,\_)$ transitions and add $o=(rem(\top,a),\_,\_)$, we require the existence of a $add(a,\top)$ operation $o_a$, such that $o$ is the first $rem(\top,a)$ operations that is after $o_a$ w.r.t visibility relation.  
-    
-    non-redundant $add(a,\top)$ operation, while the redundant $add$ and $rem$ operations do not influence this, (3) when we do $read$, the redundant $add$ operations are unseen.
-    
-\item[-] We need to prove that, if (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)=\alpha_j$, then, for $\alpha_1 \cdot \ldots \cdot \alpha_{j-1} \cdot \alpha_{j+1} \cdot \ldots$ is an execution of $RImp(Spec)$.
-    
-    Similarly as above, this holds. 
+\item[-] $(add,a,\top,\_,\_)$ transitions always succeed. 
 
-\item[-] We need to prove that, let $O_1 \subseteq S_p(q)$, $O_2 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$, and $q'$ is generated from $q$ by penetrating operations in $O_1$ and $O_2$. Then $q$ and $q'$ are equivalent. 
-    
-    This holds similarly as above. Note that, when we penetrate $O = (o \in S_p) \cup \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq o \}$, we does not influence future executions; while if we only penetrate a subset of $O$, the executions may be influenced. 
+\item[-] When we do $(rem,\top,a,r,\_)$ transitions and add $o_r=(rem(\top,a),\_,\_)$ into operations, we require the existence of a $add(a,\top)$ operation $o_a$, such that $o_r \in Minius(o_a)$. By $Prop_1$ and $Prop_3$, this still holds in $t$. 
+
+\item[-] When we do $(lookup,a,\textit{true},r,\_)$ transitions, in the local interpretation $(O_l,<_l,\_)$ of $r$, $\exists o_a=(add(a,\top),\_,\_)$, such that $o_a$ is maximal among $add(a,\top)$ and $rem(\top,a)$ w.r.t $<_l$. Or we can say, $\neg \exists o_r$, such that $cont(o_r)=rem(\top,a)$ and $o_r \in Minus(o_a)$. It is obvious that $o_a \notin O_r$. Since $<_l$ do not forget $Minus$, by $Prop_1$ and $Prop_3$, this still holds in $t$.
+
+\item[-] When we do $(lookup,a,\textit{false},r,\_)$ transitions, in the local interpretation $(O_l,<_l,\_)$ of $r$, all $add(a,\top)$ are redundant. Since $<_l$ do not forget $Minus$, by $Prop_2$ and $Prop_3$, this still holds in $t$. 
+
+\item[-] Since $(lookup,a,\textit{true},r,\_)$ and $(lookup,a,\textit{false},r,\_)$ do not change, $(elements,S,\_,r,\_)$ does not change.
 \end{itemize} 
 
-This completes the proof of this lemma. $\qed$ 
+The second property: Given path $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ of $RImp(Spec)$, if (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)=\alpha_j$, then, for $\alpha_1 \cdot \ldots \cdot \alpha_{j-1} \cdot \alpha_{j+1} \cdot \ldots$ is an execution of $RImp(Spec)$. This holds similarly as the first property.
+
+The third property: Let $O_1 \subseteq S_p(q)$, $O_2 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$, and $q'$ is generated from $q$ by penetrating operations in $O_1$ and $O_2$. $q$ and $q'$ are both reachable from the initial state. Then, in $RImp(Spec)$, given a path $q {\xrightarrow{\alpha_1}} q_1 \ldots$, there exists a path $q' {\xrightarrow{\alpha'_1}} q'_1 \ldots$, such that,
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $P_1$: $\alpha_i = addDel(o,r) \wedge o \notin O_r$: $\alpha'_i = \alpha_i$,
+
+\item[-] $P_2$: $\alpha_i = addDel(o,r) \wedge o \in O_r$: $\alpha'_i = \epsilon$,
+
+\item[-] $P_3$: $\alpha_i = m(a,b,r,arb)$: $\alpha'_i = m(a,b,r,arb-(O_1 \cup O_2))$.
+
+\item[-] $P_4$: $q'_i$ is obtained from $q_i$ by penetrating operations of $O_1$ and $O_2$.
+\end{itemize} 
+
+Recall that currently the arbitration order is $\emptyset$. $P_1$, $P_2$ and $P_3$ can be similarly proved as the first property. $P_4$ holds since $Prop_1$, $Prop_2$, $Prop_3$, and the fact that the visibility relation over non-redundant operations does not change after penetrating.
+
+The forth property: Let $O_1 \subseteq S_p(q)$, $O_2 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$, and $q'$ is generated from $q$ by penetrating operations in $O_1$ and $O_2$. $q$ and $q'$ are both reachable from the initial state. Then, in $RImp(Spec)$, given a path $q' {\xrightarrow{\alpha'_1}} q'_1 \ldots$, there exists a path $q {\xrightarrow{\alpha_1}} q_1 \ldots$, such that,
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $\alpha'_i = addDel(o,r)$: $\alpha_i = \alpha'_i \wedge o \notin O_r$,
+
+%\item[-] $\alpha'_i = \epsilon \wedge \alpha_i = addDel(o,r) \wedge o \in O_r$,
+
+\item[-] $\alpha'_i = m(a,b,r,arb')$: $\alpha_i = m(a,b,r,arb)$, where $arb$ is obtained from $arb'$ by adding $O_1 \cup O_2$ and possible relations.
+
+\item[-] $q'_i$ is obtained from $q_i$ by penetrating operations of $O_1$ and $O_2$.
+\end{itemize} 
+
+Recall that $RImp(Spec)$ are deterministic. This property can be similarly proved as the third property. This completes the proof of this lemma. $\qed$
 \end {proof}
 
 \begin{figure}[t]
@@ -239,12 +279,33 @@ This completes the proof of this lemma. $\qed$
 %\vspace{-10pt}
   \caption{The process of generate abstract trace for reference implementation}
   \label{fig:the process of generate abstract trace for reference implementation}
-\end{figure} 
+\end{figure}
 
 
-{\noindent \bf Lemma \ref{lemma:Minus for distributed list is correct}}: Our definition of $Minus$ for distributed list is correct. 
+{\noindent \bf Lemma \ref{lemma:Minus for distributed list is correct}}: Our definition of $Minus$ for distributed list is correct.
 \begin {proof}
-\end {proof} 
+Let us prove the requirements one by one:
+
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] We need to prove that, given path $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ of $RImp(Spec)$, if (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)$ is not in this path, then, for $j>i$, $\alpha_1 \cdot \ldots \cdot \alpha_j \cdot addDel(o,r) \cdot \ldots$ is an execution of $RImp(Spec)$.
+
+    This holds since (1)
+
+\item[-] We need to prove that, if (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)=\alpha_j$, then, for $\alpha_1 \cdot \ldots \cdot \alpha_{j-1} \cdot \alpha_{j+1} \cdot \ldots$ is an execution of $RImp(Spec)$.
+
+    We can see that: $Prop_1$: Let $O_i$ be the set of operations of operations penetrated during the transition from $q_{i-1}$ to $q_i$. Then the $Minus$ relations of $O_i$ is fixed no matter more delivery happens for $O_i$.
+
+    This holds since (1)
+
+\item[-] We need to prove that, let $O_1 \subseteq S_p(q)$, $O_2 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$, and $q'$ is generated from $q$ by penetrating operations in $O_1$ and $O_2$. Then $q$ and $q'$ are equivalent.
+
+    This holds similarly as above. Note that, when we penetrate $O = (o \in S_p) \cup \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq o \}$, we does not influence future executions; while if we only penetrate a subset of $O$, the executions may be influenced.
+\end{itemize}
+
+This completes the proof of this lemma. $\qed$
+\end {proof}
 
 
 

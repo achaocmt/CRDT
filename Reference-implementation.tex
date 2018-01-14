@@ -165,9 +165,9 @@ Given a plus-minus specification $Spec$ and a state $q=(O,ro,del,arb,vis)$ of $R
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] If (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)$ is not in this path, then, for $j>i$, $\alpha_1 \cdot \ldots \cdot \alpha_j \cdot addDel(o,r) \cdot \ldots$ is an execution of $RImp(Spec)$.
+    \item[-] If (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)$ is not in this path, then, for $j>i$, $\alpha_1 \cdot \ldots \cdot \alpha_j \cdot addDel(o,r) \cdot \cdot \alpha_{j+1} \ldots \in \llbracket RImp(Spec) \rrbracket$.
 
-    \item[-] If (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)=\alpha_j$, then, for $\alpha_1 \cdot \ldots \cdot \alpha_{j-1} \cdot \alpha_{j+1} \cdot \ldots$ is an execution of $RImp(Spec)$.
+    \item[-] If (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)=\alpha_j$, then, for $\alpha_1 \cdot \ldots \cdot \alpha_{j-1} \cdot \alpha_{j+1} \cdot \ldots \in \llbracket RImp(Spec) \rrbracket$.
     \end{itemize}
 
 \item[-] Let $conc(q)$ be obtained from $q$ by penetrating operations in $S_p(q) \cup S_m(q)$ one by one.
@@ -177,7 +177,7 @@ Given a plus-minus specification $Spec$ and a state $q=(O,ro,del,arb,vis)$ of $R
 
 \noindent {\bf Equivalent}: Let us explain the notion of ``equivalent''.
 
-Let $O_1 \subseteq S_p(q)$, $O_2 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$, and $q'$ is generated from $q$ by penetrating operations in $O_1$ and $O_2$. We say that $q$ and $q'$ are equivalent, if the following holds:
+Let $O_1 \subseteq S_p(q)$, $O_2 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$, and $q'$ is generated from $q$ by penetrating operations in $O_1$ and $O_2$. We say that $q$ and $q'$ are equivalent, if they are both reachable from the initial state, and the following holds:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
@@ -189,8 +189,8 @@ Let $O_1 \subseteq S_p(q)$, $O_2 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2)
 
     \item[-] $\alpha_i = addDel(o,r) \wedge o \in O_r$: $\alpha'_i = \epsilon$,
 
-    \item[-] $\alpha_i = m(a,b,r,arb)$: $\alpha'_i = m(a,b,r,arb-(O_1 \cup O_2))$. 
-    
+    \item[-] $\alpha_i = m(a,b,r,arb)$: $\alpha'_i = m(a,b,r,arb-(O_1 \cup O_2))$.
+
     \item[-] $q'_i$ is obtained from $q_i$ by penetrating operations of $O_1$ and $O_2$.
     \end{itemize}
 
@@ -237,7 +237,7 @@ Our definition of $Minus$ for OR-set is correct.
 %\vspace{-10pt}
   \caption{The process of penetrating operations of distributed list}
   \label{fig:the process of penetrate operations in distributed list}
-\end{figure} 
+\end{figure}
 
 The following lemma states that our $Minus$ for distributed list is correct. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
