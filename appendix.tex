@@ -181,7 +181,7 @@ When $m$ is a query method and assume that $absT(t)[j]=(m(a,b),rid,oid)=o$. By c
 Assume $absT(t[1,j]) = (O_\textit{t1j},<_{\textit{ro-t1j}},<_{\textit{vis-t1j}},<_{\textit{arb-t1j}})$. It is easy to see that (1) $O$ is the set of update operations of $O_\textit{t1j}$, (2) $<_{\textit{ro-t1j}} \uparrow_{O} = ro$, (3) $<_{\textit{vis-t1j}} \uparrow_{O} = vis$, and $<_{\textit{arb-t1j}} = arb$. It is easy to see that $\textit{li-s}((O,ro,del,arb,vis),r,o)$ can be used as local interpretation of $o$.
 
 
-When $m$ is an update method and assume that $absT(t)[j]=(m(a,b),rid,oid)=o$. By construction of $RImp(Spec)$, we can see that (1) $q_{\textit{i-1}} = (O,ro,del,arb,vis) {\xrightarrow{m(a,b,r,arb')}} q_i = (O \cup \{ o \},ro \oplus o ,del \oplus o,arb',(del \oplus o) \cdot (ro \oplus o))$, (2) $li((O,ro,del,arb,vis),r,o) = (O',\_,arb' \uparrow_{(O' \cup \{ o \})}) \in Spec(m(a,b))$ for some $O'$ and $o \notin O$, and (3) $cor(arb')$.
+When $m$ is an update method and assume that $absT(t)[j]=(m(a,b),rid,oid)=o$. By construction of $RImp(Spec)$, we can see that (1) $q_{\textit{i-1}} = (O,ro,del,arb,vis) {\xrightarrow{m(a,b,r,arb')}} q_i = (O \cup \{ o \},ro \oplus o ,del \oplus o,arb',(del \oplus o) \cdot (ro \oplus o))$, (2) $li((O,ro,del,arb,vis),r,o) = (O',\_,arb' \uparrow_{(O' \cup \{ o \})}) \in Spec(m(a,b))$ for some $O'$ and $o \notin O$.
 
 Assume $absT(t[1,j]) = (O_\textit{t1j},<_{\textit{ro-t1j}},<_{\textit{vis-t1j}},<_{\textit{arb-t1j}})$. It is easy to see that (1) $O$ is the set of update operations of $O_\textit{t1j}$, (2) $<_{\textit{ro-t1j}} \uparrow_{O} = ro \oplus o$, (3) $<_{\textit{vis-t1j}} \uparrow_{O} = (del \oplus o) \cdot (ro \oplus o)$, and $<_{\textit{arb-t1j}} = arb'$. It is easy to see that $\textit{li-s}((O,ro,del,arb,vis),r,o)$ can be used as local interpretation of $o$.
 
@@ -204,6 +204,83 @@ Let us prove the $\supseteq$ direction. We prove its contrapositive. Assume that
 
 Let us consider the case when $t \in \llbracket RImp(Spec) \rrbracket$ and $t_1 \notin \llbracket RImp(Spec)_{\textit{cd}} \rrbracket$. Let $\alpha_j$ be the first label of $t$ that makes $t$ not in $\llbracket RImp(Spec)_{\textit{cd}} \rrbracket$. Such $\alpha_j$ must be $addDel$ transition that violates the requirements of $RImp(Spec)_{\textit{cd}}$. Assume that $q_{\textit{j-1}} = (O_{\textit{j-1}},ro_{\textit{j-1}},del_{\textit{j-1}},arb_{\textit{j-1}},vis_{\textit{j-1}})$. There must exists $o_3,o_4 \in O_{\textit{j-1}}$, such that $(o_3,o_4) \in (ro_{\textit{j-1}} \cup del_{\textit{j-1}})^*$, $o_3,o_4 \in \{ o' \vert (o',r) \notin vis_{\textit{j-1}}, \forall o'' \in O_{\textit{j-1}}$  with replica $r, (o',o'') \notin vis_{\textit{j-1}} \}$, and $\alpha_j$ adds delivery of $o_2$. This violates the causal delivery. $\qed$
 \end {proof}
+
+
+
+{\noindent \bf Lemma \ref{lemma:Minus for OR-set is correct}}: Our definition of $Minus$ for OR-set is correct.
+
+\begin {proof}
+
+Let us prove the requirements one by one: 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] We need to prove that, given path $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ of $RImp(Spec)$, if (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)$ is not in this path, then, for $j>i$, $\alpha_1 \cdot \ldots \cdot \alpha_j \cdot addDel(o,r) \cdot \ldots$ is an execution of $RImp(Spec)$.
+    
+    This holds since (1) when we do $(add,a,\top,\_,\_)$ transitions, we always succeed, (2) when we do $(rem,\top,a,r,\_)$ transitions and add $o=(rem(\top,a),\_,\_)$, we require the existence of a $add(a,\top)$ operation $o_a$, such that $o$ is the first $rem(\top,a)$ operations that is after $o_a$ w.r.t visibility relation.  
+    
+    non-redundant $add(a,\top)$ operation, while the redundant $add$ and $rem$ operations do not influence this, (3) when we do $read$, the redundant $add$ operations are unseen.
+    
+\item[-] We need to prove that, if (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)=\alpha_j$, then, for $\alpha_1 \cdot \ldots \cdot \alpha_{j-1} \cdot \alpha_{j+1} \cdot \ldots$ is an execution of $RImp(Spec)$.
+    
+    Similarly as above, this holds. 
+
+\item[-] We need to prove that, let $O_1 \subseteq S_p(q)$, $O_2 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$, and $q'$ is generated from $q$ by penetrating operations in $O_1$ and $O_2$. Then $q$ and $q'$ are equivalent. 
+    
+    This holds similarly as above. Note that, when we penetrate $O = (o \in S_p) \cup \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq o \}$, we does not influence future executions; while if we only penetrate a subset of $O$, the executions may be influenced. 
+\end{itemize} 
+
+This completes the proof of this lemma. $\qed$ 
+\end {proof}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.4 \textwidth]{figures/PIC-Generate-AbstractTrace-NormaltoCompact.pdf}
+%\vspace{-10pt}
+  \caption{The process of generate abstract trace for reference implementation}
+  \label{fig:the process of generate abstract trace for reference implementation}
+\end{figure} 
+
+
+{\noindent \bf Lemma \ref{lemma:Minus for distributed list is correct}}: Our definition of $Minus$ for distributed list is correct. 
+\begin {proof}
+\end {proof} 
+
+
+
+
+{\noindent \bf Lemma \ref{lemma:RIMPSpec and CRIMPSpec have same abstract traces}}: $absT(RImp(Spec)) = absT(CRImp(Spec))$
+\begin {proof}
+
+The $\supseteq$ direction is obvious from the definition of $absT(CRImp(Spec))$.
+
+To prove the $\subseteq$ direction. Given a execution $t_1 = \beta_1 \cdot \ldots$ of $RImp(Spec)$, by the definition of ``redundant operations'', we can see that $t_2 = \alpha_1 \cdot \ldots$, which is generated from $t_1$ by discarding $addDel(o,\_)$ for all the redundant operations, is also an execution of $RImp(Spec)$.
+
+Let us show how to construct a path of $CRImp(Spec)$ using an example in \figurename~\ref{fig:the process of generate abstract trace for reference implementation}. Assume $t_2 = \alpha_1 \cdot \alpha_2 \cdot \alpha_3 \cdot \alpha_4$. Note that, here each $\alpha_i$ is not a delivery of redundant operations.
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $q_1 {\xrightarrow{\alpha_2}}_r q_2$: By definition of $\rightarrow_c$, $q_1 {\xrightarrow{\alpha'_2}}_c q'_2 \wedge conc(q_2)=q'_2$. Let $O_2$ be the set of operations penetrated when generating $q'_2$ from $q_2$.
+
+\item[-] $q_2 {\xrightarrow{\alpha_3}}_r q_3$: Since $q'_2$ is obtained from $q_2$ by possibly penetrating operations in $O_2$, by the definition of equivalence, we can see that there exists $\alpha'_3, q'_3$, such that $q'_2 {\xrightarrow{\alpha'_3}}_r q'_3$, and $q'_3$ is obtained from $q_3$ by penetrating operations in $O_2$.
+
+By definition of $\rightarrow_c$, $q'_2 {\xrightarrow{\alpha''_3}}_c q''_3 \wedge conc(q'_3)=q''_3$. Let $O_3$ be the set of operations penetrated when generating $q''_3$ from $q'_3$.
+
+\item[-] $q_3 {\xrightarrow{\alpha_4}}_r q_4$: We can see that $q''_3$ is obtained from $q_3$ by possibly penetrating operations in $O_2 \cup O_3$, by the definition of equivalence, we can see that there exists $\alpha'_4, q'_4$, such that $q''_3 {\xrightarrow{\alpha'_4}}_r q'_4$, and $q'_4$ is obtained from $q_4$ by penetrating operations in $O_2 \cup O_3$.
+
+By definition of $\rightarrow_c$, $q''_3 {\xrightarrow{\alpha''_4}}_c q''_4 \wedge conc(q'_4)=q''_4$. Let $O_4$ be the set of operations penetrated when generating $q''_4$ from $q'_4$.
+\end{itemize}
+
+It is easy to see that the abstract trace of $\alpha_1 \cdot \alpha_2 \cdot \alpha_3 \cdot \alpha_4$ in $RImp(Spec)$ is the abstract trace of $\alpha_1 \cdot \alpha'_2 \cdot \alpha''_3 \cdot \alpha''_4$ in $CRImp(Spec)$. This completes the proof of this lemma. $\qed$
+\end {proof}
+
+
+
+
+
+
+
+
 
 
 

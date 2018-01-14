@@ -15,9 +15,9 @@ Given a specification $Spec$, its reference implementation is given as an tuple 
 \setlength{\itemsep}{0.5pt}
 \item[-] Each state $(O,ro,del,arb,vis) \in Q$ contains five tuples. Here $O$ is a set of update operations, and we assume that no two operations in $O$ have same operation identifier. $ro$ is the replica order over operations in $O$. $del \subseteq (O \times O) \cup (O \times \mathbb{R})$ is the deliver order. $(o_1,o_2) \in del$ represents that the effect of $o_1$ is delivered to the replica of $o_2$ before $o_2$ happens, while $(o,r) \in del$ represents that the effect of $o$ is delivered to replica $r$ after the time point of the last operation of replica $r$. we require $del$ to only relate operations with different replica identifier. $arb \subseteq O \times O$ is the arbitration order.
 
-    $vis = del \cdot ro$ is the visibility relation. $(o_1,o_2) \in vis$ represents that the effect of $o_1$ is visible to $o_2$, while $(o,r)$ represents that the effect of $o$ becomes visible to replica $r$ after the time point of the last operation of replica $r$. We require $vis$ to be acyclic and irreflexive, and $vis^{-1}$ to be finite. 
+    $vis = del \cdot ro$ is the visibility relation. $(o_1,o_2) \in vis$ represents that the effect of $o_1$ is visible to $o_2$, while $(o,r)$ represents that the effect of $o$ becomes visible to replica $r$ after the time point of the last operation of replica $r$. We require $vis$ to be acyclic and irreflexive, and $vis^{-1}$ to be finite.
 
-\item[-] $correct: Q \rightarrow \{ \textit{true},\textit{false} \}$ is a predicate. {\color {red} We consider only states of $Q$ that satisfy $correct$.}   
+\item[-] $correct: Q \rightarrow \{ \textit{true},\textit{false} \}$ is a predicate. {\color {red} We consider only states of $Q$ that satisfy $correct$.}
 
 \item[-] $\Sigma = \Sigma_1 \cup \Sigma_2$ is the set of transition labels, where $\Sigma_1 = \{ (m,a,b,r,ar) \vert m \in \mathbb{M}, a,b \in \mathbb{D}, r \in \mathbb{R},$ $ar$ is an arbitration order $\}$ and $\Sigma_2 = \{ addDel(o,r) \vert o \in \mathbb{O}, r \in \mathbb{R} \}$.
 
@@ -61,13 +61,13 @@ $<_l = vis \uparrow_{(O_l \times O_l)} - \{ (o_1,o_2) \vert o_2 \notin Minus(q,o
 
 Here $Minus(q,o_1)$ is defined as follows: (1) if $cont(o_1)=add(a,\top)$, then $Minus(q,o_1) = \{o_2 \vert cont(o_2)=rem(\top,a), o_1 {\xrightarrow{vis}} o_2, \neg \exists o_3,$ such that $( cont(o_3) = rem(\top,a) ) \wedge ( o_1 {\xrightarrow{vis}} o_3 {\xrightarrow{vis}} o_2 ) \}$, (2) otherwise, $Minus(q,o_1) = \emptyset$.
 
-\item[-] $correct((O,ro,del,arb,vis))$ holds, if 
+\item[-] $correct((O,ro,del,arb,vis))$ holds, if
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] $\forall o \in O$, if $cont(o)=rem(\top,a)$, then $\exists o', cont(o')=add(a,top) \wedge o \in Minus(q,o')$. 
-    
-    \item[-] $arb= \emptyset$. 
+    \item[-] $\forall o \in O$, if $cont(o)=rem(\top,a)$, then $\exists o', cont(o')=add(a,top) \wedge o \in Minus(q,o')$.
+
+    \item[-] $arb= \emptyset$.
     \end{itemize}
 \end{itemize}
 
@@ -83,7 +83,7 @@ Here $Minus(q,o_1)$ is defined as follows: (1) if $cont(o_1)=add(a,\top)$, then 
     \setlength{\itemsep}{0.5pt}
     \item[-] Given $(O,vis,arb)$, we can go through operations of $O$ by first investigate minimal (w.r.t $vis$) operations, and then their immediate successors (w.r.t $vis$), and so on. During this process, for each operation $o$, we require $o$ to be correct similarly as in case of Example 2.
 
-    \item[-] $arb$ is a acyclic total order over $add$ operations of $O$. 
+    \item[-] $arb$ is a acyclic total order over $add$ operations of $O$.
     \end{itemize}
 \end{itemize}
 
@@ -136,8 +136,6 @@ $\llbracket RImp(Spec)_{\textit{cd}} \rrbracket = \{ t \vert t \in \llbracket RI
 \subsection{Compacted Reference Implementation}
 \label{subsec:compacted reference implementation}
 
-Let $RImp(Spec)^{op}$ be an LTS obtained from $RImp(Spec)$ by transforming each $(m,a,b,r,arb)$ transition into $(m,a,b,r)$ transition, and transforming each $addDel(o,r)$ transition into $\epsilon$ transition. Two states $q_1,q_2$ of $RImp(Spec)$ are equivalent, if they are weak bisimular on $RImp(Spec)^{op}$.
-
 Given a state $q'=(O',ro',del',arb',vis')$ and $o' \in O$, Let $ip(o')$ be the immediate predecessor of $o'$ w.r.t $ro'$ in $q'$, $is(o')$ be the immediate successor of $o'$ w.r.t $ro'$ in $q'$ and $S_{delTo}(o') = \{o'' \vert (o'',o') \in del' \}$. when we say we penetrate $o'$ from $q'$, we obtain a state $q''=(O'',ro'',del'',arb'',vis'')$ as follows:
 
 \begin{itemize}
@@ -151,6 +149,8 @@ Given a state $q'=(O',ro',del',arb',vis')$ and $o' \in O$, Let $ip(o')$ be the i
 \item[-] $vis'' = del'' \cdot ro''$, and $arb'' = arb' \uparrow_{O''}$.
 \end{itemize}
 
+It is not hard to see that, the visibility among operations not penetrated remains the same after penetrating. Therefore, when penetrating more than one operations, different orders lead to same consequence.
+
 Given a plus-minus specification $Spec$ and a state $q=(O,ro,del,arb,vis)$ of $RImp(Spec)$, given a plus operation $o \in O$, the set of minus operations for $o$ in $q$, denoted $Minus(q,o)$, is a set of minus operations of $O$. Intuitively, when an plus operations and its minus operations are seen by all replica, it should be equivalent to the case where this plus operation and its minus never happens. Formally,
 
 \begin{itemize}
@@ -159,14 +159,57 @@ Given a plus-minus specification $Spec$ and a state $q=(O,ro,del,arb,vis)$ of $R
 
 \item[-] Let $S_m(q) = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq S_p(q) \}$. $S_m(q)$ is the set of redundant minus operations of $q$.
 
+\item[-] $\forall o \in S_p(q)$, if we penetrate $o$ and $O_1 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} = \{o\} \}$ from $q$ and obtain $q'$, then $S_p(q') = S_p(q) \cup \{ o \}$, and $S_m(q')= S_m(q) - O_1$.
+
+\item[-] Delivering redundant operations does not influence executions. Formally, given path $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ of $RImp(Spec)$,
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] If (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)$ is not in this path, then, for $j>i$, $\alpha_1 \cdot \ldots \cdot \alpha_j \cdot addDel(o,r) \cdot \ldots$ is an execution of $RImp(Spec)$.
+
+    \item[-] If (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)=\alpha_j$, then, for $\alpha_1 \cdot \ldots \cdot \alpha_{j-1} \cdot \alpha_{j+1} \cdot \ldots$ is an execution of $RImp(Spec)$.
+    \end{itemize}
+
 \item[-] Let $conc(q)$ be obtained from $q$ by penetrating operations in $S_p(q) \cup S_m(q)$ one by one.
 
-\item[-] We require $q$ and $conc(q)$ to be equivalent.
-\end{itemize} 
+\item[-] Let $O_1 \subseteq S_p(q)$, $O_2 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$, and $q'$ is generated from $q$ by penetrating operations in $O_1$ and $O_2$. Then $q$ and $q'$ are equivalent. Therefore, it is easy to see that $q$ and $conc(q)$ are equivalent.
+\end{itemize}
 
-It is not hard to see that, the visibility among operations not penetrated remains the same after penetrating. Therefore, penetrating using different order lead to same consequence. 
+\noindent {\bf Equivalent}: Let us explain the notion of ``equivalent''.
 
-\noindent {\bf Example 5. The case of OR-set}: We already give the definition of $Minus(q,o)$ of OR-set in Example 3. \figurename~\ref{fig:the process of penetrate operations of or-set} shows an example of erasing redundant operations. Here $+a_1$ (resp., $-a_1$) is an operation with content $add(a,\top)$ (resp., $rem(\top,a)$), and the subscript is used to distinguish different $add(a,top)$ operations. In \figurename~\ref{fig:the process of penetrate operations of or-set} (a), $+a_2$ is the redundant $add$ operation, and $-a_2$ is the redundant $rem$. We penetrate $+a_1$ from \figurename~\ref{fig:the process of penetrate operations of or-set} (a) to \figurename~\ref{fig:the process of penetrate operations of or-set} (b), while $ip(+a_2) = +f$, $is(+a_2) = +c$, and we explicitly color $S_{delTo}(+a_2)$ with blue color.  We penetrate $-a_2$ from \figurename~\ref{fig:the process of penetrate operations of or-set} (b) to \figurename~\ref{fig:the process of penetrate operations of or-set} (c). 
+Let $O_1 \subseteq S_p(q)$, $O_2 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$, and $q'$ is generated from $q$ by penetrating operations in $O_1$ and $O_2$. We say that $q$ and $q'$ are equivalent, if the following holds:
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] In $RImp(Spec)$, given a path $q {\xrightarrow{\alpha_1}} q_1 \ldots$, there exists a path $q' {\xrightarrow{\alpha'_1}} q'_1 \ldots$, such that,
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] $\alpha_i = addDel(o,r) \wedge o \notin O_r$: $\alpha'_i = \alpha_i$,
+
+    \item[-] $\alpha_i = addDel(o,r) \wedge o \in O_r$: $\alpha'_i = \epsilon$,
+
+    \item[-] $\alpha_i = m(a,b,r,arb)$: $\alpha'_i = m(a,b,r,arb-(O_1 \cup O_2))$. 
+    
+    \item[-] $q'_i$ is obtained from $q_i$ by penetrating operations of $O_1$ and $O_2$.
+    \end{itemize}
+
+\item[-] In $RImp(Spec)$, given a path $q' {\xrightarrow{\alpha'_1}} q'_1 \ldots$, there exists a path $q {\xrightarrow{\alpha_1}} q_1 \ldots$, such that,
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] $\alpha'_i = addDel(o,r)$: $\alpha_i = \alpha'_i \wedge o \notin O_r$,
+
+    %\item[-] $\alpha'_i = \epsilon \wedge \alpha_i = addDel(o,r) \wedge o \in O_r$,
+
+    \item[-] $\alpha'_i = m(a,b,r,arb')$: $\alpha_i = m(a,b,r,arb)$, where $arb$ is obtained from $arb'$ by adding $O_1 \cup O_2$ and possible relations.
+
+    \item[-] $q'_i$ is obtained from $q_i$ by penetrating operations of $O_1$ and $O_2$.
+    \end{itemize}
+\end{itemize}
+
+
+\noindent {\bf Example 5. The case of OR-set}: We already give the definition of $Minus(q,o)$ of OR-set in Example 3. \figurename~\ref{fig:the process of penetrate operations of or-set} shows an example of erasing redundant operations. Here $+a_1$ (resp., $-a_1$) is an operation with content $add(a,\top)$ (resp., $rem(\top,a)$), and the subscript is used to distinguish different $add(a,top)$ operations. In \figurename~\ref{fig:the process of penetrate operations of or-set} (a), $+a_2$ is the redundant $add$ operation, and $-a_2$ is the redundant $rem$. We penetrate $+a_1$ from \figurename~\ref{fig:the process of penetrate operations of or-set} (a) to \figurename~\ref{fig:the process of penetrate operations of or-set} (b), while $ip(+a_2) = +f$, $is(+a_2) = +c$, and we explicitly color $S_{delTo}(+a_2)$ with blue color.  We penetrate $-a_2$ from \figurename~\ref{fig:the process of penetrate operations of or-set} (b) to \figurename~\ref{fig:the process of penetrate operations of or-set} (c).
 
 
 \begin{figure}[t]
@@ -177,10 +220,16 @@ It is not hard to see that, the visibility among operations not penetrated remai
   \label{fig:the process of penetrate operations of or-set}
 \end{figure}
 
+The following lemma states that our $Minus$ for OR-set is correct. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
-\noindent {\bf Example 6. The case of Distributed list}: Given $q=(O,ro,del,arb,vis)$ and add operation $o$ where $cont(o)=add(a,\_,\top)$, $o' \in Minus(q,o)$, if (1) $cont(o')=rem(pos,a)$, and (2) Recall that we have already check the correctness of operations of $(O,vis,arb)$ as in Example 2. When we comes to $o'$ in this process, $seq(o')[pos]=o$. 
+\begin{lemma}
+\label{lemma:Minus for OR-set is correct}
+Our definition of $Minus$ for OR-set is correct.
+\end{lemma}
 
-\figurename~\ref{fig:the process of penetrate operations in distributed list} shows an example of distributed list. Here $o_1 = add(a,1,\top)$, $o_2 = add(b,1,\top)$, $o_3 = add(c,2,\top)$, $o_4 = add(c,2,\top)$, $o_5 = add(d,3,\top)$, and the arbitration order is $o_1 {\xrightarrow{arb}} o_4 {\xrightarrow{arb}} o_3 {\xrightarrow{arb}} o_2 {\xrightarrow{arb}} o_5$. In \figurename~\ref{fig:the process of penetrate operations in distributed list} (a), $o_3$ is the redundant $add$ operations, and $rem(2,c)$ and $rem(3,c)$ are the redundant $rem$ operations. After penetrating $o_3$, $rem(2,c)$ and $rem(3,c)$, we obtain \figurename~\ref{fig:the process of penetrate operations in distributed list} (b). 
+\noindent {\bf Example 6. The case of Distributed list}: Given $q=(O,ro,del,arb,vis)$ and add operation $o$ where $cont(o)=add(a,\_,\top)$, $o' \in Minus(q,o)$, if (1) $cont(o')=rem(pos,a)$, and (2) Recall that we have already check the correctness of operations of $(O,vis,arb)$ as in Example 2. When we comes to $o'$ in this process, $seq(o')[pos]=o$.
+
+\figurename~\ref{fig:the process of penetrate operations in distributed list} shows an example of distributed list. Here $o_1 = add(a,1,\top)$, $o_2 = add(b,1,\top)$, $o_3 = add(c,2,\top)$, $o_4 = add(c,2,\top)$, $o_5 = add(d,3,\top)$, and the arbitration order is $o_1 {\xrightarrow{arb}} o_4 {\xrightarrow{arb}} o_3 {\xrightarrow{arb}} o_2 {\xrightarrow{arb}} o_5$. In \figurename~\ref{fig:the process of penetrate operations in distributed list} (a), $o_3$ is the redundant $add$ operations, and $rem(2,c)$ and $rem(3,c)$ are the redundant $rem$ operations. After penetrating $o_3$, $rem(2,c)$ and $rem(3,c)$, we obtain \figurename~\ref{fig:the process of penetrate operations in distributed list} (b).
 
 \begin{figure}[t]
   \centering
@@ -188,72 +237,73 @@ It is not hard to see that, the visibility among operations not penetrated remai
 %\vspace{-10pt}
   \caption{The process of penetrating operations of distributed list}
   \label{fig:the process of penetrate operations in distributed list}
-\end{figure}
+\end{figure} 
 
-Note that, in the case of OR-set, given $rem$ operation $o_r$, $\vert \{ o_a \vert o_r \in Minus(o_a) \} \vert$ may be larger than $1$; while in the case of distributed list, given $rem$ operation $o_r$, $\vert \{ o_a \vert o_r \in Minus(o_a) \} \vert = 1$. 
-
-Given a plus-minus specification $Spec$, its compacted reference implementation is given as an tuple $CRImp(Spec) = (Q,\Sigma,q_0,\rightarrow,li,correct)$. $CRImp(Spec)$ can be obtained from $RImp(Spec) = (Q',\Sigma,q_0,\rightarrow',li,correct)$ as follows: 
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] $Q \subseteq Q'$. $\forall o \in Q$, $q = conc(q)$. 
-
-\item[-] If $\alpha = addDel(\_,\_)$: $q_1 {\xrightarrow{\alpha}} q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{\alpha}}' q_3 \wedge q_2 = conc(q_3)$. 
-
-\item[-] If $\alpha=m(\_,\_,\_,\_)$ and $m$ is a query method: $q_1 {\xrightarrow{\alpha}} q_2$, if $q_1 {\xrightarrow{\alpha}}' q_2$. 
-
-\item[-] If $\alpha=m(a,b,r,arb)$ and $m$ is an update method: $q_1 {\xrightarrow{m(a,b,r,arb)}} q_2$, if $\exists q_3,arb'$, such that $q_1 {\xrightarrow{m(a,b,r,arb')}}' q_3 \wedge q_2 = conc(q_3)$. 
-\end{itemize} 
-
-
-
-
-
-
-
-
-Given an execution $t = \alpha_1 \cdots \in \llbracket RImp(Spec) \rrbracket$, its abstract trace $absT(t) = (O,<_{\textit{ro}},<_{\textit{vis}},<_{\textit{arb}})$ is generated as follows: Let $q_1,\ldots \in Q$ be the set of states, such that $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$.
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] $O$ is the set of operations generated during $t$.
-
-\item[-] $<_{\textit{ro}} = <_{r_1} \cup \ldots \cup <_{r_{\vert \mathbb{R} \vert}}$, where for each $i$, $<_i$ is the occurring order of operations with the $i$-th identifier in $\mathbb{R}$ over $t$.
-
-\item[-] $(o_1,o_2) \in <_{\textit{vis}}$, if one of the following case holds: (1) $o_1$ is delivered into replica of $o_2$, and then $o_2$ happens, (2) $o_1$ and $o_2$ are of same replica and $o_1$ happens earlier than $o_2$.
-
-\item[-] $<_{\textit{arb}}$ is the union of arbitration order of each $q_i$.
-\end{itemize}
-
-
-
-
-
-
-
-
-
-
-
-
-
-Let $poSet(\llbracket CRImp(Spec) \rrbracket)$ (resp., $poSet(\llbracket RImp(Spec) \rrbracket)$) be the sets of sequences obtained by using poset upon sequences in $\llbracket CRImp(Spec) \rrbracket$ (resp., $\llbracket RImp(Spec) \rrbracket$). The following lemma stats that $poSet(\llbracket CRImp(Spec) \rrbracket) = poSet(\llbracket RImp(Spec) \rrbracket)$. It is not hard to prove this since when defining transition relation of $CRImp(Spec)$ from that of $CRImp(Spec)$, we replace a state with a equivalent state. Its proof is obvious and omitted.
+The following lemma states that our $Minus$ for distributed list is correct. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
 \begin{lemma}
-\label{lemma:CRImpcdSpec and RImpcdSpec contain the same set of trace}
-$poSet(\llbracket CRImp(Spec) \rrbracket) = poSet(\llbracket RImp(Spec) \rrbracket)$.
+\label{lemma:Minus for distributed list is correct}
+Our definition of $Minus$ for distributed list is correct.
 \end{lemma}
 
-Similar as the case of reference implementation, we can add the restriction of causal-delivery into compacted reference implementation.
+Note that, in the case of OR-set, given $rem$ operation $o_r$, $\vert \{ o_a \vert o_r \in Minus(o_a) \} \vert$ may be larger than $1$; while in the case of distributed list, given $rem$ operation $o_r$, $\vert \{ o_a \vert o_r \in Minus(o_a) \} \vert = 1$.
 
-Given a plus-minus specification $Spec$, its compacted reference implementation with causal delivery is given as an tuple $CRImp_{cd}(Spec) = (Q,\Sigma,vis,q_0,li,\rightarrow_{cd},livReq)$. $CRImp_{cd}(Spec)$ can be obtained from $CRImp(Spec) = (Q,\Sigma,vis,q_0,li,\rightarrow_c,livReq)$ by only changing the transition rules of delivering operations as follows: $\rightarrow_{cd} = \{ q_1 {\xrightarrow{addDel(o,r)}}_{cd} q_2 \vert q_1 {\xrightarrow{addDel(o,r)}}_c q_2 \wedge$ $o$ is minimal w.r.t $<_{hb}$ among operations not visible to replica $r$ in $q_1 \}$.
+Given a plus-minus specification $Spec$, its compacted reference implementation is given as an tuple $CRImp(Spec) = (Q,\Sigma,q_0,\rightarrow,li,correct)$. $CRImp(Spec)$ can be obtained from $RImp(Spec) = (Q',\Sigma,q_0,\rightarrow',li,correct)$ as follows:
 
-It is easy to see that $CRImp_{cd}(Spec)$ contains all the traces of $CRImp(Spec)$ that are causal delivery, as stated by the following lemma. Its proof is obvious and omitted.
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $Q \subseteq Q'$. $\forall o \in Q$, $q = conc(q)$.
+
+\item[-] If $\alpha = addDel(\_,\_)$: $q_1 {\xrightarrow{\alpha}} q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{\alpha}}' q_3 \wedge q_2 = conc(q_3)$.
+
+\item[-] If $\alpha=m(\_,\_,\_,\_)$ and $m$ is a query method: $q_1 {\xrightarrow{\alpha}} q_2$, if $q_1 {\xrightarrow{\alpha}}' q_2$.
+
+\item[-] If $\alpha=m(a,b,r,arb)$ and $m$ is an update method: $q_1 {\xrightarrow{m(a,b,r,arb)}} q_2$, if $\exists q_3,arb'$, such that $q_1 {\xrightarrow{m(a,b,r,arb')}}' q_3 \wedge q_2 = conc(q_3)$.
+\end{itemize}
+
+Let us use an example of \figurename~\ref{fig:the process of generate abstract trace for compacted reference implementation} to show how to generate abstract trace for executions of $\llbracket CRImp(Spec) \rrbracket$. Given an execution $t = \alpha_1 \cdot \alpha_2 \cdot \alpha_3 \cdot \alpha_4 \llbracket CRImp(Spec) \rrbracket$, its abstract trace $absT(t)$ is generated as follows: Assume $q_0 {\xrightarrow{\alpha_1}}_c q_1 {\xrightarrow{\alpha_2}}_c q_2 {\xrightarrow{\alpha_3}}_c q_3 {\xrightarrow{\alpha_4}}_c q_4$ be a path of $CRImp(Spec)$, let $\rightarrow_r$ be the transition relation of $RImp(Spec)$,
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $q_1 {\xrightarrow{\alpha_2}}_c q_2$: By definition of $\rightarrow_c$, $\exists q'_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_r q'_2 \wedge conc(q'_2)=q_2$. Let $O_2$ be the set of operations penetrated when generating $q_2$ from $q'_2$.
+
+\item[-] $q_2 {\xrightarrow{\alpha_3}}_c q_3$: By definition of $\rightarrow_c$, $\exists q'_3$, such that $q_2 {\xrightarrow{\alpha'_3}}_r q'_3 \wedge conc(q'_3)=q_3$. Let $O_3$ be the set of operations penetrated when generating $q_3$ from $q'_3$.
+
+Since $q_2$ is obtained from $q'_2$ by possibly penetrating operations in $O_2$, by the definition of equivalence, we can see that there exists $\alpha''_3, q''_3$, such that $q'_2 {\xrightarrow{\alpha''_3}}_r q''_3$, and $q'_3$ is obtained from $q''_3$ by penetrating operations in $O_2$.
+
+\item[-] $q_3 {\xrightarrow{\alpha_4}}_c q_4$: By definition of $\rightarrow_c$, $\exists q'_4$, such that $q_3 {\xrightarrow{\alpha'_4}}_r q'_4 \wedge conc(q'_4)=q_4$. Let $O_3$ be the set of operations penetrated when generating $q_3$ from $q'_3$.
+
+It is easy to see that $q_3$ is obtained from $q''_3$ by penetrating $O_2 \cup O_3$. By the definition of equivalence, we can see that there exists $\alpha''_4,q''_4$, such that $q''_3 {\xrightarrow{\alpha''_4}}_r q''_4$, and $q'_4$ is obtained from $q''_4$ by penetrating operations in $O_2 \cup O_3$.
+
+\item[-] $absT(t)$ is the abstract trace of $\alpha_1 \cdot \alpha'_2 \cdot \alpha''_3 \cdot \alpha''_4$ in $RImp(Spec)$.
+\end{itemize}
+
+When $t$ contains more elements, $absT(t)$ is similarly constructed.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.4 \textwidth]{figures/PIC-Generate-AbstractTrace-Compact.pdf}
+%\vspace{-10pt}
+  \caption{The process of generate abstract trace for compacted reference implementation}
+  \label{fig:the process of generate abstract trace for compacted reference implementation}
+\end{figure}
+
+Let $absT(RImp(Spec)) = \{ x \vert \exists t \in \llbracket RImp(Spec) \rrbracket, x = absT(t) \}$. Let $absT(CRImp(Spec)) = \{ x \vert \exists t \in \llbracket CRImp(Spec) \rrbracket, x = absT(t) \}$. The following lemma stats that $absT(RImp(Spec)) = absT(CRImp(Spec))$. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
 \begin{lemma}
-\label{lemma:CRImpcdSpec contains all the traces of CRImpSpec that are causal delivery}
+\label{lemma:RIMPSpec and CRIMPSpec have same abstract traces}
+$absT(RImp(Spec)) = absT(CRImp(Spec))$.
+\end{lemma}
 
-$\llbracket CRImp(Spec)_{cd} \rrbracket = \{ t \vert t \in \llbracket CRImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$.
+\noindent {\bf Partial Causal-Delivery}:
+
+Given a plus-minus specification $Spec$, its compacted reference implementation with causal delivery is given as an tuple $CRImp(Spec)_{\textit{cd}} = (Q,\Sigma,q_0,\rightarrow_{\textit{cd}},li,correct)$. $CRImp(Spec)_{\textit{cd}}$ can be obtained from $CRImp(Spec) = (Q,\Sigma,q_0,\rightarrow,li,correct)$ by only change the $addDel$  transition rules as follows: $q_1 {\xrightarrow{addDel(o,r)}}_{cd} q_2$ if $q_1 {\xrightarrow{addDel(o,r)}} q_2 \wedge $ $o$ is minimal w.r.t $<_{hb}$ among operations not visible to replica $r$ nor operation of replica $r$ in $q_1 \}$.
+
+{\color {red}Note that since $CRImp(Spec)$ completely forget redundant operations during executing, $CRImp(Spec)_{\textit{cd}}$ does not guarantee the causal-delivery referring redundant operations. However, we have already states that their delivery does not influence executions.} The following lemma states that $CRImp(Spec)_{\textit{cd}}$ guarantees causal-delivery over non-redundant operations. Its proof is obvious and omitted.
+
+\begin{lemma}
+\label{lemma:CRImpcdSpec guarantees causal delivery for non-redundant operations}
+$\llbracket CRImp(Spec)_{cd} \rrbracket = \{ t \vert t \in \llbracket CRImp(Spec) \rrbracket \wedge $ non-redundant operations in $t$ satisfies causal delivery $\}$.
 \end{lemma}
 
 
