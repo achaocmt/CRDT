@@ -136,15 +136,15 @@ $\llbracket RImp(Spec)_{\textit{cd}} \rrbracket = \{ t \vert t \in \llbracket RI
 \subsection{Compacted Reference Implementation}
 \label{subsec:compacted reference implementation}
 
-Given a state $q'=(O',ro',del',arb',vis')$ and $o' \in O$, Let $ip(o')$ be the immediate predecessor of $o'$ w.r.t $ro'$ in $q'$, $is(o')$ be the immediate successor of $o'$ w.r.t $ro'$ in $q'$ and $S_{delTo}(o') = \{o'' \vert (o'',o') \in del' \}$. when we say we penetrate $o'$ from $q'$, we obtain a state $q''=(O'',ro'',del'',arb'',vis'')$ as follows:
+Given a state $q'=(O',ro',del',arb',vis')$ and $o' \in O$, Let $ip(o',q')$ be the immediate predecessor of $o'$ w.r.t $ro'$ in $q'$, $is(o'.,q')$ be the immediate successor of $o'$ w.r.t $ro'$ in $q'$ and $S_{delTo}(o',q') = \{o'' \vert (o'',o') \in del' \}$. When we say we penetrate $o'$ from $q'$, we obtain a state $q''=(O'',ro'',del'',arb'',vis'')$ as follows:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
 \item[-] $O'' = O' - \{ o' \}$.
 
-\item[-] $ro''$ is obtained from $ro'$ by removing pairs contain $o'$ and adding $(ip(o'),is(o'))$.
+\item[-] $ro''$ is obtained from $ro'$ by removing pairs contain $o'$ and adding $(ip(o',q'),is(o',q'))$.
 
-\item[-] $del''$ is obtained from $del'$ by removing pairs contain $o'$ and adding $\{ (o_1,is(o')) \vert o_1 \in S_{delTo}(o')\}$.
+\item[-] $del''$ is obtained from $del'$ by removing pairs contain $o'$ and adding $\{ (o_1,is(o',q')) \vert o_1 \in S_{delTo}(o',q')\}$.
 
 \item[-] $vis'' = del'' \cdot ro''$, and $arb'' = arb' \uparrow_{O''}$.
 \end{itemize}
@@ -157,22 +157,24 @@ Given a plus-minus specification $Spec$ and a state $q=(O,ro,del,arb,vis)$ of $R
 \setlength{\itemsep}{0.5pt}
 \item[-] Let $S_p(q) = \{ o_1 \vert o_1$ is a plus operation, $\forall r \in \mathbb{R}, \exists o_2 \in Minus(q,o_1)$ such that $(o_2,r) \in vis$ or $(o_2,o_3) \in vis$ and $o_3$ is of replica $r\}$. $S_p(q)$ is the set of redundant plus operations of $q$.
 
-\item[-] Let $S_m(q) = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq S_p(q) \}$. $S_m(q)$ is the set of redundant minus operations of $q$.
+\item[-] Let $S_m(q) = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq S_p(q) \}$. $S_m(q)$ is the set of redundant minus operations of $q$. 
 
-\item[-] $\forall o \in S_p(q)$, if we penetrate $o$ and $O_1 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} = \{o\} \}$ from $q$ and obtain $q'$, then $S_p(q') = S_p(q) \cup \{ o \}$, and $S_m(q')= S_m(q) - O_1$.
+\item[-] 
 
-\item[-] Delivering redundant operations does not influence executions. Formally, given path $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ of $RImp(Spec)$,
+%\item[-] $\forall o \in S_p(q)$, if we penetrate $o$ and $O_1 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} = \{o\} \}$ from $q$ and obtain $q'$, then $S_p(q') = S_p(q) - \{ o \}$, and $S_m(q')= S_m(q) - O_1$.
 
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] If (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)$ is not in this path, then, for $j>i$, $\alpha_1 \cdot \ldots \cdot \alpha_j \cdot addDel(o,r) \cdot \cdot \alpha_{j+1} \ldots \in \llbracket RImp(Spec) \rrbracket$.
+%\item[-] Delivering redundant operations does not influence executions. Formally, given path $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ of $RImp(Spec)$,
 
-    \item[-] If (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)=\alpha_j$, then, for $\alpha_1 \cdot \ldots \cdot \alpha_{j-1} \cdot \alpha_{j+1} \cdot \ldots \in \llbracket RImp(Spec) \rrbracket$.
-    \end{itemize}
+%    \begin{itemize}
+%    \setlength{\itemsep}{0.5pt}
+%    \item[-] If (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)$ is not in this path, then, for $j>i$, $\alpha_1 \cdot \ldots \cdot \alpha_j \cdot addDel(o,r) \cdot \cdot \alpha_{j+1} \ldots \in \llbracket RImp(Spec) \rrbracket$.
+
+%    \item[-] If (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)=\alpha_j$, then, for $\alpha_1 \cdot \ldots \cdot \alpha_{j-1} \cdot \alpha_{j+1} \cdot \ldots \in \llbracket RImp(Spec) \rrbracket$.
+%    \end{itemize}
 
 \item[-] Let $conc(q)$ be obtained from $q$ by penetrating operations in $S_p(q) \cup S_m(q)$ one by one.
 
-\item[-] Let $O_1 \subseteq S_p(q)$, $O_2 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$, and $q'$ is generated from $q$ by penetrating operations in $O_1$ and $O_2$. Then $q$ and $q'$ are equivalent. Therefore, it is easy to see that $q$ and $conc(q)$ are equivalent.
+\item[-] Let $O_1 \subseteq S_p(q)$, $O_2 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$, and $q'$ is generated from $q$ by penetrating operations in $O_1$ and $O_2$. Then we require $q$ and $q'$ to be equivalent. Therefore, it is easy to see that $q$ and $conc(q)$ are equivalent.
 \end{itemize}
 
 \noindent {\bf Equivalent}: Let us explain the notion of ``equivalent''.
