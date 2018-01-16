@@ -22,10 +22,25 @@ Given
 \item[-] $\mathbb{O}$ be a infinite set of operation identifiers.
 \end{itemize}
 
+\todo{Define ``operation label'' which is $m(a,b)$ and denote operation labels by $\ell$. Operation content is not a good name.}
+
 An operation $o$ is a tuple $(x,rid,oid)$, where $x =  m(a,b) \in \mathbb{M} \times \mathbb{D} \times \mathbb{D}$ is called operation content, $rid \in \mathbb{R}$ and $oid \in \mathbb{O}$. Here $o$ is called with argument $a$ and returns $b$. Let $cont(o)$ be the operation content of operation $o$. This definition extends naturally to the case when there are more than one arguments.
 
-CRDT has two kinds of method: query methods and update methods: Operations of query methods take effect only in one replica, while operations of update methods will be delivered to other replicas. A specification $Spec$ is a function that maps each operation content $x$ into a set of tuples $(O,<,<_{\textit{arb}},l)$, where {\color {red}$O$ is a set of update operations}, $<$ is a partial over $O$, {\color {red}$<_{\textit{arb}}$ is a partial order over $O \cup \{ o \}$ called arbitration order, where $cont(o)=x$}, and $l$ map each operation of $O$ with its operation content. Here we require that each operation in $O \cup \{ o \}$ has unique operation identifier. Such $(O,<,<_{\textit{arb}},l)$ tuples are called ($\Sigma$-labeled) partial-ordered set (poset, for short), where $\Sigma$ is a set of update operation contents contains that of $O$. Two labeled posets are isomorphic if there exists a bijection of operations that preserve operation contents, labels and orders. Here we require $Spec$ to be isomorphic closed: if $x \in Spec$ and $x$ and $y$ are isomorphic, then $y \in Spec$. Since the labeling function of poset is fixed, we could ignore it when the context is clear.
+\todo{Use $r$ instead of $rid$ and $i$ instead of $oid$. But be careful to not use $i$ in other contexts, for instance remove the $\forall i$ from the previous section. Keep $i$ and $j$ only for operation ids.}
 
+CRDT has two kinds of method: query methods and update methods: Operations of query methods take effect only in one replica, while operations of update methods will be delivered to other replicas. A specification $Spec$ is a function that maps each operation content $x$ into a set of tuples $(O,<,<_{\textit{arb}},l)$, where {\color {red}$O$ is a set of update operations}, $<$ is a partial over $O$, {\color {red}$<_{\textit{arb}}$ is a partial order over $O \cup \{ o \}$ called arbitration order, where $cont(o)=x$}, and $l$ map each operation of $O$ with its operation content. 
+\todo{The rest of the paragraph should be a footnote. Uninteresting details.}
+Here we require that each operation in $O \cup \{ o \}$ has unique operation identifier. Such $(O,<,<_{\textit{arb}},l)$ tuples are called ($\Sigma$-labeled) partial-ordered set (poset, for short), where $\Sigma$ is a set of update operation contents contains that of $O$. Two labeled posets are isomorphic if there exists a bijection of operations that preserve operation contents, labels and orders. Here we require $Spec$ to be isomorphic closed: if $x \in Spec$ and $x$ and $y$ are isomorphic, then $y \in Spec$. Since the labeling function of poset is fixed, we could ignore it when the context is clear.
+
+\todo{I would suggest to define specifications only for query operations. I guess that you need to include $o$ in $O$ for the updates like inserting in a list. But this is kind of ugly, so I would prefer that $O$ doesn't contain $o$}
+
+\todo{I guess $l$ is not needed. An operation is already a label (content in your terms) with ids}
+
+\todo{Use $\mathit{arb}$ instead of $<_{\textit{arb}}$. I told you several times, don't try to minimize the space occupied by your notations. And don't use complicated indices or superscripts.}
+
+\todo{I don't see the "deterministic" condition: for a given tuple $(O,<,arb)$, the return value is unique.}
+
+\todo{I think that this part about plus-minus specifications is not useful here. Give standard examples and push this discussion/examples when needed.}
 
 Some specific specifications are called plus-minus specifications and have the following features:
 
@@ -39,6 +54,8 @@ Some specific specifications are called plus-minus specifications and have the f
 Let us give several examples:
 
 \noindent {\bf Example 1. OR-set}: Observed-Remove Set (OR-set for short) \cite{Shapiro:2011,Bieniusa:2012} contains four methods: (1) $add(a,\top)$ inserts $a$ into set, (2) $rem(\top,a)$ remove $a$ from set, (3) $lookup(a, b \in \{ \textit{true}, \textit{false} \})$ checks whether $a$ is in set, and $elements(\top, S \subseteq \mathbb{D})$ returns all the elements in set with a set $S$. Here $\top$ is a specific value of $\mathbb{D}$. OR-set is a plus-minus specification, while $add$ is the ``plus method'', $rem$ is the ``minus method'', and $lookup$ and $elements$ are query methods.
+
+\todo{Why do you need $\top$ as argument ?? If it's because you want to use operation labels for messages as well, I don't like it. Each part of the formalism should be as clear as possible, without unnecessary junk.}
 
 Let $\Sigma_{\textit{ORS}} = \{ add(a,\top),rem(\top,a) \vert a \in \mathbb{D} \}$ be the set of contents of update operations. The specification $S_{\textit{ORS}}$ is as follows: (1) For $x=add(a,\top)$ or $x = rem(\top,a)$, $S_{\textit{ORS}}(x)$ is the set of all $\Sigma_{\textit{ORS}}$- labeled posets with $<_{\textit{arb}} = \emptyset$, (2) For $x=lookup(a,\textit{true})$ (resp., $x=lookup(a,\textit{false})$), $S_{\textit{ORS}}(x)$ is the set of all $\Sigma_{\textit{ORS}}$- labeled posets $\rho$ with $<_{\textit{arb}} = \emptyset$, such that the projection of operations of $a$ contains a maximal element labeled by $add(a,\top)$ (resp., contains no maximal element labeled by $add(a,\top)$), and (3) $S_{\textit{ORS}}(elements(\top,S))$ is the $\Sigma_{\textit{ORS}}$- labeled posets that is in $S_{\textit{ORS}}(lookup(a,\textit{true}))$ for each $a \in S$, and is in $S_{\textit{ORS}}(lookup(a,\textit{false}))$ for each $a \notin S$.
 
@@ -56,6 +73,8 @@ The specification $S_{\textit{list}}$ is defined as follows: $(O,<,<_{\textit{ar
 \item[-] {\color {red}Let $Op(o)$ be the set of $add$ operations in $O \cup \{ o \}$ and not been deactivated by $rem$ operations in $O$, and let $seq(o)$ be obtained by ordering elements of $Op(o)$ with $<_{\textit{arb}}$ order.} If $cont(o)=add(a,pos)$, then $o$ is the $pos$-th in $seq(o)$; if $cont(o)=rem(pos,a)$, then the content of $pos$-th element of $seq(o)$ is $add(a,\_)$; if $cont(o)=read(\top,l)$, then $l$ is the sequence of operation contents of $seq(o)$.
 \end{itemize}
 
+\todo{Give a declarative specification of the list, like for OR-set. Descriptions which look like ``imperative programs'', e.g., "We can go through operations", "During this process".}
+
 In our definition of distributed list specification, the arbitration order works similarly as the list order of strong list specification in \cite{Attiya:2016}.
 
 
@@ -64,6 +83,8 @@ In our definition of distributed list specification, the arbitration order works
 
 \subsection{Consistencies}
 \label{subsec:consistencies}
+
+\todo{Define a history as $(O,\mathit{ro})$ (again, forget about long indices), then an annotated history as $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ (dont use $\textit{textit}$).}
 
 An abstract trace is a tuple $(O,<_{\textit{ro}},<_{\textit{vis}},<_{\textit{arb}})$, where
 
@@ -77,6 +98,8 @@ An abstract trace is a tuple $(O,<_{\textit{ro}},<_{\textit{vis}},<_{\textit{arb
 
 \item[-] $<_{\textit{arb}}$ is the arbitration order. {\color {red}It only relate update operations.}
 \end{itemize}
+
+\todo{Local interpretation meant something else in our previous paper. Use operation context for $(\mathit{vis}^{-1}(o),<,\mathit{arb}\downarrow (\mathit{vis}^{-1}(o)\times \mathit{vis}^{-1}(o)))$ where $<$ is defined as you say.}
 
 Given an abstract trace $t = (O,<_{\textit{ro}}<_{\textit{vis}},<_{\textit{arb}})$ and $o \in O$, {\color {red}the local interpretation of $o$ is a tuple $li(o) = ( O_{li} ,<_{li(o)}, <_{\textit{li-arb}} )$}, where
 
@@ -92,6 +115,8 @@ Given an abstract trace $t = (O,<_{\textit{ro}}<_{\textit{vis}},<_{\textit{arb}}
 \end{itemize}
 
 Let us define strong-return-value consistency (SRV consistency, for short) as follows:
+
+\todo{Define ``an annotated history satisfying SRVC and then a history satisfying SRVC, i.e., there exists $\mathit{vis}$ and $\mathit{arb}$ such that the resulting annotated history satisfies SRVC.}
 
 \begin{definition}[Strong-return-value consistency]
 \label{definition:strong return value consistency}

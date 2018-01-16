@@ -11,11 +11,15 @@ In this section, we propose an abstract implementation called reference implemen
 
 Given a specification $Spec$, its reference implementation is given as an tuple $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow,li,correct)$, where
 
+\todo{Again, what is the purpose of $\mathit{li}$ and $correct$ ? The implementation should be a transition system like in the first section. No additional elements in the tuples.}
+
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
 \item[-] Each state $(O,ro,del,arb,vis) \in Q$ contains five tuples. Here $O$ is a set of update operations, and we assume that no two operations in $O$ have same operation identifier. $ro$ is the replica order over operations in $O$. $del \subseteq (O \times O) \cup (O \times \mathbb{R})$ is the deliver order. $(o_1,o_2) \in del$ represents that the effect of $o_1$ is delivered to the replica of $o_2$ before $o_2$ happens, while $(o,r) \in del$ represents that the effect of $o$ is delivered to replica $r$ after the time point of the last operation of replica $r$. we require $del$ to only relate operations with different replica identifier. $arb \subseteq O \times O$ is the arbitration order.
 
     $vis = del \cdot ro$ is the visibility relation. $(o_1,o_2) \in vis$ represents that the effect of $o_1$ is visible to $o_2$, while $(o,r)$ represents that the effect of $o$ becomes visible to replica $r$ after the time point of the last operation of replica $r$. We require $vis$ to be acyclic and irreflexive, and $vis^{-1}$ to be finite.
+
+\todo{$vis$ shouldn't be in the state.}
 
 \item[-] $correct: Q \rightarrow \{ \textit{true},\textit{false} \}$ is a predicate. {\color {red} We consider only states of $Q$ that satisfy $correct$.}
 
