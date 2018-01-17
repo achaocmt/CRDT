@@ -112,50 +112,61 @@ In our definition of distributed list specification, the arbitration order works
 \subsection{Consistencies}
 \label{subsec:consistencies}
 
-\todo{Define a history as $(O,\mathit{ro})$ (again, forget about long indices), then an annotated history as $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ (dont use $\textit{textit}$).}
+\todo{Define a history as $(O,\mathit{ro})$ (again, forget about long indices), then an annotated history as $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ (dont use $\textit{textit}$).} 
 
-An abstract trace is a tuple $(O,<_{\textit{ro}},<_{\textit{vis}},<_{\textit{arb}})$, where
+A history is a tuple $(O,\mathit{ro})$, where 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
 \item[-] $O$ is a set of operations.
 
-\item[-] $<_{\textit{ro}}$ is called the replica order. $\forall r \in \mathbb{R}$, $<_{\textit{ro}}$ is a irreflexive total order over operations with replica identifier $r$. $<_{\textit{ro}}$ does not relate operations with different replica identifiers. We also require that $\forall o \in O$, $<_{\textit{ro}}^{-1}(o)$ is finite.
-
-\item[-] $<_{\textit{vis}}$ is called the visibility order. We require that $\forall o \in O$, $<_{\textit{vis}}^{-1}(o)$ is finite.
-
-\item[-] $<_{\textit{arb}}$ is the arbitration order. {\color {red}It only relate update operations.}
+\item[-] $\mathit{ro}$ is called the replica order. For each replica $r \in \mathbb{R}$, $\mathit{ro}$ is a irreflexive total order over operations with replica identifier $r$. $\mathit{ro}$ does not relate operations with different replica identifiers. We also require that for each operation $o \in O$, $\mathit{ro}^{-1}(o)$ is finite. 
 \end{itemize}
 
-\todo{Local interpretation meant something else in our previous paper. Use operation context for $(\mathit{vis}^{-1}(o),<,\mathit{arb}\downarrow (\mathit{vis}^{-1}(o)\times \mathit{vis}^{-1}(o)))$ where $<$ is defined as you say.}
-
-Given an abstract trace $t = (O,<_{\textit{ro}}<_{\textit{vis}},<_{\textit{arb}})$ and $o \in O$, {\color {red}the local interpretation of $o$ is a tuple $li(o) = ( O_{li} ,<_{li(o)}, <_{\textit{li-arb}} )$}, where
+An annotated history is a tuple $(O,\mathit{ro},\mathit{vis},\mathit{arb})$, where 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] {\color {red}$O_{li}$ is the set of update operations in $<_{\textit{vis}}^{-1}(o)$,}
+\item[-] $(O,\mathit{ro})$ is a history. 
 
-\item[-] {\color {red}$<_{\textit{li-arb}}$ is the projection of $<_{\textit{arb}}$ over update operations of $<_{\textit{vis}}^{-1}(o) \cup \{ o \}$. }
+\item[-] $\mathit{vis}$ is called the visibility order. We require that for each operation $o \in O$, $\mathit{vis}^{-1}(o)$ is finite.
 
-\item[-] $<_{li(o)} \subseteq <_{\textit{vis}} \uparrow_{(O_{li} \times O_{li})}$ is irreflexive. {\color {red}If $o_1,o_2 \in O_{li}$, $(o_1,o_2) \in <_{\textit{vis}}$ via $o'_1,\ldots,o'_m$, and $o'_1,\ldots,o'_m \in O_{li}$, then $(o_1,o_2) \in <_{li(o)}$.} Here we say $(o_1,o_2) \in <_{\textit{vis}}$ via $o'_1,\ldots,o'_m$, if $(o_1,o'_1),(o'_1,o'_2),\ldots,(o'_{\textit{m-1}},o'_m),(o'_m,o_2) \in <_{\textit{vis}}$.
-
-\item[-] {\color {red} $<_{li(o)}$ is determined by $<_{\textit{vis}}$ over $O_{li}$. Therefore, if $<_{\textit{vis}}^{-1}(o_1)$ and $<_{\textit{vis}}^{-1}(o_2)$ contain same set of update operations, then $<_{li(o_1)} = <_{li(o_2)}$,} where $li(o_1) = ( O_{li} ,<_{li(o_1)}, <_{\textit{li-arb1}} )$ and $li(o_2) = ( O_{li} ,<_{li(o_2)}, <_{\textit{li-arb1}} )$. This property represents the intuition of commutative of CRDT.
+\item[-] $\mathit{arb}$ is the arbitration order over update operations of $O$. 
 \end{itemize}
+
+\todo{Local interpretation meant something else in our previous paper. Use operation context for $(\mathit{vis}^{-1}(o),<,\mathit{arb}\downarrow (\mathit{vis}^{-1}(o)\times \mathit{vis}^{-1}(o)))$ where $<$ is defined as you say.} 
+
+Given an annotated history $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ and an operation $o \in O$, the operation context of $o$ is a tuple $cont(o)=(O_o,<,arb_o)$, where 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $O_o$ is the set of update operations in $\mathit{vis}^{-1}(o)$, 
+
+\item[-] {\color {red}$arb_o$ is the projection of $arb$ over update operations of $\mathit{vis}^{-1}(o) \cup \{ o \}$. } 
+
+\item[-] $< \subseteq <_{\mathit{vis}} \uparrow_{(O_o \times O_o)}$ and it is irreflexive. 
+
+We say that $(o_1,o_2) \in \mathit{vis}$ via $o'_1,\ldots,o'_m$, if $(o_1,o'_1),(o'_1,o'_2),\ldots,(o'_{\textit{m-1}},o'_m),(o'_m,o_2)$ are all in $\mathit{vis}$. We require that, {\color {red}given operations $o_1,o_2,o'_1,\ldots,o'_m \in O_o$, if $(o_1,o_2) \in \mathit{vis}$ via $o'_1,\ldots,o'_m$, then $(o_1,o_2) \in <$.} 
+
+\item[-] For each $cont(o_1)=(O_1,<_1,arb_1)$ and $cont(o_2)=(O_2,<_2,arb_2)$, {\color {red}if $\mathit{vis}^{-1}(o_1) = \mathit{vis}^{-1}(o_2)$, then $<_1 = <_2$.} This property represents the intuition of commutative of CRDT. 
+\end{itemize} 
 
 Let us define strong-return-value consistency (SRV consistency, for short) as follows:
 
 \todo{Define ``an annotated history satisfying SRVC and then a history satisfying SRVC, i.e., there exists $\mathit{vis}$ and $\mathit{arb}$ such that the resulting annotated history satisfies SRVC.}
 
 \begin{definition}[Strong-return-value consistency]
-\label{definition:strong return value consistency}
-Given an abstract trace $t = (O,<_{\textit{ro}},<_{\textit{vis}},<_{\textit{arb}})$ and $o \in O$, we say that $t$ is strong-return-value consistent w.r.t specification $Spec$, if there exists local interpretation $li$, such that $\textit{THINAIR} \wedge \textit{RVAL}$ hold, where
+\label{definition:strong return value consistency} 
+An annotated history $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ is strong-return-value consistent w.r.t specification $Spec$, if there exists function $cont$ that give operation context for each operation of $O$, such that $\textit{THINAIR} \wedge \textit{RVAL}$ hold, where
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\textit{THINAIR}$: $<_{\textit{ro}} \cup <_{\textit{vis}}$ is acyclic.
+\item[-] $\textit{THINAIR}$: $\mathit{ro} \cup \mathit{vis}$ is acyclic.
 
-\item[-] $\textit{RVAL}: \forall o \in O$, $li(o) \in Spec(cont(o))$.
-\end{itemize}
+\item[-] $\textit{RVAL}: \forall o \in O$, $cont(o) \in Spec(lab(o))$. 
+\end{itemize} 
+
+A history $(O,\mathit{ro})$ is SRV w.r.t specification $Spec$, if there exists $\mathit{vis}$ and $\mathit{arb}$, such that $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ is SRV consistent w.r.t specification $Spec$. 
 \end{definition}
 
 
