@@ -155,7 +155,7 @@ Given a state $q'=(O',ro',del',arb',vis')$ and $o' \in O$, Let $ip(o',q')$ be th
 
 It is not hard to see that, the visibility among operations not penetrated remains the same after penetrating. Therefore, when penetrating more than one operations, different orders lead to same consequence.
 
-Given a plus-minus specification $Spec$ and a state $q=(O,ro,del,arb,vis)$ of $RImp(Spec)$, given a plus operation $o \in O$, the set of minus operations for $o$ in $q$, denoted $Minus(q,o)$, is a set of minus operations of $O$. We require that,
+Given a plus-minus specification $Spec$ and a state $q=(O,ro,del,arb,vis)$ of $RImp(Spec)$, given a plus operation $o \in O$, let $Minus(q,o)$ be a set of minus operations of $O$. Let us define $conc(q)$: 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
@@ -163,10 +163,10 @@ Given a plus-minus specification $Spec$ and a state $q=(O,ro,del,arb,vis)$ of $R
 
 \item[-] Let $S_m(q) = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq S_p(q) \}$. $S_m(q)$ is the set of redundant minus operations of $q$.
 
-\item[-] We say $q' = conc(q)$, if: Let $q''$ be obtained from $q$ by penetrating operations in $S_p(q) \cup S_m(q)$ one by one, and there is a bijection between operations of $q'$ and $q''$ that keeps the operation identifiers and $ro$, $del$ and $arb$ relations. 
+\item[-] We say $q' = conc(q)$, if: Let $q''$ be obtained from $q$ by penetrating operations in $S_p(q) \cup S_m(q)$ one by one, and there is a bijection between operations of $q'$ and $q''$ that keeps the operation identifiers, operation labels and $ro$, $del$ and $arb$ relations.
 \end{itemize}
 
-We require our definition of $Minus$ to satisfy the following properties: Let $pent(q,O)$ be the state obtained from $q$ by penetrating operations of $O$ one by one. $MatchRedunt(q,O)$ holds, if $\exists O_1$, such that $O_1 \subseteq S_p(q) \wedge O = O_1 \cup \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$. Given set $O$, relation $R_{O}$ is defined as follows: $(q,q') \in R_{O}$, if $q' = pent(q,O) \wedge MatchRedunt(q,O)$. We further require $R_{O}$ to satisfy that,
+We require our definition of $Minus$ to satisfy the following properties: We say $q' = pent(q,O)$ if there exists $q''$, such that $q''$ is obtained from $q$ by penetrating operations in $S_p(q) \cup S_m(q)$ one by one, and there is a bijection between operations of $q'$ and $q''$ that keeps the operation identifiers, operation labels and $ro$, $del$ and $arb$ relations. $MatchRedunt(q,O)$ holds, if $\exists O_1$, such that $O_1 \subseteq S_p(q) \wedge O = O_1 \cup \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$. Given set $O$, relation $R_{O}$ is defined as follows: $(q,q') \in R_{O}$, if $q' = pent(q,O) \wedge MatchRedunt(q,O)$. Let $map_{(q,q',O)}$ the projection which are used to check $q' = pent(q,O)$. We further require $R_{O}$ to satisfy that,
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
@@ -189,9 +189,9 @@ We require our definition of $Minus$ to satisfy the following properties: Let $p
 
         \begin{itemize}
         \setlength{\itemsep}{0.5pt}
-        \item[-] If $\alpha' = addDel(o,r')$, and $o$ is the $i$-th operation of replica $r$ w.r.t $ro$ in $q'_i$, then $\alpha = addDel(o',r')$, where on $q_i$, when ignoring operation of $O$, $o'$ is the $i$-th operation of replica $r$. 
+        \item[-] If $\alpha' = addDel(o,r')$,then $\alpha = addDel(o',r')$, where $map_{(q,q',O)}(o')=o$.  
 
-        \item[-] Else, if $\alpha'=(m,a,b,r,arb)$, then $\exists arb$, such that $\alpha=(m,a,b,r,arb) \wedge arb' = arb - O$.
+        \item[-] Else, if $\alpha'=(m,a,b,r,arb)$, then $\exists arb$, such that $\alpha=(m,a,b,r,arb) \wedge arb' = map_{(q,q',O)}(arb - O)$.
         \end{itemize}
     \end{itemize}
 
@@ -238,20 +238,20 @@ Our definition of $Minus$ for distributed list is correct.
 
 Note that, in the case of OR-set, given $rem$ operation $o_r$, $\vert \{ o_a \vert o_r \in Minus(o_a) \} \vert$ may be larger than $1$; while in the case of distributed list, given $rem$ operation $o_r$, $\vert \{ o_a \vert o_r \in Minus(o_a) \} \vert = 1$.
 
-Given a plus-minus specification $Spec$, its compacted reference implementation is given as an tuple $CRImp(Spec) = (Q,\Sigma,q_0,\rightarrow,li,correct)$. $CRImp(Spec)$ can be obtained from $RImp(Spec) = (Q',\Sigma,q_0,\rightarrow',li,correct)$ as follows:
+Given a plus-minus specification $Spec$, its compacted reference implementation is given as an tuple $CRImp(Spec) = (Q,\Sigma,q_0,\rightarrow,li,correct)$. $CRImp(Spec)$ can be obtained from $RImp(Spec) = (Q',\Sigma,q_0,\rightarrow_r,li,correct)$ as follows:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $Q \subseteq Q'$. $\forall o \in Q$, $q = conc(q)$.
+\item[-] $Q \subseteq Q'$. $\forall o \in Q$, $S_p(q) \cup S_m(q) = \emptyset$. Therefore, $\forall o \in Q$, we have $q = conc(q)$. 
 
-\item[-] If $\alpha = addDel(\_,\_)$: $q_1 {\xrightarrow{\alpha}} q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{\alpha}}' q_3 \wedge q_2 = conc(q_3)$.
+\item[-] For $\alpha = addDel(\_,\_)$: $q_1 {\xrightarrow{\alpha}} q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{\alpha}}_r q_3 \wedge q_2 = conc(q_3)$.
 
-\item[-] If $\alpha=m(\_,\_,\_,\_)$ and $m$ is a query method: $q_1 {\xrightarrow{\alpha}} q_2$, if $q_1 {\xrightarrow{\alpha}}' q_2$.
+\item[-] For $\alpha=m(\_,\_,\_,\_)$ and $m$ is a query method: $q_1 {\xrightarrow{\alpha}} q_2$, if $q_1 {\xrightarrow{\alpha}}_r q_2$.
 
-\item[-] If $\alpha=m(a,b,r,arb)$ and $m$ is an update method: $q_1 {\xrightarrow{m(a,b,r,arb)}} q_2$, if $\exists q_3,arb'$, such that $q_1 {\xrightarrow{m(a,b,r,arb')}}' q_3 \wedge q_2 = conc(q_3)$.
-\end{itemize} 
+\item[-] For $\alpha=m(a,b,r,arb)$ and $m$ is an update method: $q_1 {\xrightarrow{m(a,b,r,arb)}} q_2$, if $\exists q_3,arb',O$, such that $q_1 {\xrightarrow{m(a,b,r,arb')}}_r q_3$, $(q_3,q_2) \in R_{O}$ and $map_{(q,q',O)}(arb' - O) = arb$. 
+\end{itemize}
 
-Given an execution $t = \alpha_1 \cdot \ldots \in \llbracket CRImp(Spec) \rrbracket$, its abstract trace $absT(t)$ is generated as follows: Assume $q_0 {\xrightarrow{\alpha_1}}_c q_1 \ldots$ is a path of $CRImp(Spec)$, and $\rightarrow_r$ is the transition relation of $RImp(Spec)$, 
+Given an execution $t = \alpha_1 \cdot \ldots \in \llbracket CRImp(Spec) \rrbracket$, its abstract trace $absT(t)$ is generated as follows: Assume $q_0 {\xrightarrow{\alpha_1}}_c q_1 \ldots$ is a path of $CRImp(Spec)$, and $\rightarrow_r$ is the transition relation of $RImp(Spec)$,
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
@@ -259,20 +259,20 @@ Given an execution $t = \alpha_1 \cdot \ldots \in \llbracket CRImp(Spec) \rrbrac
 
 \item[-] $q_2 {\xrightarrow{\alpha_3}}_c q_3$: By definition of $\rightarrow_c$, $\exists \alpha'_3, q'_3$, such that $q_2 {\xrightarrow{\alpha'_3}}_r q'_3 \wedge conc(q'_3)=q_3$. Then, it is obvious that $(q'_3,q_3) \in R_{O_3}$ for some $O_3$.
 
-Since $(q'_2,q_2) \in R_{O_2} \wedge q_2 {\xrightarrow{\alpha'_3}}_r q'_3$, we can see that $\exists \alpha''_3,q''_3$, such that $q'_2 {\xrightarrow{\alpha''_3}}_r q''_3 \wedge (q''_3,q'_3) \in R_{O_2}$. Therefore, $(q''_3,q_3) \in R_{(O_2 \cup O_3)}$. 
+Since $(q'_2,q_2) \in R_{O_2} \wedge q_2 {\xrightarrow{\alpha'_3}}_r q'_3$, we can see that $\exists \alpha''_3,q''_3$, such that $q'_2 {\xrightarrow{\alpha''_3}}_r q''_3 \wedge (q''_3,q'_3) \in R_{O_2}$. Therefore, $(q''_3,q_3) \in R_{(O_2 \cup O_3)}$.
 
 \item[-] The case for $i \geq 3$ is as follows: We already know that $q_i {\xrightarrow{\alpha_{i+1}}}_c q_{i+1}$. By definition of $\rightarrow_c$, $\exists \alpha'_{i+1}, q'_{i+1}$, such that $q_i {\xrightarrow{\alpha'_{i+1}}}_r q'_{i+1} \wedge conc(q'_{i+1})=q_{i+1}$. Then, it is obvious that $(q'_{i+1},q_{i+1}) \in R_{O_{i+1}}$ for some $O_{i+1}$.
 
-We already know that $(q''_i,q_i) \in R_{(O_2 \cup \ldots \cup O_i)} \wedge q_i {\xrightarrow{\alpha'_{i+1}}}_r q'_{i+1}$. Then, we can see that $\exists \alpha''_{i+1},q''_{i+1}$, such that $q''_i {\xrightarrow{\alpha''_{i+1}}}_r q''_{i+1} \wedge (q''_{i+1},q'_{i+1}) \in R_{(O_2 \cup \ldots \cup O_i)}$. Therefore, $(q''_{i+1},q_{i+1}) \in R_{(O_2 \cup \ldots \cup O_{i+1})}$. 
+We already know that $(q''_i,q_i) \in R_{(O_2 \cup \ldots \cup O_i)} \wedge q_i {\xrightarrow{\alpha'_{i+1}}}_r q'_{i+1}$. Then, we can see that $\exists \alpha''_{i+1},q''_{i+1}$, such that $q''_i {\xrightarrow{\alpha''_{i+1}}}_r q''_{i+1} \wedge (q''_{i+1},q'_{i+1}) \in R_{(O_2 \cup \ldots \cup O_i)}$. Therefore, $(q''_{i+1},q_{i+1}) \in R_{(O_2 \cup \ldots \cup O_{i+1})}$.
 
 %\item[-] $q_4 {\xrightarrow{\alpha_5}}_c q_5$: By definition of $\rightarrow_c$, $\exists \alpha'_5, q'_5$, such that $q_4 {\xrightarrow{\alpha'_5}}_r q'_5 \wedge conc(q'_5)=q_5$. Then, it is obvious that $(q'_5,q_5) \in R_{O_5}$ for some $O_5$.
 
-%Since $(q''_4,q_4) \in R_{(O_2 \cup O_3 \cup O_4)} \wedge q_4 {\xrightarrow{\alpha'_5}}_r q'_5$, we can see that $\exists \alpha''_5,q''_5$, such that $q''_4 {\xrightarrow{\alpha''_5}}_r q''_5 \wedge (q''_5,q'_5) \in R_{(O_2 \cup O_3 \cup O_4)}$. Therefore, $(q''_5,q_5) \in R_{(O_2 \cup O_3 \cup O_4 \cup O_5)}$. 
+%Since $(q''_4,q_4) \in R_{(O_2 \cup O_3 \cup O_4)} \wedge q_4 {\xrightarrow{\alpha'_5}}_r q'_5$, we can see that $\exists \alpha''_5,q''_5$, such that $q''_4 {\xrightarrow{\alpha''_5}}_r q''_5 \wedge (q''_5,q'_5) \in R_{(O_2 \cup O_3 \cup O_4)}$. Therefore, $(q''_5,q_5) \in R_{(O_2 \cup O_3 \cup O_4 \cup O_5)}$.
 
 \item[-] $absT(t)$ is the abstract trace of $\alpha_1 \cdot \alpha'_2 \cdot \alpha''_3 \cdot \ldots$ in $RImp(Spec)$.
-\end{itemize} 
+\end{itemize}
 
-\figurename~\ref{fig:the process of generate abstract trace for compacted reference implementation} shows the example when the trace of $CRImp(Spec)$ is $\alpha_1 \cdot \alpha_2 \cdot \alpha_3 \cdot \alpha_4$. 
+\figurename~\ref{fig:the process of generate abstract trace for compacted reference implementation} shows the example when the trace of $CRImp(Spec)$ is $\alpha_1 \cdot \alpha_2 \cdot \alpha_3 \cdot \alpha_4$.
 
 \begin{figure}[t]
   \centering
@@ -282,7 +282,7 @@ We already know that $(q''_i,q_i) \in R_{(O_2 \cup \ldots \cup O_i)} \wedge q_i 
   \label{fig:the process of generate abstract trace for compacted reference implementation}
 \end{figure}
 
-Let $absT(RImp(Spec)) = \{ x \vert \exists t \in \llbracket RImp(Spec) \rrbracket, x = absT(t) \}$. Let $absT(CRImp(Spec)) = \{ x \vert \exists t \in \llbracket CRImp(Spec) \rrbracket, x = absT(t) \}$. The following lemma stats that $absT(CRImp(Spec)) \subseteq absT(RImp(Spec))$. It is obvious by definition. 
+Let $absT(RImp(Spec)) = \{ x \vert \exists t \in \llbracket RImp(Spec) \rrbracket, x = absT(t) \}$. Let $absT(CRImp(Spec)) = \{ x \vert \exists t \in \llbracket CRImp(Spec) \rrbracket, x = absT(t) \}$. The following lemma stats that $absT(CRImp(Spec)) \subseteq absT(RImp(Spec))$. It is obvious by definition.
 
 \begin{lemma}
 \label{lemma:the abstract trace of CRIMPSpec is a subset of the abstract trace of RIMPSpec}

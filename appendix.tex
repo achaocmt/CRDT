@@ -213,43 +213,48 @@ Let us consider the case when $t \in \llbracket RImp(Spec) \rrbracket$ and $t_1 
 
 {\noindent \bf Lemma \ref{lemma:Minus for OR-set is correct}}: Our definition of $Minus$ for OR-set is correct.
 
-\begin {proof} 
+\begin {proof}
 
-Let $\rightarrow$ be the transition relation of $RImp(S_{\textit{ORS}})$. Given $(q_i,q'_i) \in R_{O}$, 
+Let $\rightarrow$ be the transition relation of $RImp(S_{\textit{ORS}})$. Given $(q_i,q'_i) \in R_{O}$,
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] If $q'_i {\xrightarrow{addDel(o,r)}} q'_{i+1}$: It is obvious that $o \notin O$. Since penetrating does not influence visibility of non-penetrated operations, it is easy to see that that $q_i {\xrightarrow{addDel(o,r)}} q_{i+1}$. It is easy to prove that the visibility over non-$O$ operations is the same for $q'_{i+1}$ and $q_{i+1}$. It is easy to see that $O$ still keeps  Therefore, $(q_{i+1},q'_{i+1}) \in R_{O}$. 
+\item[-] If $q'_i {\xrightarrow{addDel(o',r)}} q'_{i+1}$: It is obvious that $o = map_{(q,q',O)}^{-1}(o') \notin O$. Since penetrating does not influence visibility of non-penetrated operations, it is easy to see that that $q_i {\xrightarrow{addDel(o,r)}} q_{i+1}$. It is easy to see that the visibility over operations not in $O$ is the same for $q'_{i+1}$ and $q_{i+1}$, and $(q_{i+1},q'_{i+1}) \in R_{O}$.
 
-\item[-] If $q'_i {\xrightarrow{(add,a,\top,r,\emptyset)}} q'_{i+1}$: It is easy to see that $q_i {\xrightarrow{(add,a,\top,r,\emptyset)}} q_{i+1}$ and the visibility over non-$O$ operations is the same for $q'_{i+1}$ and $q_{i+1}$. Therefore, $(q_{i+1},q'_{i+1}) \in R_{O}$. 
+\item[-] If $q'_i {\xrightarrow{(add,a,\top,r,\emptyset)}} q'_{i+1}$: Assume in the process we add operation $o'$. It is easy to see that $q_i {\xrightarrow{(add,a,\top,r,\emptyset)}} q_{i+1}$ and assume that in this process we add operation $o$. Let $map' = map_{(q,q',O)} \cup \{ (o,o') \}$. With $map'$ it is obvious that Therefore, $(q_{i+1},q'_{i+1}) \in R_{O}$.
 
-\item[-] 
+\item[-] If $q'_i {\xrightarrow{(rem,\top,a,r,\emptyset)}} q'_{i+1}$: Assume in the process we add operation $o'$. In replica $r$ of $q'_i$, there exists $o_a$
+
+\item[-] If $q'_i {\xrightarrow{(contains,a,\textit{true},r,\emptyset)}} q'_{i+1}$: 
+
+\item[-] If $q'_i {\xrightarrow{(contains,a,\textit{false},r,\emptyset)}} q'_{i+1}$: 
+
+\item[-] If $q'_i {\xrightarrow{(elements,\top,S,r,\emptyset)}} q'_{i+1}$: 
 \end{itemize}
 
 
 
-We need to prove that 
+We need to prove that
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
 \item[-] given $(q_i,q'_i) \in R_{O}$,
-
     \begin{itemize}
-    \setlength{\itemsep}{0.5pt} 
+    \setlength{\itemsep}{0.5pt}
     \item[-] If $q'_i {\xrightarrow{\alpha'}} q'_{i+1}$, then $q_i {\xrightarrow{\alpha}} q_{i+1} \wedge (q_{i+1},q'_{i+1}) \in R_{O}$, where
 
         \begin{itemize}
         \setlength{\itemsep}{0.5pt}
-        \item[-] If $\alpha' = addDel(\_,\_)$, then $\alpha = \alpha'$,
+        \item[-] If $\alpha' = addDel(o,r')$,then $\alpha = addDel(o',r')$, where $map_{(q,q',O)}(o')=o$.
 
-        \item[-] Else, if $\alpha'=(m,a,b,r,arb)$, then $\exists arb$, such that $\alpha=(m,a,b,r,arb) \wedge arb' = arb - O$.
+        \item[-] Else, if $\alpha'=(m,a,b,r,arb)$, then $\exists arb$, such that $\alpha=(m,a,b,r,arb) \wedge arb' = map_{(q,q',O)}(arb - O)$.
         \end{itemize}
     \end{itemize}
 
 \item[-] If $(q,q') \in R_{ O_1 }$ and $(q',q'') \in R_{ O_2 }$, then $(q,q'') \in R_{ ( O_1 \cup O_2 ) }$.
 \end{itemize}
 
-This completes the proof of this lemma. $\qed$ 
+This completes the proof of this lemma. $\qed$
 \end {proof}
 
 
@@ -276,24 +281,24 @@ $\qed$
 
 %{\noindent \bf Lemma \ref{lemma:RIMPSpec and CRIMPSpec have same abstract traces}}: $absT(RImp(Spec)) = absT(CRImp(Spec))$
 %\begin {proof}
-%The $\supseteq$ direction is obvious from the definition of $absT(CRImp(Spec))$. 
-%To prove the $\subseteq$ direction. Given a execution $t_1 = \alpha_1 \cdot \ldots \in \llbracket RImp(Spec) \rrbracket$. Let us show how to construct a path of $CRImp(Spec)$. 
+%The $\supseteq$ direction is obvious from the definition of $absT(CRImp(Spec))$.
+%To prove the $\subseteq$ direction. Given a execution $t_1 = \alpha_1 \cdot \ldots \in \llbracket RImp(Spec) \rrbracket$. Let us show how to construct a path of $CRImp(Spec)$.
 %\begin{itemize}
-%\setlength{\itemsep}{0.5pt} 
+%\setlength{\itemsep}{0.5pt}
 %\item[-] $q_1 {\xrightarrow{\alpha_2}}_r q_2$: By definition of $\rightarrow_c$, $\exists \alpha'_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_c q'_2 \wedge conc(q_2)=q'_2$. Then, it is obvious that $(q_2,q'_2) \in R_{O_2}$ for some $O_2$.
 
 %\item[-] $q_2 {\xrightarrow{\alpha_3}}_r q_3$: Since $(q_2,q'_2) \in R_{O_2} \wedge q_2 {\xrightarrow{\alpha_3}}_r q_3 $, we can see that $\exists \alpha'_3,q'_3$, such that $q'_2 {\xrightarrow{\alpha'_3}}_r q'_3 \wedge (q_3,q'_3) \in R_{O_2}$.
-    
+
     %By definition of $\rightarrow_c$, $\exists \alpha''_3$, such that $q'_2 {\xrightarrow{\alpha''_3}}_c q''_3 \wedge conc(q'_3)=q''_3$. Then, it is obvious that $(q'_3,q''_3) \in R_{O_3}$ for some $O_3$. Therefore, $(q_3,q''_3) \in R_{(O_2 \cup O_3)}$.
 
 %\item[-] If $i \geq 3 \wedge q_i {\xrightarrow{addDel(o,r)}}_r q_{i+1} \wedge o \in S_p(q_i) \cup S_m(q_i)$: We already know that $(q_i,q''_i) \in R_{O}$ for some $O$, then it is obvious that $(q_{i+1},q''_{i+1}) \in R_{O}$, where $q''_{i+1} = q''_i$.
 
 %\item[-] If $i \geq 3 \wedge q_i {\xrightarrow{\alpha_{i+1}}}_r q_{i+1} \neg (\alpha_i = addDel(o,r) \wedge o \in S_p(q_i) \cup S_m(q_i))$: We already know that $(q_i,q''_i) \in R_{O}$ for some $O$. Since $q_i {\xrightarrow{\alpha_{i+1}}}_r q_{i+1}$, we can see that $\exists \alpha'_{i+1},q'_{i+1}$, such that $q''_i {\xrightarrow{\alpha'_{i+1}}}_r q'_{i+1} \wedge (q_{i+1},q'_{i+1}) \in R_{O}$.
-    
-    %By definition of $\rightarrow_c$, $\exists \alpha''_{i+1}$, such that $q''_i {\xrightarrow{\alpha''_{i+1}}}_c q''_{i+1} \wedge conc(q'_{i+1})=q''_{i+1}$. Then, it is obvious that $(q'_{i+1},q''_{i+1}) \in R_{O_{i+1}}$ for some $O_{i+1}$. Therefore, $(q_{i+1},q''_{i+1}) \in R_{(O \cup O_{i+1})}$. 
+
+    %By definition of $\rightarrow_c$, $\exists \alpha''_{i+1}$, such that $q''_i {\xrightarrow{\alpha''_{i+1}}}_c q''_{i+1} \wedge conc(q'_{i+1})=q''_{i+1}$. Then, it is obvious that $(q'_{i+1},q''_{i+1}) \in R_{O_{i+1}}$ for some $O_{i+1}$. Therefore, $(q_{i+1},q''_{i+1}) \in R_{(O \cup O_{i+1})}$.
 %\end{itemize}
 
-%\figurename~\ref{fig:the process of generate a trace of CRImpSpec from a trace of RImpSpec} given an example when (1) $q_0 {\xrightarrow{\alpha_1}}_r q_1 {\xrightarrow{\alpha_2}}_r q_2 {\xrightarrow{\alpha_3}}_r q_3 {\xrightarrow{\alpha_4}}_r q_4 {\xrightarrow{\alpha_5}}_r q_6 {\xrightarrow{\alpha_6}}_r q_6$ is a path of $RImp(Spec)$, (2) $\alpha_5=addDel(o,r) \wedge o \in S_p(q_4) \cup S_m(q_4)$, and $\forall i \neq 5$, $\neg ( \alpha_i=addDel(o,r) \wedge o \in S_p(q_{i-1}) \cup S_m(q_{i-1})$. 
+%\figurename~\ref{fig:the process of generate a trace of CRImpSpec from a trace of RImpSpec} given an example when (1) $q_0 {\xrightarrow{\alpha_1}}_r q_1 {\xrightarrow{\alpha_2}}_r q_2 {\xrightarrow{\alpha_3}}_r q_3 {\xrightarrow{\alpha_4}}_r q_4 {\xrightarrow{\alpha_5}}_r q_6 {\xrightarrow{\alpha_6}}_r q_6$ is a path of $RImp(Spec)$, (2) $\alpha_5=addDel(o,r) \wedge o \in S_p(q_4) \cup S_m(q_4)$, and $\forall i \neq 5$, $\neg ( \alpha_i=addDel(o,r) \wedge o \in S_p(q_{i-1}) \cup S_m(q_{i-1})$.
 
 %It is easy to see that the abstract trace of $\alpha_1 \cdot \alpha_2 \cdot \alpha_3 \cdot \alpha_4$ in $RImp(Spec)$ is the abstract trace of $\alpha_1 \cdot \alpha'_2 \cdot \alpha''_3 \cdot \alpha''_4$ in $CRImp(Spec)$. This completes the proof of this lemma. $\qed$
 %\end {proof}
