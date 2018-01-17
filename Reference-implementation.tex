@@ -151,63 +151,47 @@ Given a state $q'=(O',ro',del',arb',vis')$ and $o' \in O$, Let $ip(o',q')$ be th
 
 It is not hard to see that, the visibility among operations not penetrated remains the same after penetrating. Therefore, when penetrating more than one operations, different orders lead to same consequence.
 
-Given a plus-minus specification $Spec$ and a state $q=(O,ro,del,arb,vis)$ of $RImp(Spec)$, given a plus operation $o \in O$, the set of minus operations for $o$ in $q$, denoted $Minus(q,o)$, is a set of minus operations of $O$. Intuitively, when an plus operations and its minus operations are seen by all replica, it should be equivalent to the case where this plus operation and its minus never happens. Formally,
+Given a plus-minus specification $Spec$ and a state $q=(O,ro,del,arb,vis)$ of $RImp(Spec)$, given a plus operation $o \in O$, the set of minus operations for $o$ in $q$, denoted $Minus(q,o)$, is a set of minus operations of $O$. We require that,
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
 \item[-] Let $S_p(q) = \{ o_1 \vert o_1$ is a plus operation, $\forall r \in \mathbb{R}, \exists o_2 \in Minus(q,o_1)$ such that $(o_2,r) \in vis$ or $(o_2,o_3) \in vis$ and $o_3$ is of replica $r\}$. $S_p(q)$ is the set of redundant plus operations of $q$.
 
-\item[-] Let $S_m(q) = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq S_p(q) \}$. $S_m(q)$ is the set of redundant minus operations of $q$. 
+\item[-] Let $S_m(q) = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq S_p(q) \}$. $S_m(q)$ is the set of redundant minus operations of $q$.
 
-\item[-] 
-
-%\item[-] $\forall o \in S_p(q)$, if we penetrate $o$ and $O_1 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} = \{o\} \}$ from $q$ and obtain $q'$, then $S_p(q') = S_p(q) - \{ o \}$, and $S_m(q')= S_m(q) - O_1$.
-
-%\item[-] Delivering redundant operations does not influence executions. Formally, given path $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ of $RImp(Spec)$,
-
-%    \begin{itemize}
-%    \setlength{\itemsep}{0.5pt}
-%    \item[-] If (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)$ is not in this path, then, for $j>i$, $\alpha_1 \cdot \ldots \cdot \alpha_j \cdot addDel(o,r) \cdot \cdot \alpha_{j+1} \ldots \in \llbracket RImp(Spec) \rrbracket$.
-
-%    \item[-] If (1) from $q_i$, $o$ is redundant and (2) $addDel(o,r)=\alpha_j$, then, for $\alpha_1 \cdot \ldots \cdot \alpha_{j-1} \cdot \alpha_{j+1} \cdot \ldots \in \llbracket RImp(Spec) \rrbracket$.
-%    \end{itemize}
-
-\item[-] Let $conc(q)$ be obtained from $q$ by penetrating operations in $S_p(q) \cup S_m(q)$ one by one.
-
-\item[-] Let $O_1 \subseteq S_p(q)$, $O_2 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$, and $q'$ is generated from $q$ by penetrating operations in $O_1$ and $O_2$. Then we require $q$ and $q'$ to be equivalent. Therefore, it is easy to see that $q$ and $conc(q)$ are equivalent.
+\item[-] We say $q' = conc(q)$, if: Let $q''$ be obtained from $q$ by penetrating operations in $S_p(q) \cup S_m(q)$ one by one, and there is a bijection between operations of $q'$ and $q''$ that keeps the operation identifiers and $ro$, $del$ and $arb$ relations. 
 \end{itemize}
 
-\noindent {\bf Equivalent}: Let us explain the notion of ``equivalent''.
-
-Let $O_1 \subseteq S_p(q)$, $O_2 = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$, and $q'$ is generated from $q$ by penetrating operations in $O_1$ and $O_2$. We say that $q$ and $q'$ are equivalent, if they are both reachable from the initial state, and the following holds:
+We require our definition of $Minus$ to satisfy the following properties: Let $pent(q,O)$ be the state obtained from $q$ by penetrating operations of $O$ one by one. $MatchRedunt(q,O)$ holds, if $\exists O_1$, such that $O_1 \subseteq S_p(q) \wedge O = O_1 \cup \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$. Given set $O$, relation $R_{O}$ is defined as follows: $(q,q') \in R_{O}$, if $q' = pent(q,O) \wedge MatchRedunt(q,O)$. We further require $R_{O}$ to satisfy that,
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] In $RImp(Spec)$, given a path $q {\xrightarrow{\alpha_1}} q_1 \ldots$, there exists a path $q' {\xrightarrow{\alpha'_1}} q'_1 \ldots$, such that,
+\item[-] given $(q_i,q'_i) \in R_{O}$,
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] $\alpha_i = addDel(o,r) \wedge o \notin O_r$: $\alpha'_i = \alpha_i$,
+    %\item[-] If $q_i {\xrightarrow{addDel(o,r)}} q_{i+1} \wedge o \in S_p(q_i) \cup S_m(q_i)$, then $(q_{i+1},q') \in R_{O}$.
 
-    \item[-] $\alpha_i = addDel(o,r) \wedge o \in O_r$: $\alpha'_i = \epsilon$,
+    %\item[-] If $q_i {\xrightarrow{\alpha}} q_{i+1}$ and $\neg( \alpha = addDel(o,r) \wedge o \in O )$, then $q'_i {\xrightarrow{\alpha'}} q'_{i+1} \wedge (q_{i+1},q'_{i+1}) \in R_{O}$, where
 
-    \item[-] $\alpha_i = m(a,b,r,arb)$: $\alpha'_i = m(a,b,r,arb-(O_1 \cup O_2))$.
+        %\begin{itemize}
+        %\setlength{\itemsep}{0.5pt}
+        %\item[-] If $\alpha = addDel(\_,\_)$, then $\alpha' = \alpha$,
 
-    \item[-] $q'_i$ is obtained from $q_i$ by penetrating operations of $O_1$ and $O_2$.
+        %\item[-] Else, if $\alpha = (m,a,b,r,arb')$, then $\alpha' = (m,a,b,r,arb-O)$.
+        %\end{itemize}
+
+    \item[-] If $q'_i {\xrightarrow{\alpha'}} q'_{i+1}$, then $q_i {\xrightarrow{\alpha}} q_{i+1} \wedge (q_{i+1},q'_{i+1}) \in R_{O}$, where
+
+        \begin{itemize}
+        \setlength{\itemsep}{0.5pt}
+        \item[-] If $\alpha' = addDel(o,r')$, and $o$ is the $i$-th operation of replica $r$ w.r.t $ro$ in $q'_i$, then $\alpha = addDel(o',r')$, where on $q_i$, when ignoring operation of $O$, $o'$ is the $i$-th operation of replica $r$. 
+
+        \item[-] Else, if $\alpha'=(m,a,b,r,arb)$, then $\exists arb$, such that $\alpha=(m,a,b,r,arb) \wedge arb' = arb - O$.
+        \end{itemize}
     \end{itemize}
 
-\item[-] In $RImp(Spec)$, given a path $q' {\xrightarrow{\alpha'_1}} q'_1 \ldots$, there exists a path $q {\xrightarrow{\alpha_1}} q_1 \ldots$, such that,
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] $\alpha'_i = addDel(o,r)$: $\alpha_i = \alpha'_i \wedge o \notin O_r$,
-
-    %\item[-] $\alpha'_i = \epsilon \wedge \alpha_i = addDel(o,r) \wedge o \in O_r$,
-
-    \item[-] $\alpha'_i = m(a,b,r,arb')$: $\alpha_i = m(a,b,r,arb)$, where $arb$ is obtained from $arb'$ by adding $O_1 \cup O_2$ and possible relations.
-
-    \item[-] $q'_i$ is obtained from $q_i$ by penetrating operations of $O_1$ and $O_2$.
-    \end{itemize}
+\item[-] If $(q,q') \in R_{ O_1 }$ and $(q',q'') \in R_{ O_2 }$, then $(q,q'') \in R_{ ( O_1 \cup O_2 ) }$.
 \end{itemize}
 
 
@@ -261,26 +245,30 @@ Given a plus-minus specification $Spec$, its compacted reference implementation 
 \item[-] If $\alpha=m(\_,\_,\_,\_)$ and $m$ is a query method: $q_1 {\xrightarrow{\alpha}} q_2$, if $q_1 {\xrightarrow{\alpha}}' q_2$.
 
 \item[-] If $\alpha=m(a,b,r,arb)$ and $m$ is an update method: $q_1 {\xrightarrow{m(a,b,r,arb)}} q_2$, if $\exists q_3,arb'$, such that $q_1 {\xrightarrow{m(a,b,r,arb')}}' q_3 \wedge q_2 = conc(q_3)$.
-\end{itemize}
+\end{itemize} 
 
-Let us use an example of \figurename~\ref{fig:the process of generate abstract trace for compacted reference implementation} to show how to generate abstract trace for executions of $\llbracket CRImp(Spec) \rrbracket$. Given an execution $t = \alpha_1 \cdot \alpha_2 \cdot \alpha_3 \cdot \alpha_4 \llbracket CRImp(Spec) \rrbracket$, its abstract trace $absT(t)$ is generated as follows: Assume $q_0 {\xrightarrow{\alpha_1}}_c q_1 {\xrightarrow{\alpha_2}}_c q_2 {\xrightarrow{\alpha_3}}_c q_3 {\xrightarrow{\alpha_4}}_c q_4$ be a path of $CRImp(Spec)$, let $\rightarrow_r$ be the transition relation of $RImp(Spec)$,
+Given an execution $t = \alpha_1 \cdot \ldots \in \llbracket CRImp(Spec) \rrbracket$, its abstract trace $absT(t)$ is generated as follows: Assume $q_0 {\xrightarrow{\alpha_1}}_c q_1 \ldots$ is a path of $CRImp(Spec)$, and $\rightarrow_r$ is the transition relation of $RImp(Spec)$, 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $q_1 {\xrightarrow{\alpha_2}}_c q_2$: By definition of $\rightarrow_c$, $\exists q'_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_r q'_2 \wedge conc(q'_2)=q_2$. Let $O_2$ be the set of operations penetrated when generating $q_2$ from $q'_2$.
+\item[-] $q_1 {\xrightarrow{\alpha_2}}_c q_2$: By definition of $\rightarrow_c$, $\exists \alpha'_2, q'_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_r q'_2 \wedge conc(q'_2)=q_2$. Then, it is obvious that $(q'_2,q_2) \in R_{O_2}$ for some $O_2$.
 
-\item[-] $q_2 {\xrightarrow{\alpha_3}}_c q_3$: By definition of $\rightarrow_c$, $\exists q'_3$, such that $q_2 {\xrightarrow{\alpha'_3}}_r q'_3 \wedge conc(q'_3)=q_3$. Let $O_3$ be the set of operations penetrated when generating $q_3$ from $q'_3$.
+\item[-] $q_2 {\xrightarrow{\alpha_3}}_c q_3$: By definition of $\rightarrow_c$, $\exists \alpha'_3, q'_3$, such that $q_2 {\xrightarrow{\alpha'_3}}_r q'_3 \wedge conc(q'_3)=q_3$. Then, it is obvious that $(q'_3,q_3) \in R_{O_3}$ for some $O_3$.
 
-Since $q_2$ is obtained from $q'_2$ by possibly penetrating operations in $O_2$, by the definition of equivalence, we can see that there exists $\alpha''_3, q''_3$, such that $q'_2 {\xrightarrow{\alpha''_3}}_r q''_3$, and $q'_3$ is obtained from $q''_3$ by penetrating operations in $O_2$.
+Since $(q'_2,q_2) \in R_{O_2} \wedge q_2 {\xrightarrow{\alpha'_3}}_r q'_3$, we can see that $\exists \alpha''_3,q''_3$, such that $q'_2 {\xrightarrow{\alpha''_3}}_r q''_3 \wedge (q''_3,q'_3) \in R_{O_2}$. Therefore, $(q''_3,q_3) \in R_{(O_2 \cup O_3)}$. 
 
-\item[-] $q_3 {\xrightarrow{\alpha_4}}_c q_4$: By definition of $\rightarrow_c$, $\exists q'_4$, such that $q_3 {\xrightarrow{\alpha'_4}}_r q'_4 \wedge conc(q'_4)=q_4$. Let $O_3$ be the set of operations penetrated when generating $q_3$ from $q'_3$.
+\item[-] The case for $i \geq 3$ is as follows: We already know that $q_i {\xrightarrow{\alpha_{i+1}}}_c q_{i+1}$. By definition of $\rightarrow_c$, $\exists \alpha'_{i+1}, q'_{i+1}$, such that $q_i {\xrightarrow{\alpha'_{i+1}}}_r q'_{i+1} \wedge conc(q'_{i+1})=q_{i+1}$. Then, it is obvious that $(q'_{i+1},q_{i+1}) \in R_{O_{i+1}}$ for some $O_{i+1}$.
 
-It is easy to see that $q_3$ is obtained from $q''_3$ by penetrating $O_2 \cup O_3$. By the definition of equivalence, we can see that there exists $\alpha''_4,q''_4$, such that $q''_3 {\xrightarrow{\alpha''_4}}_r q''_4$, and $q'_4$ is obtained from $q''_4$ by penetrating operations in $O_2 \cup O_3$.
+We already know that $(q''_i,q_i) \in R_{(O_2 \cup \ldots \cup O_i)} \wedge q_i {\xrightarrow{\alpha'_{i+1}}}_r q'_{i+1}$. Then, we can see that $\exists \alpha''_{i+1},q''_{i+1}$, such that $q''_i {\xrightarrow{\alpha''_{i+1}}}_r q''_{i+1} \wedge (q''_{i+1},q'_{i+1}) \in R_{(O_2 \cup \ldots \cup O_i)}$. Therefore, $(q''_{i+1},q_{i+1}) \in R_{(O_2 \cup \ldots \cup O_{i+1})}$. 
 
-\item[-] $absT(t)$ is the abstract trace of $\alpha_1 \cdot \alpha'_2 \cdot \alpha''_3 \cdot \alpha''_4$ in $RImp(Spec)$.
-\end{itemize}
+%\item[-] $q_4 {\xrightarrow{\alpha_5}}_c q_5$: By definition of $\rightarrow_c$, $\exists \alpha'_5, q'_5$, such that $q_4 {\xrightarrow{\alpha'_5}}_r q'_5 \wedge conc(q'_5)=q_5$. Then, it is obvious that $(q'_5,q_5) \in R_{O_5}$ for some $O_5$.
 
-When $t$ contains more elements, $absT(t)$ is similarly constructed.
+%Since $(q''_4,q_4) \in R_{(O_2 \cup O_3 \cup O_4)} \wedge q_4 {\xrightarrow{\alpha'_5}}_r q'_5$, we can see that $\exists \alpha''_5,q''_5$, such that $q''_4 {\xrightarrow{\alpha''_5}}_r q''_5 \wedge (q''_5,q'_5) \in R_{(O_2 \cup O_3 \cup O_4)}$. Therefore, $(q''_5,q_5) \in R_{(O_2 \cup O_3 \cup O_4 \cup O_5)}$. 
+
+\item[-] $absT(t)$ is the abstract trace of $\alpha_1 \cdot \alpha'_2 \cdot \alpha''_3 \cdot \ldots$ in $RImp(Spec)$.
+\end{itemize} 
+
+\figurename~\ref{fig:the process of generate abstract trace for compacted reference implementation} shows the example when the trace of $CRImp(Spec)$ is $\alpha_1 \cdot \alpha_2 \cdot \alpha_3 \cdot \alpha_4$. 
 
 \begin{figure}[t]
   \centering
@@ -290,11 +278,11 @@ When $t$ contains more elements, $absT(t)$ is similarly constructed.
   \label{fig:the process of generate abstract trace for compacted reference implementation}
 \end{figure}
 
-Let $absT(RImp(Spec)) = \{ x \vert \exists t \in \llbracket RImp(Spec) \rrbracket, x = absT(t) \}$. Let $absT(CRImp(Spec)) = \{ x \vert \exists t \in \llbracket CRImp(Spec) \rrbracket, x = absT(t) \}$. The following lemma stats that $absT(RImp(Spec)) = absT(CRImp(Spec))$. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
+Let $absT(RImp(Spec)) = \{ x \vert \exists t \in \llbracket RImp(Spec) \rrbracket, x = absT(t) \}$. Let $absT(CRImp(Spec)) = \{ x \vert \exists t \in \llbracket CRImp(Spec) \rrbracket, x = absT(t) \}$. The following lemma stats that $absT(CRImp(Spec)) \subseteq absT(RImp(Spec))$. It is obvious by definition. 
 
 \begin{lemma}
-\label{lemma:RIMPSpec and CRIMPSpec have same abstract traces}
-$absT(RImp(Spec)) = absT(CRImp(Spec))$.
+\label{lemma:the abstract trace of CRIMPSpec is a subset of the abstract trace of RIMPSpec}
+$absT(CRImp(Spec)) \subseteq absT(RImp(Spec))$.
 \end{lemma}
 
 \noindent {\bf Partial Causal-Delivery}:

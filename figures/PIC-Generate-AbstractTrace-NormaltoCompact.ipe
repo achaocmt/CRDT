@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70107" creator="Ipe 7.1.7">
-<info created="D:20151003110714" modified="D:20180113144923"/>
+<info created="D:20151003110714" modified="D:20180116234128"/>
 <preamble>\usepackage[version=0.96]{pgf}
 \usepackage{tikz}
 \usetikzlibrary{arrows,shapes,snakes,automata,backgrounds,petri}
@@ -335,5 +335,44 @@ h
 200 340 l
 </path>
 <text matrix="1 0 0 1 139.205 -92" transformations="translations" pos="64 436" stroke="black" type="label" width="5.535" height="6.918" depth="0" valign="baseline">$\exists$</text>
+<path matrix="1 0 0 1 192 -36" stroke="black" arrow="normal/normal">
+16 440 m
+48 440 l
+</path>
+<text matrix="1 0 0 1 151.205 -28" transformations="translations" pos="64 436" stroke="black" type="label" width="10.842" height="4.294" depth="1.49" valign="baseline">$\alpha_5$</text>
+<text matrix="1 0 0 1 175.205 -32" transformations="translations" pos="64 436" stroke="black" type="label" width="16.649" height="4.297" depth="1.93" valign="baseline">$_r$ $q_5$</text>
+<text matrix="1 0 0 1 175.205 -140" transformations="translations" pos="64 436" stroke="black" type="label" width="17.276" height="7.493" depth="2.47" valign="baseline">$_c$ $q&apos;&apos;_4$</text>
+<path stroke="black">
+248 400 m
+248 304 l
+</path>
+<path matrix="1 0 0 1 240 -36" stroke="black" arrow="normal/normal">
+16 440 m
+48 440 l
+</path>
+<text matrix="1 0 0 1 199.205 -28" transformations="translations" pos="64 436" stroke="black" type="label" width="10.842" height="4.294" depth="1.49" valign="baseline">$\alpha_6$</text>
+<text matrix="1 0 0 1 223.205 -32" transformations="translations" pos="64 436" stroke="black" type="label" width="16.649" height="4.297" depth="1.93" valign="baseline">$_r$ $q_6$</text>
+<text matrix="1 0 0 1 231.205 -140" transformations="translations" pos="64 436" stroke="black" type="label" width="8.917" height="7.493" depth="2.47" valign="baseline"> $q&apos;_6$</text>
+<path matrix="1 0 0 1 240 -144" stroke="black" arrow="normal/normal">
+16 440 m
+48 440 l
+</path>
+<text matrix="1 0 0 1 199.205 -136" transformations="translations" pos="64 436" stroke="black" type="label" width="10.842" height="7.493" depth="2.47" valign="baseline">$\alpha&apos;_6$</text>
+<path stroke="black" dash="dashed" arrow="normal/normal">
+296 400 m
+296 304 l
+</path>
+<text matrix="1 0 0 1 235.205 -128" transformations="translations" pos="64 436" stroke="black" type="label" width="5.535" height="6.918" depth="0" valign="baseline">$\exists$</text>
+<text matrix="1 0 0 1 195.205 -160" transformations="translations" pos="64 436" stroke="black" type="label" width="11.502" height="7.493" depth="2.47" valign="baseline">$\alpha&apos;&apos;_6$</text>
+<path matrix="1 0 0 1 240 -144" stroke="black" arrow="normal/normal">
+16 440 m
+48 404 l
+</path>
+<text matrix="1 0 0 1 223.205 -176" transformations="translations" pos="64 436" stroke="black" type="label" width="17.276" height="7.493" depth="2.47" valign="baseline">$_c$ $q&apos;&apos;_6$</text>
+<path matrix="1 0 0 1 240 -144" stroke="black" dash="dashed" arrow="normal/normal">
+56 436 m
+56 412 l
+</path>
+<text matrix="1 0 0 1 235.205 -164" transformations="translations" pos="64 436" stroke="black" type="label" width="5.535" height="6.918" depth="0" valign="baseline">$\exists$</text>
 </page>
 </ipe>
