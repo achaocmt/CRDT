@@ -83,59 +83,6 @@ Let us prove that $(q'_{imp},q'_s) \in R$. From above discussion, it is not hard
 
 
 
-\section{Definitions of Section \ref{sec:specifications and consistencies}}
-\label{sec:appendix definitions of section specifications and consistencies}
-
-Let us give the definition of specification $S_{\textit{list}}$ of distributed list specification. $(O,<,<_{\textit{arb}}) \in S_{\textit{list}}(x)$, if
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] $<^{-1}$ contains finite elements, $<$ is acyclic and $<_{\textit{arb}}$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin O$ and $o$ is in domain of $<_{\textit{arb}}$. By definition of poset we can see that $cont(o)=x$. Let $KnownRemoved=\emptyset$.
-
-\item[-] Step $1$: For each minimal operation $o_1$ w.r.t $<$, let $Op(o_1)=\{ o_1 \}$, $seq(o_1)$ be obtained by ordering elements of $Op(o_1)$ with $<_{\textit{arb}}$ order. We require $cont(o_1)=add(\_,1)$.
-
-\item[-] Step $i+1$: For each $o_2$, which are immediate successor of some $o_1$ of step $i$.
-
-    If $<^{-1}(o_2)$ does not contain $rem$ operations:
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] Let $Op(o_2)$ be the set of $add$ operations in $<^{-1}(o_2) \cup \{ o_2 \}$, and let $seq(o_2)$ be obtained by ordering elements of $Op(o_2)$ with $<_{\textit{arb}}$ order.
-
-    \item[-] If $cont(o_2) = add(a,pos)$, then $seq(o_2)[pos] = o_2$.
-
-    \item[-] Else, if $cont(o_2) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$. Let $o_a=seq(o_2)[pos]$. Let $KnownRemoved = KnownRemoved \cup \{ (o_a,o_2) \}$.
-    \end{itemize}
-
-    If $<^{-1}(o_2)$ contains $rem$ operations:
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] Let $O_r$ be the set of $rem$ operations in $<^{-1}(o_2)$. According to our construction, $\forall o_r \in O_r$, $\exists o_p$, such that $(o_p,o_r) \in KnownRemoved$.
-
-    \item[-] Let $Op(o_2) = \{ o' \vert o'$ is a $add$ operation in $<^{-1}(o_2) \cup \{ o_2 \} \} - \{ o'_p \vert \exists o', (o'_p,o') \in KnownRemoved \}$. Let $seq(o_2)$ be obtained by ordering elements of $Op(o_2)$ with $<_{\textit{arb}}$ order.
-
-    \item[-] If $cont(o_2) = add(a,pos)$, then $seq(o_2)[pos] = o_2$.
-
-    \item[-] Else, if $cont(o_2) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$. Let $o_a=seq(o_2)[pos]$. Let $KnownRemoved = KnownRemoved \cup \{ (o_a,o_2) \}$.
-    \end{itemize}
-
-\item[-] Assume we have investigated all operations in $O$.
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] Let $O_r$ be the set of $rem$ operations in $O$. According to our construction, $\forall o_r \in O_r$, $\exists o_p$, such that $(o_p,o_r) \in KnownRemoved$.
-
-    \item[-] Let $Op(o) = \{ o' \vert o'$ is a $add$ operation in $O \cup \{ o \} \} - \{ o'_p \vert \exists o', (o'_p,o') \in KnownRemoved \}$. Let $seq(o)$ be obtained by ordering elements of $Op(o)$ with $<_{\textit{arb}}$ order.
-
-    \item[-] If $cont(o) = add(a,pos)$, then $seq(o)[pos] = o$.
-
-    \item[-] Else, if $cont(o) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$.
-
-    \item[-] Else, if $cont(o)=read(\top,l)$, then is the sequence of operation contents of $seq(o)$.
-    \end{itemize}
-\end{itemize}
-
 
 
 
@@ -225,11 +172,11 @@ Let $\rightarrow$ be the transition relation of $RImp(S_{\textit{ORS}})$. Given 
 
 \item[-] If $q'_i {\xrightarrow{(rem,\top,a,r,\emptyset)}} q'_{i+1}$: Assume in the process we add operation $o'$. In replica $r$ of $q'_i$, there exists $o_a$
 
-\item[-] If $q'_i {\xrightarrow{(contains,a,\textit{true},r,\emptyset)}} q'_{i+1}$: 
+\item[-] If $q'_i {\xrightarrow{(contains,a,\textit{true},r,\emptyset)}} q'_{i+1}$:
 
-\item[-] If $q'_i {\xrightarrow{(contains,a,\textit{false},r,\emptyset)}} q'_{i+1}$: 
+\item[-] If $q'_i {\xrightarrow{(contains,a,\textit{false},r,\emptyset)}} q'_{i+1}$:
 
-\item[-] If $q'_i {\xrightarrow{(elements,\top,S,r,\emptyset)}} q'_{i+1}$: 
+\item[-] If $q'_i {\xrightarrow{(elements,\top,S,r,\emptyset)}} q'_{i+1}$:
 \end{itemize}
 
 
@@ -390,6 +337,92 @@ This completes the proof of this lemma. $\qed$
 
 \forget
 {
+
+\section{Definitions of Section \ref{sec:specifications and consistencies}}
+\label{sec:appendix definitions of section specifications and consistencies}
+
+Let us give the definition of specification $S_{\textit{list}}$ of distributed list specification. $(O,<,<_{\textit{arb}}) \in S_{\textit{list}}(x)$, if
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $<^{-1}$ contains finite elements, $<$ is acyclic and $<_{\textit{arb}}$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin O$ and $o$ is in domain of $<_{\textit{arb}}$. By definition of poset we can see that $cont(o)=x$. Let $KnownRemoved=\emptyset$.
+
+\item[-] Step $1$: For each minimal operation $o_1$ w.r.t $<$, let $Op(o_1)=\{ o_1 \}$, $seq(o_1)$ be obtained by ordering elements of $Op(o_1)$ with $<_{\textit{arb}}$ order. We require $cont(o_1)=add(\_,1)$.
+
+\item[-] Step $i+1$: For each $o_2$, which are immediate successor of some $o_1$ of step $i$.
+
+    If $<^{-1}(o_2)$ does not contain $rem$ operations:
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] Let $Op(o_2)$ be the set of $add$ operations in $<^{-1}(o_2) \cup \{ o_2 \}$, and let $seq(o_2)$ be obtained by ordering elements of $Op(o_2)$ with $<_{\textit{arb}}$ order.
+
+    \item[-] If $cont(o_2) = add(a,pos)$, then $seq(o_2)[pos] = o_2$.
+
+    \item[-] Else, if $cont(o_2) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$. Let $o_a=seq(o_2)[pos]$. Let $KnownRemoved = KnownRemoved \cup \{ (o_a,o_2) \}$.
+    \end{itemize}
+
+    If $<^{-1}(o_2)$ contains $rem$ operations:
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] Let $O_r$ be the set of $rem$ operations in $<^{-1}(o_2)$. According to our construction, $\forall o_r \in O_r$, $\exists o_p$, such that $(o_p,o_r) \in KnownRemoved$.
+
+    \item[-] Let $Op(o_2) = \{ o' \vert o'$ is a $add$ operation in $<^{-1}(o_2) \cup \{ o_2 \} \} - \{ o'_p \vert \exists o', (o'_p,o') \in KnownRemoved \}$. Let $seq(o_2)$ be obtained by ordering elements of $Op(o_2)$ with $<_{\textit{arb}}$ order.
+
+    \item[-] If $cont(o_2) = add(a,pos)$, then $seq(o_2)[pos] = o_2$.
+
+    \item[-] Else, if $cont(o_2) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$. Let $o_a=seq(o_2)[pos]$. Let $KnownRemoved = KnownRemoved \cup \{ (o_a,o_2) \}$.
+    \end{itemize}
+
+\item[-] Assume we have investigated all operations in $O$.
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] Let $O_r$ be the set of $rem$ operations in $O$. According to our construction, $\forall o_r \in O_r$, $\exists o_p$, such that $(o_p,o_r) \in KnownRemoved$.
+
+    \item[-] Let $Op(o) = \{ o' \vert o'$ is a $add$ operation in $O \cup \{ o \} \} - \{ o'_p \vert \exists o', (o'_p,o') \in KnownRemoved \}$. Let $seq(o)$ be obtained by ordering elements of $Op(o)$ with $<_{\textit{arb}}$ order.
+
+    \item[-] If $cont(o) = add(a,pos)$, then $seq(o)[pos] = o$.
+
+    \item[-] Else, if $cont(o) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$.
+
+    \item[-] Else, if $cont(o)=read(\top,l)$, then is the sequence of operation contents of $seq(o)$.
+    \end{itemize}
+\end{itemize}
+
+
+\begin{itemize}
+\item[-] We check correctness of operations of $O$ with a procedure: Let $O_k$ be the operations we have already checked, and $KR$ record pairs $(o_1,o_2)$ such that the item added by $o_1$ have been removed by $o_2$. At the beginning, $O_k = \emptyset$ and $KR = \emptyset$. Then in each loop,
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] Let $O_k = O_k \cup \{ o_1 \}$, where $<^{-1}(o_1) \subseteq O_k$.
+
+    \item[-] Let $O_r$ be the set of $rem$ operations in $<^{-1}(o_1)$. %According to our construction, $\forall o_r \in O_r$, $\exists o_p$, such that $(o_p,o_r) \in KnownRemoved$.
+
+    \item[-] Let $Op(o_1) = \{ o_2 \vert lab(o_2)=add(\_,\_) \in <^{-1}(o_1) \cup \{ o_1 \} \} - \{ o_3 \vert \exists o_4, (o_3,o_4) \in KR \}$. Let $seq(o_1)$ be obtained by ordering elements of $Op(o_1)$ with $arb$ order.
+
+    \item[-] If $lab(o_1) = rem(pos,a)$, then we require that $lab(seq(o_1)[pos])=add(a,\_)$, and change $KR$ into $KR \cup \{ (seq(o_1)[pos],o_1) \}$.
+
+    \item[-] Else, if $lab(o_1) = add(a,pos)$, then we require that $seq(o_1)[pos] = o_1$.
+    \end{itemize}
+
+    We require that this procedure be terminated with $O_k = O$.
+
+\item[-] {\color {red}Let $Op(o) = \{ o_1 \vert lab(o_1)=add(\_,\_) \in <^{-1}(o) \cup \{ o \} \} - \{ o_2 \vert \exists o_3, (o_2,o_3) \in KR \}$, and let $seq(o)$ be obtained by ordering elements of $Op(o)$ with $arb$ order.}
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] If $lab(o)=add(a,pos)$, then we require that $seq(o)[pos]=o$.
+
+    \item[-] Else, if $lab(o)=rem(pos,a)$, then we require that $lab(seq(o)[pos]) = add(a,\_)$.
+
+    \item[-] Else, if $lab(o)=read(\top,list)$, then $list$ is the sequence of operation labels of seq(o).
+    \end{itemize}
+\end{itemize}
+
+
 \section{Definitions and Proofs of Section \ref{sec:reference implementation}}
 \label{sec:appendix definitions and proofs of section reference implementation}
 

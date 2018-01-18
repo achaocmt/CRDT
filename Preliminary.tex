@@ -30,13 +30,13 @@ A operation label is a tuple $m(a)\Rightarrow b$ where $m \in \mathbb{M}$ and $a
 
 CRDT has two kinds of method: query methods and update methods: Operations of query methods take effect only in one replica, while operations of update methods will be delivered to other replicas. A specification $Spec$ is a function that maps each operation label $\ell$ into a set of tuples $(O,<,arb)$, where $O$ is a set of update operations, $<$ is a partial order over $O$, and $arb$ is a partial order over $O \cup \{ o \}$ called arbitration order, where $lab(o)=\ell \wedge o \notin O$.
 %\todo{The rest of the paragraph should be a footnote. Uninteresting details.}
-%Here we require that each operation in $O \cup \{ o \}$ has unique operation identifier. Such $(O,<,<_{\textit{arb}},l)$ tuples are called ($\Sigma$-labeled) partial-ordered set (poset, for short), where $\Sigma$ is a set of update operation contents contains that of $O$. Two labeled posets are isomorphic if there exists a bijection of operations that preserve operation contents, labels and orders. Here we require $Spec$ to be isomorphic closed: if $x \in Spec$ and $x$ and $y$ are isomorphic, then $y \in Spec$. Since the labeling function of poset is fixed, we could ignore it when the context is clear.
+%Here we require that each operation in $O \cup \{ o \}$ has unique operation identifier. Such $(O,<,<_{\mathit{arb}},l)$ tuples are called ($\Sigma$-labeled) partial-ordered set (poset, for short), where $\Sigma$ is a set of update operation contents contains that of $O$. Two labeled posets are isomorphic if there exists a bijection of operations that preserve operation contents, labels and orders. Here we require $Spec$ to be isomorphic closed: if $x \in Spec$ and $x$ and $y$ are isomorphic, then $y \in Spec$. Since the labeling function of poset is fixed, we could ignore it when the context is clear.
 
 %\todo{I would suggest to define specifications only for query operations. I guess that you need to include $o$ in $O$ for the updates like inserting in a list. But this is kind of ugly, so I would prefer that $O$ doesn't contain $o$}
 
 %\todo{I guess $l$ is not needed. An operation is already a label (content in your terms) with ids}
 
-%\todo{Use $\mathit{arb}$ instead of $<_{\textit{arb}}$. I told you several times, don't try to minimize the space occupied by your notations. And don't use complicated indices or superscripts.}
+%\todo{Use $\mathit{arb}$ instead of $<_{\mathit{arb}}$. I told you several times, don't try to minimize the space occupied by your notations. And don't use complicated indices or superscripts.}
 
 %\todo{I don't see the "deterministic" condition: for a given tuple $(O,<,arb)$, the return value is unique.}
 
@@ -46,56 +46,39 @@ CRDT has two kinds of method: query methods and update methods: Operations of qu
 
 Let us give several examples:
 
-\noindent {\bf Example 1. OR-set}: Observed-Remove Set (OR-set for short) \cite{Shapiro:2011,Bieniusa:2012} contains four methods: (1) $add(a)$ inserts $a$ into set, (2) $rem()\Rightarrow a$ remove $a$ from set, (3) $lookup(a)\Rightarrow \textit{true}$ (resp., $lookup(a)\Rightarrow \textit{false}$) represents that $a$ is in set (resp., $a$ is not in set), and $elements() \Rightarrow S$ represents that the set content is $S$. 
+\noindent {\bf Example 1. OR-set}: Observed-Remove Set (OR-set for short) \cite{Shapiro:2011,Bieniusa:2012} contains four methods: (1) $add(a)$ inserts $a$ into set, (2) $rem(a)$ remove $a$ from set, (3) $lookup(a)\Rightarrow \mathit{true}$ (resp., $lookup(a)\Rightarrow \mathit{false}$) represents that $a$ is in set (resp., $a$ is not in set), and $elements() \Rightarrow S$ represents that the set content is $S$.
 
 %\todo{Why do you need $\top$ as argument ?? If it's because you want to use operation labels for messages as well, I don't like it. Each part of the formalism should be as clear as possible, without unnecessary junk.}
 
-%Let $\Sigma_{\textit{ORS}} = \{ add(a,\top),rem(\top,a) \vert a \in \mathbb{D} \}$ be the set of contents of update operations. 
-The specification $S_{\textit{ORS}}$ is as follows: (1) For $x=add(a)$ or $x = rem() \Rightarrow a$, $S_{\textit{ORS}}(x)$ is the set of all tuples $(O,<,arb)$ with $arb = \emptyset$, (2) For $x=lookup(a) \Rightarrow \textit{true}$ (resp., $x=lookup(a) \Rightarrow \textit{false}$), $S_{\textit{ORS}}(x)$ is the set of all tuples $(O,<,arb)$ with $arb = \emptyset$, such that the projection of operations of $a$ in $O$ contains a maximal element with operation label $add(a)$ (resp., contains no maximal element with operation label $add(a)$), and (3) $S_{\textit{ORS}}(elements() \Rightarrow S)$ is all the tuples $(O,<,arb)$ that is in $S_{\textit{ORS}}(lookup(a) \Rightarrow \textit{true})$ for each $a \in S$, and is in $S_{\textit{ORS}}(lookup(a)) \Rightarrow \textit{false}$ for each $a \notin S$. 
+%Let $\Sigma_{\mathit{ORS}} = \{ add(a,\top),rem(\top,a) \vert a \in \mathbb{D} \}$ be the set of contents of update operations.
+The specification $S_{\mathit{ORS}}$ is as follows: (1) For $x=add(a)$ or $x = rem(a)$, $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,arb)$ with $arb = \emptyset$, (2) For $x=lookup(a) \Rightarrow \mathit{true}$ (resp., $x=lookup(a) \Rightarrow \mathit{false}$), $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,arb)$ with $arb = \emptyset$, such that the projection of operations of $a$ in $O$ contains a maximal element with operation label $add(a)$ (resp., contains no maximal element with operation label $add(a)$), and (3) $S_{\mathit{ORS}}(elements() \Rightarrow S)$ is all the tuples $(O,<,arb)$ that is in $S_{\mathit{ORS}}(lookup(a) \Rightarrow \mathit{true})$ for each $a \in S$, and is in $S_{\mathit{ORS}}(lookup(a)) \Rightarrow \mathit{false}$ for each $a \notin S$.
 
-\noindent {\bf Example 2. Distributed list}: Distributed list has three methods: (1) $add(a,pos)$ inserts $a$ into position $pos \in \mathbb{N}$. (2) $rem(pos) \Rightarrow a$ removes the item of position $pos$, which is $a$. (3) $read() \Rightarrow l$ returns the list content. 
+\noindent {\bf Example 2. Distributed list}: Distributed list has three methods: (1) $add(a,pos)$ inserts $a$ into position $pos \in \mathbb{N}$. (2) $rem(pos) \Rightarrow a$ removes the item of position $pos$, which is $a$. (3) $read() \Rightarrow l$ returns the list content.
 
-%Let $\Sigma_{\textit{list}} = \{ add(a,pos,\top),rem(\top,a) \vert a \in \mathbb{D},pos \in \mathbb{N} \}$ be the set of contents of update operations.
-The specification $S_{\textit{list}}$ is defined as follows: $(O,<,arb) \in S_{\textit{list}}(l)$, if
+%Let $\Sigma_{\mathit{list}} = \{ add(a,pos,\top),rem(\top,a) \vert a \in \mathbb{D},pos \in \mathbb{N} \}$ be the set of contents of update operations.
+The specification $S_{\mathit{list}}$ is defined as follows: $(O,<,arb) \in S_{\mathit{list}}(\ell)$, if
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $<^{-1}$ contains finite elements, $<$ is acyclic and $arb$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin O$, $o$ is in domain of $arb$ and $lab(o)=l$.
+\item[-] $<^{-1}$ contains finite elements, $<$ is acyclic and $arb$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin O$ and is in domain of $arb$. 
 
-\item[-] We check correctness of operations of $O$ with a procedure: Let $O_k$ be the operations we have already checked, and $KR$ record pairs $(o_1,o_2)$ such that the item added by $o_1$ have been removed by $o_2$. At the beginning, $O_k = \emptyset$ and $KR = \emptyset$. Then in each loop,
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] Let $O_k = O_k \cup \{ o_1 \}$, where $<^{-1}(o_1) \subseteq O_k$.
-
-    \item[-] Let $O_r$ be the set of $rem$ operations in $<^{-1}(o_1)$. %According to our construction, $\forall o_r \in O_r$, $\exists o_p$, such that $(o_p,o_r) \in KnownRemoved$.
-
-    \item[-] Let $Op(o_1) = \{ o_2 \vert lab(o_2)=add(\_,\_) \in <^{-1}(o_1) \cup \{ o_1 \} \} - \{ o_3 \vert \exists o_4, (o_3,o_4) \in KR \}$. Let $seq(o_1)$ be obtained by ordering elements of $Op(o_1)$ with $arb$ order.
-
-    \item[-] If $lab(o_1) = rem(pos,a)$, then we require that $lab(seq(o_1)[pos])=add(a,\_)$, and change $KR$ into $KR \cup \{ (seq(o_1)[pos],o_1) \}$.
-
-    \item[-] Else, if $lab(o_1) = add(a,pos)$, then we require that $seq(o_1)[pos] = o_1$.
-    \end{itemize}
-
-    We require that this procedure be terminated with $O_k = O$.
-
-\item[-] {\color {red}Let $Op(o) = \{ o_1 \vert lab(o_1)=add(\_,\_) \in <^{-1}(o) \cup \{ o \} \} - \{ o_2 \vert \exists o_3, (o_2,o_3) \in KR \}$, and let $seq(o)$ be obtained by ordering elements of $Op(o)$ with $arb$ order.}
+\item[-] {\color {red}Function $f: O \cup \{ o \} \rightarrow P(O \cup \{ o \})$. Let $S(o) = f(o_1) \cup \ldots \cup f(o_k)$, where $o_1,\ldots,o_k$ is the immediate predecessor of $o$ w.r.t $<$. Then, $f(o) = $ .
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] If $lab(o)=add(a,pos)$, then we require that $seq(o)[pos]=o$.
-
-    \item[-] Else, if $lab(o)=rem(pos,a)$, then we require that $lab(seq(o)[pos]) = add(a,\_)$.
-
-    \item[-] Else, if $lab(o)=read(\top,list)$, then $list$ is the sequence of operation labels of seq(o).
+    \item[-] $S(o)$, if $lab(o)=read()\Rightarrow list \wedge list = lab( arb \uparrow_{ (<^{-1}(o)-O(o)) } )$. 
+    
+    \item[-] $S(o)$, if $lab(o)=add(a,pos) \wedge ( arb \uparrow_{ (<^{-1}(o)-O(o)) } )[pos]=o$. 
+    
+    \item[-] $S(o) \cup \{ (o_a,o) \}$, if $lab(o)=rem(pos)\Rightarrow a \wedge ( arb \uparrow_{ (<^{-1}(o)-O(o)) } )[pos]=o_a \wedge lab(o_a)=add(a,\_)$. 
+    
+    \item[-] $\mathit{Undef}$, otherwise. 
     \end{itemize}
 
-%\item[-] We can go through operations of $O$ by first investigate minimal (w.r.t $<$) operations, and then their immediate successors (w.r.t $<$), and so on. During this process, for each operation $o'$, let $Op(o')$ be the set of $add$ operations in $<^{-1}(o') \cup \{ o' \}$ and not been deactivated by $rem$ operations in $<^{-1}(o')$ (The formal definition could be found in Appendix \ref{sec:appendix definitions of section specifications and consistencies}). Let $seq(o')$ be obtained by ordering elements of $Op(o')$ with $<_{\textit{arb}}$ order. We require each $o'$ to be correct: If $cont(o')=add(a,pos)$, then $o'$ is the $pos$-th in $seq(o')$; if $cont(o')=rem(pos,a)$, then the content of $pos$-th element of $seq(o')$ is $add(a,\_)$.
-
-%\item[-] {\color {red}Let $Op(o)$ be the set of $add$ operations in $O \cup \{ o \}$ and not been deactivated by $rem$ operations in $O$, and let $seq(o)$ be obtained by ordering elements of $Op(o)$ with $<_{\textit{arb}}$ order.} If $cont(o)=add(a,pos)$, then $o$ is the $pos$-th in $seq(o)$; if $cont(o)=rem(pos,a)$, then the content of $pos$-th element of $seq(o)$ is $add(a,\_)$; if $cont(o)=read(\top,l)$, then $l$ is the sequence of operation contents of $seq(o)$.
+    We require that, for each $o' \in O \cup \{ o \}$, $f(o') \neq \mathit{Undef}$.} 
 \end{itemize}
 
-\todo{Give a declarative specification of the list, like for OR-set. Descriptions which look like ``imperative programs'', e.g., "We can go through operations", "During this process".}
+%\todo{Give a declarative specification of the list, like for OR-set. Descriptions which look like ``imperative programs'', e.g., "We can go through operations", "During this process".}
 
 In our definition of distributed list specification, the arbitration order works similarly as the list order of strong list specification in \cite{Attiya:2016}.
 
@@ -106,7 +89,7 @@ In our definition of distributed list specification, the arbitration order works
 \subsection{Consistencies}
 \label{subsec:consistencies}
 
-\todo{Define a history as $(O,\mathit{ro})$ (again, forget about long indices), then an annotated history as $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ (dont use $\textit{textit}$).}
+%\todo{Define a history as $(O,\mathit{ro})$ (again, forget about long indices), then an annotated history as $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ (dont use $\mathit{mathit}$).}
 
 A history is a tuple $(O,\mathit{ro})$, where
 
@@ -128,39 +111,39 @@ An annotated history is a tuple $(O,\mathit{ro},\mathit{vis},\mathit{arb})$, whe
 \item[-] $\mathit{arb}$ is the arbitration order over update operations of $O$.
 \end{itemize}
 
-\todo{Local interpretation meant something else in our previous paper. Use operation context for $(\mathit{vis}^{-1}(o),<,\mathit{arb}\downarrow (\mathit{vis}^{-1}(o)\times \mathit{vis}^{-1}(o)))$ where $<$ is defined as you say.}
+%\todo{Local interpretation meant something else in our previous paper. Use operation context for $(\mathit{vis}^{-1}(o),<,\mathit{arb}\downarrow (\mathit{vis}^{-1}(o)\times \mathit{vis}^{-1}(o)))$ where $<$ is defined as you say.}
 
-Given an annotated history $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ and an operation $o \in O$, the operation context of $o$ is a tuple $cont(o)=(O_o,<,arb_o)$, where
+Given an annotated history $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ and an operation $o \in O$, the operation context of $o$ is a tuple $ctxt(o)=(O_o,<,arb_o)$, where
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
 \item[-] $O_o$ is the set of update operations in $\mathit{vis}^{-1}(o)$,
 
-\item[-] {\color {red}$arb_o$ is the projection of $arb$ over update operations of $\mathit{vis}^{-1}(o) \cup \{ o \}$. }
+\item[-] $arb_o$ is the projection of $arb$ over update operations of $O_o \cup \{ o \}$. 
 
 \item[-] $< \subseteq <_{\mathit{vis}} \uparrow_{(O_o \times O_o)}$ and it is irreflexive.
 
-We say that $(o_1,o_2) \in \mathit{vis}$ via $o'_1,\ldots,o'_m$, if $(o_1,o'_1),(o'_1,o'_2),\ldots,(o'_{\textit{m-1}},o'_m),(o'_m,o_2)$ are all in $\mathit{vis}$. We require that, {\color {red}given operations $o_1,o_2,o'_1,\ldots,o'_m \in O_o$, if $(o_1,o_2) \in \mathit{vis}$ via $o'_1,\ldots,o'_m$, then $(o_1,o_2) \in <$.}
+We require that, given operations $o_1,o_2,o'_1,\ldots,o'_m \in O_o$, if $(o_1,o_2) \in \mathit{vis}$ via $o'_1,\ldots,o'_m$, then $(o_1,o_2) \in <$. We say that $(o_1,o_2) \in \mathit{vis}$ via $o'_1,\ldots,o'_m$, if $(o_1,o'_1),$ $(o'_1,o'_2), \ldots, (o'_{\mathit{m-1}},o'_m),(o'_m,o_2)$ are all in $\mathit{vis}$.
 
-\item[-] For each $cont(o_1)=(O_1,<_1,arb_1)$ and $cont(o_2)=(O_2,<_2,arb_2)$, {\color {red}if $\mathit{vis}^{-1}(o_1) = \mathit{vis}^{-1}(o_2)$, then $<_1 = <_2$.} This property represents the intuition of commutative of CRDT.
+\item[-] {\color {red}We require that, given $ctxt(o_1)=(O_1,<_1,arb_1)$ and $ctxt(o_2)=(O_2,<_2,arb_2)$, if $\mathit{vis}^{-1}(o_1) = \mathit{vis}^{-1}(o_2)$, then $<_1 = <_2$.} 
 \end{itemize}
 
-Let us define strong-return-value consistency (SRV consistency, for short) as follows:
+Let us define strong-return-value consistency (SRVC consistency, for short) as follows:
 
-\todo{Define ``an annotated history satisfying SRVC and then a history satisfying SRVC, i.e., there exists $\mathit{vis}$ and $\mathit{arb}$ such that the resulting annotated history satisfies SRVC.}
+%\todo{Define ``an annotated history satisfying SRVC and then a history satisfying SRVC, i.e., there exists $\mathit{vis}$ and $\mathit{arb}$ such that the resulting annotated history satisfies SRVC.}
 
 \begin{definition}[Strong-return-value consistency]
 \label{definition:strong return value consistency}
-An annotated history $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ is strong-return-value consistent w.r.t specification $Spec$, if there exists function $cont$ that give operation context for each operation of $O$, such that $\textit{THINAIR} \wedge \textit{RVAL}$ hold, where
+An annotated history $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ is SRVC w.r.t specification $Spec$, if there exists function $ctxt$, such that $\mathit{THINAIR} \wedge \mathit{RVAL}$ hold, where 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\textit{THINAIR}$: $\mathit{ro} \cup \mathit{vis}$ is acyclic.
+\item[-] $\mathit{THINAIR}$: $\mathit{ro} \cup \mathit{vis}$ is acyclic.
 
-\item[-] $\textit{RVAL}: \forall o \in O$, $cont(o) \in Spec(lab(o))$.
+\item[-] $\mathit{RVAL}: \forall o \in O$, $ctxt(o) \in Spec(lab(o))$.
 \end{itemize}
 
-A history $(O,\mathit{ro})$ is SRV w.r.t specification $Spec$, if there exists $\mathit{vis}$ and $\mathit{arb}$, such that $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ is SRV consistent w.r.t specification $Spec$.
+A history $(O,\mathit{ro})$ is SRVC w.r.t $Spec$, if there exists $\mathit{vis}$ and $\mathit{arb}$, such that $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ is SRVC consistent w.r.t $Spec$.
 \end{definition}
 
 
@@ -168,11 +151,11 @@ A history $(O,\mathit{ro})$ is SRV w.r.t specification $Spec$, if there exists $
 
 \begin{definition}[Weak eventual consistency \cite{Bouajjani:2014}]
 \label{definition:eventual consistency}
-An abstract trace $t = (O,<_{\textit{ro}},<_{\textit{vis}},<_{\textit{arb}})$ is called weak eventual consistency w.r.t a specification $Spec$, if there exists local interpretation $li$, such that $\textit{THINAIR} \wedge \textit{RVAL} \wedge \textit{WEAKEVENTUAL}$ hold, where
+An abstract trace $t = (O,<_{\mathit{ro}},<_{\mathit{vis}},<_{\mathit{arb}})$ is called weak eventual consistency w.r.t a specification $Spec$, if there exists local interpretation $li$, such that $\mathit{THINAIR} \wedge \mathit{RVAL} \wedge \mathit{WEAKEVENTUAL}$ hold, where
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\textit{WEAKEVENTUAL}$: $\forall o \in O, \{ o' \vert (o,o') \notin <_{\textit{vis}} \}$ is finite.
+\item[-] $\mathit{WEAKEVENTUAL}$: $\forall o \in O, \{ o' \vert (o,o') \notin <_{\mathit{vis}} \}$ is finite.
 \end{itemize}
 \end{definition}
 
@@ -230,19 +213,19 @@ A trace $\tau = (Os,ro)$ is called eventual consistency w.r.t a specification $S
 
 $\exists gi$ an irreflexive partial order over $Os$, such that $\forall o \in Os$, $\exists li[o]$ an irreflexive poset, such that
 
-$\textit{GIpf} \wedge \textit{THINAIR} \wedge \textit{RVAL} \wedge \textit{EVENTUAL}$ hold.
+$\mathit{GIpf} \wedge \mathit{THINAIR} \wedge \mathit{RVAL} \wedge \mathit{EVENTUAL}$ hold.
 \end{definition}
 
 Here, $GIpf$, $THINAIR$, $RVAL$ and $EVENTUAL$ is given as follows:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\textit{GIpf}$: $\forall o \in Os$, $<^{-1}_{gi}(o)$ is finite.
+\item[-] $\mathit{GIpf}$: $\forall o \in Os$, $<^{-1}_{gi}(o)$ is finite.
 
-\item[-] $\textit{THINAIR}$: $eb \cup ro$ is acyclic.
+\item[-] $\mathit{THINAIR}$: $eb \cup ro$ is acyclic.
 
-\item[-] $\textit{RVAL}$: $\forall o = (m,a,b,rid,oid) \in Os$, $li_{\Sigma(M,D)}(o) \in Spec(m,a,b)$. Here $li_{\Sigma(M,D)}(o)$ is obtained from $li(o)$ by labeling each $(m',a',b',rid',oid')$ with $(m,a,b)$.
+\item[-] $\mathit{RVAL}$: $\forall o = (m,a,b,rid,oid) \in Os$, $li_{\Sigma(M,D)}(o) \in Spec(m,a,b)$. Here $li_{\Sigma(M,D)}(o)$ is obtained from $li(o)$ by labeling each $(m',a',b',rid',oid')$ with $(m,a,b)$.
 
-\item[-] $\textit{EVENTUAL}$: For any finite prefix $P$ of the poset $(Os,gi)$, $\{ o \vert o \in Os, P \npreceq li(o) \}$ is finite.
+\item[-] $\mathit{EVENTUAL}$: For any finite prefix $P$ of the poset $(Os,gi)$, $\{ o \vert o \in Os, P \npreceq li(o) \}$ is finite.
 \end{itemize}
 }
