@@ -3,25 +3,25 @@
 \section{Simulation and Refinement}
 \label{sec:simulation and refinement}
 
-An labeled transition system (LTS, for short) is a tuple $A = (Q,\Sigma,\rightarrow,q_0)$, where $Q$ is a set of states, $\Sigma$ is an alphabet of transition labels, $\rightarrow \subseteq Q \times \Sigma \times Q$ is a transition relation and $q_0$ is the initial state. A execution of $A$ is a sequences of transitions and states starting from the initial state $q_0$, and a trace is a sequence of transition labels of an execution. We say that $A$ is deterministic, if for each state $q$ and each transition label $\alpha$, $q$ has at most one $\rightarrow$ successor with transition label $\alpha$. 
+An labeled transition system (LTS, for short) is a tuple $A = (Q,\Sigma,\rightarrow,q_0)$, where $Q$ is a set of states, $\Sigma$ is an alphabet of transition labels, $\rightarrow \subseteq Q \times \Sigma \times Q$ is a transition relation and $q_0$ is the initial state. A execution of $A$ is a sequences of transitions and states starting from the initial state $q_0$, and a trace is a sequence of transition labels of an execution. We say that $A$ is deterministic, if for each state $q$ and each transition label $\alpha$, $q$ has at most one $\rightarrow$ successor with transition label $\alpha$.
 
- 
+
 
 %A execution of $A$ is a sequence $\alpha_1 \cdot \ldots \cdot \alpha_k \in \Sigma^*$, such that $\exists q_1,\ldots,q_k \in Q$, $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots {\xrightarrow{\alpha_k}} q_k$. We say that $A$ is deterministic, if $\forall q \in Q$ and $\forall \alpha \in \Sigma$, there exists at most one $q' \in Q$, such that $q {\xrightarrow{\alpha}} q'$.
 
- \todo{Define execution as $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots {\xrightarrow{\alpha_k}} q_k$ and trace as $\alpha_1 \cdot \ldots \cdot \alpha_k$, extracted from an execution. Extend the notation $\xrightarrow{\alpha_1}$ to words instead of letters.}
+%\todo{Define execution as $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots {\xrightarrow{\alpha_k}} q_k$ and trace as $\alpha_1 \cdot \ldots \cdot \alpha_k$, extracted from an execution. Extend the notation $\xrightarrow{\alpha_1}$ to words instead of letters.}
 
-\todo{Don't use $\forall$ and $\exists$ in a textual description, but only in formulas} 
+%\todo{Don't use $\forall$ and $\exists$ in a textual description, but only in formulas}
 
 Given two LTS $A_1 = (Q_1,\Sigma_1,\rightarrow_1,q_{0}^1)$ and $A_2 = (Q_2,\Sigma_2,\rightarrow_2,q_{0}^2)$ and two functions $f_s: Q_1 \times Q_2 \times \Sigma_1 \rightarrow \Sigma_2$ and $f_t:\Sigma_1^* \rightarrow \Sigma_2$, we define our simulation and refinement relations as follows:
 
 %Given two LTS $A = (Q_A,\Sigma_A,\rightarrow_A,q_{0A})$ and $B = (Q_B,\Sigma_B,\rightarrow_B,q_{0B})$ with alphabet $\Sigma_A$ and $\Sigma_B$, respectively. Given functions $f_s: Q_A \times Q_B \times \Sigma_A \rightarrow \Sigma_B$ and $f_t:\Sigma_A^* \rightarrow \Sigma_B$, we define our simulation and refinement relations as follows:
 
-\todo{Use $A_1$ and $A_2$ instead of $A$ and $B$, so that all the components are indexed by 1,2, except for $q_0$ which becomes $q_0^{1/2}$.}
+%\todo{Use $A_1$ and $A_2$ instead of $A$ and $B$, so that all the components are indexed by 1,2, except for $q_0$ which becomes $q_0^{1/2}$.}
 
 \begin{definition}[$f_s$-Simulation]
 \label{definition:fs simulation}
-Relation $R \subseteq Q_1 \times Q_2$ is a $f_s$-simulation relation, if whenever $(q_1,q_2) \in R \wedge q_1 {\xrightarrow{\alpha}}_1 q'_1$, 
+Relation $R \subseteq Q_1 \times Q_2$ is a $f_s$-simulation relation, if whenever $(q_1,q_2) \in R \wedge q_1 {\xrightarrow{\alpha}}_1 q'_1$,
 %A $f_s$-simulation relation $R \subseteq Q_A \times Q_B$ is a relation that satisfies: If $(q_a,q_b) \in R \wedge q_a {\xrightarrow{\alpha}}_A q'_a$ for some $q_a$, then
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
@@ -31,18 +31,20 @@ Relation $R \subseteq Q_1 \times Q_2$ is a $f_s$-simulation relation, if wheneve
 \end{itemize}
 \end{definition}
 
-\todo{Again, use indexing with 1,2}
+%\todo{Again, use indexing with 1,2}
 
 \begin{definition}[refinement w.r.t $f_t$]
 \label{definition:ft refinement}
 $A_2$ refines $A_1$ w.r.t $f_t$, if for each trace $t_1 = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $A_1$, $t_2 = f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)$ is an execution of $A_2$.
 \end{definition}
 
-\todo{$B$ $f_t$-refines $A$ to be rewritten to ``$B$ refines $A$ w.r.t. $f_t$''}
+%\todo{$B$ $f_t$-refines $A$ to be rewritten to ``$B$ refines $A$ w.r.t. $f_t$''}
 
-\todo{Give a name to the property $P_{(f_s,f_t)}$, for instance: we say that $f_s$ and $f_t$ are compatible ... } 
+%\todo{Give a name to the property $P_{(f_s,f_t)}$, for instance: we say that $f_s$ and $f_t$ are compatible ... }
 
-We say that $f_s$ and $f_t$ are compatible, if for each deterministic $A_2$, the following holds: For each execution \todo{execution} $q_{0}^1 {\xrightarrow{\alpha_1}}_1 q_{1}^1 \ldots {\xrightarrow{\alpha_k}}_1 q_{k}^1$ of $A_1$ and each $1 \leq u \leq k$, we have $f_t(\alpha_1 \cdot \ldots \cdot \alpha_{u+1}) = f_s(q_{u}^1,q_{u}^2,\alpha_{u+1})$, here $q_u^2$ is a state obtained by $q_{0}^2 {\xrightarrow{f_t(\alpha_1)}}_2 \ldots {\xrightarrow{f_t(\alpha_1 \cdot \ldots \cdot \alpha_u)}}_2 q_u^2$. \todo{write it explicitly using the extension of $\xrightarrow{\alpha_1}$ to words} The following theorem states that $f_s$ and $f_t$ are compatible, $f_s$-simulation is equivalent to refinement w.r.t $f_t$. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section simulation and refinement} and is similar to that in \cite{Abadi:1991,Lynch:1995}.
+We say that $f_s$ and $f_t$ are compatible, if for each deterministic $A_2$, the following holds: For each execution %\todo{execution} 
+$q_{0}^1 {\xrightarrow{\alpha_1}}_1 q_{1}^1 \ldots {\xrightarrow{\alpha_k}}_1 q_{k}^1$ of $A_1$ and each $1 \leq u \leq k$, we have $f_t(\alpha_1 \cdot \ldots \cdot \alpha_{u+1}) = f_s(q_{u}^1,q_{u}^2,\alpha_{u+1})$, here $q_u^2$ is a state obtained by $q_{0}^2 {\xrightarrow{f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_u) }}_2 q_u^2$. %\todo{write it explicitly using the extension of $\xrightarrow{\alpha_1}$ to words}
+The following theorem states that $f_s$ and $f_t$ are compatible, $f_s$-simulation is equivalent to refinement w.r.t $f_t$. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section simulation and refinement} and is similar to that in \cite{Abadi:1991,Lynch:1995}.
 
 %If $B$ is deterministic, then we defined a property $P_{(f_s,f_t)}$ as follows: For each transitions \todo{execution} $q_{0A} {\xrightarrow{\alpha_1}}$ $q_{1A} \ldots {\xrightarrow{\alpha_k}} q_{kA}$ of $A$, $\forall 1 \leq i < k$, $f_t(\alpha_1 \cdot \ldots \cdot \alpha_i \cdot \alpha_{i+1}) = f_s(q_{iA},q_{iB},\alpha_{i+1})$, where $q_{iB}$ is obtained from $q_{0B}$ by doing $f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_i)$ transitions \todo{write it explicitly using the extension of $\xrightarrow{\alpha_1}$ to words}. The following theorem states that when $P_{(f_s,f_t)}$ holds, $f_s$-simulation is equivalent to $f_t$-refinement. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section simulation and refinement} and is similar to that in \cite{Abadi:1991,Lynch:1995}.
 

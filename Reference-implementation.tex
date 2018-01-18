@@ -138,7 +138,20 @@ $\llbracket RImp(Spec)_{\textit{cd}} \rrbracket = \{ t \vert t \in \llbracket RI
 
 
 \subsection{Compacted Reference Implementation}
-\label{subsec:compacted reference implementation}
+\label{subsec:compacted reference implementation} 
+
+Some specific specifications are called plus-minus specifications and have the following features:
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] It contains two update method, one is ``plus method'' and the other is ``minus method'' (The names are not fixed). Intuitively, plus method intends to insert new elements, while minus method intends to remove elements.
+
+\item[-] When the insertion as well as removing of an item is known by all replica, it is ``equivalent'' to the situation where such insertion and removing never happens.
+\end{itemize} 
+
+OR-set is a plus-minus specification, while $add$ is the ``plus method'', $rem$ is the ``minus method'', and $lookup$ and $elements$ are query methods. 
+
+Distributed list is a plus-minus specification, while $add$ is the ``plus method'', $rem$ is the ``minus method'', and $read$ is query method. %Here we assume that for $add$ and $rem$, $pos$ is less than the length of list seen by calling replica. 
 
 Given a state $q'=(O',ro',del',arb',vis')$ and $o' \in O$, Let $ip(o',q')$ be the immediate predecessor of $o'$ w.r.t $ro'$ in $q'$, $is(o'.,q')$ be the immediate successor of $o'$ w.r.t $ro'$ in $q'$ and $S_{delTo}(o',q') = \{o'' \vert (o'',o') \in del' \}$. When we say we penetrate $o'$ from $q'$, we obtain a state $q''=(O'',ro'',del'',arb'',vis'')$ as follows:
 
@@ -155,7 +168,7 @@ Given a state $q'=(O',ro',del',arb',vis')$ and $o' \in O$, Let $ip(o',q')$ be th
 
 It is not hard to see that, the visibility among operations not penetrated remains the same after penetrating. Therefore, when penetrating more than one operations, different orders lead to same consequence.
 
-Given a plus-minus specification $Spec$ and a state $q=(O,ro,del,arb,vis)$ of $RImp(Spec)$, given a plus operation $o \in O$, let $Minus(q,o)$ be a set of minus operations of $O$. Let us define $conc(q)$: 
+Given a plus-minus specification $Spec$ and a state $q=(O,ro,del,arb,vis)$ of $RImp(Spec)$, given a plus operation $o \in O$, let $Minus(q,o)$ be a set of minus operations of $O$. Let us define $conc(q)$:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
@@ -189,7 +202,7 @@ We require our definition of $Minus$ to satisfy the following properties: We say
 
         \begin{itemize}
         \setlength{\itemsep}{0.5pt}
-        \item[-] If $\alpha' = addDel(o,r')$,then $\alpha = addDel(o',r')$, where $map_{(q,q',O)}(o')=o$.  
+        \item[-] If $\alpha' = addDel(o,r')$,then $\alpha = addDel(o',r')$, where $map_{(q,q',O)}(o')=o$.
 
         \item[-] Else, if $\alpha'=(m,a,b,r,arb)$, then $\exists arb$, such that $\alpha=(m,a,b,r,arb) \wedge arb' = map_{(q,q',O)}(arb - O)$.
         \end{itemize}
@@ -242,13 +255,13 @@ Given a plus-minus specification $Spec$, its compacted reference implementation 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $Q \subseteq Q'$. $\forall o \in Q$, $S_p(q) \cup S_m(q) = \emptyset$. Therefore, $\forall o \in Q$, we have $q = conc(q)$. 
+\item[-] $Q \subseteq Q'$. $\forall o \in Q$, $S_p(q) \cup S_m(q) = \emptyset$. Therefore, $\forall o \in Q$, we have $q = conc(q)$.
 
 \item[-] For $\alpha = addDel(\_,\_)$: $q_1 {\xrightarrow{\alpha}} q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{\alpha}}_r q_3 \wedge q_2 = conc(q_3)$.
 
 \item[-] For $\alpha=m(\_,\_,\_,\_)$ and $m$ is a query method: $q_1 {\xrightarrow{\alpha}} q_2$, if $q_1 {\xrightarrow{\alpha}}_r q_2$.
 
-\item[-] For $\alpha=m(a,b,r,arb)$ and $m$ is an update method: $q_1 {\xrightarrow{m(a,b,r,arb)}} q_2$, if $\exists q_3,arb',O$, such that $q_1 {\xrightarrow{m(a,b,r,arb')}}_r q_3$, $(q_3,q_2) \in R_{O}$ and $map_{(q,q',O)}(arb' - O) = arb$. 
+\item[-] For $\alpha=m(a,b,r,arb)$ and $m$ is an update method: $q_1 {\xrightarrow{m(a,b,r,arb)}} q_2$, if $\exists q_3,arb',O$, such that $q_1 {\xrightarrow{m(a,b,r,arb')}}_r q_3$, $(q_3,q_2) \in R_{O}$ and $map_{(q,q',O)}(arb' - O) = arb$.
 \end{itemize}
 
 Given an execution $t = \alpha_1 \cdot \ldots \in \llbracket CRImp(Spec) \rrbracket$, its abstract trace $absT(t)$ is generated as follows: Assume $q_0 {\xrightarrow{\alpha_1}}_c q_1 \ldots$ is a path of $CRImp(Spec)$, and $\rightarrow_r$ is the transition relation of $RImp(Spec)$,
