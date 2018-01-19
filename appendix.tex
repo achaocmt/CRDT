@@ -104,14 +104,14 @@ The following lemma states the relation between annotated history of a trace of 
 
 \begin{lemma}
 \label{lemma:relation between the state of RImpSpec and the annotated history}
-$q_0 {\xrightarrow{\alpha_1}} q_1 \ldots {\xrightarrow{\alpha_k}} q_k$ of $RImp(Spec)$, let its annotated history to be $(O_k,\mathit{ro}_k,\mathit{vis}_k,\mathit{arb}_k)$ and $q_k = (O'_k,\mathit{ro}'_k,\mathit{del}'_k,\mathit{arb}'_k)$. Then, 
+Given execution $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots {\xrightarrow{\alpha_k}} q_k$ of $RImp(Spec)$ and its annotated history $(O_k,\mathit{ro}_k,\mathit{vis}_k,\mathit{arb}_k)$, and assume $q_k = (O'_k,\mathit{ro}'_k,\mathit{del}'_k,\mathit{arb}'_k)$. Then, 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
 \item[-] $O'_k$ is the set of update operations of $O_k$.
 
-\item[-] $\mathit{ro}'_k = \mathit{ro}_k \uparrow_{( O \times O )}$,
+\item[-] $\mathit{ro}'_k = \mathit{ro}_k \uparrow_{( O'_k \times O'_k )}$,
 
-\item[-] $( \mathit{del}'_k \cdot \mathit{ro} ) \uparrow_{(O \times O)} = \mathit{vis}_k$,
+\item[-] $( \mathit{del}'_k \cdot \mathit{ro} ) \uparrow_{(O'_k \times O'_k)} = \mathit{vis}_k$,
 
 \item[-] $\mathit{arb}'_k = \mathit{arb}_k$.
 \end{itemize}
@@ -142,9 +142,23 @@ This completes the proof of this lemma. $\qed$
 
 \begin {proof}
 
-Assume $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow)$, $t = \alpha_1, \ldots, $ and $q_1,\ldots \in Q$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$. Let $anHis(t) = (O_1,\mathit{ro}_1,\mathit{vis}_1,\mathit{arb}_1)$. 
+Assume $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow)$, $t = \alpha_1, \ldots, $ and $q_1,\ldots \in Q$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$, and for each $k$, $q_k = (O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k)$. Let $anHis(t) = (O_t,\mathit{ro}_t,\mathit{vis}_t,\mathit{arb}_t)$.
 
-According to the construction of $absT(t)$, it is easy to see that $\mathit{ro}_1 \subseteq \mathit{vis}_1$ and $\mathit{vis}_1$ is acyclic. Then, $\textit{THINAIR}$ holds.
+According to the construction of $anHis(t)$, it is easy to see that $\mathit{ro}_t \subseteq \mathit{vis}_t \wedge \mathit{vis}_t$ is acyclic. 
+
+We need to prove that, there exists function $ctxt$, such that $\forall o \in O_t$, $ctxt(o) = (O_o,<_o,arb_o) \in Spec(lab(o))$. Assume $o$ is generated with the transition $(O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k)$ ${\xrightarrow{\alpha_{k+1}}} (O_{k+1},\mathit{ro}_{k+1},\mathit{del}_{k+1},\mathit{arb}_{k+1})$. Then, 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] If $o$ is a query operation, then 
+\end{itemize} 
+
+
+
+
+
+
+
 
 \noindent {\bf Relation between $Q$ and annotated history}:Let $t[1,k] = \alpha_1 \cdot \ldots \cdot \alpha_k$. Given the annotated history $anHis(t[1,k]) = (O_k,\mathit{ro}_k,\mathit{vis}_k,\mathit{arb}_k)$ of $t[1,k]$, assume that $q_k = (O,\mathit{ro},\mathit{del},\mathit{arb})$, then, we need to prove that,
 

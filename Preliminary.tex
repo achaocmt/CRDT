@@ -125,7 +125,7 @@ Given an annotated history $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ and an op
 
 We require that, given operations $o_1,o_2,o'_1,\ldots,o'_m \in O_o$, if $(o_1,o_2) \in \mathit{vis}$ via $o'_1,\ldots,o'_m$, then $(o_1,o_2) \in <$. We say that $(o_1,o_2) \in \mathit{vis}$ via $o'_1,\ldots,o'_m$, if $(o_1,o'_1),$ $(o'_1,o'_2), \ldots, (o'_{\mathit{m-1}},o'_m),(o'_m,o_2)$ are all in $\mathit{vis}$.
 
-\item[-] {\color {red}We require that, given $o_1,o_2 \in O$, if $\mathit{vis}^{-1}(o_1) = \mathit{vis}^{-1}(o_2)$, then $<_1 = <_2$, where $ctxt(o_1)=(O_1,<_1,arb_1)$ and $ctxt(o_2)=(O_2,<_2,arb_2)$.} 
+\item[-] {\color {red}We require that, given $o_1,o_2 \in O$, if $\mathit{vis}^{-1}(o_1) = \mathit{vis}^{-1}(o_2)$, then $<_1 = <_2$, and $arb_1 \cup arb_2$ is acyclic, where $ctxt(o_1)=(O_1,<_1,arb_1)$ and $ctxt(o_2)=(O_2,<_2,arb_2)$.}
 \end{itemize}
 
 Let us define strong-return-value consistency (SRVC consistency, for short) as follows:
@@ -134,13 +134,13 @@ Let us define strong-return-value consistency (SRVC consistency, for short) as f
 
 \begin{definition}[Strong-return-value consistency]
 \label{definition:strong return value consistency}
-An annotated history $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ is SRVC w.r.t specification $Spec$, if there exists function $ctxt$, such that $\mathit{THINAIR} \wedge \mathit{RVAL}$ hold, where
+An annotated history $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ is SRVC w.r.t specification $Spec$, if there exists function $ctxt$, such that, 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\mathit{THINAIR}$: $\mathit{ro} \cup \mathit{vis}$ is acyclic.
+\item[-] $\mathit{ro} \subseteq \mathit{vis} \wedge \mathit{vis}$ is acyclic.
 
-\item[-] $\mathit{RVAL}: \forall o \in O$, $ctxt(o) \in Spec(lab(o))$.
+\item[-] $\forall o \in O$, $ctxt(o) \in Spec(lab(o))$.
 \end{itemize}
 
 A history $(O,\mathit{ro})$ is SRVC w.r.t $Spec$, if there exists $\mathit{vis}$ and $\mathit{arb}$, such that $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ is SRVC consistent w.r.t $Spec$.
