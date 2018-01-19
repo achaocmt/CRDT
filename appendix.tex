@@ -100,14 +100,66 @@ Let us prove that $(q'_{imp},q'_s) \in R$. From above discussion, it is not hard
 \label{sec:appendix definitions and proofs of section reference implementation}
 
 
+The following lemma states the relation between annotated history of a trace of $RImp(Spec)$ and the state of $RImp(Spec)$ at the end of this trace. 
 
-{\noindent \bf Theorem \ref{lemma:executions of reference implementation are SRV consistent}}: $\forall t \in \llbracket RImp(Spec) \rrbracket$, $absT(t)$ is SRV consistent w.r.t $Spec$.
+\begin{lemma}
+\label{lemma:relation between the state of RImpSpec and the annotated history}
+$q_0 {\xrightarrow{\alpha_1}} q_1 \ldots {\xrightarrow{\alpha_k}} q_k$ of $RImp(Spec)$, let its annotated history to be $(O_k,\mathit{ro}_k,\mathit{vis}_k,\mathit{arb}_k)$ and $q_k = (O'_k,\mathit{ro}'_k,\mathit{del}'_k,\mathit{arb}'_k)$. Then, 
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $O'_k$ is the set of update operations of $O_k$.
+
+\item[-] $\mathit{ro}'_k = \mathit{ro}_k \uparrow_{( O \times O )}$,
+
+\item[-] $( \mathit{del}'_k \cdot \mathit{ro} ) \uparrow_{(O \times O)} = \mathit{vis}_k$,
+
+\item[-] $\mathit{arb}'_k = \mathit{arb}_k$.
+\end{itemize}
+\end{lemma}
+\begin {proof} 
+
+We prove this lemma by induction on $k$. When $k=1$, this holds trivially. 
+
+Assume that this holds for some $u$, and let us consider the case of $u+1$:  
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] If $\alpha_{u+1} = addDel(o,r)$: $(O'_u,\mathit{ro}'_u,\mathit{del}'_u,\mathit{arb}'_u) {\xrightarrow{addDel(o,r)}} (O'_u,\mathit{ro}'_u,\mathit{del}'_u \cup \{ (o,r) \},\mathit{arb}'_u)$. This still holds. 
+
+\item[-] If $m$ is a query method and $\alpha_{u+1} = m(a,b,r,\mathit{arb}'_u)$: $(O'_u,\mathit{ro}'_u,\mathit{del}'_u,\mathit{arb}'_u) {\xrightarrow{(m,a,b,r,\mathit{arb}'_u)}} (O'_u,\mathit{ro}'_u,\mathit{del}'_u,\mathit{arb}'_u)$. This still holds. 
+\end{itemize}
+
+This completes the proof of this lemma. $\qed$
+\end {proof}
+
+
+
+
+
+
+
+{\noindent \bf Theorem \ref{lemma:executions of reference implementation are SRV consistent}}: $\forall t \in \llbracket RImp(Spec) \rrbracket$, $anHis(t)$ is SRVC consistent w.r.t $Spec$. 
 
 \begin {proof}
 
-Assume $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow,\textit{li-s},cor)$, $t = \alpha_1, \ldots, $ and $q_1,\ldots \in Q$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$. Let $absT(t) = (O_t,<_{\textit{ro-t}},<_{\textit{vis-t}},<_{\textit{arb-t}})$.
+Assume $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow)$, $t = \alpha_1, \ldots, $ and $q_1,\ldots \in Q$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$. Let $anHis(t) = (O_1,\mathit{ro}_1,\mathit{vis}_1,\mathit{arb}_1)$. 
 
-According to the construction of $absT(t)$, it is easy to see that $<_{\textit{ro-t}} \subseteq <_{\textit{vis-t}}$ and $<_{\textit{vis-t}}$ is acyclic. Then, $\textit{THINAIR}$ holds.
+According to the construction of $absT(t)$, it is easy to see that $\mathit{ro}_1 \subseteq \mathit{vis}_1$ and $\mathit{vis}_1$ is acyclic. Then, $\textit{THINAIR}$ holds.
+
+\noindent {\bf Relation between $Q$ and annotated history}:Let $t[1,k] = \alpha_1 \cdot \ldots \cdot \alpha_k$. Given the annotated history $anHis(t[1,k]) = (O_k,\mathit{ro}_k,\mathit{vis}_k,\mathit{arb}_k)$ of $t[1,k]$, assume that $q_k = (O,\mathit{ro},\mathit{del},\mathit{arb})$, then, we need to prove that,
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $O$ is the set of update operations of $O_k$. 
+
+\item[-] $\mathit{ro}= \mathit{ro}_k \uparrow_{( O \times O )}$, 
+
+\item[-] $( \mathit{del} \cdot \mathit{ro} ) \uparrow_{(O \times O)} = \mathit{vis}_k$, 
+
+\item[-] $\mathit{arb} = \mathit{arb}_k$. 
+\end{itemize}
+
+
 
 Given $i$, let $t[1,i] = \alpha_1 \cdot \ldots \cdot \alpha_i$. We define $absT(t[1,i]) = (O_\textit{t1i},<_{\textit{ro-t1i}},<_{\textit{vis-t1i}},<_{\textit{arb-t1i}})$ as follows:
 

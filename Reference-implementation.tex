@@ -24,115 +24,111 @@ Given a specification $Spec$, its reference implementation is given as an tuple 
 
 \item[-] $\Sigma = \Sigma_1 \cup \Sigma_2$ is the set of transition labels, where $\Sigma_1 = \{ (m,a,b,r,arb) \vert m \in \mathbb{M}, a,b \in \mathbb{D}, r \in \mathbb{R},$ $arb \subseteq O \times O\}$ and $\Sigma_2 = \{ addDel(o,r) \vert o \in \mathbb{O}, r \in \mathbb{R} \}$.
 
-\item[-] {\color {red}Let $ctxt$ be a function that takes $(O,ro,del,arb) \in Q$ and $o=(\_,r,\_) \notin O$ as arguments, and returns a operation context of $o$ in an annotated history $(O_1,ro_1,vis_1,arb_1)$, where .
-    
+\item[-] {\color {red}Let $ctxt$ be a function that takes $(O,ro,del,arb) \in Q$ and $o=(\_,r,\_) \notin O$ as arguments, and returns a set of operation contexts. Each element in this set is a operation context of $o$ for some annotated history $(O_1,ro_1,vis_1,arb_1)$ satisfies that
+
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] $O_1 = \{ vis^{-1}(o') \vert o'=(\_,r,\_) \in O \} \cup (vis^{-1}(r)) \cup \{ o \}$. 
+    \item[-] $O_1 = visTo(r) \cup \{ o \}$. Here $visTo(O,r) = \{ vis^{-1}(o') \vert o'=(\_,r,\_) \in O \} \cup (vis^{-1}(r))$.
 
-    \item[-] $ro_1 = ro \cup \{ (o',o) \vert o'=(\_,r,\_) \in O \}$. 
-    
-    \item[-] $vis_1 = (vis \uparrow_{O \times O}) \cup \{ (o',o) \vert (o',r) \in vis \}$. 
-    
-    \item[-] $arb_1 \subseteq O_1 \times O_1$ is obtained from $arb$ by projection into $O_1$ and then possibly adding some relation between $O$ and $\{ o \}$. 
+
+    \item[-] $ro_1 = ro \cup \{ (o',o) \vert o'=(\_,r,\_) \in O \}$.
+
+    \item[-] $vis_1 = (vis \uparrow_{O \times O}) \cup \{ (o',o) \vert (o',r) \in vis \}$.
+
+    \item[-] $arb_1 \subseteq O_1 \times O_1$ is obtained from $arb$ by projection into $visTo(r)$, and then add operation $o$ and possibly some relation between $O$ and $\{ o \}$.
     \end{itemize}}
 
-\item[-] $\rightarrow \subseteq Q \times \Sigma \times Q$ is the transition relation. {\color {red} We assume there exist a predicate $cor: Q \rightarrow \{ \mathit{true},\mathit{false} \}$, and require that if there is a transition between a pair of stats, then they both satisfy $cor$.} 
-%It contains three kinds of transitions: adding a deliver relation, doing a query operation, and doing an update operation. 
+\item[-] $\rightarrow \subseteq Q \times \Sigma \times Q$ is the transition relation. {\color {red} We assume there exist a predicate $cor: Q \rightarrow \{ \mathit{true},\mathit{false} \}$, and require that if there is a transition between a pair of stats, then they both satisfy $cor$.}
+%It contains three kinds of transitions: adding a deliver relation, doing a query operation, and doing an update operation.
 
     \begin {itemize}
     \item[-] Adding a deliver relation:
 
-     $\begin{array}{l c} \bigfrac{o \in O, \neg(o \xrightarrow{vis} r)} {(O,ro,del,arb) {\xrightarrow{addDel(o,r)}} (O,ro,del \cup \{ (o,r) \},arb} \end{array}$
+     $\begin{array}{l c} \bigfrac{o \in O, \neg(o \xrightarrow{vis} r)} {(O,ro,del,arb) {\xrightarrow{addDel(o,r)}} (O,ro,del \cup \{ (o,r) \},arb)} \end{array}$
 
-    \item[-] Doing a query operation: Let $m$ be a query method. For $\ell = m(a) \Rightarrow b$ and $q = (O,ro,del,arb)$, 
+    \item[-] Doing a query operation: Let $m$ be a query method. For $\ell = m(a) \Rightarrow b$,
 
-     $\begin{array}{l c} \bigfrac{ o=(\ell,r,\_) \notin O, ctxt(q,o) = (O',\_,arb \uparrow_{ (Q' \times Q') }) \in Spec(\ell)} {(O,ro,del,arb) {\xrightarrow{m(a,b,r,arb)}} (O,ro,del,arb)}  \end{array}$
+     $\begin{array}{l c} \bigfrac{ o=(\ell,r,\_) \notin O, \exists O', x= (O',\_,arb \uparrow_{ (Q' \times Q') }) \in ctxt((O,ro,del,arb),o), x \in Spec(\ell)} {(O,ro,del,arb) {\xrightarrow{m(a,b,r,arb)}} (O,ro,del,arb)}  \end{array}$
 
-     \item[-] Doing an update operation: Let $m$ be an update method, {\color {red}let $arb'$ be obtained from $arb$ by (1) adding operation $o$, (2) adding possibly relations between operation of $arb$ and $o$, and (3) adding possibly relations between $o$ and operations of $arb$.}
+     \item[-] Doing an update operation: Let $m$ be an update method, let $arb'$ be obtained from $arb$ by adding $o$ and possibly relations between $O$ and $\{ o \}$. Let $arb' \uparrow_{(O' \cup \{ o \})}$ short for $arb' \uparrow_{(O' \cup \{ o \}) \times (O' \cup \{ o \})}$. For $\ell = m(a) \Rightarrow b$,
 
-     $\begin{array}{l c} \bigfrac{o = (m(a,b),r,oid) \notin O, \exists O', li((O,ro,del,arb,vis),r,o) = (O',\_,arb' \uparrow_{(O' \cup \{ o \})}) \in Spec(m(a,b))} {(O,ro,del,arb,vis) {\xrightarrow{m(a,b,r,arb')}} (O \cup \{ o \},ro \oplus o ,del \oplus o,arb',(del \oplus o) \cdot (ro \oplus o))}  \end{array}$
+     $\begin{array}{l c} \bigfrac{o = (\ell,r,\_) \notin O, \exists O', x = (O',\_,arb' \uparrow_{(O' \cup \{ o \})}) \in ctxt((O,ro,del,arb),o), x \in Spec(\ell)} {(O,ro,del,arb) {\xrightarrow{m(a,b,r,arb')}} (O \cup \{ o \},ro \oplus o ,del \oplus o,arb')}  \end{array}$
 
-     $ro \oplus o = ro \cup \{ (o',o) \vert o'$ is of replica $r \}$ and $del \oplus o$ is obtained from $del$ by transforming each $(o',r)$ in $del$ into $(o',o)$. We further require that the candidate of operation identifier of $o$ is unique.
+     $ro \oplus o = ro \cup \{ (o',o) \vert o' = (\_,r,\_) \in O \}$, and $del \oplus o$ is obtained from $del$ by transforming each $(o',r)$ into $(o',o)$. We further require that the candidate of operation identifier of $o$ is unique.
     \end{itemize}
 
 \item[-] $q_0=(\emptyset,\emptyset,\emptyset)$ is the initial state.
 \end{itemize}
 
-\noindent {\bf Example 3. $RImp(S_{\mathit{ORS}})$}: $li$ and $correct$ is defined as follows:
-
+\noindent {\bf Example 3. $RImp(S_{\mathit{ORS}})$}: function $ctxt$ and predicate $cor$ are defined as follows:
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] Given $q = (O,ro,del,arb,vis)$, $r \in \mathbb{R}$ and $o \notin O$, $li(q,r,o) = ( O_l ,<_l, <_{\mathit{l-arb}} )$. Here $<_{\mathit{l-arb}} = \emptyset$.
+\item[-] Given $o=(\_,r,\_)$ and $q=(O,ro,del,\emptyset)$, $ctxt(q,o) = (visTo(O,r),<_1,\emptyset)$, where $<_1 = vis \uparrow_{(O_1 \times O_1)} - \{ (o_1,o_2) \vert o_2 \notin Minus(q,o_1), \exists o_3, o_1 {\xrightarrow{vis}} o_3 {\xrightarrow{vis}} o_2, o_1,o_2 \in visTo(O,r), o_3 \notin visTo(O,r) \}$.
 
-$<_l = vis \uparrow_{(O_l \times O_l)} - \{ (o_1,o_2) \vert o_2 \notin Minus(q,o_1), \exists o_3, o_1 {\xrightarrow{vis}} o_3 {\xrightarrow{vis}} o_2, o_1$ and $o_2$ are visible to replica $r$ or operation of replica $r$, $o_3$ is not visible to replica $r$ nor operation of replica $r\}$.
+Here $Minus(q,o_1)$ is defined as follows: (1) if $lab(o_1)=add(a)$, then $Minus(q,o_1) = \{o_2 \vert lab(o_2)=rem(a), o_1 {\xrightarrow{vis}} o_2, \neg \exists o_3, ( lab(o_3) = rem(a) ) \wedge ( o_1 {\xrightarrow{vis}} o_3 {\xrightarrow{vis}} o_2 ) \}$, (2) otherwise, $Minus(q,o_1) = \emptyset$.
 
-Here $Minus(q,o_1)$ is defined as follows: (1) if $cont(o_1)=add(a,\top)$, then $Minus(q,o_1) = \{o_2 \vert cont(o_2)=rem(\top,a), o_1 {\xrightarrow{vis}} o_2, \neg \exists o_3,$ such that $( cont(o_3) = rem(\top,a) ) \wedge ( o_1 {\xrightarrow{vis}} o_3 {\xrightarrow{vis}} o_2 ) \}$, (2) otherwise, $Minus(q,o_1) = \emptyset$.
-
-\item[-] $correct((O,ro,del,arb,vis))$ holds, if
+\item[-] $cor((O,ro,del,arb))$ holds, if
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] $\forall o \in O$, if $cont(o)=rem(\top,a)$, then $\exists o', cont(o')=add(a,top) \wedge o \in Minus(q,o')$.
-
     \item[-] $arb= \emptyset$.
+
+    \item[-] $\forall o \in O$, if $lab(o)=rem(a)$, then $\exists o', o \in Minus(q,o')$.
     \end{itemize}
 \end{itemize}
 
-\noindent {\bf Example 4. $RImp(S_{\mathit{list}})$}: $li$ and $correct$ is defined as follows:
+\noindent {\bf Example 4. $RImp(S_{\mathit{list}})$}: function $ctxt$ and predicate $cor$ are defined as follows:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] Given $q = (O,ro,del,arb,vis)$, $r \in \mathbb{R}$ and $o \notin O$, $li(q,r,o) = ( O_l ,<_l, <_{\mathit{l-arb}} )$. Here $<_l = vis \uparrow_{(O_l \times O_l)}$. $<_{\mathit{l-arb}}$ is as follows: (1) if $o$ is an $add$ operation, then $<_{\mathit{l-arb}}$ is a total generated by adding $o$ into some place of $arb$, (2) otherwise, $<_{\mathit{l-arb}} = arb$.
+\item[-] Given $q = (O,ro,del,arb)$ and $o =(\_,r,\_)$, $ctxt(q,o) = ( O_1 ,<_1, arb_1 )$, where $O_1 = visTo(O,r)$, $<_1 = vis \uparrow_{(O_1 \times O_1)}$, and $arb_1$ is as follows: (1) if $lab(o)=add(\_)$, then $arb_1$ is a total order generated by adding $o$ into some place of $arb$, (2) otherwise, $arb_1 = arb$.
 
-\item[-] $correct((O,ro,del,arb,vis))$ holds, if
+\item[-] $cor((O,ro,del,arb))$ holds, if
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] Given $(O,vis,arb)$, we can go through operations of $O$ by first investigate minimal (w.r.t $vis$) operations, and then their immediate successors (w.r.t $vis$), and so on. During this process, for each operation $o$, we require $o$ to be correct similarly as in case of Example 2.
+    \item[-] $arb$ is a acyclic and irreflexive total order over $add$ operations of $O$.
 
-    \item[-] $arb$ is a acyclic total order over $add$ operations of $O$.
+    \item[-] For each operation $o \in O$, $f(o) \neq \mathit{Undef}$.
     \end{itemize}
 \end{itemize}
 
-It is obvious that $RImp(Spec)$ is deterministic. Since $li$ and $cor$ are only used to define transition relation, when the context is clear, we could ignore these two tuples and write $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow)$. The set of executions of $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow)$, denoted $\llbracket RImp(Spec) \rrbracket$, is the set of all executions starts from $q_0$. Formally, $t = \alpha_1 \cdot \ldots \in \llbracket RImp(Spec) \rrbracket$, if there exists $q_1,\ldots \in Q$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 {\xrightarrow{\alpha_2}} \ldots$.
-
-Given an execution $t = \alpha_1 \cdots \in \llbracket RImp(Spec) \rrbracket$, its abstract trace $absT(t) = (O,<_{\mathit{ro}},<_{\mathit{vis}},<_{\mathit{arb}})$ is generated as follows: Let $q_1,\ldots \in Q$ be the set of states, such that $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$.
+It is obvious that $RImp(Spec)$ is deterministic. Let $\llbracket RImp(Spec) \rrbracket = \{ \alpha_1 \cdot \ldots  \vert \exists q_1,\ldots \in Q, q_0 {\xrightarrow{\alpha_1}} q_1 \ldots \}$. Given an sequence $ t= \alpha_1 \cdots \in \llbracket RImp(Spec) \rrbracket$, its annotated history $anHis(t) = (O,\mathit{ro},\mathit{vis},\mathit{arb})$ is generated as follows: Let $e = q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ be an execution,
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $O$ is the set of operations generated during $t$.
+\item[-] $O$ is the set of operations generated during $e$.
 
-\item[-] $<_{\mathit{ro}} = <_{r_1} \cup \ldots \cup <_{r_{\vert \mathbb{R} \vert}}$, where for each $i$, $<_i$ is the occurring order of operations with the $i$-th identifier in $\mathbb{R}$ over $t$.
+\item[-] $(o_1,o_2) \in \mathit{ro}$, if they have the same replica identifier, $o_1$ (resp., $o_2$) is generated in transition $\alpha_u$ (resp., $\alpha_v$), and $u < v$.
 
-\item[-] $(o_1,o_2) \in <_{\mathit{vis}}$, if one of the following case holds: (1) $o_1$ is delivered into replica of $o_2$, and then $o_2$ happens, (2) $o_1$ and $o_2$ are of same replica and $o_1$ happens earlier than $o_2$.
+\item[-] $(o_1,o_2) \in \mathit{vis}$, if one of the following case holds: (1) $o_1$ is delivered into replica of $o_2$, and then $o_2$ happens, (2) $o_1$ and $o_2$ are of same replica and $o_1$ happens earlier than $o_2$.
 
 \item[-] $<_{\mathit{arb}}$ is the union of arbitration order of each $q_i$.
 \end{itemize}
 
-The following theorem states that the executions in $\llbracket RImp(Spec) \rrbracket$ are SRV consistent w.r.t $Spec$. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
+The following theorem states that the traces of $RImp(Spec)$ are SRVC w.r.t $Spec$. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
 \begin{theorem}
 \label{lemma:executions of reference implementation are SRV consistent}
-$\forall t \in \llbracket RImp(Spec) \rrbracket$, $absT(t)$ is SRV consistent w.r.t $Spec$.
+$\forall t \in \llbracket RImp(Spec) \rrbracket$, $anHis(t)$ is SRVC consistent w.r.t $Spec$.
 \end{theorem}
 
 
 \noindent {\bf Reference Implementation with Causal Delivery}:
 
-An operation $o_1$ happen-before \cite{Lamport:1978} an operation $o_2$, denoted $o_1 <_{hb} o_2$, if $o_1 {\xrightarrow{ (del \cup ro)^* }} o_2$. Causal delivery require that, for each pair of update operations $(o_1,o_2)$, if $o_1 <_{hb} o_2$, then for each replica $r$, $o_2$ can be delivered to replica $r$ if $o_1$ has already been delivered to replica $r$.
+An operation $o_1$ happen-before \cite{Lamport:1978} an operation $o_2$, denoted $o_1 <_{hb} o_2$, if $o_1 {\xrightarrow{ (del \cup ro)^* }} o_2$. A trace satisfies causal delivery, if for each pair of update operations $(o_1,o_2)$ of this trace, if $o_1 <_{hb} o_2$, then for each replica $r$, $o_2$ can be delivered to replica $r$ if $o_1$ has already been delivered to replica $r$. 
 
-Given a specification $Spec$, its reference implementation with causal delivery is given as an tuple $RImp(Spec)_{\mathit{cd}} = (Q,\Sigma,q_0,\rightarrow,li,cor)$. $RImp_{\mathit{cd}}(Spec)$ can be obtained from $RImp(Spec)$ by only changing the transition rules of adding a delivery relation as follows:
+The reference implementation with causal delivery of $Spec$ is given as an tuple $RImp(Spec)_{\mathit{cd}} = (Q,\Sigma,q_0,\rightarrow)$. $RImp_{\mathit{cd}}(Spec)$ can be obtained from $RImp(Spec)$ by only changing the transition rules of adding a delivery relation as follows:
 
 \begin {itemize}
 \setlength{\itemsep}{0.5pt}
 \item[-] Adding a deliver relation:
 
-$\begin{array}{l c} \bigfrac{o \in O, o \ is \ minimal \ w.r.t \ <_{hb} in \ \{ o' \vert (o',r) \notin vis, \forall o'' \in O \ with \ replica \ r, (o',o'') \notin vis \}} {(O,ro,del,arb,vis) {\xrightarrow{addDel(o,r)}} (O,ro,del \cup \{ (o,r) \},arb,(del \cup \{ (o,r) \}) \cdot ro)} \end{array}$
+$\begin{array}{l c} \bigfrac{o \in O, o \ is \ minimal \ w.r.t \ <_{hb} in \ \{ o' \vert o' \in O \wedge o' \notin visTo(O,r) \}} {(O,ro,del,arb) {\xrightarrow{addDel(o,r)}} (O,ro,del \cup \{ (o,r) \},arb)} \end{array}$
 
 \end{itemize}
 
-The following lemma states that $RImp(Spec)_{\mathit{cd}}$ contains all the sequences of $RImp(Spec)$ that are causal delivery. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
+The following lemma states that $RImp(Spec)_{\mathit{cd}}$ contains all the traces of $RImp(Spec)$ that are causal delivery. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
 \begin{lemma}
 \label{lemma:RImpcdSpec contains all the sequences of RImpSpec that are causal delivery}

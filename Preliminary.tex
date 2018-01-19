@@ -125,7 +125,7 @@ Given an annotated history $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ and an op
 
 We require that, given operations $o_1,o_2,o'_1,\ldots,o'_m \in O_o$, if $(o_1,o_2) \in \mathit{vis}$ via $o'_1,\ldots,o'_m$, then $(o_1,o_2) \in <$. We say that $(o_1,o_2) \in \mathit{vis}$ via $o'_1,\ldots,o'_m$, if $(o_1,o'_1),$ $(o'_1,o'_2), \ldots, (o'_{\mathit{m-1}},o'_m),(o'_m,o_2)$ are all in $\mathit{vis}$.
 
-\item[-] {\color {red}We require that, given $ctxt(o_1)=(O_1,<_1,arb_1)$ and $ctxt(o_2)=(O_2,<_2,arb_2)$, if $\mathit{vis}^{-1}(o_1) = \mathit{vis}^{-1}(o_2)$, then $<_1 = <_2$.}
+\item[-] {\color {red}We require that, given $o_1,o_2 \in O$, if $\mathit{vis}^{-1}(o_1) = \mathit{vis}^{-1}(o_2)$, then $<_1 = <_2$, where $ctxt(o_1)=(O_1,<_1,arb_1)$ and $ctxt(o_2)=(O_2,<_2,arb_2)$.} 
 \end{itemize}
 
 Let us define strong-return-value consistency (SRVC consistency, for short) as follows:
