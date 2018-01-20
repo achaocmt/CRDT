@@ -8,7 +8,7 @@
 \begin {proof}
 Assume $A = (Q_A,\Sigma_A,\rightarrow_a,q_{0A})$ and $B = (Q_B,\Sigma_B,\rightarrow_b,q_{0B})$.
 
-For the $\textit{if}$ direction. Assume $R$ is a $f_s$-simulation relation between $A$ and $B$. Given $q_{1A},\ldots,q_{kA} \in Q_A$, $q_{1B},\ldots,q_{kB}$, $\alpha_1,\ldots,\alpha_k$, such that
+For the $\mathit{if}$ direction. Assume $R$ is a $f_s$-simulation relation between $A$ and $B$. Given $q_{1A},\ldots,q_{kA} \in Q_A$, $q_{1B},\ldots,q_{kB}$, $\alpha_1,\ldots,\alpha_k$, such that
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
@@ -37,7 +37,7 @@ $\ldots$
 We can see that $t_B = f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)$. Therefore, by definition of $f_t$-refinement, we can see that B $f_t$-refines $A$.
 
 
-For the $\textit{only if}$ direction. Assume $B$ $f_t$-refines $A$. Let a relation $R_t$ be defined as follows: Given $q_A \in Q_A$ and $q_B \in Q_B$, $(q_A,q_B) \in R_t$, if $\exists \alpha_1, \ldots, \alpha_k \in \Sigma_A$, $\exists q_{1A},\ldots,q_{k-1A} \in Q_A$, and $\exists q_{1B},\ldots,q_{k-1B} \in Q_B$, such that $q_{0A} {\xrightarrow{\alpha_1}}_a q_{1A} \ldots {\xrightarrow{\alpha_{k-1}}}_a q_{k-1A} {\xrightarrow{\alpha_k}}_a q_A$, and $q_{0B} {\xrightarrow{f_t(\alpha_1)}}_b q_{1B} \ldots$ ${\xrightarrow{f_t(\alpha_1 \cdot \cdot \ldots \cdot \alpha_{k-1})}}_b q_{k-1B} {\xrightarrow{f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)}}_b q_B$.
+For the $\mathit{only if}$ direction. Assume $B$ $f_t$-refines $A$. Let a relation $R_t$ be defined as follows: Given $q_A \in Q_A$ and $q_B \in Q_B$, $(q_A,q_B) \in R_t$, if $\exists \alpha_1, \ldots, \alpha_k \in \Sigma_A$, $\exists q_{1A},\ldots,q_{k-1A} \in Q_A$, and $\exists q_{1B},\ldots,q_{k-1B} \in Q_B$, such that $q_{0A} {\xrightarrow{\alpha_1}}_a q_{1A} \ldots {\xrightarrow{\alpha_{k-1}}}_a q_{k-1A} {\xrightarrow{\alpha_k}}_a q_A$, and $q_{0B} {\xrightarrow{f_t(\alpha_1)}}_b q_{1B} \ldots$ ${\xrightarrow{f_t(\alpha_1 \cdot \cdot \ldots \cdot \alpha_{k-1})}}_b q_{k-1B} {\xrightarrow{f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)}}_b q_B$.
 
 Let us now prove that $R_t$ is a $f_s$-simulation relation. Assume that $q_A {\xrightarrow{\alpha}}_a q'_A$. Then we can see that $q_{0A} {\xrightarrow{\alpha_1}}_a q_{1A} \ldots {\xrightarrow{\alpha_{k-1}}}_a q_{k-1A} {\xrightarrow{\alpha_k}}_a q_A {\xrightarrow{\alpha}}_A q'_A$ and $\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha$ is an execution of $A$.
 
@@ -48,9 +48,9 @@ Since $P_{(f_s,f_t)}$ holds, we have that $f_t(\alpha_1 \cdot \ldots \cdot \alph
 
 \forget
 {
-The $\textit{only if}$ direction is obvious.
+The $\mathit{only if}$ direction is obvious.
 
-Let us prove the $\textit{if}$ direction. By assumption we already have that $RImp(Spec)$ trace refines $\llbracket imp \rrbracket$. Assume $\llbracket imp \rrbracket = (Q_{imp},\Sigma_{imp},\rightarrow_{imp},q_{0imp})$ and $RImp(Spec) = (Q_s,\Sigma_s,vis,q_{0s},li,\rightarrow_s,livReq)$. A relation $R \subseteq Q_{imp} \times Q_s$ is defined as follows: $(q_i,q_s) \in R$, if $\exists t_{imp} = \alpha_1 \cdot \ldots \cdot \alpha_k,t_s = \beta_1 \cdot \ldots \cdot \beta_k, q_{1imp}, \ldots, q_{kimp}, q_{1s}, \ldots, q_{ks}$, such that $q_{0imp} {\xrightarrow{\alpha_1}}_{imp} q_{1imp} \ldots {\xrightarrow{\alpha_k}}_{imp} q_{kimp}$ is an execution of $\llbracket imp \rrbracket$, $q_{kimp}=q_i$, $q_{0s} {\xrightarrow{\beta_1}}_s q_{1s} \ldots {\xrightarrow{\beta_k}}_s q_{ks}$ is an execution of $RImp(Spec)$, $q_{ks}=q_s$, and $t_{imp}$ and $t_s$ correspond. Let us prove that $R$ is a simulation relation. Note that, given $t_{imp}$, there exists at most one $t_s$, such that $t_{imp}$ and $t_s$ correspond.
+Let us prove the $\mathit{if}$ direction. By assumption we already have that $RImp(Spec)$ trace refines $\llbracket imp \rrbracket$. Assume $\llbracket imp \rrbracket = (Q_{imp},\Sigma_{imp},\rightarrow_{imp},q_{0imp})$ and $RImp(Spec) = (Q_s,\Sigma_s,vis,q_{0s},li,\rightarrow_s,livReq)$. A relation $R \subseteq Q_{imp} \times Q_s$ is defined as follows: $(q_i,q_s) \in R$, if $\exists t_{imp} = \alpha_1 \cdot \ldots \cdot \alpha_k,t_s = \beta_1 \cdot \ldots \cdot \beta_k, q_{1imp}, \ldots, q_{kimp}, q_{1s}, \ldots, q_{ks}$, such that $q_{0imp} {\xrightarrow{\alpha_1}}_{imp} q_{1imp} \ldots {\xrightarrow{\alpha_k}}_{imp} q_{kimp}$ is an execution of $\llbracket imp \rrbracket$, $q_{kimp}=q_i$, $q_{0s} {\xrightarrow{\beta_1}}_s q_{1s} \ldots {\xrightarrow{\beta_k}}_s q_{ks}$ is an execution of $RImp(Spec)$, $q_{ks}=q_s$, and $t_{imp}$ and $t_s$ correspond. Let us prove that $R$ is a simulation relation. Note that, given $t_{imp}$, there exists at most one $t_s$, such that $t_{imp}$ and $t_s$ correspond.
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
@@ -141,17 +141,17 @@ For both cases, let $ctxt(o) = ctxt'(o)$. It is easy to see that $ctxt(o)$ defin
 
 
 
-{\noindent \bf Lemma \ref{lemma:RImpcdSpec contains all the sequences of RImpSpec that are causal delivery}}: $\llbracket RImp(Spec)_{\textit{cd}} \rrbracket = \{ t \vert t \in \llbracket RImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$.
+{\noindent \bf Lemma \ref{lemma:RImpcdSpec contains all the sequences of RImpSpec that are causal delivery}}: $\llbracket RImp(Spec)_{\mathit{cd}} \rrbracket = \{ t \vert t \in \llbracket RImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$.
 
 \begin {proof}
 
-Let us prove the $\subseteq$ direction. We prove it by contradiction. Assume $\exists t =\alpha_1 \cdot \ldots \cdot \alpha_k \in \llbracket RImp(Spec)_{\textit{cd}} \rrbracket$ and $t$ does not satisfy causal delivery. Then there exists operations $o_1,o_2$ and replica $r$, such that $o_1 <_{hb} o_2$ and in $t$, when $o_2$ is delivered to replica $r$, $o_1$ has not been delivered to replica $r$ yet.
+Let us prove the $\subseteq$ direction. We prove it by contradiction. Assume $\exists t =\alpha_1 \cdot \ldots \cdot \alpha_k \in \llbracket RImp(Spec)_{\mathit{cd}} \rrbracket$ and $t$ does not satisfy causal delivery. Then there exists operations $o_1,o_2$ and replica $r$, such that $o_1 <_{hb} o_2$ and in $t$, when $o_2$ is delivered to replica $r$, $o_1$ has not been delivered to replica $r$ yet.
 
-Let $q_1,\ldots,q_k$ be the states, such that $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots {\xrightarrow{\alpha_k}} q_k$. It is easy to prove by induction that, for each $i$, when both $o_1$ and $o_2$ are in $q_i$, $(o_1,o_2)$ is in the $(ro \cup del)^*$ of $q_i$. Let $\alpha_j$ be the delivery of $o_2$ to replica $r$. In $q_{\textit{j-1}} = (O_{\textit{j-1}},ro_{\textit{j-1}},del_{\textit{j-1}},arb_{\textit{j-1}},vis_{\textit{j-1}})$, we can see that $(o_1,o_2) \in (ro_{\textit{j-1}} \cup del_{\textit{j-1}})^*$ and both $o_1,o_2 \in \{ o' \vert (o',r) \notin vis_{\textit{j-1}}, \forall o'' \in O_{\textit{j-1}}$  with replica $r, (o',o'') \notin vis_{\textit{j-1}} \}$. Then we can not do $addDel(o_2,r)$ transition, contradiction happens.
+Let $q_1,\ldots,q_k$ be the states, such that $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots {\xrightarrow{\alpha_k}} q_k$. Assume that for each $k$, $q_k = (O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k)$. It is easy to prove by induction that, for each $k$, when both $o_1$ and $o_2$ are in $O_k$, $(o_1,o_2)$ is in $(\mathit{ro}_k \cup \mathit{del}_k)^*$. Let $\alpha_u = addDel(o_2,r)$. Then, we can see that $(o_1,o_2) \in (\mathit{ro}_{u-1} \cup \mathit{del}_{u-1})^*$, and $o_1,o_2 \notin visTo(O_{u-1},r,\mathit{vis}_{u-1})$. By our definition of transition relation of $RImp(Spec)$, we could not launch $addDel(o_2,r)$ transition from $q_{u-1}$, contradiction happens. 
 
-Let us prove the $\supseteq$ direction. We prove its contrapositive. Assume that $t_1 =\alpha_1 \cdot \ldots \cdot \alpha_k \notin \llbracket RImp(Spec)_{\textit{cd}} \rrbracket$, we need to prove that $t_1 \notin \{ t \vert t \in \llbracket RImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$. This holds trivially when $t_1 \notin \llbracket RImp(Spec) \rrbracket$.
+It is easy to see that $t_1$ Let us prove the $\supseteq$ direction. We prove its contrapositive. Assume that $t_1 =\alpha_1 \cdot \ldots \cdot \alpha_k \notin \llbracket RImp(Spec)_{\mathit{cd}} \rrbracket$, we need to prove that $t_1 \notin \{ t \vert t \in \llbracket RImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$. This holds trivially when $t_1 \notin \llbracket RImp(Spec) \rrbracket$. 
 
-Let us consider the case when $t \in \llbracket RImp(Spec) \rrbracket$ and $t_1 \notin \llbracket RImp(Spec)_{\textit{cd}} \rrbracket$. Let $\alpha_j$ be the first label of $t$ that makes $t$ not in $\llbracket RImp(Spec)_{\textit{cd}} \rrbracket$. Such $\alpha_j$ must be $addDel$ transition that violates the requirements of $RImp(Spec)_{\textit{cd}}$. Assume that $q_{\textit{j-1}} = (O_{\textit{j-1}},ro_{\textit{j-1}},del_{\textit{j-1}},arb_{\textit{j-1}},vis_{\textit{j-1}})$. There must exists $o_3,o_4 \in O_{\textit{j-1}}$, such that $(o_3,o_4) \in (ro_{\textit{j-1}} \cup del_{\textit{j-1}})^*$, $o_3,o_4 \in \{ o' \vert (o',r) \notin vis_{\textit{j-1}}, \forall o'' \in O_{\textit{j-1}}$  with replica $r, (o',o'') \notin vis_{\textit{j-1}} \}$, and $\alpha_j$ adds delivery of $o_2$. This violates the causal delivery. $\qed$
+Since $t_1 \notin \llbracket RImp(Spec)_{\mathit{cd}} \rrbracket$, there exists a number $k$, such that $\alpha_1 \cdot \ldots \cdot \alpha_k \notin \llbracket RImp(Spec)_{\mathit{cd}} \rrbracket$ and $\alpha_1 \cdot \ldots \cdot \alpha_{k-1} \in \llbracket RImp(Spec)_{\mathit{cd}} \rrbracket$. Since $RImp(Spec)_{\mathit{cd}}$ is deterministic, it is easy to see that $\alpha_k$ is a $addDel$ transition and it violates the transition condition of $RImp(Spec)_{\mathit{cd}}$. Assume that $q_{\mathit{k-1}} = (O_{k-1},\mathit{ro}_{k-1},\mathit{del}_{k-1},\mathit{arb}_{k-1})$. Then, there must exists $o_3,o_4 \in O_{k-1}$, such that $(o_3,o_4) \in \mathit{vis}_{k-1}$, $o_3,o_4 \notin visTo(O_{k-1},r,\mathit{k-1})$, and $\alpha_k = addDel(o_4,r)$. This violates the causal delivery. $\qed$
 \end {proof}
 
 
@@ -161,7 +161,7 @@ Let us consider the case when $t \in \llbracket RImp(Spec) \rrbracket$ and $t_1 
 
 \begin {proof}
 
-Let $\rightarrow$ be the transition relation of $RImp(S_{\textit{ORS}})$. Given $(q_i,q'_i) \in R_{O}$,
+Let $\rightarrow$ be the transition relation of $RImp(S_{\mathit{ORS}})$. Given $(q_i,q'_i) \in R_{O}$,
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
@@ -171,9 +171,9 @@ Let $\rightarrow$ be the transition relation of $RImp(S_{\textit{ORS}})$. Given 
 
 \item[-] If $q'_i {\xrightarrow{(rem,\top,a,r,\emptyset)}} q'_{i+1}$: Assume in the process we add operation $o'$. In replica $r$ of $q'_i$, there exists $o_a$
 
-\item[-] If $q'_i {\xrightarrow{(contains,a,\textit{true},r,\emptyset)}} q'_{i+1}$:
+\item[-] If $q'_i {\xrightarrow{(contains,a,\mathit{true},r,\emptyset)}} q'_{i+1}$:
 
-\item[-] If $q'_i {\xrightarrow{(contains,a,\textit{false},r,\emptyset)}} q'_{i+1}$:
+\item[-] If $q'_i {\xrightarrow{(contains,a,\mathit{false},r,\emptyset)}} q'_{i+1}$:
 
 \item[-] If $q'_i {\xrightarrow{(elements,\top,S,r,\emptyset)}} q'_{i+1}$:
 \end{itemize}
@@ -340,13 +340,13 @@ This completes the proof of this lemma. $\qed$
 \section{Definitions of Section \ref{sec:specifications and consistencies}}
 \label{sec:appendix definitions of section specifications and consistencies}
 
-Let us give the definition of specification $S_{\textit{list}}$ of distributed list specification. $(O,<,<_{\textit{arb}}) \in S_{\textit{list}}(x)$, if
+Let us give the definition of specification $S_{\mathit{list}}$ of distributed list specification. $(O,<,<_{\mathit{arb}}) \in S_{\mathit{list}}(x)$, if
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $<^{-1}$ contains finite elements, $<$ is acyclic and $<_{\textit{arb}}$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin O$ and $o$ is in domain of $<_{\textit{arb}}$. By definition of poset we can see that $cont(o)=x$. Let $KnownRemoved=\emptyset$.
+\item[-] $<^{-1}$ contains finite elements, $<$ is acyclic and $<_{\mathit{arb}}$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin O$ and $o$ is in domain of $<_{\mathit{arb}}$. By definition of poset we can see that $cont(o)=x$. Let $KnownRemoved=\emptyset$.
 
-\item[-] Step $1$: For each minimal operation $o_1$ w.r.t $<$, let $Op(o_1)=\{ o_1 \}$, $seq(o_1)$ be obtained by ordering elements of $Op(o_1)$ with $<_{\textit{arb}}$ order. We require $cont(o_1)=add(\_,1)$.
+\item[-] Step $1$: For each minimal operation $o_1$ w.r.t $<$, let $Op(o_1)=\{ o_1 \}$, $seq(o_1)$ be obtained by ordering elements of $Op(o_1)$ with $<_{\mathit{arb}}$ order. We require $cont(o_1)=add(\_,1)$.
 
 \item[-] Step $i+1$: For each $o_2$, which are immediate successor of some $o_1$ of step $i$.
 
@@ -354,7 +354,7 @@ Let us give the definition of specification $S_{\textit{list}}$ of distributed l
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] Let $Op(o_2)$ be the set of $add$ operations in $<^{-1}(o_2) \cup \{ o_2 \}$, and let $seq(o_2)$ be obtained by ordering elements of $Op(o_2)$ with $<_{\textit{arb}}$ order.
+    \item[-] Let $Op(o_2)$ be the set of $add$ operations in $<^{-1}(o_2) \cup \{ o_2 \}$, and let $seq(o_2)$ be obtained by ordering elements of $Op(o_2)$ with $<_{\mathit{arb}}$ order.
 
     \item[-] If $cont(o_2) = add(a,pos)$, then $seq(o_2)[pos] = o_2$.
 
@@ -367,7 +367,7 @@ Let us give the definition of specification $S_{\textit{list}}$ of distributed l
     \setlength{\itemsep}{0.5pt}
     \item[-] Let $O_r$ be the set of $rem$ operations in $<^{-1}(o_2)$. According to our construction, $\forall o_r \in O_r$, $\exists o_p$, such that $(o_p,o_r) \in KnownRemoved$.
 
-    \item[-] Let $Op(o_2) = \{ o' \vert o'$ is a $add$ operation in $<^{-1}(o_2) \cup \{ o_2 \} \} - \{ o'_p \vert \exists o', (o'_p,o') \in KnownRemoved \}$. Let $seq(o_2)$ be obtained by ordering elements of $Op(o_2)$ with $<_{\textit{arb}}$ order.
+    \item[-] Let $Op(o_2) = \{ o' \vert o'$ is a $add$ operation in $<^{-1}(o_2) \cup \{ o_2 \} \} - \{ o'_p \vert \exists o', (o'_p,o') \in KnownRemoved \}$. Let $seq(o_2)$ be obtained by ordering elements of $Op(o_2)$ with $<_{\mathit{arb}}$ order.
 
     \item[-] If $cont(o_2) = add(a,pos)$, then $seq(o_2)[pos] = o_2$.
 
@@ -380,7 +380,7 @@ Let us give the definition of specification $S_{\textit{list}}$ of distributed l
     \setlength{\itemsep}{0.5pt}
     \item[-] Let $O_r$ be the set of $rem$ operations in $O$. According to our construction, $\forall o_r \in O_r$, $\exists o_p$, such that $(o_p,o_r) \in KnownRemoved$.
 
-    \item[-] Let $Op(o) = \{ o' \vert o'$ is a $add$ operation in $O \cup \{ o \} \} - \{ o'_p \vert \exists o', (o'_p,o') \in KnownRemoved \}$. Let $seq(o)$ be obtained by ordering elements of $Op(o)$ with $<_{\textit{arb}}$ order.
+    \item[-] Let $Op(o) = \{ o' \vert o'$ is a $add$ operation in $O \cup \{ o \} \} - \{ o'_p \vert \exists o', (o'_p,o') \in KnownRemoved \}$. Let $seq(o)$ be obtained by ordering elements of $Op(o)$ with $<_{\mathit{arb}}$ order.
 
     \item[-] If $cont(o) = add(a,pos)$, then $seq(o)[pos] = o$.
 
@@ -434,7 +434,7 @@ Let us give the definition of specification $S_{\textit{list}}$ of distributed l
 
 \begin {proof}
 
-Assume $RImp(Spec) = (Q,\Sigma,vis,,q_0,li,\rightarrow,livReq)$, let $t = \alpha_1, \ldots, $ and $\exists q_1,\ldots$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 {\xrightarrow{\alpha_2}} \ldots$, and $livReq(t) = \textit{true}$. Let $poSet(t)=(O_t,<_t)$. Let $gi = (O_t,<_{gi})$ be the global interpretation of $t$.
+Assume $RImp(Spec) = (Q,\Sigma,vis,,q_0,li,\rightarrow,livReq)$, let $t = \alpha_1, \ldots, $ and $\exists q_1,\ldots$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 {\xrightarrow{\alpha_2}} \ldots$, and $livReq(t) = \mathit{true}$. Let $poSet(t)=(O_t,<_t)$. Let $gi = (O_t,<_{gi})$ be the global interpretation of $t$.
 
 For each operation $o$, assume $o$ is first introduced by a transition from $q_i$ to $q_{i+1}$, then, the local interpretation of $o$ is $li(q_i,r)$, where $r$ is the replica of $o$.
 
@@ -442,17 +442,17 @@ We prove this lemma by consider the four requirements individually:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\textit{GIpf}$: Let us consider two kinds of operations $o$.
+\item[-] $\mathit{GIpf}$: Let us consider two kinds of operations $o$.
 
 If $\exists o'$, such that $o' <_{gi} o$, then $\exists i < j$, such that $o'$ and $o$ are the operations of $\alpha_i$ and $\alpha_j$, respectively, and one of the following cases holds: (1) $o'$ and $o$ are of same replica, or (2) $\exists i', i < i' < j$, $\alpha_{i'}=addDel(o',r')$ and $r'$ is the replica of $o$. In each case, it is easy to see that $<^{-1}_{gi}(o)$ contains lee or equal operations than the set of operations in $t[1,j]$ and its number is obviously finite.
 
     If $\neg \exists o'$, such that $o' <_{gi} o$, then it is easy to see that $o$ is the first operation of its replica and no operation is delivered to that replica before $o$. In this case, it is obvious that $<^{-1}_{gi}(o)$ is finite.
 
-\item[-] $\textit{THINAIR}$: According to the definition, we could see that on each state $q_i$, local interpretation is a subset of visibility relation, and $ro$ is also a subset of visibility relation. It is easy to prove that on each state, $vis$ is acyclic.
+\item[-] $\mathit{THINAIR}$: According to the definition, we could see that on each state $q_i$, local interpretation is a subset of visibility relation, and $ro$ is also a subset of visibility relation. It is easy to prove that on each state, $vis$ is acyclic.
 
-\item[-] $\textit{RVAL}$: We only need to consider query operations for $\textit{RVAL}$ property, since only query operations have return values. According to construction of $\llbracket RImp(Spec) \rrbracket$, to launch a query operation $(m,a,b,rid,oid)$ transition of replica $r$ from state $q_i$, we already check whether $li(q_i,r)$, the local interpretation w.r.t $q_i$ and $r$, is in $Spec(m,a,b)$.
+\item[-] $\mathit{RVAL}$: We only need to consider query operations for $\mathit{RVAL}$ property, since only query operations have return values. According to construction of $\llbracket RImp(Spec) \rrbracket$, to launch a query operation $(m,a,b,rid,oid)$ transition of replica $r$ from state $q_i$, we already check whether $li(q_i,r)$, the local interpretation w.r.t $q_i$ and $r$, is in $Spec(m,a,b)$.
 
-\item[-] $\textit{EVENTUAL}$: Let $P=(O_P,<_P)$ be a finite prefix of $gi$.
+\item[-] $\mathit{EVENTUAL}$: Let $P=(O_P,<_P)$ be a finite prefix of $gi$.
 
 We can see that $<_P$ is the visibility relation of operations in $O_P$. Let $O'_P = \{ o \vert \exists o_1,o_2 \in O_P,$ $o_1$ is visible to $o_2$ via $o'_1,\ldots,o'_m$, and $o \in \{ o'_1,\ldots,o'_n \} \}$. It is easy to see that $O'_P$ is finite, and assume that operations of $O_P \cup O'_P$ are chosen before $\alpha_{idx}$
 
