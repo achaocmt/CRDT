@@ -111,26 +111,26 @@ We need to prove that, there exists function $ctxt$, such that $\forall o \in O_
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $O_k$ is the set of update operations in $\alpha_1 \cdot \ldots \cdot \alpha_k$, 
+\item[-] $O_k$ is the set of update operations in $\alpha_1 \cdot \ldots \cdot \alpha_k$,
 
-\item[-] $(\mathit{ro}_k \cdot \mathit{del}_k) \uparrow_{ (O_k \times O_k) }$ is the visibility relation of update operations of $\alpha_1 \cdot \ldots \cdot \alpha_k$, 
+\item[-] $(\mathit{ro}_k \cdot \mathit{del}_k) \uparrow_{ (O_k \times O_k) }$ is the visibility relation of update operations of $\alpha_1 \cdot \ldots \cdot \alpha_k$,
 
-\item[-] $\mathit{arb}_k$ is the projection of $arb_t$ into $O_k \times O_k$.   
+\item[-] $\mathit{arb}_k$ is the projection of $arb_t$ into $O_k \times O_k$.
 \end{itemize}
 
-By the definition of transition relation of $RImp(Spec)$, 
+By the definition of transition relation of $RImp(Spec)$,
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
 \item[-] If $o$ is a query operation, then there exists function $ctxt'$, such that for $\ell = m(a) \Rightarrow b$,
 
      $\begin{array}{l c} \bigfrac{ o=(\ell,r,\_) \notin O_k, \exists O', ctxt'((O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k),o) = (O',\_,arb \uparrow_{ (Q' \times Q') })  \in Spec(\ell)} {(O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k) {\xrightarrow{m(a,b,r,arb)}} (O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k)}  \end{array}$
-     
+
 \item[-] If $o$ is a update operation, then there exists function $ctxt'$ and $\mathit{arb}'$. $\mathit{arb}'$ is obtained from $arb$ by adding $o$ and possibly relations between $O$ and $\{ o \}$.For $\ell = m(a) \Rightarrow b$,
 
-     $\begin{array}{l c} \bigfrac{o = (\ell,r,\_) \notin O_k, \exists O', ctxt'((O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k),o) = (O',\_,arb' \uparrow_{(O' \cup \{ o \})}) \in Spec(\ell)} {(O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k) {\xrightarrow{m(a,b,r,arb')}} (O_k \cup \{ o \},\mathit{ro}_k \oplus o ,\mathit{del}_k \oplus o,\mathit{arb}')}  \end{array}$ 
-     
-     Note that, when arbitration order is changed by adding a new operation, the relations of existing operations never change. $o_x$. Therefore, it is easy to see that $\mathit{arb}'$ is obtained by projection $arb_t$ into $O_k \cup \{ o \}$. 
+     $\begin{array}{l c} \bigfrac{o = (\ell,r,\_) \notin O_k, \exists O', ctxt'((O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k),o) = (O',\_,arb' \uparrow_{(O' \cup \{ o \})}) \in Spec(\ell)} {(O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k) {\xrightarrow{m(a,b,r,arb')}} (O_k \cup \{ o \},\mathit{ro}_k \oplus o ,\mathit{del}_k \oplus o,\mathit{arb}')}  \end{array}$
+
+     Note that, when arbitration order is changed by adding a new operation, the relations of existing operations never change. $o_x$. Therefore, it is easy to see that $\mathit{arb}'$ is obtained by projection $arb_t$ into $O_k \cup \{ o \}$.
 \end{itemize}
 
 For both cases, let $ctxt(o) = ctxt'(o)$. It is easy to see that $ctxt(o)$ defines a operation context of $o$ in $anHis(t)$ and it is obvious that $ctxt(o) \in Spec(lab(o))$. This completes the proof of this lemma. $\qed$
@@ -147,9 +147,9 @@ For both cases, let $ctxt(o) = ctxt'(o)$. It is easy to see that $ctxt(o)$ defin
 
 Let us prove the $\subseteq$ direction. We prove it by contradiction. Assume $\exists t =\alpha_1 \cdot \ldots \cdot \alpha_k \in \llbracket RImp(Spec)_{\mathit{cd}} \rrbracket$ and $t$ does not satisfy causal delivery. Then there exists operations $o_1,o_2$ and replica $r$, such that $o_1 <_{hb} o_2$ and in $t$, when $o_2$ is delivered to replica $r$, $o_1$ has not been delivered to replica $r$ yet.
 
-Let $q_1,\ldots,q_k$ be the states, such that $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots {\xrightarrow{\alpha_k}} q_k$. Assume that for each $k$, $q_k = (O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k)$. It is easy to prove by induction that, for each $k$, when both $o_1$ and $o_2$ are in $O_k$, $(o_1,o_2)$ is in $(\mathit{ro}_k \cup \mathit{del}_k)^*$. Let $\alpha_u = addDel(o_2,r)$. Then, we can see that $(o_1,o_2) \in (\mathit{ro}_{u-1} \cup \mathit{del}_{u-1})^*$, and $o_1,o_2 \notin visTo(O_{u-1},r,\mathit{vis}_{u-1})$. By our definition of transition relation of $RImp(Spec)$, we could not launch $addDel(o_2,r)$ transition from $q_{u-1}$, contradiction happens. 
+Let $q_1,\ldots,q_k$ be the states, such that $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots {\xrightarrow{\alpha_k}} q_k$. Assume that for each $k$, $q_k = (O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k)$. It is easy to prove by induction that, for each $k$, when both $o_1$ and $o_2$ are in $O_k$, $(o_1,o_2)$ is in $(\mathit{ro}_k \cup \mathit{del}_k)^*$. Let $\alpha_u = addDel(o_2,r)$. Then, we can see that $(o_1,o_2) \in (\mathit{ro}_{u-1} \cup \mathit{del}_{u-1})^*$, and $o_1,o_2 \notin visTo(O_{u-1},r,\mathit{vis}_{u-1})$. By our definition of transition relation of $RImp(Spec)$, we could not launch $addDel(o_2,r)$ transition from $q_{u-1}$, contradiction happens.
 
-It is easy to see that $t_1$ Let us prove the $\supseteq$ direction. We prove its contrapositive. Assume that $t_1 =\alpha_1 \cdot \ldots \cdot \alpha_k \notin \llbracket RImp(Spec)_{\mathit{cd}} \rrbracket$, we need to prove that $t_1 \notin \{ t \vert t \in \llbracket RImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$. This holds trivially when $t_1 \notin \llbracket RImp(Spec) \rrbracket$. 
+It is easy to see that $t_1$ Let us prove the $\supseteq$ direction. We prove its contrapositive. Assume that $t_1 =\alpha_1 \cdot \ldots \cdot \alpha_k \notin \llbracket RImp(Spec)_{\mathit{cd}} \rrbracket$, we need to prove that $t_1 \notin \{ t \vert t \in \llbracket RImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$. This holds trivially when $t_1 \notin \llbracket RImp(Spec) \rrbracket$.
 
 Since $t_1 \notin \llbracket RImp(Spec)_{\mathit{cd}} \rrbracket$, there exists a number $k$, such that $\alpha_1 \cdot \ldots \cdot \alpha_k \notin \llbracket RImp(Spec)_{\mathit{cd}} \rrbracket$ and $\alpha_1 \cdot \ldots \cdot \alpha_{k-1} \in \llbracket RImp(Spec)_{\mathit{cd}} \rrbracket$. Since $RImp(Spec)_{\mathit{cd}}$ is deterministic, it is easy to see that $\alpha_k$ is a $addDel$ transition and it violates the transition condition of $RImp(Spec)_{\mathit{cd}}$. Assume that $q_{\mathit{k-1}} = (O_{k-1},\mathit{ro}_{k-1},\mathit{del}_{k-1},\mathit{arb}_{k-1})$. Then, there must exists $o_3,o_4 \in O_{k-1}$, such that $(o_3,o_4) \in \mathit{vis}_{k-1}$, $o_3,o_4 \notin visTo(O_{k-1},r,\mathit{k-1})$, and $\alpha_k = addDel(o_4,r)$. This violates the causal delivery. $\qed$
 \end {proof}
@@ -165,7 +165,7 @@ Let $\rightarrow$ be the transition relation of $RImp(S_{\mathit{ORS}})$. Given 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] If $q'_i {\xrightarrow{addDel(o',r)}} q'_{i+1}$: It is obvious that $o = map_{(q,q',O)}^{-1}(o') \notin O$. Since penetrating does not influence visibility of non-penetrated operations, it is easy to see that that $q_i {\xrightarrow{addDel(o,r)}} q_{i+1}$. It is easy to see that the visibility over operations not in $O$ is the same for $q'_{i+1}$ and $q_{i+1}$, and $(q_{i+1},q'_{i+1}) \in R_{O}$.
+\item[-] If $q'_i {\xrightarrow{addDel(o,r)}} q'_{i+1}$: It is obvious that $o = map_{(q,q',O)}^{-1}(o') \notin O$. Since penetrating does not influence visibility of non-penetrated operations, it is easy to see that that $q_i {\xrightarrow{addDel(o,r)}} q_{i+1}$. It is easy to see that the visibility over operations not in $O$ is the same for $q'_{i+1}$ and $q_{i+1}$, and $(q_{i+1},q'_{i+1}) \in R_{O}$.
 
 \item[-] If $q'_i {\xrightarrow{(add,a,\top,r,\emptyset)}} q'_{i+1}$: Assume in the process we add operation $o'$. It is easy to see that $q_i {\xrightarrow{(add,a,\top,r,\emptyset)}} q_{i+1}$ and assume that in this process we add operation $o$. Let $map' = map_{(q,q',O)} \cup \{ (o,o') \}$. With $map'$ it is obvious that Therefore, $(q_{i+1},q'_{i+1}) \in R_{O}$.
 
