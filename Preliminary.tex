@@ -51,7 +51,7 @@ Let us give several examples:
 %\todo{Why do you need $\top$ as argument ?? If it's because you want to use operation labels for messages as well, I don't like it. Each part of the formalism should be as clear as possible, without unnecessary junk.}
 
 %Let $\Sigma_{\mathit{ORS}} = \{ add(a,\top),rem(\top,a) \vert a \in \mathbb{D} \}$ be the set of contents of update operations.
-The specification $S_{\mathit{ORS}}$ is as follows: (1) For $x=add(a)$ or $x = rem(a)$, $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,arb)$ with $arb = \emptyset$, (2) For $x=lookup(a) \Rightarrow \mathit{true}$ (resp., $x=lookup(a) \Rightarrow \mathit{false}$), $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,arb)$ with $arb = \emptyset$, such that the projection of operations of $a$ in $O$ contains a maximal element with operation label $add(a)$ (resp., contains no maximal element with operation label $add(a)$), and (3) $S_{\mathit{ORS}}(elements() \Rightarrow S)$ is all the tuples $(O,<,arb)$ that is in $S_{\mathit{ORS}}(lookup(a) \Rightarrow \mathit{true})$ for each $a \in S$, and is in $S_{\mathit{ORS}}(lookup(a)) \Rightarrow \mathit{false}$ for each $a \notin S$.
+The specification $S_{\mathit{ORS}}$ is as follows: (1) For $x=add(a)$ or $x = rem(a)$, $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,arb)$ with $arb = \emptyset$, (2) For $x=lookup(a) \Rightarrow \mathit{true}$ (resp., $x=lookup(a) \Rightarrow \mathit{false}$), $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,arb)$ with $arb = \emptyset$, such that the projection of operations of $add(a)$ and $rem(a)$ in $O$ contains a maximal element with operation label $add(a)$ (resp., contains no maximal element with operation label $add(a)$), and (3) $S_{\mathit{ORS}}(elements() \Rightarrow S)$ is all the tuples $(O,<,arb)$ that is in $S_{\mathit{ORS}}(lookup(a) \Rightarrow \mathit{true})$ for each $a \in S$, and is in $S_{\mathit{ORS}}(lookup(a)) \Rightarrow \mathit{false}$ for each $a \notin S$.
 
 \noindent {\bf Example 2. Distributed list}: Distributed list has three methods: (1) $add(a,pos)$ inserts $a$ into position $pos \in \mathbb{N}$. (2) $rem(pos) \Rightarrow a$ removes the item of position $pos$, which is $a$. (3) $read() \Rightarrow l$ returns the list content.
 
@@ -62,20 +62,20 @@ The specification $S_{\mathit{list}}$ is defined as follows: $(O,<,arb) \in S_{\
 \setlength{\itemsep}{0.5pt}
 \item[-] $<^{-1}$ contains finite elements, $<$ is acyclic and $arb$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin O$ and is in domain of $arb$.
 
-\item[-] {\color {red}Function $f: O \cup \{ o \} \rightarrow P(O \cup \{ o \})$. Let $S(o) = f(o_1) \cup \ldots \cup f(o_k)$, where $o_1,\ldots,o_k$ is the immediate predecessor of $o$ w.r.t $<$. Then, $f(o)$ is recursively defined as
+\item[-] {\color {red}Function $f: O \cup \{ o \} \rightarrow P(O \cup \{ o \})$. For the case of $o' \in O$, let $S(o) = f(o_1) \cup \ldots \cup f(o_k)$, where $o_1,\ldots,o_k$ is the immediate predecessor of $o'$ w.r.t $<$. Then, $f(o')$ is recursively defined as
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] $S(o)$, if $lab(o)=read()\Rightarrow list \wedge list = lab( arb \uparrow_{ (<^{-1}(o)-O(o)) } )$.
+    \item[-] $S(o')$, if $lab(o')=read()\Rightarrow list \wedge list = lab( arb \uparrow_{ (<^{-1}(o')-\{ x \vert (x,\_) \in S(o')\}) } )$.
 
-    \item[-] $S(o)$, if $lab(o)=add(a,pos) \wedge ( arb \uparrow_{ (<^{-1}(o)-O(o)) } )[pos]=o$.
+    \item[-] $S(o')$, if $lab(o')=add(a,pos) \wedge ( arb \uparrow_{ (<^{-1}(o')-\{ x \vert (x,\_) \in S(o')\}) } )[pos]=o'$.
 
-    \item[-] $S(o) \cup \{ (o_a,o) \}$, if $lab(o)=rem(pos)\Rightarrow a \wedge ( arb \uparrow_{ (<^{-1}(o)-O(o)) } )[pos]=o_a \wedge lab(o_a)=add(a,\_)$.
+    \item[-] $S(o') \cup \{ (o_a,o') \}$, if $lab(o')=rem(pos)\Rightarrow a \wedge ( arb \uparrow_{ (<^{-1}(o')-\{ x \vert (x,\_) \in S(o')\}) } )[pos]=o_a \wedge lab(o_a)=add(a,\_)$.
 
     \item[-] $\mathit{Undef}$, otherwise.
-    \end{itemize}
-
-    We require that, for each $o' \in O \cup \{ o \}$, $f(o') \neq \mathit{Undef}$.}
+    \end{itemize} 
+    
+    For the case of $o$, let $S(o)$ be the union of $f(o'')$ for each $o'' \in O$, and the other part is the same as above. We require that, for each $o' \in O \cup \{ o \}$, $f(o') \neq \mathit{Undef}$.}
 \end{itemize}
 
 %\todo{Give a declarative specification of the list, like for OR-set. Descriptions which look like ``imperative programs'', e.g., "We can go through operations", "During this process".}
@@ -134,7 +134,7 @@ Let us define strong-return-value consistency (SRVC consistency, for short) as f
 
 \begin{definition}[Strong-return-value consistency]
 \label{definition:strong return value consistency}
-An annotated history $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ is SRVC w.r.t specification $Spec$, if there exists function $ctxt$, such that, 
+An annotated history $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ is SRVC w.r.t specification $Spec$, if there exists function $ctxt$, such that,
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}

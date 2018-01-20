@@ -24,7 +24,7 @@ Given a specification $Spec$, its reference implementation is given as an tuple 
 
 \item[-] $\Sigma = \Sigma_1 \cup \Sigma_2$ is the set of transition labels, where $\Sigma_1 = \{ (m,a,b,r,arb) \vert m \in \mathbb{M}, a,b \in \mathbb{D}, r \in \mathbb{R},$ $arb \subseteq O \times O\}$ and $\Sigma_2 = \{ addDel(o,r) \vert o \in \mathbb{O}, r \in \mathbb{R} \}$.
 
-\item[-] {\color {red}Let $ctxt$ be a function that takes $(O,ro,del,arb) \in Q$ and $o=(\_,r,\_) \notin O$ as arguments, and returns a set of operation contexts. Each element in this set is a operation context of $o$ for some annotated history $(O_1,ro_1,vis_1,arb_1)$ satisfies that
+\item[-] {\color {red}Let $ctxt$ be a function that takes $(O,ro,del,arb) \in Q$ and $o=(\_,r,\_) \notin O$ as arguments, and returns a operation contexts. Such operation context is a operation context of $o$ for some annotated history $(O_1,ro_1,vis_1,arb_1)$ satisfies that
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
@@ -48,11 +48,11 @@ Given a specification $Spec$, its reference implementation is given as an tuple 
 
     \item[-] Doing a query operation: Let $m$ be a query method. For $\ell = m(a) \Rightarrow b$,
 
-     $\begin{array}{l c} \bigfrac{ o=(\ell,r,\_) \notin O, \exists O', x= (O',\_,arb \uparrow_{ (Q' \times Q') }) \in ctxt((O,ro,del,arb),o), x \in Spec(\ell)} {(O,ro,del,arb) {\xrightarrow{m(a,b,r,arb)}} (O,ro,del,arb)}  \end{array}$
+     $\begin{array}{l c} \bigfrac{ o=(\ell,r,\_) \notin O, \exists O', ctxt((O,ro,del,arb),o) = (O',\_,arb \uparrow_{ (Q' \times Q') })  \in Spec(\ell)} {(O,ro,del,arb) {\xrightarrow{m(a,b,r,arb)}} (O,ro,del,arb)}  \end{array}$
 
      \item[-] Doing an update operation: Let $m$ be an update method, let $arb'$ be obtained from $arb$ by adding $o$ and possibly relations between $O$ and $\{ o \}$. Let $arb' \uparrow_{(O' \cup \{ o \})}$ short for $arb' \uparrow_{(O' \cup \{ o \}) \times (O' \cup \{ o \})}$. For $\ell = m(a) \Rightarrow b$,
 
-     $\begin{array}{l c} \bigfrac{o = (\ell,r,\_) \notin O, \exists O', x = (O',\_,arb' \uparrow_{(O' \cup \{ o \})}) \in ctxt((O,ro,del,arb),o), x \in Spec(\ell)} {(O,ro,del,arb) {\xrightarrow{m(a,b,r,arb')}} (O \cup \{ o \},ro \oplus o ,del \oplus o,arb')}  \end{array}$
+     $\begin{array}{l c} \bigfrac{o = (\ell,r,\_) \notin O, \exists O', ctxt((O,ro,del,arb),o) = (O',\_,arb' \uparrow_{(O' \cup \{ o \})}) \in Spec(\ell)} {(O,ro,del,arb) {\xrightarrow{m(a,b,r,arb')}} (O \cup \{ o \},ro \oplus o ,del \oplus o,arb')}  \end{array}$
 
      $ro \oplus o = ro \cup \{ (o',o) \vert o' = (\_,r,\_) \in O \}$, and $del \oplus o$ is obtained from $del$ by transforming each $(o',r)$ into $(o',o)$. We further require that the candidate of operation identifier of $o$ is unique.
     \end{itemize}
@@ -97,7 +97,7 @@ It is obvious that $RImp(Spec)$ is deterministic. Let $\llbracket RImp(Spec) \rr
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] {\color {red}$O$ is the union of two set. One set is the update operations generated during $e$, and the other set is one operation for each query transitions (Assume each $(m,a,b,r,arb)$ represents a $(m(a)\Rightarrow b,r,i)$ operation for some $i$).} 
+\item[-] {\color {red}$O$ is the union of two set. One set is the update operations generated during $e$, and the other set is one operation for each query transitions (Assume each $(m,a,b,r,arb)$ represents a $(m(a)\Rightarrow b,r,i)$ operation for some $i$).}
 
 \item[-] $(o_1,o_2) \in \mathit{ro}$, if they have the same replica identifier, $o_1$ (resp., $o_2$) is generated in transition $\alpha_u$ (resp., $\alpha_v$), and $u < v$.
 
@@ -116,7 +116,7 @@ $\forall t \in \llbracket RImp(Spec) \rrbracket$, $anHis(t)$ is SRVC consistent 
 
 \noindent {\bf Reference Implementation with Causal Delivery}:
 
-An operation $o_1$ happen-before \cite{Lamport:1978} an operation $o_2$, denoted $o_1 <_{hb} o_2$, if $o_1 {\xrightarrow{ (del \cup ro)^* }} o_2$. A trace satisfies causal delivery, if for each pair of update operations $(o_1,o_2)$ of this trace, if $o_1 <_{hb} o_2$, then for each replica $r$, $o_2$ can be delivered to replica $r$ if $o_1$ has already been delivered to replica $r$. 
+An operation $o_1$ happen-before \cite{Lamport:1978} an operation $o_2$, denoted $o_1 <_{hb} o_2$, if $o_1 {\xrightarrow{ (del \cup ro)^* }} o_2$. A trace satisfies causal delivery, if for each pair of update operations $(o_1,o_2)$ of this trace, if $o_1 <_{hb} o_2$, then for each replica $r$, $o_2$ can be delivered to replica $r$ if $o_1$ has already been delivered to replica $r$.
 
 The reference implementation with causal delivery of $Spec$ is given as an tuple $RImp(Spec)_{\mathit{cd}} = (Q,\Sigma,q_0,\rightarrow)$. $RImp_{\mathit{cd}}(Spec)$ can be obtained from $RImp(Spec)$ by only changing the transition rules of adding a delivery relation as follows:
 
