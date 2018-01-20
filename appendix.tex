@@ -99,108 +99,41 @@ Let us prove that $(q'_{imp},q'_s) \in R$. From above discussion, it is not hard
 \section{Definitions and Proofs of Section \ref{sec:reference implementation}}
 \label{sec:appendix definitions and proofs of section reference implementation}
 
-
-The following lemma states the relation between annotated history of a trace of $RImp(Spec)$ and the state of $RImp(Spec)$ at the end of this trace. 
-
-\begin{lemma}
-\label{lemma:relation between the state of RImpSpec and the annotated history}
-Given execution $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots {\xrightarrow{\alpha_k}} q_k$ of $RImp(Spec)$ and its annotated history $(O_k,\mathit{ro}_k,\mathit{vis}_k,\mathit{arb}_k)$, and assume $q_k = (O'_k,\mathit{ro}'_k,\mathit{del}'_k,\mathit{arb}'_k)$. Then, 
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] $O'_k$ is the set of update operations of $O_k$.
-
-\item[-] $\mathit{ro}'_k = \mathit{ro}_k \uparrow_{( O'_k \times O'_k )}$,
-
-\item[-] $( \mathit{del}'_k \cdot \mathit{ro} ) \uparrow_{(O'_k \times O'_k)} = \mathit{vis}_k$,
-
-\item[-] $\mathit{arb}'_k = \mathit{arb}_k$.
-\end{itemize}
-\end{lemma}
-\begin {proof} 
-
-We prove this lemma by induction on $k$. When $k=1$, this holds trivially. 
-
-Assume that this holds for some $u$, and let us consider the case of $u+1$:  
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] If $\alpha_{u+1} = addDel(o,r)$: $(O'_u,\mathit{ro}'_u,\mathit{del}'_u,\mathit{arb}'_u) {\xrightarrow{addDel(o,r)}} (O'_u,\mathit{ro}'_u,\mathit{del}'_u \cup \{ (o,r) \},\mathit{arb}'_u)$. This still holds. 
-
-\item[-] If $m$ is a query method and $\alpha_{u+1} = m(a,b,r,\mathit{arb}'_u)$: $(O'_u,\mathit{ro}'_u,\mathit{del}'_u,\mathit{arb}'_u) {\xrightarrow{(m,a,b,r,\mathit{arb}'_u)}} (O'_u,\mathit{ro}'_u,\mathit{del}'_u,\mathit{arb}'_u)$. This still holds. 
-\end{itemize}
-
-This completes the proof of this lemma. $\qed$
-\end {proof}
-
-
-
-
-
-
-
-{\noindent \bf Theorem \ref{lemma:executions of reference implementation are SRV consistent}}: $\forall t \in \llbracket RImp(Spec) \rrbracket$, $anHis(t)$ is SRVC consistent w.r.t $Spec$. 
+{\noindent \bf Theorem \ref{lemma:executions of reference implementation are SRV consistent}}: $\forall t \in \llbracket RImp(Spec) \rrbracket$, $anHis(t)$ is SRVC consistent w.r.t $Spec$.
 
 \begin {proof}
 
-Assume $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow)$, $t = \alpha_1, \ldots, $ and $q_1,\ldots \in Q$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$, and for each $k$, $q_k = (O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k)$. Let $anHis(t) = (O_t,\mathit{ro}_t,\mathit{vis}_t,\mathit{arb}_t)$.
+Assume $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow)$, $t = \alpha_1, \ldots, $ and $q_1,\ldots \in Q$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$. Let $anHis(t) = (O_t,\mathit{ro}_t,\mathit{vis}_t,\mathit{arb}_t)$.
 
-According to the construction of $anHis(t)$, it is easy to see that $\mathit{ro}_t \subseteq \mathit{vis}_t \wedge \mathit{vis}_t$ is acyclic. 
+According to the construction of $anHis(t)$, it is easy to see that $\mathit{ro}_t \subseteq \mathit{vis}_t \wedge \mathit{vis}_t$ is acyclic.
 
-We need to prove that, there exists function $ctxt$, such that $\forall o \in O_t$, $ctxt(o) = (O_o,<_o,arb_o) \in Spec(lab(o))$. Assume $o$ is generated with the transition $(O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k)$ ${\xrightarrow{\alpha_{k+1}}} (O_{k+1},\mathit{ro}_{k+1},\mathit{del}_{k+1},\mathit{arb}_{k+1})$. Then, 
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] If $o$ is a query operation, then 
-\end{itemize} 
-
-
-
-
-
-
-
-
-\noindent {\bf Relation between $Q$ and annotated history}:Let $t[1,k] = \alpha_1 \cdot \ldots \cdot \alpha_k$. Given the annotated history $anHis(t[1,k]) = (O_k,\mathit{ro}_k,\mathit{vis}_k,\mathit{arb}_k)$ of $t[1,k]$, assume that $q_k = (O,\mathit{ro},\mathit{del},\mathit{arb})$, then, we need to prove that,
+We need to prove that, there exists function $ctxt$, such that $\forall o \in O_t$, $ctxt(o) = (O_o,<_o,arb_o) \in Spec(lab(o))$. Assume $o$ is generated with the transition $q_k = (O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k)$ ${\xrightarrow{\alpha_{k+1}}} q_{k+1}$. It is easy to see that
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $O$ is the set of update operations of $O_k$. 
+\item[-] $O_k$ is the set of update operations in $\alpha_1 \cdot \ldots \cdot \alpha_k$, 
 
-\item[-] $\mathit{ro}= \mathit{ro}_k \uparrow_{( O \times O )}$, 
+\item[-] $(\mathit{ro}_k \cdot \mathit{del}_k) \uparrow_{ (O_k \times O_k) }$ is the visibility relation of update operations of $\alpha_1 \cdot \ldots \cdot \alpha_k$, 
 
-\item[-] $( \mathit{del} \cdot \mathit{ro} ) \uparrow_{(O \times O)} = \mathit{vis}_k$, 
-
-\item[-] $\mathit{arb} = \mathit{arb}_k$. 
+\item[-] $\mathit{arb}_k$ is the projection of $arb_t$ into $O_k \times O_k$.   
 \end{itemize}
 
-
-
-Given $i$, let $t[1,i] = \alpha_1 \cdot \ldots \cdot \alpha_i$. We define $absT(t[1,i]) = (O_\textit{t1i},<_{\textit{ro-t1i}},<_{\textit{vis-t1i}},<_{\textit{arb-t1i}})$ as follows:
+By the definition of transition relation of $RImp(Spec)$, 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $O_\textit{t1i}$ is the set of operations generated during $t[1,i]$.
+\item[-] If $o$ is a query operation, then there exists function $ctxt'$, such that for $\ell = m(a) \Rightarrow b$,
 
-\item[-] $<_{\textit{ro-t1i}} = <_{r_1} \cup \ldots \cup <_{r_{\vert \mathbb{R} \vert}}$, where for each $i$, $<_i$ is the occurring order of operations with the $i$-th identifier in $\mathbb{R}$ over $t[1,i]$.
+     $\begin{array}{l c} \bigfrac{ o=(\ell,r,\_) \notin O_k, \exists O', ctxt'((O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k),o) = (O',\_,arb \uparrow_{ (Q' \times Q') })  \in Spec(\ell)} {(O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k) {\xrightarrow{m(a,b,r,arb)}} (O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k)}  \end{array}$
+     
+\item[-] If $o$ is a update operation, then there exists function $ctxt'$ and $\mathit{arb}'$. $\mathit{arb}'$ is obtained from $arb$ by adding $o$ and possibly relations between $O$ and $\{ o \}$.For $\ell = m(a) \Rightarrow b$,
 
-\item[-] $(o_1,o_2) \in <_{\textit{vis-t1i}}$, if one of the following case holds: (1) $o_1$ is delivered into replica of $o_2$, and then $o_2$ happens, (2) $o_1$ and $o_2$ are of same replica and $o_1$ happens earlier than $o_2$.
-
-\item[-] $<_{\textit{arb-t1i}}$ is the union of arbitration order of $q_1,\ldots,q_i$.
+     $\begin{array}{l c} \bigfrac{o = (\ell,r,\_) \notin O_k, \exists O', ctxt'((O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k),o) = (O',\_,arb' \uparrow_{(O' \cup \{ o \})}) \in Spec(\ell)} {(O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k) {\xrightarrow{m(a,b,r,arb')}} (O_k \cup \{ o \},\mathit{ro}_k \oplus o ,\mathit{del}_k \oplus o,\mathit{arb}')}  \end{array}$ 
+     
+     Note that, when arbitration order is changed by adding a new operation, the relations of existing operations never change. $o_x$. Therefore, it is easy to see that $\mathit{arb}'$ is obtained by projection $arb_t$ into $O_k \cup \{ o \}$. 
 \end{itemize}
 
-
-When $m$ is a query method and assume that $absT(t)[j]=(m(a,b),rid,oid)=o$. By construction of $RImp(Spec)$, we can see that (1) $(O,ro,del,arb,vis) {\xrightarrow{m(a,b,r,arb)}} (O,ro,del,arb,vis)$, (2) $q_{\textit{i-1}} = q_i = (O,ro,del,arb,vis)$, and (3) $\textit{li-s}((O,ro,del,arb,vis),r,o) = (O',<',arb \uparrow_{O'}) \in Spec(m(a,b))$ and $o \notin O$ for some $O'$.
-
-Assume $absT(t[1,j]) = (O_\textit{t1j},<_{\textit{ro-t1j}},<_{\textit{vis-t1j}},<_{\textit{arb-t1j}})$. It is easy to see that (1) $O$ is the set of update operations of $O_\textit{t1j}$, (2) $<_{\textit{ro-t1j}} \uparrow_{O} = ro$, (3) $<_{\textit{vis-t1j}} \uparrow_{O} = vis$, and $<_{\textit{arb-t1j}} = arb$. It is easy to see that $\textit{li-s}((O,ro,del,arb,vis),r,o)$ can be used as local interpretation of $o$.
-
-
-When $m$ is an update method and assume that $absT(t)[j]=(m(a,b),rid,oid)=o$. By construction of $RImp(Spec)$, we can see that (1) $q_{\textit{i-1}} = (O,ro,del,arb,vis) {\xrightarrow{m(a,b,r,arb')}} q_i = (O \cup \{ o \},ro \oplus o ,del \oplus o,arb',(del \oplus o) \cdot (ro \oplus o))$, (2) $li((O,ro,del,arb,vis),r,o) = (O',\_,arb' \uparrow_{(O' \cup \{ o \})}) \in Spec(m(a,b))$ for some $O'$ and $o \notin O$.
-
-Assume $absT(t[1,j]) = (O_\textit{t1j},<_{\textit{ro-t1j}},<_{\textit{vis-t1j}},<_{\textit{arb-t1j}})$. It is easy to see that (1) $O$ is the set of update operations of $O_\textit{t1j}$, (2) $<_{\textit{ro-t1j}} \uparrow_{O} = ro \oplus o$, (3) $<_{\textit{vis-t1j}} \uparrow_{O} = (del \oplus o) \cdot (ro \oplus o)$, and $<_{\textit{arb-t1j}} = arb'$. It is easy to see that $\textit{li-s}((O,ro,del,arb,vis),r,o)$ can be used as local interpretation of $o$.
-
-Therefore, $\textit{RVAL}$ holds.
-
-Note that, since in every step of transitions of $RImp(Spec)$ from $(O,ro,del,arb,vis)$ to $(O',ro',del',arb',vis')$, if $(o_1,o_2) \in arb$, then $(o_2,o_1) \notin arb'$. This is the reason of $<_{\textit{arb-t1j}} = arb$. $\qed$
+For both cases, let $ctxt(o) = ctxt'(o)$. It is easy to see that $ctxt(o)$ defines a operation context of $o$ in $anHis(t)$ and it is obvious that $ctxt(o) \in Spec(lab(o))$. This completes the proof of this lemma. $\qed$
 \end {proof}
 
 

@@ -24,18 +24,16 @@ Given a specification $Spec$, its reference implementation is given as an tuple 
 
 \item[-] $\Sigma = \Sigma_1 \cup \Sigma_2$ is the set of transition labels, where $\Sigma_1 = \{ (m,a,b,r,arb) \vert m \in \mathbb{M}, a,b \in \mathbb{D}, r \in \mathbb{R},$ $arb \subseteq O \times O\}$ and $\Sigma_2 = \{ addDel(o,r) \vert o \in \mathbb{O}, r \in \mathbb{R} \}$.
 
-\item[-] {\color {red}Let $ctxt$ be a function that takes $(O,ro,del,arb) \in Q$ and $o=(\_,r,\_) \notin O$ as arguments, and returns a operation contexts. Such operation context is a operation context of $o$ for some annotated history $(O_1,ro_1,vis_1,arb_1)$ satisfies that
+\item[-] {\color {red}Let $ctxt$ be a function that takes $(O,ro,del,arb) \in Q$ and $o=(\_,r,\_) \notin O$ as arguments, and returns a tuple $(O_1,<_1,arb_1)$, where 
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] $O_1 = visTo(O,r,vis) \cup \{ o \}$. Here $visTo(O,r,vis) = \{ vis^{-1}(o') \vert o'=(\_,r,\_) \in O \} \cup (vis^{-1}(r))$.
+    \item[-] $O_1 = visTo(O,r,vis)$. Here $visTo(O,r,vis) = \{ vis^{-1}(o') \vert o'=(\_,r,\_) \in O \} \cup (vis^{-1}(r))$.
 
 
-    \item[-] $ro_1 = ro \cup \{ (o',o) \vert o'=(\_,r,\_) \in O \}$.
+    \item[-] $<_1 \subseteq vis \uparrow_{( O_1 \times O_1 )}$. 
 
-    \item[-] $vis_1 = (vis \uparrow_{O \times O}) \cup \{ (o',o) \vert (o',r) \in vis \}$.
-
-    \item[-] $arb_1 \subseteq O_1 \times O_1$ is obtained from $arb$ by projection into $visTo(O,r,vis)$, and then add operation $o$ and possibly some relation between $O$ and $\{ o \}$.
+    \item[-] $arb_1$ is obtained from $arb$ by projection into $visTo(O,r,vis) \times visTo(O,r,vis)$, and then possibly  add operation $o$ and some relation between $O_1$ and $\{ o \}$.
     \end{itemize}}
 
 \item[-] $\rightarrow \subseteq Q \times \Sigma \times Q$ is the transition relation. {\color {red} We assume there exist a predicate $cor: Q \rightarrow \{ \mathit{true},\mathit{false} \}$, and require that if there is a transition between a pair of stats, then they both satisfy $cor$.}
