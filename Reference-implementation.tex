@@ -138,7 +138,7 @@ $\llbracket RImp(Spec)_{\mathit{cd}} \rrbracket = \{ t \vert t \in \llbracket RI
 \subsection{Compacted Reference Implementation}
 \label{subsec:compacted reference implementation}
 
-A plus-minus specification is a special specification. It contains two update method, one is ``plus method'' and the other is ``minus method'' (The names are not fixed). It has a function $Minus$ that satisfies some requirements introduce below. 
+A plus-minus specification is a special specification. It contains two update method, one is ``plus method'' and the other is ``minus method'' (The names are not fixed). It has a function $Minus$ that satisfies some requirements introduce below.
 
 Given a state $q=(O,\mathit{ro},\mathit{del},\mathit{arb})$ and $o \in O$, let $ip(o,q)$ be the immediate predecessor of $o$ w.r.t $\mathit{ro}$ in $q$, $is(o,q)$ be the immediate successor of $o$ w.r.t $\mathit{ro}$ in $q$ and $S_{delTo}(o,q) = \{o' \vert (o',o) \in \mathit{del} \}$. When we say we forget $o$ from $q$, we obtain a state $q'=(O',\mathit{ro}',\mathit{del}',\mathit{arb}')$ as follows:
 
@@ -150,10 +150,10 @@ Given a state $q=(O,\mathit{ro},\mathit{del},\mathit{arb})$ and $o \in O$, let $
 
 \item[-] $\mathit{del}'$ is obtained from $\mathit{del}$ by removing pairs contain $o$ and adding $\{ (o_1,is(o,q)) \vert o_1 \in S_{delTo}(o,q)\}$.
 
-\item[-] $\mathit{arb}' = \mathit{arb} \uparrow_{(O' \times O')}$. 
-\end{itemize} 
+\item[-] $\mathit{arb}' = \mathit{arb} \uparrow_{(O' \times O')}$.
+\end{itemize}
 
-It is not hard to see that, the visibility among operations not forgotten remains the same after forgetting. Therefore, when forgetting more than one operations, using different orders lead to same consequence. Given a plus-minus specification $Spec$ and a state $q=(O,\mathit{ro},\mathit{del},\mathit{arb})$, let $S_p(q) = \{ o_1 \vert o_1$ is a plus operation, $\forall r \in \mathbb{R}, \exists o_2 \in Minus(q,o_1), o_2 \in visTo(O,r,vis) \}$ and $S_m(q) = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq S_p(q) \}$. Define function $conc$ as follows: $conc(q) = q'$, if $q'$ is obtained from $q$ by penetrating operations in $S_p(q) \cup S_m(q)$, and there is a bijection between operations of $q$ and $q'$ that keeps the operation labels, replica order, delivery order and arbitration orders. Let $Minus$ be a function that maps a state $q$ and a plus operation $o \in O$ into a set of minus operations of $O$. 
+It is not hard to see that, the visibility among operations not forgotten remains the same after forgetting. Therefore, when forgetting more than one operations, using different orders lead to same consequence. Given a plus-minus specification $Spec$ and a state $q=(O,\mathit{ro},\mathit{del},\mathit{arb})$, let $S_p(q) = \{ o_1 \vert o_1$ is a plus operation, $\forall r \in \mathbb{R}, \exists o_2 \in Minus(q,o_1), o_2 \in visTo(O,r,vis) \}$ and $S_m(q) = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq S_p(q) \}$. Define function $conc$ as follows: $conc(q) = q'$, if $q'$ is obtained from $q$ by penetrating operations in $S_p(q) \cup S_m(q)$, and there is a bijection between operations of $q$ and $q'$ that keeps the operation labels, replica order, delivery order and arbitration orders. Let $Minus$ be a function that maps a state $q$ and a plus operation $o \in O$ into a set of minus operations of $O$.
 
 Given state $q=(O,\mathit{ro},\mathit{del},\mathit{arb})$, we say $forg(q,S) = q'$ if there exists $q''$, such that $q''$ is obtained from $q$ by forgetting operations in $S$, and there is a bijection between operations of $q'$ and $q''$ that keeps the operation labels, replica order, delivery order and arbitration orders. $match(q,S)$ holds, if $\exists O_1$, such that $O_1 \subseteq S_p(q) \wedge S = O_1 \cup \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$. Given set $S$, relation $R_{S}$ is defined as follows: $(q,q') \in R_{S}$, if $q' = forg(q,S) \wedge match(q,S)$. Let $map_{(q,q',S)}$ be the projection between $q''$ and $q'$ used in checking $q' = forg(q,S)$. We further require $R_{S}$ to satisfy that,
 
@@ -169,7 +169,7 @@ Given state $q=(O,\mathit{ro},\mathit{del},\mathit{arb})$, we say $forg(q,S) = q
         \setlength{\itemsep}{0.5pt}
         \item[-] If $\alpha' = addDel(o',r)$,then $\alpha = addDel(o,r)$, where $map_{(q,q',S)}(o')=o$.
 
-        \item[-] Else, if $\alpha'=(m,a,b,r,\mathit{arb}')$, then $\exists \mathit{arb}$, such that $\alpha=(m,a,b,r,\mathit{arb}) \wedge \mathit{arb}' = map_{(q,q',S)}(\mathit{arb} - S)$. 
+        \item[-] Else, if $\alpha'=(m,a,b,r,\mathit{arb}')$, then $\exists \mathit{arb}$, such that $\alpha=(m,a,b,r,\mathit{arb}) \wedge \mathit{arb}' = map_{(q,q',S)}(\mathit{arb} - S)$.
         \end{itemize}
     \end{itemize}
 
@@ -178,7 +178,7 @@ Given state $q=(O,\mathit{ro},\mathit{del},\mathit{arb})$, we say $forg(q,S) = q
 
 
 
-\noindent {\bf Example 5. The case of OR-set}: OR-set is a plus-minus specification, while $add$ is the ``plus method'', $rem$ is the ``minus method''. We already give the definition of $Minus(q,o)$ of OR-set in Example 3. \figurename~\ref{fig:the process of penetrate operations of or-set} shows an example of erasing redundant operations. Here $+a_1$ (resp., $-a_1$) is an operation with operation label $add(a)$ (resp., $rem(a)$), and the subscript is used to distinguish different $add(a)$ operations. In \figurename~\ref{fig:the process of penetrate operations of or-set} (a), $+a_2$ is the redundant $add$ operation, and $-a_2$ is the redundant $rem$. We penetrate $+a_1$ from \figurename~\ref{fig:the process of penetrate operations of or-set} (a) to \figurename~\ref{fig:the process of penetrate operations of or-set} (b), while $ip(+a_2) = +f$, $is(+a_2) = +c$, and we explicitly color $S_{delTo}(+a_2)$ with blue color.  We penetrate $-a_2$ from \figurename~\ref{fig:the process of penetrate operations of or-set} (b) to \figurename~\ref{fig:the process of penetrate operations of or-set} (c).
+\noindent {\bf Example 5. The case of OR-set}: OR-set is a plus-minus specification, while $add$ is the ``plus method'' and $rem$ is the ``minus method''. We already give the definition of $Minus(q,o)$ of OR-set in Example 3. \figurename~\ref{fig:the process of penetrate operations of or-set} shows an example of erasing redundant operations. Here $+a_1$ (resp., $-a_1$) is an operation with operation label $add(a)$ (resp., $rem(a)$), and the subscript is used to distinguish different $add(a)$ operations. In \figurename~\ref{fig:the process of penetrate operations of or-set} (a), $+a_2$ is the redundant $add$ operation, and $-a_2$ is the redundant $rem$. We penetrate $+a_1$ from \figurename~\ref{fig:the process of penetrate operations of or-set} (a) to \figurename~\ref{fig:the process of penetrate operations of or-set} (b), while $ip(+a_2) = +f$, $is(+a_2) = +c$, and we explicitly color $S_{delTo}(+a_2)$ with blue color.  We penetrate $-a_2$ from \figurename~\ref{fig:the process of penetrate operations of or-set} (b) to \figurename~\ref{fig:the process of penetrate operations of or-set} (c).
 
 
 \begin{figure}[t]
@@ -196,9 +196,7 @@ The following lemma states that our $Minus$ for OR-set is correct. Its proof can
 Our definition of $Minus$ for OR-set is correct.
 \end{lemma}
 
-\noindent {\bf Example 6. The case of Distributed list}: Distributed list is a plus-minus specification, while $add$ is the ``plus method'', $rem$ is the ``minus method'', and $read$ is query method. %Here we assume that for $add$ and $rem$, $pos$ is less than the length of list seen by calling replica. 
-
-Given $q=(O,ro,del,arb,vis)$ and add operation $o$ where $cont(o)=add(a,\_,\top)$, $o' \in Minus(q,o)$, if (1) $cont(o')=rem(pos,a)$, and (2) Recall that we have already check the correctness of operations of $(O,vis,arb)$ as in Example 2. When we comes to $o'$ in this process, $seq(o')[pos]=o$.
+\noindent {\bf Example 6. The case of Distributed list}: Distributed list is a plus-minus specification, while $add$ is the ``plus method'' and $rem$ is the ``minus method''. Given $q=(O,\mathit{ro},\mathit{del},\mathit{arb})$ and a add operation $o$ where $lab(o)=add(a,pos)$, $o' \in Minus(q,o)$, if (1) $cont(o')=rem(pos,a)$, and (2) Recall that we have already check the correctness of operations of $(O,vis,arb)$ as in Example 2. When we comes to $o'$ in this process, $seq(o')[pos]=o$.
 
 \figurename~\ref{fig:the process of penetrate operations in distributed list} shows an example of distributed list. Here $o_1 = add(a,1,\top)$, $o_2 = add(b,1,\top)$, $o_3 = add(c,2,\top)$, $o_4 = add(c,2,\top)$, $o_5 = add(d,3,\top)$, and the arbitration order is $o_1 {\xrightarrow{arb}} o_4 {\xrightarrow{arb}} o_3 {\xrightarrow{arb}} o_2 {\xrightarrow{arb}} o_5$. In \figurename~\ref{fig:the process of penetrate operations in distributed list} (a), $o_3$ is the redundant $add$ operations, and $rem(2,c)$ and $rem(3,c)$ are the redundant $rem$ operations. After penetrating $o_3$, $rem(2,c)$ and $rem(3,c)$, we obtain \figurename~\ref{fig:the process of penetrate operations in distributed list} (b).
 
