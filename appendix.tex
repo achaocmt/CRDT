@@ -161,46 +161,80 @@ Since $t_1 \notin \llbracket RImp(Spec)_{\mathit{cd}} \rrbracket$, there exists 
 
 \begin {proof}
 
-Let $\rightarrow$ be the transition relation of $RImp(S_{\mathit{ORS}})$. Given $(q_i,q'_i) \in R_{O}$,
+Let $\rightarrow$ be the transition relation of $RImp(S_{\mathit{ORS}})$. Given $(q_k,q'_k) \in R_{S}$, let $f$ be short for $map_{(q_k,q'_k,S)}$, assume $q_k = (O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k)$ and $q'_k = (O'_k,\mathit{ro}'_k,\mathit{del}'_k,\mathit{arb}'_k)$. Let us prove the requirements of $Minus$ one by one: 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] If $q'_i {\xrightarrow{addDel(o,r)}} q'_{i+1}$: It is obvious that $o = map_{(q,q',O)}^{-1}(o') \notin O$. Since penetrating does not influence visibility of non-penetrated operations, it is easy to see that that $q_i {\xrightarrow{addDel(o,r)}} q_{i+1}$. It is easy to see that the visibility over operations not in $O$ is the same for $q'_{i+1}$ and $q_{i+1}$, and $(q_{i+1},q'_{i+1}) \in R_{O}$.
+\item[-] If $q'_k {\xrightarrow{addDel(o',r)}} q'_{k+1}$: It is obvious that $f(o') \notin O$. Since the visibility relation over $O_k - S$ is the same as the visibility relation over $O'_k$, we have $q_k {\xrightarrow{addDel(f(o'),r)}} q_{k+1}$. Since the only change of visibility from $q_k$ to $q_{k+1}$ is $(f(o'),r)$, and the only change of visibility from $q'_k$ to $q'_{k+1}$ is $(o',r)$, we can see that $(q_{k+1},q'_{k+1}) \in R_{S}$. 
 
-\item[-] If $q'_i {\xrightarrow{(add,a,\top,r,\emptyset)}} q'_{i+1}$: Assume in the process we add operation $o'$. It is easy to see that $q_i {\xrightarrow{(add,a,\top,r,\emptyset)}} q_{i+1}$ and assume that in this process we add operation $o$. Let $map' = map_{(q,q',O)} \cup \{ (o,o') \}$. With $map'$ it is obvious that Therefore, $(q_{i+1},q'_{i+1}) \in R_{O}$.
+\item[-] If $q'_k {\xrightarrow{(add,a,r,\emptyset)}} q'_{k+1}$: Assume $O'_{k+1} - O'_k = o'$. $q_k {\xrightarrow{(add,a,r,\emptyset)}} q_{k+1}$ always holds and assume $O_{k+1} - O_k = o$. Let $f' = f \cup \{ (o,o') \}$. With $f'$ it is easy to see that $(q_{k+1},q'_{k+1}) \in R_{S}$. 
 
-\item[-] If $q'_i {\xrightarrow{(rem,\top,a,r,\emptyset)}} q'_{i+1}$: Assume in the process we add operation $o'$. In replica $r$ of $q'_i$, there exists $o_a$
-
-\item[-] If $q'_i {\xrightarrow{(contains,a,\mathit{true},r,\emptyset)}} q'_{i+1}$:
-
-\item[-] If $q'_i {\xrightarrow{(contains,a,\mathit{false},r,\emptyset)}} q'_{i+1}$:
-
-\item[-] If $q'_i {\xrightarrow{(elements,\top,S,r,\emptyset)}} q'_{i+1}$:
-\end{itemize}
-
-
-
-We need to prove that
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] given $(q_i,q'_i) \in R_{O}$,
+\item[-] If $q'_k {\xrightarrow{(rem,a,r,\emptyset)}} q'_{k+1}$: Assume that $O'_{k+1} - O'_k = o'$. It is obvious that $lab(o') = rem(a)$. Let $ctxt(q'_k,o') = (O'_{ck},<'_{ck},\emptyset)$. Then $\exists o'_a \in O'_{ck}$, such that $lab(o'_a) = add(a)$, and $o'_a$ is maximal w.r.t $<'_{ck}$ in $O'_{ck} \uparrow_{ (add(a),rem(a)) }$. 
+    
+    Let $o_a = f(o'_a)$. Let $o=(add(a),r,\_) \notin O_k$. In $ctxt(q_k,o) = (O_{ck},<_{ck},\emptyset)$, 
+    
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] If $q'_i {\xrightarrow{\alpha'}} q'_{i+1}$, then $q_i {\xrightarrow{\alpha}} q_{i+1} \wedge (q_{i+1},q'_{i+1}) \in R_{O}$, where
-
+    \item[-] If $o_a$ is maximal w.r.t $<_{ck}$ in $O_{ck} \uparrow_{ (add(a),rem(a)) }$: We have $(O_k,\mathit{ro}_k,\mathit{del}_k,\emptyset) {\xrightarrow{add(a,r,\emptyset)}} q_{k+1}$ where $q_{k+1} = (O_k \cup \{ o \},\mathit{ro}_k \oplus o , \mathit{del}_k \oplus o,\emptyset)$. Let $f' = f \cup \{ (o,o') \}$. With $f'$ it is easy to see that $(q_{k+1},q'_{k+1}) \in R_{S}$. 
+    
+    \item[-] If $o_a$ is not maximal w.r.t $<_{ck}$ in $O_{ck} \uparrow_{ (add(a),rem(a)) }$: Then, 
+    
         \begin{itemize}
         \setlength{\itemsep}{0.5pt}
-        \item[-] If $\alpha' = addDel(o,r')$,then $\alpha = addDel(o',r')$, where $map_{(q,q',O)}(o')=o$.
-
-        \item[-] Else, if $\alpha'=(m,a,b,r,arb)$, then $\exists arb$, such that $\alpha=(m,a,b,r,arb) \wedge arb' = map_{(q,q',O)}(arb - O)$.
+        \item[-] Since $<_{ck}$ preservers pairs that are in $Minus$, for each operation $o_1 \in S \wedge lab(o_1) = add(a)$, $o_1$ could not be maximal w.r.t $<_{ck}$ in $O_{ck} \uparrow_{ (add(a),rem(a)) }$. 
+        
+        \item[-] If there exists $o_{nr}$, such that $o_{nr} \notin S$, $lab(o_{nr}) = rem(a)$, and $o_2$ is maximal w.r.t $<_{ck}$ in $O_{ck} \uparrow_{ (add(a),rem(a)) }$: It is obvious that $f(o_{nr}) \in Q'_k$. Since (1) the visibility over $O_k - S$ in $q_k$ is the same as that over $Q'_k$ in $q'_k$, and (2) the definition of $<_{ck}$ and $<'_{ck}$, we can see that $f(o_{nr})$ is still maximal w.r.t $<'_{ck}$ in $O'_{ck} \uparrow_{ (add(a),rem(a)) }$.
+        
+        \item[-] Based on above item and the assumption that $o'_a$ is maximal w.r.t $<'_{ck}$ in $O'_{ck} \uparrow_{ (add(a),rem(a)) }$, we can see that there exists $o_r$, such that $o_r \in S$, $lab(o_r) = rem(a)$, $o_r$ is maximal w.r.t $<_{ck}$ in $O_{ck} \uparrow_{ (add(a),rem(a)) }$, and $(o_a,o_r) \in <_{ck}$: 
+            
+            Since $o_r \in S \wedge o_a \notin S$, we know that $o_r \notin Minus(q_k,o_a)$. 
+            
+            From $(o_a,o_r) \in <_{ck}$, we know see that $(o_a,o_r) \in \mathit{vis}_k$. Let $(o_a,o_1),(o_1,o_2),\ldots,(o_{u-1},o_u),(o_u,o_r)$ be the largest number of pairs that are all in $\mathit{vis}_k$. Since $o_r \notin Minus(q_k,o_a)$, by the definition of $<_{ck}$ we know that $o_1,\ldots,o_u,o_a,o_r \in visTo(q_k,r,\mathit{vis}_k)$. 
+                        
+            By the definition of $Minus$, there exists index $v$, such that $(o_a,o_v),(o_v,o_r) \in \mathit{vis}_k$ and $o_v \in Minis(q_k,o_a)$. Then, in $q'_k$, we can see that $(o'_a,f(o_1)),(f(o_1),f(o_2)),\ldots,(f(o_{u-1}),f(o_u)) \in \mathit{vis}'_k$ and $o_a,f(o_1),\ldots,f(o_v) \in visTo(q'_k,r,\mathit{vis}'_k)$. This implies that $(o'_a,f(o_v)) \in <'_{ck}$, contradicts the assumption that $o'_a$ is maximal w.r.t $<'_{ck}$ in $O'_{ck} \uparrow_{ (add(a),rem(a)) }$. Therefore, such $o_r$ could not exist. 
         \end{itemize}
+    \end{itemize} 
+
+\item[-] If $q'_k {\xrightarrow{(contains,a,\mathit{true},r,\emptyset)}} q'_{k+1}$: Similarly as above case. 
+
+\item[-] If $q'_k {\xrightarrow{(contains,a,\mathit{false},r,\emptyset)}} q'_{k+1}$: Let $o' = (contain(a,\textit{false}),r,\_) \notin O'_k$ and $ctxt(q'_k,o') = (O'_{ck},<'_{ck},\emptyset)$. Then for each operation of $O'_{ck}$ with operation label $add(a)$, it is not maximal w.r.t $<'_{ck}$ in $O'_{ck} \uparrow_{ (add(a),rem(a)) }$.
+    
+    Let $o = (contain(a,\textit{false}),r,\_) \notin O_k$. In $ctxt(q_k,o) = (O_{ck},<_{ck},\emptyset)$, 
+    
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] Since $<_{ck}$ preservers pairs that are in $Minus$, for each operation $o_1 \in S \wedge lab(o_1) = add(a)$, $o_1$ could not be maximal w.r.t $<_{ck}$ in $O_{ck} \uparrow_{ (add(a),rem(a)) }$. 
+    
+    \item[-] If there exists $o_a \notin S$, such that $lab(o_a) = add(a)$, and $o_a$ is maximal w.r.t $<_{ck}$ in $O_{ck} \uparrow_{ (add(a),rem(a)) }$: We can see that, in $q'_k$, there exists $o'_{r1}$, such that $lab(o'_{r1}) = rem(a)$, and $(f(o_a),r'_{r1}) \in <'_{ck}$, and then $(f(o_a),o'_{r1}) \in \mathit{vis}'_k$. By the definition of $Minus$, there exists $o'_r$, such that $o'_r \in Minus(q'_k,f(o_a))$, and $(f(o_a),o'_r), (o'_r,o'_{r1}) \in \mathit{vis}'_k$. 
+        
+        Then, we can see that $(o_a,f(o'_r)) \in \mathit{vis}_k$. It is easy to prove that $f(o'_r) \in Minus(q_k,o_a)$, and then we can see that $(o_a,f(o'_r)) \in <_{ck}$, contradicts the assumption that $o_a$ is maximal w.r.t $<_{ck}$ in $O_{ck} \uparrow_{ (add(a),rem(a)) }$. Therefore, such $o_a$ could not exist. 
     \end{itemize}
 
-\item[-] If $(q,q') \in R_{ O_1 }$ and $(q',q'') \in R_{ O_2 }$, then $(q,q'') \in R_{ ( O_1 \cup O_2 ) }$.
+\item[-] If $q'_k {\xrightarrow{(elements,S,r,\emptyset)}} q'_{k+1}$: This can be implied from the cases of $q'_k {\xrightarrow{(contains,a,\mathit{true},r,\emptyset)}} q'_{k+1}$ and $q'_k {\xrightarrow{(contains,a,\mathit{false},r,\emptyset)}} q'_{k+1}$. 
+
 \end{itemize}
 
-This completes the proof of this lemma. $\qed$
+Given $(q,q') \in R_{ S_1 }$ and $(q',q'') \in R_{ S_2 }$, we need to prove that $(q,q'') \in R_{ ( S_1 \cup S_2 ) }$.
+
+Assume $q=(O,\mathit{ro},\mathit{del},\emptyset)$, $q'=(O',\mathit{ro}',\mathit{del}',\emptyset)$ and $q''=(O'',\mathit{ro}'',\mathit{del}'',\emptyset)$. We already know that, $q' = forg(q,S_1)$, $match(q,S_1)$, $q'' = forg(q',S_2)$ and $match(q',S_2)$. Let $f = map_{(q,q',S_1)}$ and $f' = map_{(q',q'',S_2)}$. Precisely, we need to prove that $(q,q'') \in R_{ ( S_1 \cup f(S_2) ) }$. 
+
+It is easy to see that $q'' = forg(q,S_1 \cup f(S_2))$. To prove $mathch(q,S_1 \cup f(S_2))$, 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] For each $add$ operation $o_a \in S_1 \cup f(S_2)$ and each replica identifier $r$, it is obvious that $o_a \in visTo(O,r,vis)$. 
+
+\item[-] For each $rem$ operation $o_r \in S_1 \cup f(S_2)$, 
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] If $o_r \in S_1$, then it is obvious that $\{ o_2 \vert o_r \in Minus(o_2) \} \subseteq S_1$. 
+    
+    \item[-] If $o_r \in f(S_2)$, then it is obvious that in $q'$, we have $\{ o_3 \vert f(o_r) \in Minus(o_3) \} \subseteq S_2$. Since the different between visibility relations of $q$ and $q'$ map only be that of $S_1$, we have that in $q$, $\{ o_4 \vert o_r \in Minus(o_4) \} \subseteq S_1 \cup f(S_2)$. 
+    \end{itemize}
+\end{itemize} 
+
+Therefore, $mathch(q,S_1 \cup f(S_2))$ holds, and $(q,q'') \in R_{ ( S_1 \cup f(S_2) ) }$. This completes the proof of this lemma. $\qed$
 \end {proof}
 
 
