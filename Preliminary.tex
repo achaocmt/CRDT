@@ -62,7 +62,7 @@ The specification $S_{\mathit{list}}$ is defined as follows: $(O,<,arb) \in S_{\
 \setlength{\itemsep}{0.5pt}
 \item[-] $<^{-1}$ contains finite elements, $<$ is acyclic and $arb$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin O$ and is in domain of $arb$.
 
-\item[-] {\color {red}Function $f: O \cup \{ o \} \rightarrow P(O \cup \{ o \})$. For the case of $o' \in O$, let $S(o) = f(o_1) \cup \ldots \cup f(o_k)$, where $o_1,\ldots,o_k$ is the immediate predecessor of $o'$ w.r.t $<$. Then, $f(o')$ is recursively defined as
+\item[-] {\color {red}Function $f: O \cup \{ o \} \rightarrow P(O \cup \{ o \})$. For the case of $o' \in O$, let $S(o') = f(o_1) \cup \ldots \cup f(o_k)$, where $o_1,\ldots,o_k$ is the immediate predecessor of $o'$ w.r.t $<$. Then, $f(o')$ is recursively defined as 
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
@@ -73,8 +73,8 @@ The specification $S_{\mathit{list}}$ is defined as follows: $(O,<,arb) \in S_{\
     \item[-] $S(o') \cup \{ (o_a,o') \}$, if $lab(o')=rem(pos)\Rightarrow a \wedge ( arb \uparrow_{ (<^{-1}(o')-\{ x \vert (x,\_) \in S(o')\}) } )[pos]=o_a \wedge lab(o_a)=add(a,\_)$.
 
     \item[-] $\mathit{Undef}$, otherwise.
-    \end{itemize} 
-    
+    \end{itemize}
+
     For the case of $o$, let $S(o)$ be the union of $f(o'')$ for each $o'' \in O$, and the other part is the same as above. We require that, for each $o' \in O \cup \{ o \}$, $f(o') \neq \mathit{Undef}$.}
 \end{itemize}
 
