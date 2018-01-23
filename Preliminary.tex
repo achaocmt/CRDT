@@ -1,9 +1,9 @@
 %!TEX root = draft.tex
 
 \section{Convergent Return-Value Consistency}
-\label{sec:specifications and consistencies} 
+\label{sec:specifications and consistencies}
 
-%In this section, we introduce our formation of specification. Then, we propose strong-return-value consistency, which is a sub-notion of eventual consistency of \cite{Bouajjani:2014} that strengthen the ``safety part'' specific for intuition of CRDT algorithms and ignores the ``liveness part''. 
+%In this section, we introduce our formation of specification. Then, we propose strong-return-value consistency, which is a sub-notion of eventual consistency of \cite{Bouajjani:2014} that strengthen the ``safety part'' specific for intuition of CRDT algorithms and ignores the ``liveness part''.
 
 
 
@@ -26,26 +26,26 @@
 
 %\todo{Define ``operation label'' which is $m(a,b)$ and denote operation labels by $\ell$. Operation content is not a good name.}
 
-Given a finite set $\mathbb{M}$ of method names, a possibly infinite set $\mathbb{D}$ of data domain for argument and return values, a finite set $\mathbb{R}$ of replica identifiers, and a infinite set $\mathbb{O}$ of operation identifiers. A operation label is a tuple $m(a)\Rightarrow b$ where $m \in \mathbb{M}$ and $a,b \in \mathbb{D}$. $m(a) \Rightarrow b$ represents that $m$ is called with argument $a$ and returns b. When $m$ does not use the argument (resp., return value), we write $m()\Rightarrow b$ (resp., $m(a)$) instead. An operation $o$ is a tuple $(\ell,r,i)$, where $\ell$ is a operation label, $r \in \mathbb{R},i \in \mathbb{O}$. Let $lab(o)$ be the operation label of $o$. This definition extends naturally to the case when there are more than one arguments. 
+Given a finite set $\mathbb{M}$ of method names, a possibly infinite set $\mathbb{D}$ of data domain for argument and return values, a finite set $\mathbb{R}$ of replica identifiers, and a infinite set $\mathbb{O}$ of operation identifiers. A operation label is a tuple $m(a)\Rightarrow b$ where $m \in \mathbb{M}$ and $a,b \in \mathbb{D}$. $m(a) \Rightarrow b$ represents that $m$ is called with argument $a$ and returns b. When $m$ does not use the argument (resp., return value), we write $m()\Rightarrow b$ (resp., $m(a)$) instead. An operation $o$ is a tuple $(\ell,r,i)$, where $\ell$ is a operation label, $r \in \mathbb{R},i \in \mathbb{O}$. Let $lab(o)$ be the operation label of $o$. This definition extends naturally to the case when there are more than one arguments.
 
-A history is a tuple $(O,\mathit{ro})$, where $O$ is a set of operations, and $\mathit{ro}$ is called the replica order. For each replica $r \in \mathbb{R}$, $\mathit{ro}$ is a irreflexive total order over operations with replica identifier $r$. $\mathit{ro}$ does not relate operations with different replica identifiers. %We also require that for each operation $o \in O$, $\mathit{ro}^{-1}(o)$ is finite. 
+A history is a tuple $(O,\mathit{ro})$, where $O$ is a set of operations, and $\mathit{ro}$ is called the replica order. For each replica $r \in \mathbb{R}$, $\mathit{ro}$ is a irreflexive total order over operations with replica identifier $r$. $\mathit{ro}$ does not relate operations with different replica identifiers. %We also require that for each operation $o \in O$, $\mathit{ro}^{-1}(o)$ is finite.
 
 CRDT has two kinds of method: query methods and update methods. An annotated history is a tuple $(O,\mathit{vis},\mathit{arb})$, where
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $O$ is a set of operations. 
+\item[-] $O$ is a set of operations.
 
 \item[-] $\mathit{vis}$ is a irreflexive and acyclic relation over $O$, and is called the visibility relation. We require that for each operation $o \in O$, $\mathit{vis}^{-1}(o)$ is finite.
 
-\item[-] $\mathit{arb}$ is a partial order over update operations of $O$ and is called the arbitration order. 
-\end{itemize} 
+\item[-] $\mathit{arb}$ is a partial order over update operations of $O$ and is called the arbitration order.
+\end{itemize}
 
-A operation context of a operation $o$ is a tuple $(O,<,\mathit{arb})$, where $O$ is a set of update operations, $<$ is a relation over $O$, $o \notin O$, and $\mathit{arb}$ is a partial order over update operations of $O \cup \{ o \}$. A specification $Spec$ is a function that maps each operation label $\ell$ into a set of elements, while each of them is a operation context $(O,<,\mathit{arb})$ for some operation $o$ with $lab(o) = \ell$. A specification is deterministic, if there does not exists query method $m$ and tuple $(O,<,\mathit{arb})$, such that $(O,<,\mathit{arb}) \in Spec(m(a) \Rightarrow b)$, $(O,<,\mathit{arb}) \in Spec(m(a') \Rightarrow b')$, and $a \neq a' \vee b \neq b'$. From now on, we consider only deterministic specifications. 
+A operation context of a operation $o$ is a tuple $(O,<,\mathit{arb})$, where $O$ is a set of update operations, $<$ is a relation over $O$, $o \notin O$, and $\mathit{arb}$ is a partial order over update operations of $O \cup \{ o \}$. A specification $Spec$ is a function that maps each operation label $\ell$ into a set of elements, while each of them is a operation context $(O,<,\mathit{arb})$ for some operation $o$ with $lab(o) = \ell$. A specification is deterministic, if there does not exists query method $m$ and tuple $(O,<,\mathit{arb})$, such that $(O,<,\mathit{arb}) \in Spec(m(a) \Rightarrow b)$, $(O,<,\mathit{arb}) \in Spec(m(a') \Rightarrow b')$, and $a \neq a' \vee b \neq b'$. From now on, we consider only deterministic specifications.
 
 Given an annotated history $(O,\mathit{vis},\mathit{arb})$ and an operation $o \in O$, the operation context of $o$ is a obtained by a tuple $ctxt(o)=(O',<,\mathit{arb}')$, where $O'$ is the set of update operations in $\mathit{vis}^{-1}(o)$, $<$ is the subset of the projection of $\mathit{vis}$ over $O$, and $\mathit{arb}'$ is the projection of $\mathit{arb}$ over update operations of $O' \cup \{ o \}$. To comply with the commutativity intuition of CRDT algorithm, we further require that, given an annotated history $(O,\mathit{vis},\mathit{arb})$ and $o_1,o_2 \in O$, if $\mathit{vis}^{-1}(o_1) = \mathit{vis}^{-1}(o_2)$, then $<_1 = <_2$, where $ctxt(o_1)=(O_1,<_1,\mathit{arb}_1)$ and $ctxt(o_2)=(O_2,<_2,\mathit{arb}_2)$.
 
-The notion of Convergent Return-Value Consistency (CRVC, for short) is defined as follows: 
+The notion of Convergent Return-Value Consistency (CRVC, for short) is defined as follows:
 %\todo{Define ``an annotated history satisfying SRVC and then a history satisfying SRVC, i.e., there exists $\mathit{vis}$ and $\mathit{arb}$ such that the resulting annotated history satisfies SRVC.}
 
 \begin{definition}[Convergent Return-Value Consistency]
@@ -59,7 +59,7 @@ An annotated history $(O,\mathit{vis},\mathit{arb})$ is CRVC w.r.t specification
 \item[-] $\forall o \in O$, $ctxt(o) \in Spec(lab(o))$.
 \end{itemize}
 
-A history $(O,\mathit{ro})$ is CRVC w.r.t $Spec$, if there exists $\mathit{vis}$ and $\mathit{arb}$, such that $\mathit{ro} \subseteq \mathit{vis}$, and $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ is CRVC consistent w.r.t $Spec$. 
+A history $(O,\mathit{ro})$ is CRVC w.r.t $Spec$, if there exists $\mathit{vis}$ and $\mathit{arb}$, such that $\mathit{ro} \subseteq \mathit{vis}$, and $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ is CRVC consistent w.r.t $Spec$.
 \end{definition}
 
 \noindent {\bf Example 1. OR-set}: Observed-Remove Set (OR-set for short) \cite{Shapiro:2011,Bieniusa:2012} contains four methods: (1) $add(a)$ inserts $a$ into set, (2) $rem(a)$ remove $a$ from set, (3) $lookup(a)\Rightarrow \mathit{true}$ (resp., $lookup(a)\Rightarrow \mathit{false}$) represents that $a$ is in set (resp., $a$ is not in set), and $elements() \Rightarrow S$ represents that the set content is $S$.
@@ -67,15 +67,11 @@ A history $(O,\mathit{ro})$ is CRVC w.r.t $Spec$, if there exists $\mathit{vis}$
 %\todo{Why do you need $\top$ as argument ?? If it's because you want to use operation labels for messages as well, I don't like it. Each part of the formalism should be as clear as possible, without unnecessary junk.}
 
 %Let $\Sigma_{\mathit{ORS}} = \{ add(a,\top),rem(\top,a) \vert a \in \mathbb{D} \}$ be the set of contents of update operations.
-The specification $S_{\mathit{ORS}}$ is as follows: (1) For $x=add(a)$, $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,\emptyset)$, (2) For $x=lookup(a) \Rightarrow \mathit{true}$ (resp., $x=lookup(a) \Rightarrow \mathit{false}$), $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,\emptyset)$, such that the projection of $<$ over $add(a)$ and $rem(a)$ in $O$ contains a maximal element with operation label $add(a)$ (resp., contains no maximal element with operation label $add(a)$), (3) For $x = rem(a)$, $S_{\mathit{ORS}}(x)$ is the same as $x = lookup(a) \Rightarrow \mathit{true}$, and (4) $S_{\mathit{ORS}}(elements() \Rightarrow S)$ is all the tuples $(O,<,\emptyset)$ that is in $S_{\mathit{ORS}}(lookup(a) \Rightarrow \mathit{true})$ for each $a \in S$, and is in $S_{\mathit{ORS}}(lookup(a)) \Rightarrow \mathit{false}$ for each $a \notin S$. 
+The specification $S_{\mathit{ORS}}$ is as follows: (1) For $x=add(a)$, $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,\emptyset)$, (2) For $x=lookup(a) \Rightarrow \mathit{true}$ (resp., $x=lookup(a) \Rightarrow \mathit{false}$), $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,\emptyset)$, such that the projection of $<$ over $add(a)$ and $rem(a)$ in $O$ contains a maximal element with operation label $add(a)$ (resp., contains no maximal element with operation label $add(a)$), (3) For $x = rem(a)$, $S_{\mathit{ORS}}(x)$ is the same as $x = lookup(a) \Rightarrow \mathit{true}$, and (4) $S_{\mathit{ORS}}(elements() \Rightarrow S)$ is all the tuples $(O,<,\emptyset)$ that is in $S_{\mathit{ORS}}(lookup(a) \Rightarrow \mathit{true})$ for each $a \in S$, and is in $S_{\mathit{ORS}}(lookup(a)) \Rightarrow \mathit{false}$ for each $a \notin S$.
 
-Given an annotated history $(O,\mathit{vis},\mathit{arb})$ and an operation $o \in O$, the operation context of $o$ is a obtained by a tuple $ctxt(o)=(O',<,\mathit{arb}')$, where $O'$ is the set of update operations in $\mathit{vis}^{-1}(o)$, $<$ is the subset of the projection of $\mathit{vis}$ over $O$, and $\mathit{arb}'$ is the projection of $\mathit{arb}$ over update operations of $O' \cup \{ o \}$. 
+Given an annotated history $(O,\mathit{vis},\mathit{arb})$ and an operation $o$, $ctxt(o)=(O',<,\mathit{arb}')$ of OR-set is defined as follows: $\mathit{arb}' = \emptyset$, and $< = \mathit{vis} \uparrow_{(O' \times O')} - \{ (o_1,o_2) \vert o_2 \notin Minus(O,\mathit{vis},o_1), \exists o_3 \in O, (o_1,o_3), (o_3,o_2),(o_1,o_2) \in \mathit{vis}, o_1,o_2 \in O', o_3 \notin O' \}$. Here $Minus(O,\mathit{vis},o)$ is the set of first visible matching remove of $o$ w.r.t $\mathit{vis}$, and is defined as $Minus(O,\mathit{vis},o) = \{o' \vert lab(o')=rem(a), (o,o') \in \mathit{vis}, \neg \exists o'',  lab(o'') = rem(a)  \wedge (o,o''),(o'',o') \in \mathit{vis} \}$ for $lab(o) = add(a)$. 
 
-Given Given $o=(\_,r,\_)$ and $q=(O,ro,del,\emptyset)$, $ctxt(q,o) = (visTo(O,r,vis),<_1,\emptyset)$, where $<_1 = vis \uparrow_{(O_1 \times O_1)} - \{ (o_1,o_2) \vert o_2 \notin Minus(q,o_1), \exists o_3, o_1 {\xrightarrow{vis}} o_3 {\xrightarrow{vis}} o_2, o_1,o_2 \in visTo(O,r,vis), o_3 \notin visTo(O,r,vis) \}$.
-
-Here $Minus(q,o_1)$ is defined as follows: (1) if $lab(o_1)=add(a)$, then $Minus(q,o_1) = \{o_2 \vert lab(o_2)=rem(a), o_1 {\xrightarrow{vis}} o_2, \neg \exists o_3, ( lab(o_3) = rem(a) ) \wedge ( o_1 {\xrightarrow{vis}} o_3 {\xrightarrow{vis}} o_2 ) \}$, (2) otherwise, $Minus(q,o_1) = \emptyset$.
-
-\noindent {\bf Example 2. Distributed list}: Distributed list has three methods: (1) $add(a,pos)$ inserts identifier $a$ into position $pos \in \mathbb{N}$, (2) $rem(a)$ removes the identifier $a$, and  (3) $read() \Rightarrow l$ returns the list content. Here intuitively, we assume that each identifier are putted at most once globally. 
+\noindent {\bf Example 2. Distributed list}: Distributed list has three methods: (1) $add(a,pos)$ inserts identifier $a$ into position $pos \in \mathbb{N}$, (2) $rem(a)$ removes the identifier $a$, and  (3) $read() \Rightarrow l$ returns the list content. Here intuitively, we assume that each identifier are putted at most once globally.
 
 %Let $\Sigma_{\mathit{list}} = \{ add(a,pos,\top),rem(\top,a) \vert a \in \mathbb{D},pos \in \mathbb{N} \}$ be the set of contents of update operations.
 The specification $S_{\mathit{list}}$ is defined as follows: $(O,<,\mathit{arb}) \in S_{\mathit{list}}(\ell)$, if
@@ -84,23 +80,23 @@ The specification $S_{\mathit{list}}$ is defined as follows: $(O,<,\mathit{arb})
 \setlength{\itemsep}{0.5pt}
 \item[-] $<^{-1}$ contains finite elements, $<$ is acyclic and $arb$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin O$ and is in domain of $arb$.
 
-\item[-] Let $R = \{ i \vert \exists b, (add(b),\_,i),(rem(b),\_,\_) \in O \}$ and $s = \mathit{arb} \uparrow_{ O \cup \{ o \} \setminus R }$. Then, 
-    
+\item[-] Let $R = \{ i \vert \exists b, (add(b),\_,i),(rem(b),\_,\_) \in O \}$ and $s = \mathit{arb} \uparrow_{ O \cup \{ o \} \setminus R }$. Then,
+
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] Either $\ell = add(a,pos) \wedge s[pos] = o$, 
-    
-    \item[-] Or $\ell = rem(a) \wedge (add(a),\_,\_) \in O$, 
-    
-    \item[-] Or $\ell = read() \Rightarrow l \wedge l = lab(s)$. 
-    \end{itemize} 
+    \item[-] Either $\ell = add(a,pos) \wedge s[pos] = o$,
+
+    \item[-] Or $\ell = rem(a) \wedge (add(a),\_,\_) \in O$,
+
+    \item[-] Or $\ell = read() \Rightarrow l \wedge l = lab(s)$.
+    \end{itemize}
 \end{itemize}
 
 %\todo{Give a declarative specification of the list, like for OR-set. Descriptions which look like ``imperative programs'', e.g., "We can go through operations", "During this process".}
 
-Here we essentially use the ist order of strong list specification in \cite{Attiya:2016} as the arbitration order. 
+Here we essentially use the ist order of strong list specification in \cite{Attiya:2016} as the arbitration order.
 
-
+Given an annotated history $(O,\mathit{vis},\mathit{arb})$ and an operation $o$, $ctxt(o)=(O',<,\mathit{arb}')$ of list is defined as follows: $< = \mathit{vis} \uparrow_{(O' \times O')}$. 
 
 
 
@@ -146,11 +142,11 @@ Here we essentially use the ist order of strong list specification in \cite{Atti
 
 %\todo{Use $r$ instead of $rid$ and $i$ instead of $oid$. But be careful to not use $i$ in other contexts, for instance remove the $\forall i$ from the previous section. Keep $i$ and $j$ only for operation ids.}
 
-%CRDT has two kinds of method: query methods and update methods: Operations of query methods take effect only in one replica, while operations of update methods will be delivered to other replicas. 
+%CRDT has two kinds of method: query methods and update methods: Operations of query methods take effect only in one replica, while operations of update methods will be delivered to other replicas.
 
-%A specification $Spec$ is a function that maps each operation label $\ell$ into a set of tuples $(O,<,arb)$, where $O$ is a set of update operations, $<$ is a partial order over $O$, and $arb$ is a partial order over $O \cup \{ o \}$ called arbitration order, where $lab(o)=\ell \wedge o \notin O$. 
+%A specification $Spec$ is a function that maps each operation label $\ell$ into a set of tuples $(O,<,arb)$, where $O$ is a set of update operations, $<$ is a partial order over $O$, and $arb$ is a partial order over $O \cup \{ o \}$ called arbitration order, where $lab(o)=\ell \wedge o \notin O$.
 
-%We require that, given $o_1,o_2 \in O$, if $\mathit{vis}^{-1}(o_1) = \mathit{vis}^{-1}(o_2)$, then $<_1 = <_2$, and $arb_1 \cup arb_2$ is acyclic, where $ctxt(o_1)=(O_1,<_1,arb_1)$ and $ctxt(o_2)=(O_2,<_2,arb_2)$. 
+%We require that, given $o_1,o_2 \in O$, if $\mathit{vis}^{-1}(o_1) = \mathit{vis}^{-1}(o_2)$, then $<_1 = <_2$, and $arb_1 \cup arb_2$ is acyclic, where $ctxt(o_1)=(O_1,<_1,arb_1)$ and $ctxt(o_2)=(O_2,<_2,arb_2)$.
 
 
 
