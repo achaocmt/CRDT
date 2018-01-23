@@ -10,12 +10,12 @@ A CRDT implementation $imp$ is defined as a tuple $(Mth,Apl,Pred,InitD)$, where
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
 \item[-] $Mth: \mathbb{M} \times \mathbb{D} \times \mathbb{RD} \times \mathbb{R} \rightarrow \mathbb{D} \times \mathbb{RD} \times Pow(\mathbb{MSG})$. $Mth(m,a,d,r) = (b,ar,d',msgs)$ means that, if the data of replica $r$ is $d$, then if we call method $m$ with argument $a$ in replica $r$, then we obtain return value $b$ and change the data of replica $r$ into $d'$, and generate a set $msgs$ of messages. Here $Sub(\mathbb{RD})$ means we only return a part
-    
-    Here if $m$ is an update method, then $msgs = \{ (dat,r,r') \vert r' \in \mathbb{R} \wedge r \neq r' \}$ for some $dat$. Otherwise, if $m(a,b)$ is a query operation, then $msgs = \emptyset$. 
 
-\item[-] $Apl: \mathbb{RD} \times \mathbb{MSG} \rightarrow \mathbb{RD}$. $Apl(d,msg) = d'$ means that, if the current replica data is $d$ and we apply message $msg$, then we obtain replica data $d'$. 
+    Here if $m$ is an update method, then $msgs = \{ (dat,r,r') \vert r' \in \mathbb{R} \wedge r \neq r' \}$ for some $dat$. Otherwise, if $m(a,b)$ is a query operation, then $msgs = \emptyset$.
 
-\item[-] $Pred: (\mathbb{M} \times \mathbb{D} \times \mathbb{RD} \rightarrow \{ \textit{true},\textit{false} \}) \cup (\mathbb{RD} \times \mathbb{MSG} \rightarrow \{ \textit{true},\textit{false} \})$ is used to check whether a method can proceed, or whether a message can be applied. 
+\item[-] $Apl: \mathbb{RD} \times \mathbb{MSG} \rightarrow \mathbb{RD}$. $Apl(d,msg) = d'$ means that, if the current replica data is $d$ and we apply message $msg$, then we obtain replica data $d'$.
+
+\item[-] $Pred: (\mathbb{M} \times \mathbb{D} \times \mathbb{RD} \rightarrow \{ \textit{true},\textit{false} \}) \cup (\mathbb{RD} \times \mathbb{MSG} \rightarrow \{ \textit{true},\textit{false} \})$ is used to check whether a method can proceed, or whether a message can be applied.
 
 \item[-] $InitD \in \mathbb{RD}$ is the initial replica data.
 \end{itemize}
@@ -106,6 +106,151 @@ The following lemma states that, $\llbracket imp \rrbracket_{cd}$ contains the s
 
 $\llbracket imp \rrbracket_{cd} = \{ t \vert t \in \llbracket imp \rrbracket \wedge t$ satisfies causal delivery $\}$.
 \end{lemma}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\forget{
+\section{Implementation}
+\label{sec:implementation}
+
+Let $\mathbb{RD}$ be the set of data of replica. Let $\mathbb{MSG}$ be the set of messages. Each message is of the from $msg=(dat,sorR,desR)$ and is generated when some replica does an operation. Here $dat \in \mathbb{RD}$ is the information carried by message, $sorR,desR \in \mathbb{R}$ are the replica identifier of the replica that launched the message and the destination replica of this message, respectively.
+
+A CRDT implementation $imp$ is defined as a tuple $(Mth,Apl,Pred,InitD)$, where
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $Mth: \mathbb{M} \times \mathbb{D} \times \mathbb{RD} \times \mathbb{R} \rightarrow \mathbb{D} \times \mathbb{RD} \times Pow(\mathbb{MSG})$. $Mth(m,a,d,r) = (b,ar,d',msgs)$ means that, if the data of replica $r$ is $d$, then if we call method $m$ with argument $a$ in replica $r$, then we obtain return value $b$ and change the data of replica $r$ into $d'$, and generate a set $msgs$ of messages. Here $Sub(\mathbb{RD})$ means we only return a part
+
+    Here if $m$ is an update method, then $msgs = \{ (dat,r,r') \vert r' \in \mathbb{R} \wedge r \neq r' \}$ for some $dat$. Otherwise, if $m(a,b)$ is a query operation, then $msgs = \emptyset$.
+
+\item[-] $Apl: \mathbb{RD} \times \mathbb{MSG} \rightarrow \mathbb{RD}$. $Apl(d,msg) = d'$ means that, if the current replica data is $d$ and we apply message $msg$, then we obtain replica data $d'$.
+
+\item[-] $Pred: (\mathbb{M} \times \mathbb{D} \times \mathbb{RD} \rightarrow \{ \textit{true},\textit{false} \}) \cup (\mathbb{RD} \times \mathbb{MSG} \rightarrow \{ \textit{true},\textit{false} \})$ is used to check whether a method can proceed, or whether a message can be applied.
+
+\item[-] $InitD \in \mathbb{RD}$ is the initial replica data.
+\end{itemize}
+
+The semantics of $imp$ is given as an LTS $\llbracket imp \rrbracket = (Q,\Sigma,\rightarrow,q_0)$ \footnote{{\color {red} For some implementations, more information may be used as tuple of state of $\llbracket imp \rrbracket$. Such information are only for make transition labels clear and do not influence execution. For example, for distributed list algorithm, the order of all known items may be used as a argument. Similarly, we may add more information into transition labels when it is necessary.}}, where
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] Each state $(repD,msgs,<_{sd}) \in Q$ contains three tuples. Here $repD: RId \rightarrow RepD$ is the replica data of each replica, $msgs \subseteq Msg$ is the set of messages, $<_{sd} \subseteq Meg \times Msg$ is used to record the order of messages. $<_{sd}$ only relates messages with the same source replica identifier and with the same destination replica identifier.
+
+Let $msgs(r,r') = \{ (\_,r,r') \in msgs \}$ denote the set of messages in $msgs$ whose source replica is $r$ and whose destination replica is $r'$. $\forall r,r' \in RId$, $<_{sd}$ is a irreflexive and acyclic total order on $msgs(r,r')$. %We also require that the transitive closure of $<_{ro}$ on operations being acyclic.
+The reason we introduce $<_{sd}$ into state is for defining simulation relation in the next section.
+
+\item[-] $\Sigma = \{ m(a,b,r), apply(msg) \vert m \in M, a,b \in D, r \in RId, msg \in Msg \}$ is the set of transition labels.
+
+\item[-] $\rightarrow$ is the transition relation and is defined as follows:
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] Doing an operation:
+
+    $\begin{array}{l c} \bigfrac{ Mth(m,a,repD[r]) = (b,d,msgs'), msg \cap msgs' = \emptyset} {(repD,msgs,<_{sd}) {\xrightarrow{m(a,b,r)}} (repD[r:d],msgs \cup msgs',<_{sd} \odot msgs')} \end{array}$
+
+    Here $<_{sd} \odot msgs'$ is obtained from $<_{sd}$ by adding  $(m_1,m_2)$, when $m_1 \in msgs$, $m_2 \in msgs'$, the souce replica of $m_1$ is the same as that of $m_2$, and the desitination replica of $m_1$ is the same as that of $m_2$. {\color {red} We also require that $msg \cap msgs' = \emptyset$. This implies that no duplicate messages will be generated.}
+
+    Recall that, if $m(a,b)$ is a query operation, then $msgs' = \emptyset$.
+
+    \item[-] Applying a message:
+
+    $\begin{array}{l c} \bigfrac{ m = (\_,\_,r) \in msgs,Apl(repD[r],m) = d } {(repD,msgs,<_{sd}) {\xrightarrow{apply(m)}} (repD[r:d],msgs - \{ m \},<_{sd}-m )} \end{array}$
+    \end{itemize}
+
+\item[-] $q_0$ is the initial state, which maps each replica identifier into $(InitD,\emptyset)$.
+\end{itemize}
+
+We say that an execution of $\llbracket imp \rrbracket$ satisfies causal delivery, for each pair of update operations $(o_1,o_2)$, if $o_1 <_{hb} o_2$, let $(dat_1,r_1,\_)$ and $(dat_2,r_2,\_)$ be the message generated by $o_1$ and $o_2$, then for each replica $r$, the applying of $(dat_1,r_1,r)$ occurs before $(dat_2,r_2,r)$. The semantics of $imp$ with causal delivery is given as an LTS $\llbracket imp \rrbracket_{cd} = (Q_{cd},\Sigma,\rightarrow_{cd},q_{cd0})$, where
+
+\begin {itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] Each state of $Q_{cd}$ is for the from $(repD,msgs,<)$, where $repD$ and $msgs$ is the same as that in $\llbracket imp \rrbracket$, and $< \subseteq (msgs \times msgs) \cup (msgs \times RId)$ is a transitive, acyclic and irreflexive relation. $<$ is used to record the happen-before relation between operations of messages. %$(m_1,m_2) \in <$ represents that the $op(m_1)$ happen before $op(m_2)$, while $(m,r) \in <$ represents that $op(m)$ is visible to replica $r$ and does not happen before any operation of replica $r$ that we could know.
+    $(m_1,m_2) \in <$ represents that the operation generating $m_1$ happens before the operation generating $m_2$, while $(m,r) \in <$ represents that the operation generating $m$ is visible to replica $r$ and does not happen before any operation of replica $r$ that we could know.
+
+\item[-] $\rightarrow_{cd}$ is the transition relation and contains three kinds of operations:
+
+    The first kind is transitions of query operation. In this situation, messages and $<$ relations do not change:
+
+    $\begin{array}{l c} \bigfrac{ Mth(m,a,repD[r]) = (b,d,\emptyset)} {(repD,msgs,<) {\xrightarrow{m(a,b,r)}} (repD[r:d],msgs,<)} \end{array}$
+
+
+
+\item[-] The second kind is transitions of update operation :
+
+    $\begin{array}{l c} \bigfrac{ Mth(m,a,repD[r]) = (b,d,msgs'), msgs' = \{ (dat,r,r') \vert r' \in RId \wedge r \neq r' \} \ for \ some \ dat} {(repD,msgs,<) {\xrightarrow{m(a,b,r)}} (repD[r:d],msgs \cup msgs',< \otimes dat)} \end{array}$
+
+    Let us explain $< \otimes dat$. $< \otimes dat$ will change $<$ as follows:
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] $\forall k' \in RId$, in $msgs(k')$, if $m_1 < r$, then erase $(m_1,r)$, add $(m_1,(dat,r,k'))$,
+
+    \item[-] $\forall k' \in RId$, if $m_2$ is the maximal message among $\{ (\_,r,k') \}$ w.r.t $<$, then add $(m_2,(dat,r,k'))$.
+
+    \item[-] Make the transitive closure.
+    \end{itemize}
+
+\item[-] The third kind is transitions of applying messages:
+
+    $\begin{array}{l c} \bigfrac{ m = (dat,r_1,r) \in msgs,Apl(repD[r],m) = d, m \ is \ minimal \ w.r.t \ < among \ messages \ in \ msgs(r) } {(repD,msgs,<) {\xrightarrow{apply(m)}} (repD[r:d],msgs - \{ m \}, < \otimes m )} \end{array}$
+
+    Let us explain $< \otimes m$. $< \otimes m$ will change $<$ as follows:
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] First, remove $m$ from $<$ while keep orders of other elements in $<$ unchanged.
+
+    \item[-] Then, $\forall k' \neq r$, if $(dat,r_1,k') \in msgs(k')$, then add $((dat,r_1,k'),k')$.
+
+    \item[-] Make the transitive closure.
+    \end{itemize}
+
+\item[-] $q_0$ is the initial state, which maps each replica identifier into $(InitD,\emptyset,\emptyset)$.
+\end{itemize}
+
+The following lemma states that, $\llbracket imp \rrbracket_{cd}$ contains the set of causal delivery executions of $\llbracket imp \rrbracket$. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section implementation}.
+
+\begin{lemma}
+\label{lemma:semantics of imp cd contains the set of causal delivery executions of semantics of imp}
+
+$\llbracket imp \rrbracket_{cd} = \{ t \vert t \in \llbracket imp \rrbracket \wedge t$ satisfies causal delivery $\}$.
+\end{lemma}
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

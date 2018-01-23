@@ -98,14 +98,14 @@ $\forall t \in \llbracket SRImp(Spec) \rrbracket$, $anHis(t)$ is CRVC consistent
 \end{lemma} 
 
 
-\noindent {\bf Example 5. OR-set}: OR-set is a collection specification, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given a set $O$ of update operations, an relation $<$ over $O$, and $o_a = add(a)$, $f_R(O,<,o_a) = Minus(O,<,o)$. The following lemma states that our definition of $f_R$ for OR-set satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
+\noindent {\bf Example 3. OR-set}: OR-set is a collection specification, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given a set $O$ of update operations, an relation $<$ over $O$, and $o_a = add(a)$, $f_R(O,<,o_a) = Minus(O,<,o)$. The following lemma states that our definition of $f_R$ for OR-set satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
 \begin{lemma}
 \label{lemma:Minus for OR-set is correct}
 Our definition of $f_R$ for OR-set is correct. 
 \end{lemma}
 
-\noindent {\bf Example 6. Distributed list}: Distributed list is a collection specification, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given a set $O$ of update operations, an relation $<$ over $O$, and $o_a = add(a,pos)$, $f_R(O,<,o_a) = \{ rem(a) \in O \}$. The following lemma states that our definition of $f_R$ for OR-set satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}. 
+\noindent {\bf Example 4. Distributed list}: Distributed list is a collection specification, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given a set $O$ of update operations, an relation $<$ over $O$, and $o_a = add(a,pos)$, $f_R(O,<,o_a) = \{ rem(a) \in O \}$. The following lemma states that our definition of $f_R$ for OR-set satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}. 
 
 \begin{lemma}
 \label{lemma:Minus for distributed list is correct}
