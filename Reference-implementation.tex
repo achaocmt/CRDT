@@ -3,9 +3,9 @@
 \section{Reference Implementation}
 \label{sec:reference implementation}
 
-%In this section, we propose an abstract implementation called reference implementation, which will be used as specification in simulation proof of later section. 
+%In this section, we propose an abstract implementation called reference implementation, which will be used as specification in simulation proof of later section.
 
-An labeled transition system (LTS, for short) is a tuple $A = (Q,\Sigma,\rightarrow,q_0)$, where $Q$ is a set of states, $\Sigma$ is an alphabet of transition labels, $\rightarrow \subseteq Q \times \Sigma \times Q$ is a transition relation and $q_0$ is the initial state. A execution of $A$ is a sequences of transitions and states starting from the initial state $q_0$, and a trace is a sequence of transition labels of an execution. We say that $A$ is deterministic, if for each state $q$ and each transition label $\alpha$, $q$ has at most one $\rightarrow$ successor with transition label $\alpha$. 
+An labeled transition system (LTS, for short) is a tuple $A = (Q,\Sigma,\rightarrow,q_0)$, where $Q$ is a set of states, $\Sigma$ is an alphabet of transition labels, $\rightarrow \subseteq Q \times \Sigma \times Q$ is a transition relation and $q_0$ is the initial state. A execution of $A$ is a sequences of transitions and states starting from the initial state $q_0$, and a trace is a sequence of transition labels of an execution. We say that $A$ is deterministic, if for each state $q$ and each transition label $\alpha$, $q$ has at most one $\rightarrow$ successor with transition label $\alpha$.
 
 Given a specification $Spec$, its reference implementation is given as an LTS $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow)$, where
 
@@ -13,41 +13,43 @@ Given a specification $Spec$, its reference implementation is given as an LTS $R
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] Each state of $Q$ records the set of updates already executed, when they were delivered to the different replicas, and the arbitration order. 
-    
+\item[-] Each state of $Q$ records the set of updates already executed, when they were delivered to the different replicas, and the arbitration order.
+
     Each state $(O,\mathit{ro},\mathit{del},\mathit{arb}) \in Q$ contains four tuples: $O$ is a set of update operations where each operation in $O$ has unique operation identifier; $\mathit{ro}$ is the replica order and $(O,\mathit{ro})$ a history; $\mathit{del} \subseteq (O \times O) \cup (O \times \mathbb{R})$ is a relation that records operation delivery and is called deliver order. $(o_1,o_2) \in \mathit{del}$ represents that the effect of $o_1$ is delivered to the replica of $o_2$ before $o_2$ happens, while $(o,r) \in \mathit{del}$ represents that the effect of $o$ is delivered to replica $r$ after the time point of the last operation of replica $r$. we require $\mathit{del}$ to only relate operations with different replica identifier; $\mathit{arb} \subseteq O \times O$ is the arbitration order.
 %\todo{$vis$ shouldn't be in the state.}
 
-\item[-] $\Sigma$ contains two kinds of transition labels: The first is operation labels tagged with replica identifier and arbitration order, in the form $(m,a,b,r,\mathit{arb})$, where $m \in \mathbb{M}, a,b \in \mathbb{D}, r \in \mathbb{R}$, and $arb \subseteq O \times O$; The second kind is events representing the points in time where operations are delivered, in the form $addDel(o,r)$, where $o \in \mathbb{O}, r \in \mathbb{R}$. 
+\item[-] $\Sigma$ contains two kinds of transition labels: The first is operation labels tagged with replica identifier and arbitration order, in the form $(m,a,b,r,\mathit{arb})$, where $m \in \mathbb{M}, a,b \in \mathbb{D}, r \in \mathbb{R}$, and $arb \subseteq O \times O$; The second kind is events representing the points in time where operations are delivered, in the form $addDel(o,r)$, where $o \in \mathbb{O}, r \in \mathbb{R}$.
 
-\item[-] $\rightarrow \subseteq Q \times \Sigma \times Q$ is the transition relation. The transition rules of $\rightarrow$ can be found in \figurename~\ref{fig:transition rules of RImpSpec}, and related notions are defined as follows: 
+\item[-] $\rightarrow \subseteq Q \times \Sigma \times Q$ is the transition relation. The transition rules of $\rightarrow$ can be found in \figurename~\ref{fig:transition rules of RImpSpec}, and related notions are defined as follows:
 
 
     \begin {itemize}
     \item[-] Let $\mathit{vis} = \mathit{del} \cdot \mathit{ro}$ be the visibility relation. We further require $\mathit{vis}$ to be acyclic and irreflexive, and $\mathit{vis}^{-1}$ to be finite. Let $visTo(O,r,\mathit{vis}) = \{ vis^{-1}(o') \vert o'=(\_,r,\_) \in O \} \cup (vis^{-1}(r))$ be the set of operations that are visible to replica $r$ or some operations of replica $r$.
 
-    \item[-] Let function $f_{\mathit{ctxt}}$ be a function that generate possible operation context when $o$ is done: Given $q = (O,\mathit{ro},\mathit{del},\mathit{arb}) \in Q$ and $o=(\_,r,\_) \notin O$, $f(q,o)$ is as set of elements, while each of them is a operation context of $o$ in an annotated history $(O',\mathit{vis}',\mathit{arb}')$, where
-    
+    \item[-] Let function $f_{\mathit{ctxt}}$ be a function that generate possible operation context when $o$ is done: Given $q = (O,\mathit{ro},\mathit{del},\mathit{arb}) \in Q$ and $o=(\_,r,\_) \notin O$, $f(q,o)$ is a set of elements, while each of them is a operation context of $o$ in an annotated history $(O',\mathit{vis}',\mathit{arb}')$, where
+
         \begin{itemize}
         \setlength{\itemsep}{0.5pt}
-        \item[-] $O' = O \cup \{ o \}$. 
-    
-        \item[-] $\mathit{vis'} = \mathit{vis} \cup \{ (o',o) \vert (o',r) \in \mathit{vis} \}$. 
-    
-        \item[-] If $o$ is an update operation, then $\mathit{arb}'$ is obtained from $\mathit{arb}$ by possibly adding relations between $O$ and $\{ o \}$; Else, $\mathit{arb}' = \mathit{arb}$.
-        \end{itemize} 
+        \item[-] $O' = visTo(O,r,\mathit{vis}) \cup \{ o \}$. 
 
-     \item[-] Let $ro \oplus o = ro \cup \{ (o',o) \vert o' = (\_,r,\_) \in O \}$, and $del \oplus o$ is obtained from $del$ by transforming each $(o',r)$ into $(o',o)$. 
-    \end{itemize} 
+        \item[-] $\mathit{vis'} = \mathit{vis} \uparrow_{(O' \times O')} \cup \{ (o',o) \vert (o',r) \in \mathit{vis} \}$.
+
+        \item[-] If $o$ is an update operation, then $\mathit{arb}'$ is obtained from $\mathit{arb} \uparrow_{(O' \times O')}$ by possibly adding relations between $O'$ and $\{ o \}$; Else, $\mathit{arb}' = \mathit{arb} \uparrow_{(O' \times O')}$. 
+        \end{itemize} 
+    
+    \item[-] $f_{\mathit{ar}}(\mathit{arb},o)$ returns an arbitration order that is obtained from $\mathit{arb}$ by possibly adding relations between $O$ and $\{ o \}$.  
+
+    \item[-] Let $ro \oplus o = ro \cup \{ (o',o) \vert o' = (\_,r,\_) \in O \}$, and $del \oplus o$ is obtained from $del$ by transforming each $(o',r)$ into $(o',o)$.
+    \end{itemize}
 
 \item[-] $q_0=(\emptyset,\emptyset,\emptyset,\emptyset)$ is the initial state.
-\end{itemize} 
+\end{itemize}
 
 \begin{figure}[ht]
 
 \[
 \begin{array}{l c}
-\bigfrac{ o \in O, (o,r)\notin visTo(O,r,\mathit{vis}) } 
+\bigfrac{ o \in O, (o,r)\notin visTo(O,r,\mathit{vis}) }
 { (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{addDel(o,r)}} (O,\mathit{ro},\mathit{del} \cup \{ (o,r) \},\mathit{arb}) } {\mathit{Delivery}}
 \end{array}
 \]
@@ -55,7 +57,7 @@ Given a specification $Spec$, its reference implementation is given as an LTS $R
 
 \[
 \begin{array}{l c}
-\bigfrac{ o=(\ell,r,\_) \notin O, \exists x, x \in f_{\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}),o) \wedge x \in Spec(\ell) } 
+\bigfrac{ o=(\ell,r,\_) \notin O, \exists x, x \in f_{\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}),o) \wedge x \in Spec(\ell) }
 { (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,\mathit{arb})}} (O,\mathit{ro},\mathit{del},\mathit{arb}) } {\mathit{Query}}
 \end{array}
 \]
@@ -63,10 +65,10 @@ Given a specification $Spec$, its reference implementation is given as an LTS $R
 
 \[
 \begin{array}{l c}
-\bigfrac{ o = (\ell,r,\_) \notin O, \exists x, x = (O',\_,f_{\mathit{ar}}(\mathit{arb},o) \uparrow_{O'} ) \in f_{\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}),o) \wedge x \in Spec(\ell) } 
-{ (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,f_{\mathit{ar}}(\mathit{arb},o))}} (O \cup \{ o \},\mathit{ro} \oplus o ,\mathit{del} \oplus o,f_{\mathit{ar}}(\mathit{arb},o)) } {\mathit{Update}} 
+\bigfrac{ o = (\ell,r,\_) \notin O, \exists x, x = (O',\_,f_{\mathit{ar}}(\mathit{arb},o) \uparrow_{O'} ) \in f_{\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}),o) \wedge x \in Spec(\ell) }
+{ (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,f_{\mathit{ar}}(\mathit{arb},o))}} (O \cup \{ o \},\mathit{ro} \oplus o ,\mathit{del} \oplus o,f_{\mathit{ar}}(\mathit{arb},o)) } {\mathit{Update}}
 \end{array}
-\] 
+\]
 
 \caption{Transition rules of $\rightarrow$}
 \label{fig:transition rules of RImpSpec}
@@ -78,32 +80,32 @@ We further require that when a new operation is generated, its candidate of oper
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $O$ is the operations generated for transition rules during $t$. 
-    
+\item[-] $O$ is the operations generated for transition rules during $t$.
+
 \item[-] $(o_1,o_2) \in \mathit{vis}$, if one of the following cases holds: (1) $o_1$ is delivered into replica of $o_2$ before $o_2$ happens, (2) $o_1$ and $o_2$ are of same replica and $o_1$ happens earlier than $o_2$.
 
-\item[-] $<_{\mathit{arb}}$ is the union of arbitration order of each $q_i$. 
-\end{itemize} 
+\item[-] $<_{\mathit{arb}}$ is the union of arbitration order of each $q_i$.
+\end{itemize}
 
 The following theorem states that the annotated history admitted by reference implementation are CRVC w.r.t $Spec$. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
 \begin{theorem}
-\label{lemma:executions of reference implementation are SRV consistent}
-$\forall t \in \llbracket RImp(Spec) \rrbracket$, $anHis(t)$ is CRVC consistent w.r.t $Spec$. 
+\label{theorem:executions of reference implementation are SRV consistent}
+$\forall t \in \llbracket RImp(Spec) \rrbracket$, $anHis(t)$ is CRVC consistent w.r.t $Spec$.
 \end{theorem}
 
 
 \noindent {\bf Reference Implementation with Causal Delivery}:
 
-An operation $o_1$ happens-before \cite{Lamport:1978} an operation $o_2$, denoted $o_1 <_{\mathit{hb}} o_2$, if $(o_1,o_2) \in (\mathit{ro},\mathit{del})^*$. A trace satisfies causal delivery, if for each pair of update operations $(o_1,o_2)$ of this trace and $o_1 <_{\mathit{hb}} o_2$, $o_2$ can be delivered to replica $r$ if $o_1$ has already been delivered to replica $r$. 
+An operation $o_1$ happens-before \cite{Lamport:1978} an operation $o_2$, denoted $o_1 <_{\mathit{hb}} o_2$, if $(o_1,o_2) \in (\mathit{ro},\mathit{del})^*$. A trace satisfies causal delivery, if for each pair of update operations $(o_1,o_2)$ of this trace and $o_1 <_{\mathit{hb}} o_2$, $o_2$ can be delivered to replica $r$ if $o_1$ has already been delivered to replica $r$.
 
-To abstract CRDT implementations that assume causal delivery, we use a class of reference implementations $RImp(Spec)_{\mathit{cd}}$ where operations are delivered in the causal order. Formally, this consists in strengthening the transition rule corresponding to delivery events as follows: 
+To abstract CRDT implementations that assume causal delivery, we use a class of reference implementations $RImp(Spec)_{\mathit{cd}}$ where operations are delivered in the causal order. Formally, this consists in strengthening the transition rule corresponding to delivery events as follows:
 
-%The reference implementation with causal delivery of $Spec$ is given as an LTS $RImp(Spec)_{\mathit{cd}} = (Q,\Sigma,q_0,\rightarrow)$. $RImp_{\mathit{cd}}(Spec)$ can be obtained from $RImp(Spec)$ by only changing the transition rules of delivery into the following: 
+%The reference implementation with causal delivery of $Spec$ is given as an LTS $RImp(Spec)_{\mathit{cd}} = (Q,\Sigma,q_0,\rightarrow)$. $RImp_{\mathit{cd}}(Spec)$ can be obtained from $RImp(Spec)$ by only changing the transition rules of delivery into the following:
 
 \begin {itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\begin{array}{l c} \bigfrac{o \in O, o \ is \ minimal \ w.r.t \ <_{\mathit{hb}} in \ \{ o' \vert o' \in O \wedge o' \notin visTo(O,r,vis) \}} {(O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{addDel(o,r)}} (O,\mathit{ro},\mathit{del} \cup \{ (o,r) \},\mathit{arb})} \end{array}$ 
+\item[-] $\begin{array}{l c} \bigfrac{o \in O, o \ is \ minimal \ w.r.t \ <_{\mathit{hb}} in \ \{ o' \vert o' \in O \wedge o' \notin visTo(O,r,vis) \}} {(O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{addDel(o,r)}} (O,\mathit{ro},\mathit{del} \cup \{ (o,r) \},\mathit{arb})} \end{array}$
 \end{itemize}
 
 The following lemma states that $RImp(Spec)_{\mathit{cd}}$ contains all the traces of $RImp(Spec)$ that are causal delivery. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.

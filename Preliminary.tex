@@ -69,9 +69,9 @@ A history $(O,\mathit{ro})$ is CRVC w.r.t $Spec$, if there exists $\mathit{vis}$
 %Let $\Sigma_{\mathit{ORS}} = \{ add(a,\top),rem(\top,a) \vert a \in \mathbb{D} \}$ be the set of contents of update operations.
 The specification $S_{\mathit{ORS}}$ is as follows: (1) For $x=add(a)$, $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,\emptyset)$, (2) For $x=lookup(a) \Rightarrow \mathit{true}$ (resp., $x=lookup(a) \Rightarrow \mathit{false}$), $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,\emptyset)$, such that the projection of $<$ over $add(a)$ and $rem(a)$ in $O$ contains a maximal element with operation label $add(a)$ (resp., contains no maximal element with operation label $add(a)$), (3) For $x = rem(a)$, $S_{\mathit{ORS}}(x)$ is the same as $x = lookup(a) \Rightarrow \mathit{true}$, and (4) $S_{\mathit{ORS}}(elements() \Rightarrow S)$ is all the tuples $(O,<,\emptyset)$ that is in $S_{\mathit{ORS}}(lookup(a) \Rightarrow \mathit{true})$ for each $a \in S$, and is in $S_{\mathit{ORS}}(lookup(a)) \Rightarrow \mathit{false}$ for each $a \notin S$.
 
-Given an annotated history $(O,\mathit{vis},\mathit{arb})$ and an operation $o$, $ctxt(o)=(O',<,\mathit{arb}')$ of OR-set is defined as follows: $\mathit{arb}' = \emptyset$, and $< = \mathit{vis} \uparrow_{(O' \times O')} - \{ (o_1,o_2) \vert o_2 \notin Minus(O,\mathit{vis},o_1), \exists o_3 \in O, (o_1,o_3), (o_3,o_2),(o_1,o_2) \in \mathit{vis}, o_1,o_2 \in O', o_3 \notin O' \}$. Here $Minus(O,\mathit{vis},o)$ is the set of first visible matching remove of $o$ w.r.t $\mathit{vis}$, and is defined as $Minus(O,\mathit{vis},o) = \{o' \vert lab(o')=rem(a), (o,o') \in \mathit{vis}, \neg \exists o'',  lab(o'') = rem(a)  \wedge (o,o''),(o'',o') \in \mathit{vis} \}$ for $lab(o) = add(a)$. 
+Given an annotated history $(O,\mathit{vis},\mathit{arb})$ and an operation $o$, $ctxt(o)=(O',<,\mathit{arb}')$ of OR-set is defined as follows: $\mathit{arb}' = \emptyset$, and $< = \mathit{vis} \uparrow_{(O' \times O')} - \{ (o_1,o_2) \vert o_2 \notin Minus(O,\mathit{vis},o_1), \exists o_3 \in O, (o_1,o_3), (o_3,o_2),(o_1,o_2) \in \mathit{vis}, o_1,o_2 \in O', o_3 \notin O' \}$. Here $Minus(O,\mathit{vis},o)$ is the set of first visible matching remove of $o$ w.r.t $\mathit{vis}$, and is defined as $Minus(O,\mathit{vis},o) = \{o' \vert lab(o')=rem(a), (o,o') \in \mathit{vis}, \neg \exists o'',  lab(o'') = rem(a)  \wedge (o,o''),(o'',o') \in \mathit{vis} \}$ for $lab(o) = add(a)$.
 
-\noindent {\bf Example 2. Distributed list}: Distributed list has three methods: (1) $add(a,pos)$ inserts identifier $a$ into position $pos \in \mathbb{N}$, (2) $rem(a)$ removes the identifier $a$, and  (3) $read() \Rightarrow l$ returns the list content. Here intuitively, we assume that each identifier are putted at most once globally.
+\noindent {\bf Example 2. Distributed list}: Distributed list has three methods: (1) $add(a,pos)$ inserts identifier $a$ into position $pos \in \mathbb{N}$, (2) $rem(a)$ removes the identifier $a$, and (3) $read() \Rightarrow l$ returns the list content. Here intuitively, we assume that each identifier are putted at most once globally.
 
 %Let $\Sigma_{\mathit{list}} = \{ add(a,pos,\top),rem(\top,a) \vert a \in \mathbb{D},pos \in \mathbb{N} \}$ be the set of contents of update operations.
 The specification $S_{\mathit{list}}$ is defined as follows: $(O,<,\mathit{arb}) \in S_{\mathit{list}}(\ell)$, if
@@ -96,7 +96,7 @@ The specification $S_{\mathit{list}}$ is defined as follows: $(O,<,\mathit{arb})
 
 Here we essentially use the ist order of strong list specification in \cite{Attiya:2016} as the arbitration order.
 
-Given an annotated history $(O,\mathit{vis},\mathit{arb})$ and an operation $o$, $ctxt(o)=(O',<,\mathit{arb}')$ of list is defined as follows: $< = \mathit{vis} \uparrow_{(O' \times O')}$. 
+Given an annotated history $(O,\mathit{vis},\mathit{arb})$ and an operation $o$, $ctxt(o)=(O',<,\mathit{arb}')$ of list is defined as follows: $< = \mathit{vis} \uparrow_{(O' \times O')}$.
 
 
 

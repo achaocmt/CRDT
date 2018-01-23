@@ -1,194 +1,119 @@
 %!TEX root = draft.tex
 
 \section{Succinct Reference Implementations of Collection Data Types}
-\label{sec:succinct reference implementations of collection data types} 
+\label{sec:succinct reference implementations of collection data types}
 
-$Spec$ is called collection, if 
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] It contains two update methods, one is called ADD and the other is called REMOVE. 
-
-\item[-] Given a set $O$ of update operations and an relation $<$ over $O$, we can define the following notations: 
-    
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] Given a ADD operation $o_a \in O$, function $f_R(O,<,o_a)$ is the set of corresponding REMOVE operations of $o_a$. 
-    
-    \item[-] $RdtA(O,<)$ is the set of redundant ADD operations: $o_a \in Redt(O,<)$, if for each replica $r$, there exists $o_r \in f_R(O,<,o_a)$, such that $o_a$ and $o_r$ either happens on or delivered to replica $r$. 
-    
-    \item[-] Predicate $P_f$ is used to check if a set $S$ of operations can be forget. Given $S \subseteq O$, $P_f(O,<,S) = \mathit{true}$, if $S = S_a \cup S_r$, such that $S_a \subseteq RdtA(O,<)$, and $S_2 = \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,<,o_a) \} \subseteq S_a \}$. 
-    \end{itemize} 
-
-\item[-] Given an operation context $x = (O,<,\mathit{arb})$ of $o_1$ and $S \subseteq O$, let $Forg(x,S)$ be a operation context $(O',<',\mathit{arb}')$ of $o_1$ obtained from $x$ by forgetting operations in $S$: $O' = O \setminus S$, $<' = < \uparrow_{(O' \times O')}$, and $\mathit{arb}'$ is obtained from $\mathit{arb}$ by projection on $O' \cup \{ o_1 \}$.
-
-\item[-] An extension of a operation context $(O,<,\mathit{arb})$ of $o_1$ is another operation context $(O',<',\mathit{arb}')$ of $o_1$, such that $O \subseteq O'$, $\mathit{arb}$ is the projection of $\mathit{arb}'$ over $O \cup \{ o_1 \}$ , $< \subseteq <'$, and $<' \cap ( (O'-O) \times O ) = \emptyset$.
-
-\item[-] Then, we require that, 
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] For each operation context $x = (O,<,\mathit{arb})$ and $S \subseteq O$, where $P_f(O,<,S)$: For each operation $\ell$ and extension $x_1$ of $x$, $x_1 \in Spec(\ell)$, if and only if $Forg(x_1,S) \in Spec(\ell)$.
-
-    \item[-] If $f_R(O,<,S) \wedge Forg((O,<,\mathit{arb}),S) = (O',<',\mathit{arb}') \wedge f_R(O',<',S') \wedge Forg((O',<',\mathit{arb}'),S') = (O'',<'',\mathit{arb}'')$, then $f_R(O,<,S \cup S')$. 
-\end{itemize} 
-\end{itemize}
-
-
-
-
-Here I think we miss a condition on the specifications (as defined in the current Section 3.1) that enables "forgetting" operations. Otherwise, it's not at all clear in what context such implementations can be defined. Your conditions look very complicated and unclear.
-
-I am thinking at the following:
-- assume the updates are partitioned into ADD and REMOVE methods
-- the specification is closed in the following sense: if $S(o)$ contains some $(O,<,arb)$ then it also contains $(O',<',arb')$ where $O'$ is obtained by removing all pairs of ADD and REMOVE operations $(o1,o2)$ such that $o1 < o2$ (the ADD is visible to the REMOVE), and $<'$, resp., $arb'$, are obtained by projecting $<$ and $arb$ over $O'$.
-- if this is true, we could call such specifications as "collections", and say that the succinct reference implementations work for any such collection.
-
-The definitions that are now in Section 4.2 are very "divergent". Let's try to focus on the minimal things we need to define the succinct reference implementations. Up to my understanding, we need just something that identifies the redundant operations in a given state of the previous reference implementations: we should say when an ADD is redundant (when there exists a remove to which it is visible and both operations are delivered to every replica) and when a REMOVE is redundant (when all the ADDs visible to it and the REMOVE itself are visible to every replica). Then, simply say that the transition rules are defined as before, just that after every step we remove the redundant operations. I don't understand the definitions concerning abstract traces absT(t).
-
-
-
-
-\subsection{Compacted Reference Implementation}
-\label{subsec:compacted reference implementation}
-
-A plus-minus specification is a special specification. It contains two update method, one is ``plus method'' and the other is ``minus method'' (The names are not fixed). It has a function $Minus$ that satisfies some requirements introduce below.
-
-Given a state $q=(O,\mathit{ro},\mathit{del},\mathit{arb})$ and $o \in O$, let $ip(o,q)$ be the immediate predecessor of $o$ w.r.t $\mathit{ro}$ in $q$, $is(o,q)$ be the immediate successor of $o$ w.r.t $\mathit{ro}$ in $q$ and $S_{delTo}(o,q) = \{o' \vert (o',o) \in \mathit{del} \}$. When we say we forget $o$ from $q$, we obtain a state $q'=(O',\mathit{ro}',\mathit{del}',\mathit{arb}')$ as follows:
+$Spec$ is called collection, if
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $O' = O - \{ o \}$.
+\item[-] It contains two update methods, one is called ADD and the other is called REMOVE.
 
-\item[-] $\mathit{ro}'$ is obtained from $\mathit{ro}$ by removing pairs contain $o$ and adding $(ip(o,q),is(o,q))$.
-
-\item[-] $\mathit{del}'$ is obtained from $\mathit{del}$ by removing pairs contain $o$ and adding $\{ (o_1,is(o,q)) \vert o_1 \in S_{delTo}(o,q)\}$.
-
-\item[-] $\mathit{arb}' = \mathit{arb} \uparrow_{(O' \times O')}$.
-\end{itemize}
-
-It is not hard to see that, the visibility among operations not forgotten remains the same after forgetting. Therefore, when forgetting more than one operations, using different orders lead to same consequence. Given a plus-minus specification $Spec$ and a state $q=(O,\mathit{ro},\mathit{del},\mathit{arb})$, let $S_p(q) = \{ o_1 \vert o_1$ is a plus operation, $\forall r \in \mathbb{R}, \exists o_2 \in Minus(q,o_1), o_2 \in visTo(O,r,vis) \}$ and $S_m(q) = \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq S_p(q) \}$. Define function $conc$ as follows: $conc(q) = q'$, if $q'$ is obtained from $q$ by forgetting operations in $S_p(q) \cup S_m(q)$, and there is a bijection between operations of $q$ and $q'$ that keeps the operation labels, replica order, delivery order and arbitration orders. Let $Minus$ be a function that maps a state $q$ and a plus operation $o \in O$ into a set of minus operations of $O$.
-
-Given state $q=(O,\mathit{ro},\mathit{del},\mathit{arb})$, we say $forg(q,S) = q'$ if there exists $q''$, such that $q''$ is obtained from $q$ by forgetting operations in $S$, and there is a bijection between operations of $q'$ and $q''$ that keeps the operation labels, replica order, delivery order and arbitration orders. $match(q,S)$ holds, if $\exists O_1$, such that $O_1 \subseteq S_p(q) \wedge S = O_1 \cup \{ o_1 \vert  \{ o_2 \vert o_1 \in Minus(o_2) \} \subseteq O_1 \}$. Given set $S$, relation $R_{S}$ is defined as follows: $(q,q') \in R_{S}$, if $q' = forg(q,S) \wedge match(q,S)$. Let $map_{(q,q',S)}$ be the projection between $q''$ and $q'$ used in checking $q' = forg(q,S)$. We further require $R_{S}$ to satisfy that,
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] given $(q_i,q'_i) \in R_{O}$,
+\item[-] Given a set $O$ of update operations and an relation $<$ over $O$, we can define the following notations:
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] If $q'_i {\xrightarrow{\alpha'}} q'_{i+1}$, then $q_i {\xrightarrow{\alpha}} q_{i+1} \wedge (q_{i+1},q'_{i+1}) \in R_{S}$, where
+    \item[-] Given a ADD operation $o_a \in O$, function $f_R(O,<,o_a)$ is the set of corresponding REMOVE operations of $o_a$.
 
-        \begin{itemize}
-        \setlength{\itemsep}{0.5pt}
-        \item[-] If $\alpha' = addDel(o',r)$,then $\alpha = addDel(o,r)$, where $map_{(q,q',S)}(o')=o$.
+    \item[-] $RdtA(O,<)$ is the set of redundant ADD operations: $o_a \in Redt(O,<)$, if for each replica $r$, there exists $o_r \in f_R(O,<,o_a)$, such that $o_a$ and $o_r$ either happens on or delivered to replica $r$.
 
-        \item[-] Else, if $\alpha'=(m,a,b,r,\mathit{arb}')$, then $\exists \mathit{arb}$, such that $\alpha=(m,a,b,r,\mathit{arb}) \wedge \mathit{arb}' = map_{(q,q',S)}(\mathit{arb} - S)$.
-        \end{itemize}
+    \item[-] Predicate $P_f$ is used to check if a set $S$ of operations can be forgotten. Given $S \subseteq O$, $P_f(O,<,S) = \mathit{true}$, if $S = S_a \cup S_r$, such that $S_a \subseteq RdtA(O,<)$, and $S_r = \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,<,o_a) \} \subseteq S_a \}$.
     \end{itemize}
 
-\item[-] Given $(q,q') \in R_{ S_1 }$ and $(q',q'') \in R_{ S_2 }$. Then, we require that $(q,q'') \in R_{ ( S_1 \cup map_{(q,q',S_1)}(S_2) ) }$. For simplicity, we write $(q,q'') \in R_{ ( S_1 \cup S_2 ) }$ instead.
-\end{itemize}
+\item[-] Given an operation context $x = (O,<,\mathit{arb})$ of $o_1$ and $S \subseteq O$, let $forg(x,S)$ be a operation context $(O',<',\mathit{arb}')$ of $o_1$ obtained from $x$ by forgetting operations in $S$: $O' = O \setminus S$, $<' = < \uparrow_{(O' \times O')}$, and $\mathit{arb}'$ is obtained from $\mathit{arb}$ by projection on $O' \cup \{ o_1 \}$.
 
+\item[-] An extension of a operation context $(O,<,\mathit{arb})$ of $o_1$ is another operation context $(O',<',\mathit{arb}')$ of $o_1$, such that $O \subseteq O'$, $\mathit{arb}$ is the projection of $\mathit{arb}'$ over $O \cup \{ o_1 \}$ , $< \subseteq <'$, and $<' \cap ( (O'-O) \times O ) = \emptyset$. 
 
+%\item[-] Let $Inv$ be a property that is satisfied by all states which are on executions of $RImp(Spec)$. 
 
-\noindent {\bf Example 5. The case of OR-set}: OR-set is a plus-minus specification, while $add$ is the ``plus method'' and $rem$ is the ``minus method''. We already give the definition of $Minus(q,o)$ of OR-set in Example 3. \figurename~\ref{fig:the process of penetrate operations of or-set} shows an example of erasing redundant operations. Here $+a_1$ (resp., $-a_1$) is an operation with operation label $add(a)$ (resp., $rem(a)$), and the subscript is used to distinguish different $add(a)$ operations. In \figurename~\ref{fig:the process of penetrate operations of or-set} (a), $+a_2$ is the redundant $add$ operation, and $-a_2$ is the redundant $rem$. We forget $+a_1$ from \figurename~\ref{fig:the process of penetrate operations of or-set} (a) to \figurename~\ref{fig:the process of penetrate operations of or-set} (b), while $ip(+a_2) = +f$, $is(+a_2) = +c$, and we explicitly color $S_{delTo}(+a_2)$ with blue color.  We forget $-a_2$ from \figurename~\ref{fig:the process of penetrate operations of or-set} (b) to \figurename~\ref{fig:the process of penetrate operations of or-set} (c).
+\item[-] Then, we require that, %for operation context that satisfies $Inv$ 
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] For each operation context $x = (O,<,\mathit{arb})$ and $S \subseteq O$, where $P_f(O,<,S)$: For each operation $\ell$ and extension $x_1$ of $x$, $x_1 \in Spec(\ell)$, if and only if $forg(x_1,S) \in Spec(\ell)$.
 
+    \item[-] If $f_R(O,<,S) \wedge forg((O,<,\mathit{arb}),S) = (O',<',\mathit{arb}') \wedge f_R(O',<',S') \wedge forg((O',<',\mathit{arb}'),S') = (O'',<'',\mathit{arb}'')$, then $f_R(O,<,S \cup S')$.
+    \end{itemize}
+\end{itemize} 
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.85 \textwidth]{figures/PIC-Example-CompactProcess.pdf}
-%\vspace{-10pt}
-  \caption{The process of forgetting operations $+a_2$ and $-a_2$ of OR-set}
-  \label{fig:the process of penetrate operations of or-set}
-\end{figure}
+Similarly, we can forget operations $S$ from a state $(O,\mathit{ro},\mathit{del},\mathit{vis})$ by delete $S$ from $O$ and projection the relations to non-$S$ operations. Given a state $q = (O,\mathit{ro},\mathit{del},\mathit{vis})$, its succinct version $suct(q)$ is obtained from $q$ by forgetting $RdtA(O,\mathit{vis}) \cup \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,<,o_a) \} \subseteq RdtA(O,\mathit{vis}) \}$. %(Here we assume isomorphism-closed of operation identifiers).  
 
-The following lemma states that our $Minus$ for OR-set is correct. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
-
-\begin{lemma}
-\label{lemma:Minus for OR-set is correct}
-Our definition of $Minus$ for OR-set is correct.
-\end{lemma}
-
-\noindent {\bf Example 6. The case of Distributed list}: Distributed list is a plus-minus specification, while $add$ is the ``plus method'' and $rem$ is the ``minus method''. Given $q=(O,\mathit{ro},\mathit{del},\mathit{arb})$ and a add operation $o_1$ where $lab(o_1)=add(a,pos)$, $o_2 \in Minus(q,o)$, if $lab(o_2)=rem(pos) \Rightarrow a$, and when doing $f(o_2)$ as in Example 2, $f(o_2) - S(o_2) = \{ (o_1,o_2) \}$. \figurename~\ref{fig:the process of penetrate operations in distributed list} shows an example of distributed list. Here $lab(o_1) = add(a,1)$, $lab(o_2) = add(b,1)$, $lab(o_3) = add(c,2)$, $lab(o_4) = add(c,2)$, $lab(o_5) = add(d,3)$, and the arbitration order is $(o_1,o_4),(o_4,o_3),(o_3,o_2),(o_2,o_5) \in \mathit{arb}$. In \figurename~\ref{fig:the process of penetrate operations in distributed list} (a), $o_3$ is the redundant $add$ operations, and $rem(2) \Rightarrow c$ and $rem(3) \Rightarrow c$ are the redundant $rem$ operations. After forgetting $o_3$, $rem(2) \Rightarrow c$ and $rem(3) \Rightarrow c$, we obtain \figurename~\ref{fig:the process of penetrate operations in distributed list} (b).
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.7 \textwidth]{figures/PIC-Example-CompactProcess-list}
-%\vspace{-10pt}
-  \caption{The process of forgetting operations of distributed list}
-  \label{fig:the process of penetrate operations in distributed list}
-\end{figure}
-
-The following lemma states that our $Minus$ for distributed list is correct. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
-
-\begin{lemma}
-\label{lemma:Minus for distributed list is correct}
-Our definition of $Minus$ for distributed list is correct.
-\end{lemma}
-
-Note that, in the case of OR-set, given $rem$ operation $o_r$, $\vert \{ o_a \vert o_r \in Minus(o_a) \} \vert$ may be larger than $1$; while in the case of distributed list, given $rem$ operation $o_r$, $\vert \{ o_a \vert o_r \in Minus(o_a) \} \vert = 1$.
-
-Given a plus-minus specification $Spec$, its compacted reference implementation is given as an tuple $CRImp(Spec) = (Q,\Sigma,q_0,\rightarrow,li,correct)$. $CRImp(Spec)$ can be obtained from $RImp(Spec) = (Q',\Sigma,q_0,\rightarrow_r,li,correct)$ as follows:
+Given a collection specification $Spec$, its succinct reference implementation is given as an LTS $SRImp(Spec) = (Q_s,\Sigma,q_0,\rightarrow_s)$, which can be obtained from $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow)$ as follows: %use the transition rules of $\rightarrow$, and after every step we remove the redundant operations. Formally, 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $Q \subseteq Q'$. $\forall o \in Q$, $S_p(q) \cup S_m(q) = \emptyset$. Therefore, $\forall o \in Q$, we have $q = conc(q)$.
+\item[-] $Q_s = \{ q \vert q \in Q, $RdtA(q)$ = \emptyset \}$. 
 
-\item[-] For $\alpha = addDel(\_,\_)$: $q_1 {\xrightarrow{\alpha}} q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{\alpha}}_r q_3 \wedge q_2 = conc(q_3)$.
+\item[-] $q_1 {\xrightarrow{addDel(o,r)}}_s q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{addDel(o,r)}} q_3 \wedge q_2 = suct(q_3)$. 
 
-\item[-] For $\alpha=m(\_,\_,\_,\_)$ and $m$ is a query method: $q_1 {\xrightarrow{\alpha}} q_2$, if $q_1 {\xrightarrow{\alpha}}_r q_2$.
+\item[-] $q_1 {\xrightarrow{(m,a,b,r,\mathit{arb})}}_s q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{(m,a,b,r,\mathit{arb}')}}_s q_3$, $q_2 = forg(q_3,S)$, and $\mathit{arb}' - S = \mathit{arb}$. 
+\end{itemize} 
 
-\item[-] For $\alpha=m(a,b,r,arb)$ and $m$ is an update method: $q_1 {\xrightarrow{m(a,b,r,arb)}} q_2$, if $\exists q_3,arb',O$, such that $q_1 {\xrightarrow{m(a,b,r,arb')}}_r q_3$, $(q_3,q_2) \in R_{O}$ and $map_{(q,q',O)}(arb' - O) = arb$.
-\end{itemize}
+To obtain the annotated history of traces of $SRImp(Spec)$, let us define a relation $R_S$. Given two states $q=(O,\mathit{ro},\mathit{del},\mathit{vis}),q'$ of $RImp(Spec)$ and a set $S$ of operations, $(q,q') \in R_S$, if $P_f(O,\mathit{vis},S) \wedge q' = forg(q,S)$. With our definition of collections, we can see that $R_S$ satisfies the following properties: 
 
-Given an execution $t = \alpha_1 \cdot \ldots \in \llbracket CRImp(Spec) \rrbracket$, its abstract trace $absT(t)$ is generated as follows: Assume $q_0 {\xrightarrow{\alpha_1}}_c q_1 \ldots$ is a path of $CRImp(Spec)$, and $\rightarrow_r$ is the transition relation of $RImp(Spec)$,
+\begin{itemize}
+\setlength{\itemsep}{0.5pt} 
+\item[-] If $(q,q') \in R_{ S_1 } \wedge (q',q'') \in R_{ S_2 }$, then $(q,q'') \in R_{ ( S_1 \cup S_2 ) }$. 
+
+\item[-] If $(q_i,q'_i) \in R_{S} \wedge q'_i {\xrightarrow{\alpha'}} q'_{i+1}$, then $\exists \alpha$, such that $q_i {\xrightarrow{\alpha}} q_{i+1} \wedge (q_{i+1},q'_{i+1}) \in R_{S}$, where
+    
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] If $\alpha' = addDel(o,r)$,then $\alpha = \alpha'$.
+
+    \item[-] If $\alpha'=(m,a,b,r,\mathit{arb}')$, then $\exists \mathit{arb}$, such that $\alpha=(m,a,b,r,\mathit{arb}) \wedge \mathit{arb}' = \mathit{arb} - S$. 
+    \end{itemize}
+\end{itemize} 
+
+
+Given an execution $t = \alpha_1 \cdot \ldots$ of $SRImp(Spec)$, its annotated history $anHis(t)$ is the annotated history of a trace $t' = \alpha'_1 \cdot \alpha''_2 \ldots$ of $RImp(Spec)$ generated as follows: Assume $q_0 {\xrightarrow{\alpha_1}}_s q_1 \ldots$ is an execution of $SRImp(Spec)$, and let $\rightarrow_r$ be the transition relation of $RImp(Spec)$,
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $q_1 {\xrightarrow{\alpha_2}}_c q_2$: By definition of $\rightarrow_c$, $\exists \alpha'_2, q'_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_r q'_2 \wedge conc(q'_2)=q_2$. Then, it is obvious that $(q'_2,q_2) \in R_{O_2}$ for some $O_2$.
+\item[-] $q_0 {\xrightarrow{\alpha_1}}_s q_1$: By definition of $\rightarrow_s$, $\exists \alpha'_1, q'_1$, such that $q_0 {\xrightarrow{\alpha'_1}}_r q'_1 \wedge q_1 = suct(q'_1)$. Assume we obtain $q_1$ from $q'_1$ by forgetting $S_1$. It is obvious that $(q'_1,q_1) \in R_{S_1}$. 
 
-\item[-] $q_2 {\xrightarrow{\alpha_3}}_c q_3$: By definition of $\rightarrow_c$, $\exists \alpha'_3, q'_3$, such that $q_2 {\xrightarrow{\alpha'_3}}_r q'_3 \wedge conc(q'_3)=q_3$. Then, it is obvious that $(q'_3,q_3) \in R_{O_3}$ for some $O_3$.
+\item[-] $q_1 {\xrightarrow{\alpha_2}}_s q_2$: Similarly, $\exists \alpha'_2, q'_2, S_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_r q'_2 \wedge q_2 = suct(q'_2) \wedge (q'_2,q_2) \in R_{S_2}$. Since we already know that $(q'_1,q_1) \in R_{S_1} \wedge q_1 {\xrightarrow{\alpha'_2}}_r q'_2$, we can see that $\exists \alpha''_2,q''_2$, such that $q'_1 {\xrightarrow{\alpha''_2}}_r q''_2 \wedge (q''_2,q'_2) \in R_{S_1}$. Therefore, $(q''_2,q_2) \in R_{( O_1 \cup O_2)}$.
 
-Since $(q'_2,q_2) \in R_{O_2} \wedge q_2 {\xrightarrow{\alpha'_3}}_r q'_3$, we can see that $\exists \alpha''_3,q''_3$, such that $q'_2 {\xrightarrow{\alpha''_3}}_r q''_3 \wedge (q''_3,q'_3) \in R_{O_2}$. Therefore, $(q''_3,q_3) \in R_{(O_2 \cup O_3)}$.
+%By definition of $\rightarrow_s$, $\exists \alpha'_2, q'_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_r q'_2 \wedge q_2 = suct(q'_2)$. Assume we obtain $q_2$ from $q'_2$ by forgetting $S_2$. It is obvious that $(q'_2,q_2) \in R_{S_2}$. 
+\item[-] $q_k {\xrightarrow{\alpha_{\mathit{k+1}}}}_s q_{\mathit{k+1}}$ and $k \geq 2$: Similarly, $\exists \alpha'_{\mathit{k+1}}, q'_{\mathit{k+1}}, S_{\mathit{k+1}}$, such that $q_k {\xrightarrow{\alpha'_{\mathit{k+1}}}}_r q'_{\mathit{k+1}} \wedge q_{\mathit{k+1}} = suct(q'_{\mathit{k+1}}) \wedge (q'_{\mathit{k+1}},q_{\mathit{k+1}}) \in R_{S_{\mathit{k+1}}}$. Since we already know that $(q''_k,q_k) \in R_{( S_1 \cup \ldots \cup S_k )} \wedge q_k {\xrightarrow{\alpha'_\mathit{k+1}}}_r q'_{\mathit{k+1}}$, we can see that $\exists \alpha''_{\mathit{k+1}} ,q''_{\mathit{k+1}} $, such that $q'_k {\xrightarrow{\alpha''_{\mathit{k+1}} }}_r q''_{\mathit{k+1}}  \wedge (q''_{\mathit{k+1}} ,q'_{\mathit{k+1}} ) \in R_{( S_1 \cup \ldots \cup S_k )}$. Therefore, $(q''_{\mathit{k+1}} ,q_{\mathit{k+1}} ) \in R_{( S_1 \cup \ldots \cup S_{\mathit{k+1}}  )}$. 
+\end{itemize} 
 
-\item[-] The case for $i \geq 3$ is as follows: We already know that $q_i {\xrightarrow{\alpha_{i+1}}}_c q_{i+1}$. By definition of $\rightarrow_c$, $\exists \alpha'_{i+1}, q'_{i+1}$, such that $q_i {\xrightarrow{\alpha'_{i+1}}}_r q'_{i+1} \wedge conc(q'_{i+1})=q_{i+1}$. Then, it is obvious that $(q'_{i+1},q_{i+1}) \in R_{O_{i+1}}$ for some $O_{i+1}$.
 
-We already know that $(q''_i,q_i) \in R_{(O_2 \cup \ldots \cup O_i)} \wedge q_i {\xrightarrow{\alpha'_{i+1}}}_r q'_{i+1}$. Then, we can see that $\exists \alpha''_{i+1},q''_{i+1}$, such that $q''_i {\xrightarrow{\alpha''_{i+1}}}_r q''_{i+1} \wedge (q''_{i+1},q'_{i+1}) \in R_{(O_2 \cup \ldots \cup O_i)}$. Therefore, $(q''_{i+1},q_{i+1}) \in R_{(O_2 \cup \ldots \cup O_{i+1})}$.
+%\figurename~\ref{fig:the process of generate abstract trace for compacted reference implementation} shows the example when the trace of $CRImp(Spec)$ is $\alpha_1 \cdot \alpha_2 \cdot \alpha_3 \cdot \alpha_4$.
 
-%\item[-] $q_4 {\xrightarrow{\alpha_5}}_c q_5$: By definition of $\rightarrow_c$, $\exists \alpha'_5, q'_5$, such that $q_4 {\xrightarrow{\alpha'_5}}_r q'_5 \wedge conc(q'_5)=q_5$. Then, it is obvious that $(q'_5,q_5) \in R_{O_5}$ for some $O_5$.
-
-%Since $(q''_4,q_4) \in R_{(O_2 \cup O_3 \cup O_4)} \wedge q_4 {\xrightarrow{\alpha'_5}}_r q'_5$, we can see that $\exists \alpha''_5,q''_5$, such that $q''_4 {\xrightarrow{\alpha''_5}}_r q''_5 \wedge (q''_5,q'_5) \in R_{(O_2 \cup O_3 \cup O_4)}$. Therefore, $(q''_5,q_5) \in R_{(O_2 \cup O_3 \cup O_4 \cup O_5)}$.
-
-\item[-] $absT(t)$ is the abstract trace of $\alpha_1 \cdot \alpha'_2 \cdot \alpha''_3 \cdot \ldots$ in $RImp(Spec)$.
-\end{itemize}
-
-\figurename~\ref{fig:the process of generate abstract trace for compacted reference implementation} shows the example when the trace of $CRImp(Spec)$ is $\alpha_1 \cdot \alpha_2 \cdot \alpha_3 \cdot \alpha_4$.
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.4 \textwidth]{figures/PIC-Generate-AbstractTrace-Compact.pdf}
+%\begin{figure}[t]
+%  \centering
+%  \includegraphics[width=0.4 \textwidth]{figures/PIC-Generate-AbstractTrace-Compact.pdf}
 %\vspace{-10pt}
-  \caption{The process of generate abstract trace for compacted reference implementation}
-  \label{fig:the process of generate abstract trace for compacted reference implementation}
-\end{figure}
+%  \caption{The process of generate abstract trace for compacted reference implementation}
+%  \label{fig:the process of generate abstract trace for compacted reference implementation}
+%\end{figure}
 
-Let $absT(RImp(Spec)) = \{ x \vert \exists t \in \llbracket RImp(Spec) \rrbracket, x = absT(t) \}$. Let $absT(CRImp(Spec)) = \{ x \vert \exists t \in \llbracket CRImp(Spec) \rrbracket, x = absT(t) \}$. The following lemma stats that $absT(CRImp(Spec)) \subseteq absT(RImp(Spec))$. It is obvious by definition.
+%Let $absT(RImp(Spec)) = \{ x \vert \exists t \in \llbracket RImp(Spec) \rrbracket, x = absT(t) \}$. Let $absT(CRImp(Spec)) = \{ x \vert \exists t \in \llbracket CRImp(Spec) \rrbracket, x = absT(t) \}$. The following lemma stats that $absT(CRImp(Spec)) \subseteq absT(RImp(Spec))$. It is obvious by definition. 
+
+The following theorem states that the annotated history of traces of $SRImp(Spec)$ are CRVC w.r.t $Spec$. Its obvious from the definition of annotated histories of traces of $SRImp(Spec)$ and from Theorem \ref{theorem:executions of reference implementation are SRV consistent}. 
 
 \begin{lemma}
 \label{lemma:the abstract trace of CRIMPSpec is a subset of the abstract trace of RIMPSpec}
-$absT(CRImp(Spec)) \subseteq absT(RImp(Spec))$.
-\end{lemma}
+$\forall t \in \llbracket SRImp(Spec) \rrbracket$, $anHis(t)$ is CRVC consistent w.r.t $Spec$. 
+\end{lemma} 
 
-\noindent {\bf Partial Causal-Delivery}:
 
-Given a plus-minus specification $Spec$, its compacted reference implementation with causal delivery is given as an tuple $CRImp(Spec)_{\mathit{cd}} = (Q,\Sigma,q_0,\rightarrow_{\mathit{cd}},li,correct)$. $CRImp(Spec)_{\mathit{cd}}$ can be obtained from $CRImp(Spec) = (Q,\Sigma,q_0,\rightarrow,li,correct)$ by only change the $addDel$  transition rules as follows: $q_1 {\xrightarrow{addDel(o,r)}}_{cd} q_2$ if $q_1 {\xrightarrow{addDel(o,r)}} q_2 \wedge $ $o$ is minimal w.r.t $<_{hb}$ among operations not visible to replica $r$ nor operation of replica $r$ in $q_1 \}$.
-
-{\color {red}Note that since $CRImp(Spec)$ completely forget redundant operations during executing, $CRImp(Spec)_{\mathit{cd}}$ does not guarantee the causal-delivery referring redundant operations. However, we have already states that their delivery does not influence executions.} The following lemma states that $CRImp(Spec)_{\mathit{cd}}$ guarantees causal-delivery over non-redundant operations. Its proof is obvious and omitted.
+\noindent {\bf Example 5. OR-set}: OR-set is a collection specification, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given a set $O$ of update operations, an relation $<$ over $O$, and $o_a = add(a)$, $f_R(O,<,o_a) = Minus(O,<,o)$. The following lemma states that our definition of $f_R$ for OR-set satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
 \begin{lemma}
-\label{lemma:CRImpcdSpec guarantees causal delivery for non-redundant operations}
-$\llbracket CRImp(Spec)_{cd} \rrbracket = \{ t \vert t \in \llbracket CRImp(Spec) \rrbracket \wedge $ non-redundant operations in $t$ satisfies causal delivery $\}$.
+\label{lemma:Minus for OR-set is correct}
+Our definition of $f_R$ for OR-set is correct. 
 \end{lemma}
+
+\noindent {\bf Example 6. Distributed list}: Distributed list is a collection specification, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given a set $O$ of update operations, an relation $<$ over $O$, and $o_a = add(a,pos)$, $f_R(O,<,o_a) = \{ rem(a) \in O \}$. The following lemma states that our definition of $f_R$ for OR-set satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}. 
+
+\begin{lemma}
+\label{lemma:Minus for distributed list is correct}
+Our definition of $f_R$ for distributed list is correct.
+\end{lemma}
+
+
+\noindent {\bf Causal-Delivery}: The succinct reference implementation of collection specification $Spec$ with causal delivery is given as an LTS $SRImp(Spec)_{\mathit{cd}} = (Q,\Sigma,q_0,\rightarrow_{\mathit{cd}})$. $CRImp(Spec)_{\mathit{cd}}$ can be obtained from $SRImp(Spec) = (Q,\Sigma,q_0,\rightarrow_s)$ by changing the $addDel$  transition rules as follows: $q_1 {\xrightarrow{addDel(o,r)}}_{cd} q_2$ if $q_1 {\xrightarrow{addDel(o,r)}}_s q_2 \wedge o$ is minimal w.r.t $<_{hb}$ among operations not visible to replica $r$ nor operation of replica $r$ in $q_1 \}$. Note that, we are not able to require causal-delivery for the redundant operations. However, by definition their delivery brings no difference. 
 
 
 
