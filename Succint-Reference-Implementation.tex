@@ -13,11 +13,11 @@ $Spec$ is called collection, if
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] Given a ADD operation $o_a \in O$, function $f_R(O,<,o_a)$ is the set of corresponding REMOVE operations of $o_a$.
+    \item[-] Given a ADD operation $o_a \in O$, function $f_R(O,\mathit{vis},o_a)$ is the set of corresponding REMOVE operations of $o_a$.
 
-    \item[-] $RdtA(O,<)$ is the set of redundant ADD operations: $o_a \in Redt(O,<)$, if for each replica $r$, there exists $o_r \in f_R(O,<,o_a)$, such that $o_a$ and $o_r$ either happens on or delivered to replica $r$.
+    \item[-] $RdtA(O,\mathit{vis})$ is the set of redundant ADD operations: $o_a \in Redt(O,\mathit{vis})$, if for each replica $r$, there exists $o_r \in f_R(O,<,o_a)$, such that $o_a$ and $o_r$ either happens on or delivered to replica $r$.
 
-    \item[-] Predicate $P_f$ is used to check if a set $S$ of operations can be forgotten. Given $S \subseteq O$, $P_f(O,<,S) = \mathit{true}$, if $S = S_a \cup S_r$, such that $S_a \subseteq RdtA(O,<)$, and $S_r = \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,<,o_a) \} \subseteq S_a \}$.
+    \item[-] Predicate $P_f$ is used to check if a set $S$ of operations can be forgotten. Given $S \subseteq O$, $P_f(O,\mathit{vis},S) = \mathit{true}$, if $S = S_a \cup S_r$, such that $S_a \subseteq RdtA(O,\mathit{vis})$, and $S_r = \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,\mathit{vis},o_a) \} \subseteq S_a \}$.
     \end{itemize}
 
 %\item[-] Given an operation context $x = (O,<,\mathit{arb})$ of $o_1$ and $S \subseteq O$, let $forg(x,S)$ be a operation context $(O',<',\mathit{arb}')$ of $o_1$ obtained from $x$ by forgetting operations in $S$: $O' = O \setminus S$, $<' = < \uparrow_{(O' \times O')}$, and $\mathit{arb}'$ is obtained from $\mathit{arb}$ by projection on $O' \cup \{ o_1 \}$. 
