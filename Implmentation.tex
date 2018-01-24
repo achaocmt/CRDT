@@ -5,20 +5,42 @@
 
 Let $\Sigma_{\mathtt{RD}}$ be the set of data of each replica, and $\mathbb{MSG}$ be the set of messages. Each message is of the form $(data,r_s,r_d)$ where $r_s \in \mathbb{R}$ is the identifier of replica that generates this message, and $r_d \in \mathbb{R}$ is the destination replica identifier of this message. 
 
-A CRDT implementation $imp$ is defined as a tuple $(f_M,f_{apl},InitD)$, where
+A CRDT implementation $imp$ is defined as a tuple $(f_M,f_{apl},init,f_{abO},f_{arb})$, where
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt} 
+\item[-] $f_M: \Sigma_{\mathtt{RD}} \times \mathbb{M} \times \mathbb{D} \times \mathbb{R} \rightarrow \Sigma_{\mathtt{RD}} \times \mathbb{D} \times Pow(\mathbb{MSG})$ shows how method update data and generate messages. $f_M(d,m,a,r) = (d',b,msgs)$ means that, when the data of replica $r$ is $d$, if we call method $m$ with argument $a$ in replica $r$, then we obtain return value $b$, change the data of replica $r$ into $d'$, and generate a set $msgs$ of messages. $Pow(S)$ means the power set of $S$. Moreover, if $m$ is an update method, then $msgs = \{ (data,r,r') \vert r' \in \mathbb{R} \wedge r \neq r' \}$ for some $data$. Otherwise, $msgs = \emptyset$. 
+
+\item[-] $f_{apl}: \Sigma_{\mathtt{RD}} \times \mathbb{R} \times \mathbb{MSG} \rightarrow \Sigma_{\mathtt{RD}}$. $f_{apl}(d,r,msg) = d'$ means that, if the current replica data of replica $r$ is $d$ and we apply message $msg$, then we obtain replica data $d'$.
+
+\item[-] $init \in \Sigma_{\mathtt{RD}}$ is the initial replica data. 
+
+\item[-] $f_{abO}: \Sigma_{\mathtt{RD}}^{\vert \mathbb{R} \vert} \times Pow(\mathbb{MSG}) \Rightarrow Pow(\Sigma_{abO})$, where $\Sigma_{abO}$ is a set of elements and each element represents an operation. Given replica data of each replica, $f_{abO}$ is used to obtain the operations known by implementation.
+
+\item[-] $f_{arb}: \Sigma_{\mathtt{RD}}^{\vert \mathbb{R} \vert} \times Pow(\mathbb{MSG}) \Rightarrow \Sigma_{abO}^*$. Given replica data of each replica, $f_{arb}$ is used to obtain the arbitration relation.
+\end{itemize} 
+
+\noindent {\bf Example 5. OR-set algorithms of \cite{Shapiro:2011}}: The OR-set algorithms of \cite{Shapiro:2011} is defined as a tuple $(f_M,f_{apl},init,f_{abO},f_{arb})$, where 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $Mth: \mathbb{M} \times \mathbb{D} \times \mathbb{RD} \times \mathbb{R} \rightarrow \mathbb{D} \times \mathbb{RD} \times Pow(\mathbb{MSG})$. $Mth(m,a,d,r) = (b,ar,d',msgs)$ means that, if the data of replica $r$ is $d$, then if we call method $m$ with argument $a$ in replica $r$, then we obtain return value $b$ and change the data of replica $r$ into $d'$, and generate a set $msgs$ of messages. Here $Sub(\mathbb{RD})$ means we only return a part
+\item[-] Each element of $\Sigma_{\mathtt{RD}}$ is a tuple $(S,ctr)$, where $S \subseteq \{ (a,id) \}$, $id$ contains replica identifier and a number, and $ctr$ is used to generate the next identifier. 
 
-    Here if $m$ is an update method, then $msgs = \{ (dat,r,r') \vert r' \in \mathbb{R} \wedge r \neq r' \}$ for some $dat$. Otherwise, if $m(a,b)$ is a query operation, then $msgs = \emptyset$.
+\item[-] $f_M((S,ctr),add,a,r) = ((S',ctr+1),msgs)$, where $S'=S \cup \{ (a,(r,ctr)) \}$, and $msgs = \{ ((a,(r,ctr)),r,r') \vert r' \neq r \}$. 
 
-\item[-] $Apl: \mathbb{RD} \times \mathbb{MSG} \rightarrow \mathbb{RD}$. $Apl(d,msg) = d'$ means that, if the current replica data is $d$ and we apply message $msg$, then we obtain replica data $d'$.
+\item[-] $f_M((S,ctr),rem,a,r) = ((S',ctr),msgs)$, where $S'=S \setminus \{ (a,id) \in S \}$, $msgs = \{ ((a,S''),r,r') \vert r' \neq r \} $ where $S'' = \{ id \vert (a,id) \in S \}$. 
 
-\item[-] $Pred: (\mathbb{M} \times \mathbb{D} \times \mathbb{RD} \rightarrow \{ \textit{true},\textit{false} \}) \cup (\mathbb{RD} \times \mathbb{MSG} \rightarrow \{ \textit{true},\textit{false} \})$ is used to check whether a method can proceed, or whether a message can be applied.
+\item[-] $f_{apl}((S,ctr),r,((a,id),\_,r)) = (S \cup \{ (a,id) \},ctr)$. 
 
-\item[-] $InitD \in \mathbb{RD}$ is the initial replica data.
-\end{itemize}
+\item[-] $f_{apl}((S,ctr),r,((a,S'),\_,r)) = (S \setminus \{ (a,id) \vert id \in S' \},ctr)$. 
+
+\item[-] $init = (\emptyset,0)$. 
+
+\item[-] $f_{abO}( d_1,\ldots,d_k,msgs ) = \{ (a,id) \in d_1,\ldots,d_k \} \cup \{ (a,S) \in msgs \}$. 
+\end{itemize} 
+
+
+
 
 The semantics of $imp$ is given as an LTS $\llbracket imp \rrbracket = (Q,\Sigma,\rightarrow,q_0)$ \footnote{{\color {red} For some implementations, more information may be used as tuple of state of $\llbracket imp \rrbracket$. Such information are only for make transition labels clear and do not influence execution. For example, for distributed list algorithm, the order of all known items may be used as a argument. Similarly, we may add more information into transition labels when it is necessary.}}, where
 
