@@ -13,7 +13,7 @@ $Spec$ is called collection, if
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] Given a ADD operation $o_a \in O$, function $f_R(O,\mathit{vis},o_a)$ is the set of corresponding REMOVE operations of $o_a$.
+    \item[-] Given a ADD operation $o_a \in O$ with $lab(o_a)= ADD(a)$, function $f_R(O,\mathit{vis},o_a) = \{ o_r \vert lab(o_r)=$REMOVE$(a),(o_a,o_r) \in \mathit{vis}$, $ \neg \exists o'_r, lab(o'_r) = $REMOVE$(a), (o_a,o'_r),(o'_r,o_r) \in \mathit{vis} \}$ is the set of corresponding REMOVE operations of $o_a$. 
 
     \item[-] $RdtA(O,\mathit{vis})$ is the set of redundant ADD operations: $o_a \in Redt(O,\mathit{vis})$, if for each replica $r$, there exists $o_r \in f_R(O,<,o_a)$, such that $o_a$ and $o_r$ either happens on or delivered to replica $r$.
 
