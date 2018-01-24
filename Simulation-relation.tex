@@ -3,7 +3,7 @@
 \section{Simulation and Refinement}
 \label{sec:simulation and refinement}
 
-An labeled transition system (LTS, for short) is a tuple $A = (Q,\Sigma,\rightarrow,q_0)$, where $Q$ is a set of states, $\Sigma$ is an alphabet of transition labels, $\rightarrow \subseteq Q \times \Sigma \times Q$ is a transition relation and $q_0$ is the initial state. A execution of $A$ is a sequences of transitions and states starting from the initial state $q_0$, and a trace is a sequence of transition labels of an execution. We say that $A$ is deterministic, if for each state $q$ and each transition label $\alpha$, $q$ has at most one $\rightarrow$ successor with transition label $\alpha$.
+%An labeled transition system (LTS, for short) is a tuple $A = (Q,\Sigma,\rightarrow,q_0)$, where $Q$ is a set of states, $\Sigma$ is an alphabet of transition labels, $\rightarrow \subseteq Q \times \Sigma \times Q$ is a transition relation and $q_0$ is the initial state. A execution of $A$ is a sequences of transitions and states starting from the initial state $q_0$, and a trace is a sequence of transition labels of an execution. We say that $A$ is deterministic, if for each state $q$ and each transition label $\alpha$, $q$ has at most one $\rightarrow$ successor with transition label $\alpha$.
 
 
 
@@ -42,7 +42,7 @@ $A_2$ refines $A_1$ w.r.t $f_t$, if for each trace $t_1 = \alpha_1 \cdot \ldots 
 
 %\todo{Give a name to the property $P_{(f_s,f_t)}$, for instance: we say that $f_s$ and $f_t$ are compatible ... }
 
-We say that $f_s$ and $f_t$ are compatible, if for each deterministic $A_2$, the following holds: For each execution %\todo{execution} 
+We say that $f_s$ and $f_t$ are compatible, if for each deterministic $A_2$, the following holds: For each execution %\todo{execution}
 $q_{0}^1 {\xrightarrow{\alpha_1}}_1 q_{1}^1 \ldots {\xrightarrow{\alpha_k}}_1 q_{k}^1$ of $A_1$ and each $1 \leq u \leq k$, we have $f_t(\alpha_1 \cdot \ldots \cdot \alpha_{u+1}) = f_s(q_{u}^1,q_{u}^2,\alpha_{u+1})$, here $q_u^2$ is a state obtained by $q_{0}^2 {\xrightarrow{f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_u) }}_2 q_u^2$. %\todo{write it explicitly using the extension of $\xrightarrow{\alpha_1}$ to words}
 The following theorem states that $f_s$ and $f_t$ are compatible, $f_s$-simulation is equivalent to refinement w.r.t $f_t$. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section simulation and refinement} and is similar to that in \cite{Abadi:1991,Lynch:1995}.
 
