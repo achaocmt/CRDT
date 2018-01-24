@@ -1,88 +1,48 @@
 %!TEX root = draft.tex
-\section{Definitions and Proofs of Section \ref{sec:simulation and refinement}}
-\label{sec:appendix definitions and proofs of section simulation and refinement}
 
 
-{\noindent \bf Theorem \ref{theorem:equivalence of our simulation and refinement}}: Given LTS $A$ and deterministic $B$, and functions $f_s,f_t$, such that $P_{(f_s,f_t)}$ holds. Then, B $f_t$-refines $A$, if and only if there exists a $f_s$-simulation relation between $A$ and $B$.
+\section{Definitions and Proofs of Section \ref{sec:succinct reference implementations of collection data types}}
+\label{sec:appendix definitions and proofs of section succinct reference implementations of collection data types} 
 
-\begin {proof}
-Assume $A = (Q_A,\Sigma_A,\rightarrow_a,q_{0A})$ and $B = (Q_B,\Sigma_B,\rightarrow_b,q_{0B})$.
-
-For the $\mathit{if}$ direction. Assume $R$ is a $f_s$-simulation relation between $A$ and $B$. Given $q_{1A},\ldots,q_{kA} \in Q_A$, $q_{1B},\ldots,q_{kB}$, $\alpha_1,\ldots,\alpha_k$, such that
+To obtain the annotated history of traces of $SRImp(Spec)$, let us define a relation $R_S$. Given two states $q=(O,\mathit{ro},\mathit{del},\mathit{vis}),q'$ of $RImp(Spec)$ and a set $S$ of operations, $(q,q') \in R_S$, if $P_f(O,\mathit{vis},S) \wedge q' = forg(q,S)$. With our definition of collections, we can see that $R_S$ satisfies the following properties:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\forall 0 \leq i < k$, $q_{iA} {\xrightarrow{\alpha_{i+1}}}_a q_{i+1A}$,
+\item[-] If $(q,q') \in R_{ S_1 } \wedge (q',q'') \in R_{ S_2 }$, then $(q,q'') \in R_{ ( S_1 \cup S_2 ) }$.
 
-\item[-] $\forall 0 \leq i \leq k$, $(q_{iA},q_{iB}) \in R$, and
+\item[-] If $(q_i,q'_i) \in R_{S} \wedge q'_i {\xrightarrow{\alpha'}} q'_{i+1}$, then $\exists \alpha$, such that $q_i {\xrightarrow{\alpha}} q_{i+1} \wedge (q_{i+1},q'_{i+1}) \in R_{S}$, where
 
-\item[-] $\forall 0 \leq i < k$, $q_{iB} {\xrightarrow{f_s(q_{iA},q_{iB},\alpha_{i+1})}}_b q_{i+1B}$.
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] If $\alpha' = addDel(o,r)$,then $\alpha = \alpha'$.
+
+    \item[-] If $\alpha'=(m,a,b,r,\mathit{arb}')$, then $\exists \mathit{arb}$, such that $\alpha=(m,a,b,r,\mathit{arb}) \wedge \mathit{arb}' = \mathit{arb} - S$.
+    \end{itemize}
 \end{itemize}
 
-We can see that, given execution $t_A = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $A$, by $f_s$-simulation, we have execution $t_b = f_s(q_{0A},q_{0B},\alpha_1) \cdot \ldots \cdot f_s(q_{k-1A},q_{k-1B},\alpha_k)$ of $B$.
 
-Since $P_{(f_s,f_t)}$ holds, we can see that
+Given an execution $t = \alpha_1 \cdot \ldots$ of $SRImp(Spec)$, its annotated history $anHis(t)$ is the annotated history of a trace $t' = \alpha'_1 \cdot \alpha''_2 \ldots$ of $RImp(Spec)$ generated as follows: Assume $q_0 {\xrightarrow{\alpha_1}}_s q_1 \ldots$ is an execution of $SRImp(Spec)$, and let $\rightarrow_r$ be the transition relation of $RImp(Spec)$,
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $f_t(\alpha_1) = f_s(q_{0A},q_{0B},\alpha_1)$.
+\item[-] $q_0 {\xrightarrow{\alpha_1}}_s q_1$: By definition of $\rightarrow_s$, $\exists \alpha'_1, q'_1$, such that $q_0 {\xrightarrow{\alpha'_1}}_r q'_1 \wedge q_1 = suct(q'_1)$. Assume we obtain $q_1$ from $q'_1$ by forgetting $S_1$. It is obvious that $(q'_1,q_1) \in R_{S_1}$.
 
-\item[-] $f_t(\alpha_1 \cdot \alpha_2) = f_s(q_{1A},q'_{1B},\alpha_2)$. Here $q'_{1B}$ is obtained from $q_{B0}$ by doing $\alpha_1$ transitions. Since $B$ is deterministic, it is easy to see that $q'_{1B} = q_{1B}$, and $f_t(\alpha_1 \cdot \alpha_2) = f_s(q_{1A},q_{1B},\alpha_2)$.
+\item[-] $q_1 {\xrightarrow{\alpha_2}}_s q_2$: Similarly, $\exists \alpha'_2, q'_2, S_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_r q'_2 \wedge q_2 = suct(q'_2) \wedge (q'_2,q_2) \in R_{S_2}$. Since we already know that $(q'_1,q_1) \in R_{S_1} \wedge q_1 {\xrightarrow{\alpha'_2}}_r q'_2$, we can see that $\exists \alpha''_2,q''_2$, such that $q'_1 {\xrightarrow{\alpha''_2}}_r q''_2 \wedge (q''_2,q'_2) \in R_{S_1}$. Therefore, $(q''_2,q_2) \in R_{( O_1 \cup O_2)}$.
 
-$\ldots$
-
-\item[-] $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k) = f_s(q_{k-1A},q'_{k-1B},\alpha_k)$. Here $q'_{k-1B}$ is obtained from $q_{B0}$ by doing $\alpha_1 \cdot \ldots \cdot \alpha_{k-1}$ transitions. Since $B$ is deterministic, it is easy to see that $q'_{k-1B} = q_{k-1B}$, and $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k) = f_s(q_{k-1A},q_{k-1B},\alpha_k)$.
+%By definition of $\rightarrow_s$, $\exists \alpha'_2, q'_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_r q'_2 \wedge q_2 = suct(q'_2)$. Assume we obtain $q_2$ from $q'_2$ by forgetting $S_2$. It is obvious that $(q'_2,q_2) \in R_{S_2}$.
+\item[-] $q_k {\xrightarrow{\alpha_{\mathit{k+1}}}}_s q_{\mathit{k+1}}$ and $k \geq 2$: Similarly, $\exists \alpha'_{\mathit{k+1}}, q'_{\mathit{k+1}}, S_{\mathit{k+1}}$, such that $q_k {\xrightarrow{\alpha'_{\mathit{k+1}}}}_r q'_{\mathit{k+1}} \wedge q_{\mathit{k+1}} = suct(q'_{\mathit{k+1}}) \wedge (q'_{\mathit{k+1}},q_{\mathit{k+1}}) \in R_{S_{\mathit{k+1}}}$. Since we already know that $(q''_k,q_k) \in R_{( S_1 \cup \ldots \cup S_k )} \wedge q_k {\xrightarrow{\alpha'_\mathit{k+1}}}_r q'_{\mathit{k+1}}$, we can see that $\exists \alpha''_{\mathit{k+1}} ,q''_{\mathit{k+1}} $, such that $q'_k {\xrightarrow{\alpha''_{\mathit{k+1}} }}_r q''_{\mathit{k+1}}  \wedge (q''_{\mathit{k+1}} ,q'_{\mathit{k+1}} ) \in R_{( S_1 \cup \ldots \cup S_k )}$. Therefore, $(q''_{\mathit{k+1}} ,q_{\mathit{k+1}} ) \in R_{( S_1 \cup \ldots \cup S_{\mathit{k+1}}  )}$.
 \end{itemize}
 
-We can see that $t_B = f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)$. Therefore, by definition of $f_t$-refinement, we can see that B $f_t$-refines $A$.
 
+%\figurename~\ref{fig:the process of generate abstract trace for compacted reference implementation} shows the example when the trace of $CRImp(Spec)$ is $\alpha_1 \cdot \alpha_2 \cdot \alpha_3 \cdot \alpha_4$.
 
-For the $\mathit{only if}$ direction. Assume $B$ $f_t$-refines $A$. Let a relation $R_t$ be defined as follows: Given $q_A \in Q_A$ and $q_B \in Q_B$, $(q_A,q_B) \in R_t$, if $\exists \alpha_1, \ldots, \alpha_k \in \Sigma_A$, $\exists q_{1A},\ldots,q_{k-1A} \in Q_A$, and $\exists q_{1B},\ldots,q_{k-1B} \in Q_B$, such that $q_{0A} {\xrightarrow{\alpha_1}}_a q_{1A} \ldots {\xrightarrow{\alpha_{k-1}}}_a q_{k-1A} {\xrightarrow{\alpha_k}}_a q_A$, and $q_{0B} {\xrightarrow{f_t(\alpha_1)}}_b q_{1B} \ldots$ ${\xrightarrow{f_t(\alpha_1 \cdot \cdot \ldots \cdot \alpha_{k-1})}}_b q_{k-1B} {\xrightarrow{f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)}}_b q_B$.
-
-Let us now prove that $R_t$ is a $f_s$-simulation relation. Assume that $q_A {\xrightarrow{\alpha}}_a q'_A$. Then we can see that $q_{0A} {\xrightarrow{\alpha_1}}_a q_{1A} \ldots {\xrightarrow{\alpha_{k-1}}}_a q_{k-1A} {\xrightarrow{\alpha_k}}_a q_A {\xrightarrow{\alpha}}_A q'_A$ and $\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha$ is an execution of $A$.
-
-By assumption, $B$ $f_t$-refines $A$. Therefore, $f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k) \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha)$ is an execution of $B$. Since $B$ is deterministic, we can see that $\exists q'_B$, such that $q_{0B} {\xrightarrow{f_t(\alpha_1)}}_b q_{1B} \ldots$ ${\xrightarrow{f_t(\alpha_1 \cdot \cdot \ldots \cdot \alpha_{k-1})}}_b q_{k-1B} {\xrightarrow{f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)}}_b q_B {\xrightarrow{f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha)}}_b q'_B$. By definition, we can see that $(q'_A,q'_B) \in R_t$.
-
-Since $P_{(f_s,f_t)}$ holds, we have that $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha) = f_s(q_A,q''_B,\alpha)$, where $q''_B$ is obtained from $q_{0B}$ by doing $f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)$ transitions. Since $B$ is deterministic, we can see that $q''_B = q_B$ and $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha) = f_s(q_A,q_B,\alpha)$. We can see that $q_B {\xrightarrow{f_s(q_A,q_B,\alpha)}}_b q'_B$. Therefore, $R_t$ is a $f_s$-simulation relation. \qed
-\end {proof}
-
-\forget
-{
-The $\mathit{only if}$ direction is obvious.
-
-Let us prove the $\mathit{if}$ direction. By assumption we already have that $RImp(Spec)$ trace refines $\llbracket imp \rrbracket$. Assume $\llbracket imp \rrbracket = (Q_{imp},\Sigma_{imp},\rightarrow_{imp},q_{0imp})$ and $RImp(Spec) = (Q_s,\Sigma_s,vis,q_{0s},li,\rightarrow_s,livReq)$. A relation $R \subseteq Q_{imp} \times Q_s$ is defined as follows: $(q_i,q_s) \in R$, if $\exists t_{imp} = \alpha_1 \cdot \ldots \cdot \alpha_k,t_s = \beta_1 \cdot \ldots \cdot \beta_k, q_{1imp}, \ldots, q_{kimp}, q_{1s}, \ldots, q_{ks}$, such that $q_{0imp} {\xrightarrow{\alpha_1}}_{imp} q_{1imp} \ldots {\xrightarrow{\alpha_k}}_{imp} q_{kimp}$ is an execution of $\llbracket imp \rrbracket$, $q_{kimp}=q_i$, $q_{0s} {\xrightarrow{\beta_1}}_s q_{1s} \ldots {\xrightarrow{\beta_k}}_s q_{ks}$ is an execution of $RImp(Spec)$, $q_{ks}=q_s$, and $t_{imp}$ and $t_s$ correspond. Let us prove that $R$ is a simulation relation. Note that, given $t_{imp}$, there exists at most one $t_s$, such that $t_{imp}$ and $t_s$ correspond.
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] If $q_{imp} {\xrightarrow{m(a,b,r)}}_{imp} q'_{imp}$: It is easy to see that $t'_{imp} = t_{imp} \cdot m(a,b,r) \in \llbracket imp \rrbracket$.
-
-Since $RImp(Spec)$ trace refines $\llbracket imp \rrbracket$, there exists $t'_s$ of $RImp(Spec)$, such that $t'_{imp}$ and $t'_s$ correspond.
-
-Since given a trace $t$ of $\llbracket imp \rrbracket$, there exists at most one trace $t'$ of $RImp(Spec)$, such that $t$ and $t'$ correspond. It is easy to see that such $t'_s$ is unique.
-
-Since $t_{imp}$ and $t_s$ correspond and $RImp(Spec)$ is deterministic, we can see that $t'_s = t' \cdot m(a,b,r)$ is an execution of $RImp(Spec)$. Let $q_{ks} {\xrightarrow{m(a,b,r)}}_s q'_s$ It is easy to see that $t'_{imp}$ and $t'_s$ correspond. Therefore, $(q'_{imp},q'_s) \in R$.
-
-\item[-] If $q_{imp} {\xrightarrow{apply(m)}}_{imp} q'_{imp}$: It is easy to see that $t'_{imp} = t_{imp} \cdot apply(m) \in \llbracket imp \rrbracket$.
-
-Since $RImp(Spec)$ trace refines $\llbracket imp \rrbracket$, there exists $t'_s$ of $RImp(Spec)$, such that $t'_{imp}$ and $t'_s$ correspond.
-
-Since given a trace $t$ of $\llbracket imp \rrbracket$, there exists at most one trace $t'$ of $RImp(Spec)$, such that $t$ and $t'$ correspond. It is easy to see that such $t'_s$ is unique.
-
-We already know that $t_{imp}$ and $t_s$ correspond and $RImp(Spec)$ is deterministic. It is not hard to prove that, in $q_{kimp}$ and $q_{ks}$, $\forall r_1,r_2 \in RId$, the number of messages of $q_{kimp}$ which ``use source replica $r_1$ and destination replica $r_2$ and are still not applied'' is same as the number of operation of $q_{ks}$ which ``happens on replica $r_1$ and not visible to replica $r_2$''. Therefore, there exists transition $q_{ks} {\xrightarrow{addDel(o,r)}}_s q'_s$. Here $o$ and $r$ are obtained as follows: Assume after doing $t_{imp}$, $m=(\_,r',r)$ is the $i-th$ among ``messages with source replica $r'$, destination replica $r$ and still not applied'' w.r.t the occurring order of $t_{imp}$. Then, after doing $t_s$, $o$ is the $i-th$ among ``operations which happens on replica $r'$ and not visible to replica $r$'' w.r.t the occurring order of $t_s$. Let $t'_s = t' \cdot addDel(o,r)$.
-
-Let us prove that such $m$, $o$ and $r$ satisfies the requirements in definition of simulation relation. Since we already know that $q_{0imp} {\xrightarrow{t_{imp}}}_{imp}^* q_{kimp}$ and $q_{0s} {\xrightarrow{t_s}}_s^* q_{ks}$, it is not hard to prove that, the $i-th$ message among ``messages with source replica $r'$, destination replica $r$ and still not applied'' w.r.t the occurring order of $t_{imp}$ is the same as the $i-th$ among messages of $q_{kimp}$ with source replica $r'$ and destination replica $r$ w.r.t $<_{sd}$. Similarly, we can prove that, the $i-th$ operations among ``operations which happens on replica $r'$ and not visible to replica $r$'' w.r.t the occurring order of $t_s$ is the same as the $i-th$ among operations of $q_{ks}$ which happens on replica $r'$ and not visible to replica $r$ w.r.t $ro$. Therefore, $o$ and $r$ satisfies the requirements in definition of simulation relation.
-
-Let us prove that $(q'_{imp},q'_s) \in R$. From above discussion, it is not hard to see that $t'_{imp}$ and $t'_s$ correspond. Therefore, $(q'_{imp},q'_s) \in R$.
-\end{itemize}
-}
-
-
-
-
-
-
-
-
+%\begin{figure}[t]
+%  \centering
+%  \includegraphics[width=0.4 \textwidth]{figures/PIC-Generate-AbstractTrace-Compact.pdf}
+%\vspace{-10pt}
+%  \caption{The process of generate abstract trace for compacted reference implementation}
+%  \label{fig:the process of generate abstract trace for compacted reference implementation}
+%\end{figure}
 
 
 
@@ -241,12 +201,12 @@ Therefore, $mathch(q,S_1 \cup f(S_2))$ holds, and $(q,q'') \in R_{ ( S_1 \cup f(
 
 
 {\noindent \bf Lemma \ref{lemma:Minus for distributed list is correct}}: Our definition of $Minus$ for distributed list is correct.
-\begin {proof} 
+\begin {proof}
 
 Let $\rightarrow$ be the transition relation of $RImp(S_{\mathit{ORS}})$. Given $(q_k,q'_k) \in R_{S}$, let $f$ be short for $map_{(q_k,q'_k,S)}$, assume $q_k = (O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k)$ and $q'_k = (O'_k,\mathit{ro}'_k,\mathit{del}'_k,\mathit{arb}'_k)$. Let us prove the requirements of $Minus$ one by one:
 
 
-We need to prove that 
+We need to prove that
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
@@ -307,6 +267,115 @@ This completes the proof of this lemma. $\qed$
 
 %It is easy to see that the abstract trace of $\alpha_1 \cdot \alpha_2 \cdot \alpha_3 \cdot \alpha_4$ in $RImp(Spec)$ is the abstract trace of $\alpha_1 \cdot \alpha'_2 \cdot \alpha''_3 \cdot \alpha''_4$ in $CRImp(Spec)$. This completes the proof of this lemma. $\qed$
 %\end {proof}
+
+
+
+
+
+
+
+
+
+
+
+\section{Definitions and Proofs of Section \ref{sec:simulation and refinement}}
+\label{sec:appendix definitions and proofs of section simulation and refinement}
+
+
+{\noindent \bf Theorem \ref{theorem:equivalence of our simulation and refinement}}: Given LTS $A$ and deterministic $B$, and functions $f_s,f_t$, such that $P_{(f_s,f_t)}$ holds. Then, B $f_t$-refines $A$, if and only if there exists a $f_s$-simulation relation between $A$ and $B$.
+
+\begin {proof}
+Assume $A = (Q_A,\Sigma_A,\rightarrow_a,q_{0A})$ and $B = (Q_B,\Sigma_B,\rightarrow_b,q_{0B})$.
+
+For the $\mathit{if}$ direction. Assume $R$ is a $f_s$-simulation relation between $A$ and $B$. Given $q_{1A},\ldots,q_{kA} \in Q_A$, $q_{1B},\ldots,q_{kB}$, $\alpha_1,\ldots,\alpha_k$, such that
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $\forall 0 \leq i < k$, $q_{iA} {\xrightarrow{\alpha_{i+1}}}_a q_{i+1A}$,
+
+\item[-] $\forall 0 \leq i \leq k$, $(q_{iA},q_{iB}) \in R$, and
+
+\item[-] $\forall 0 \leq i < k$, $q_{iB} {\xrightarrow{f_s(q_{iA},q_{iB},\alpha_{i+1})}}_b q_{i+1B}$.
+\end{itemize}
+
+We can see that, given execution $t_A = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $A$, by $f_s$-simulation, we have execution $t_b = f_s(q_{0A},q_{0B},\alpha_1) \cdot \ldots \cdot f_s(q_{k-1A},q_{k-1B},\alpha_k)$ of $B$.
+
+Since $P_{(f_s,f_t)}$ holds, we can see that
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $f_t(\alpha_1) = f_s(q_{0A},q_{0B},\alpha_1)$.
+
+\item[-] $f_t(\alpha_1 \cdot \alpha_2) = f_s(q_{1A},q'_{1B},\alpha_2)$. Here $q'_{1B}$ is obtained from $q_{B0}$ by doing $\alpha_1$ transitions. Since $B$ is deterministic, it is easy to see that $q'_{1B} = q_{1B}$, and $f_t(\alpha_1 \cdot \alpha_2) = f_s(q_{1A},q_{1B},\alpha_2)$.
+
+$\ldots$
+
+\item[-] $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k) = f_s(q_{k-1A},q'_{k-1B},\alpha_k)$. Here $q'_{k-1B}$ is obtained from $q_{B0}$ by doing $\alpha_1 \cdot \ldots \cdot \alpha_{k-1}$ transitions. Since $B$ is deterministic, it is easy to see that $q'_{k-1B} = q_{k-1B}$, and $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k) = f_s(q_{k-1A},q_{k-1B},\alpha_k)$.
+\end{itemize}
+
+We can see that $t_B = f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)$. Therefore, by definition of $f_t$-refinement, we can see that B $f_t$-refines $A$.
+
+
+For the $\mathit{only if}$ direction. Assume $B$ $f_t$-refines $A$. Let a relation $R_t$ be defined as follows: Given $q_A \in Q_A$ and $q_B \in Q_B$, $(q_A,q_B) \in R_t$, if $\exists \alpha_1, \ldots, \alpha_k \in \Sigma_A$, $\exists q_{1A},\ldots,q_{k-1A} \in Q_A$, and $\exists q_{1B},\ldots,q_{k-1B} \in Q_B$, such that $q_{0A} {\xrightarrow{\alpha_1}}_a q_{1A} \ldots {\xrightarrow{\alpha_{k-1}}}_a q_{k-1A} {\xrightarrow{\alpha_k}}_a q_A$, and $q_{0B} {\xrightarrow{f_t(\alpha_1)}}_b q_{1B} \ldots$ ${\xrightarrow{f_t(\alpha_1 \cdot \cdot \ldots \cdot \alpha_{k-1})}}_b q_{k-1B} {\xrightarrow{f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)}}_b q_B$.
+
+Let us now prove that $R_t$ is a $f_s$-simulation relation. Assume that $q_A {\xrightarrow{\alpha}}_a q'_A$. Then we can see that $q_{0A} {\xrightarrow{\alpha_1}}_a q_{1A} \ldots {\xrightarrow{\alpha_{k-1}}}_a q_{k-1A} {\xrightarrow{\alpha_k}}_a q_A {\xrightarrow{\alpha}}_A q'_A$ and $\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha$ is an execution of $A$.
+
+By assumption, $B$ $f_t$-refines $A$. Therefore, $f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k) \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha)$ is an execution of $B$. Since $B$ is deterministic, we can see that $\exists q'_B$, such that $q_{0B} {\xrightarrow{f_t(\alpha_1)}}_b q_{1B} \ldots$ ${\xrightarrow{f_t(\alpha_1 \cdot \cdot \ldots \cdot \alpha_{k-1})}}_b q_{k-1B} {\xrightarrow{f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)}}_b q_B {\xrightarrow{f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha)}}_b q'_B$. By definition, we can see that $(q'_A,q'_B) \in R_t$.
+
+Since $P_{(f_s,f_t)}$ holds, we have that $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha) = f_s(q_A,q''_B,\alpha)$, where $q''_B$ is obtained from $q_{0B}$ by doing $f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)$ transitions. Since $B$ is deterministic, we can see that $q''_B = q_B$ and $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha) = f_s(q_A,q_B,\alpha)$. We can see that $q_B {\xrightarrow{f_s(q_A,q_B,\alpha)}}_b q'_B$. Therefore, $R_t$ is a $f_s$-simulation relation. \qed
+\end {proof}
+
+\forget
+{
+The $\mathit{only if}$ direction is obvious.
+
+Let us prove the $\mathit{if}$ direction. By assumption we already have that $RImp(Spec)$ trace refines $\llbracket imp \rrbracket$. Assume $\llbracket imp \rrbracket = (Q_{imp},\Sigma_{imp},\rightarrow_{imp},q_{0imp})$ and $RImp(Spec) = (Q_s,\Sigma_s,vis,q_{0s},li,\rightarrow_s,livReq)$. A relation $R \subseteq Q_{imp} \times Q_s$ is defined as follows: $(q_i,q_s) \in R$, if $\exists t_{imp} = \alpha_1 \cdot \ldots \cdot \alpha_k,t_s = \beta_1 \cdot \ldots \cdot \beta_k, q_{1imp}, \ldots, q_{kimp}, q_{1s}, \ldots, q_{ks}$, such that $q_{0imp} {\xrightarrow{\alpha_1}}_{imp} q_{1imp} \ldots {\xrightarrow{\alpha_k}}_{imp} q_{kimp}$ is an execution of $\llbracket imp \rrbracket$, $q_{kimp}=q_i$, $q_{0s} {\xrightarrow{\beta_1}}_s q_{1s} \ldots {\xrightarrow{\beta_k}}_s q_{ks}$ is an execution of $RImp(Spec)$, $q_{ks}=q_s$, and $t_{imp}$ and $t_s$ correspond. Let us prove that $R$ is a simulation relation. Note that, given $t_{imp}$, there exists at most one $t_s$, such that $t_{imp}$ and $t_s$ correspond.
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] If $q_{imp} {\xrightarrow{m(a,b,r)}}_{imp} q'_{imp}$: It is easy to see that $t'_{imp} = t_{imp} \cdot m(a,b,r) \in \llbracket imp \rrbracket$.
+
+Since $RImp(Spec)$ trace refines $\llbracket imp \rrbracket$, there exists $t'_s$ of $RImp(Spec)$, such that $t'_{imp}$ and $t'_s$ correspond.
+
+Since given a trace $t$ of $\llbracket imp \rrbracket$, there exists at most one trace $t'$ of $RImp(Spec)$, such that $t$ and $t'$ correspond. It is easy to see that such $t'_s$ is unique.
+
+Since $t_{imp}$ and $t_s$ correspond and $RImp(Spec)$ is deterministic, we can see that $t'_s = t' \cdot m(a,b,r)$ is an execution of $RImp(Spec)$. Let $q_{ks} {\xrightarrow{m(a,b,r)}}_s q'_s$ It is easy to see that $t'_{imp}$ and $t'_s$ correspond. Therefore, $(q'_{imp},q'_s) \in R$.
+
+\item[-] If $q_{imp} {\xrightarrow{apply(m)}}_{imp} q'_{imp}$: It is easy to see that $t'_{imp} = t_{imp} \cdot apply(m) \in \llbracket imp \rrbracket$.
+
+Since $RImp(Spec)$ trace refines $\llbracket imp \rrbracket$, there exists $t'_s$ of $RImp(Spec)$, such that $t'_{imp}$ and $t'_s$ correspond.
+
+Since given a trace $t$ of $\llbracket imp \rrbracket$, there exists at most one trace $t'$ of $RImp(Spec)$, such that $t$ and $t'$ correspond. It is easy to see that such $t'_s$ is unique.
+
+We already know that $t_{imp}$ and $t_s$ correspond and $RImp(Spec)$ is deterministic. It is not hard to prove that, in $q_{kimp}$ and $q_{ks}$, $\forall r_1,r_2 \in RId$, the number of messages of $q_{kimp}$ which ``use source replica $r_1$ and destination replica $r_2$ and are still not applied'' is same as the number of operation of $q_{ks}$ which ``happens on replica $r_1$ and not visible to replica $r_2$''. Therefore, there exists transition $q_{ks} {\xrightarrow{addDel(o,r)}}_s q'_s$. Here $o$ and $r$ are obtained as follows: Assume after doing $t_{imp}$, $m=(\_,r',r)$ is the $i-th$ among ``messages with source replica $r'$, destination replica $r$ and still not applied'' w.r.t the occurring order of $t_{imp}$. Then, after doing $t_s$, $o$ is the $i-th$ among ``operations which happens on replica $r'$ and not visible to replica $r$'' w.r.t the occurring order of $t_s$. Let $t'_s = t' \cdot addDel(o,r)$.
+
+Let us prove that such $m$, $o$ and $r$ satisfies the requirements in definition of simulation relation. Since we already know that $q_{0imp} {\xrightarrow{t_{imp}}}_{imp}^* q_{kimp}$ and $q_{0s} {\xrightarrow{t_s}}_s^* q_{ks}$, it is not hard to prove that, the $i-th$ message among ``messages with source replica $r'$, destination replica $r$ and still not applied'' w.r.t the occurring order of $t_{imp}$ is the same as the $i-th$ among messages of $q_{kimp}$ with source replica $r'$ and destination replica $r$ w.r.t $<_{sd}$. Similarly, we can prove that, the $i-th$ operations among ``operations which happens on replica $r'$ and not visible to replica $r$'' w.r.t the occurring order of $t_s$ is the same as the $i-th$ among operations of $q_{ks}$ which happens on replica $r'$ and not visible to replica $r$ w.r.t $ro$. Therefore, $o$ and $r$ satisfies the requirements in definition of simulation relation.
+
+Let us prove that $(q'_{imp},q'_s) \in R$. From above discussion, it is not hard to see that $t'_{imp}$ and $t'_s$ correspond. Therefore, $(q'_{imp},q'_s) \in R$.
+\end{itemize}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -9,24 +9,19 @@ $Spec$ is called collection, if
 \setlength{\itemsep}{0.5pt}
 \item[-] It contains two update methods, one is called ADD and the other is called REMOVE.
 
-\item[-] Given a set $O$ of update operations and an relation $<$ over $O$, we can define the following notations:
+\item[-] Given a ADD operation $o_a \in O$ with $lab(o_a)= ADD(a)$, function $f_R(O,\mathit{vis},o_a) = \{ o_r \vert lab(o_r)=$REMOVE$(a),(o_a,o_r) \in \mathit{vis}$, $ \neg \exists o'_r, lab(o'_r) = $REMOVE$(a), (o_a,o'_r),(o'_r,o_r) \in \mathit{vis} \}$ is the set of corresponding REMOVE operations of $o_a$.
 
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] Given a ADD operation $o_a \in O$ with $lab(o_a)= ADD(a)$, function $f_R(O,\mathit{vis},o_a) = \{ o_r \vert lab(o_r)=$REMOVE$(a),(o_a,o_r) \in \mathit{vis}$, $ \neg \exists o'_r, lab(o'_r) = $REMOVE$(a), (o_a,o'_r),(o'_r,o_r) \in \mathit{vis} \}$ is the set of corresponding REMOVE operations of $o_a$. 
+\item[-] Let $RdtA(O,\mathit{vis})$ be the set of redundant ADD operations: $o_a \in Redt(O,\mathit{vis})$, if for each replica $r$, there exists $o_r \in f_R(O,<,o_a)$, such that $o_a$ and $o_r$ either happens on or delivered to replica $r$.
 
-    \item[-] $RdtA(O,\mathit{vis})$ is the set of redundant ADD operations: $o_a \in Redt(O,\mathit{vis})$, if for each replica $r$, there exists $o_r \in f_R(O,<,o_a)$, such that $o_a$ and $o_r$ either happens on or delivered to replica $r$.
+\item[-] Predicate $P_{frg}$ is used to check if a set $S$ of operations can be forgotten. Given $S \subseteq O$, $P_{frg}(O,\mathit{vis},S) = \mathit{true}$, if $S = S_a \cup S_r$, such that $S_a \subseteq RdtA(O,\mathit{vis})$, and $S_r = \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,\mathit{vis},o_a) \} \subseteq S_a \}$.
 
-    \item[-] Predicate $P_f$ is used to check if a set $S$ of operations can be forgotten. Given $S \subseteq O$, $P_f(O,\mathit{vis},S) = \mathit{true}$, if $S = S_a \cup S_r$, such that $S_a \subseteq RdtA(O,\mathit{vis})$, and $S_r = \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,\mathit{vis},o_a) \} \subseteq S_a \}$.
-    \end{itemize}
+%\item[-] Given an operation context $x = (O,<,\mathit{arb})$ of $o_1$ and $S \subseteq O$, let $forg(x,S)$ be a operation context $(O',<',\mathit{arb}')$ of $o_1$ obtained from $x$ by forgetting operations in $S$: $O' = O \setminus S$, $<' = < \uparrow_{(O' \times O')}$, and $\mathit{arb}'$ is obtained from $\mathit{arb}$ by projection on $O' \cup \{ o_1 \}$.
 
-%\item[-] Given an operation context $x = (O,<,\mathit{arb})$ of $o_1$ and $S \subseteq O$, let $forg(x,S)$ be a operation context $(O',<',\mathit{arb}')$ of $o_1$ obtained from $x$ by forgetting operations in $S$: $O' = O \setminus S$, $<' = < \uparrow_{(O' \times O')}$, and $\mathit{arb}'$ is obtained from $\mathit{arb}$ by projection on $O' \cup \{ o_1 \}$. 
+\item[-] Given an annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, let $frg(x,S)$ be a annotated history $(O',\mathit{vis}',\mathit{arb}')$ obtained from $x$ by forgetting operations in $S$: $O' = O \setminus S$, $<' = < \uparrow_{(O' \times O')}$, and $\mathit{arb}'$ is obtained from $\mathit{arb}$ by projection on $O'$.
 
-\item[-] Given an annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, let $forg(x,S)$ be a annotated history $(O',\mathit{vis}',\mathit{arb}')$ obtained from $x$ by forgetting operations in $S$: $O' = O \setminus S$, $<' = < \uparrow_{(O' \times O')}$, and $\mathit{arb}'$ is obtained from $\mathit{arb}$ by projection on $O'$.
+%\item[-] An extension of a operation context $(O,<,\mathit{arb})$ of $o_1$ is another operation context $(O',<',\mathit{arb}')$ of $o_1$, such that $O \subseteq O'$, $\mathit{arb}$ is the projection of $\mathit{arb}'$ over $O \cup \{ o_1 \}$ , $< \subseteq <'$, and $<' \cap ( (O'-O) \times O ) = \emptyset$.
 
-%\item[-] An extension of a operation context $(O,<,\mathit{arb})$ of $o_1$ is another operation context $(O',<',\mathit{arb}')$ of $o_1$, such that $O \subseteq O'$, $\mathit{arb}$ is the projection of $\mathit{arb}'$ over $O \cup \{ o_1 \}$ , $< \subseteq <'$, and $<' \cap ( (O'-O) \times O ) = \emptyset$. 
-
-\item[-] An extension of an annotated history $(O,\mathit{vis},\mathit{arb})$ is another annotated history $(O',\mathit{vis}',\mathit{arb}')$, such that $O \subseteq O'$, $\mathit{arb}$ is the projection of $\mathit{arb}'$ over $O$ , $< \subseteq <'$, $<' \cap ( (O'-O) \times O ) = \emptyset \wedge <' \cap ( O \times O ) = \emptyset$. 
+\item[-] An extension of an annotated history $(O,\mathit{vis},\mathit{arb})$ is another annotated history $(O',\mathit{vis}',\mathit{arb}')$, such that $O \subseteq O'$, $\mathit{arb}$ is the projection of $\mathit{arb}'$ over $O$ , $< \subseteq <'$, $<' \cap ( (O'-O) \times O ) = \emptyset \wedge <' \cap ( O \times O ) = \mathit{vis}$.
 
 %\item[-] Let $Inv$ be a property that is satisfied by all states which are on executions of $RImp(Spec)$.
 
@@ -36,81 +31,45 @@ $Spec$ is called collection, if
 %    \item[-] For each operation context $x = (O,<,\mathit{arb})$ and $S \subseteq O$, where $P_f(O,<,S)$: For each operation $\ell$ and extension $x_1$ of $x$, $x_1 \in Spec(\ell)$, if and only if $forg(x_1,S) \in Spec(\ell)$.
 
 %    \item[-] If $f_R(O,<,S) \wedge forg((O,<,\mathit{arb}),S) = (O',<',\mathit{arb}') \wedge f_R(O',<',S') \wedge forg((O',<',\mathit{arb}'),S') = (O'',<'',\mathit{arb}'')$, then $f_R(O,<,S \cup S')$.
-%    \end{itemize} 
+%    \end{itemize}
 
-\item[-] Then, we require that, 
+\item[-] Then, we require that,
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] For each annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, where $P_f(O,<,S)$: For each operation $\ell$ and extension $x'$ of $x$, let $y'$ be the operation context of $x'$ and $o \in O$, and let $y''$ be the operation context of $forg(x',S)$ and $o$, then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$. 
-    
+    \item[-] For each annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, where $P_{frg}(O,\mathit{vis},S)$: For each operation $\ell$ and extension $x'$ of $x$, let $y'$ be the operation context of $x'$ and $o \in O$, and let $y''$ be the operation context of $frg(x',S)$ and $o$, then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$.
+
     %$x_1 \in Spec(\ell)$, if and only if $forg(x_1,S) \in Spec(\ell)$.
 
-    \item[-] If $f_R(O,\mathit{vis},S) \wedge forg((O,\mathit{vis},\mathit{arb}),S) = (O',\mathit{vis}',\mathit{arb}') \wedge f_R(O',\mathit{vis}',S') \wedge forg((O',\mathit{vis}',\mathit{arb}'),S') = (O'',\mathit{vis}'',\mathit{arb}'')$, then $f_R(O,\mathit{vis},S \cup S')$.
+    \item[-] If $P_{frg}(O,\mathit{vis},S) \wedge forg((O,\mathit{vis},\mathit{arb}),S) = (O',\mathit{vis}',\mathit{arb}') \wedge P_{frg}(O',\mathit{vis}',S') \wedge forg((O',\mathit{vis}',\mathit{arb}'),S') = (O'',\mathit{vis}'',\mathit{arb}'')$, then $P_{frg}(O,\mathit{vis},S \cup S')$.
     \end{itemize}
 \end{itemize}
 
-Similarly, we can forget operations $S$ from a state $(O,\mathit{ro},\mathit{del},\mathit{vis})$ by delete $S$ from $O$ and projection the relations to non-$S$ operations. Given a state $q = (O,\mathit{ro},\mathit{del},\mathit{vis})$, its succinct version $suct(q)$ is obtained from $q$ by forgetting $RdtA(O,\mathit{vis}) \cup \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,\mathit{vis},o_a) \} \subseteq RdtA(O,\mathit{vis}) \}$. %(Here we assume isomorphism-closed of operation identifiers).
+Similarly, we can forget operations $S$ from a state $(O,\mathit{ro},\mathit{del},\mathit{vis})$ by deleting $S$ from $O$, $\mathit{ro}$ and $\mathit{del}$. Given a state $q = (O,\mathit{ro},\mathit{del},\mathit{vis})$, its succinct version $suct(q)$ is obtained from $q$ by forgetting $RdtA(O,\mathit{vis}) \cup \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,\mathit{vis},o_a) \} \subseteq RdtA(O,\mathit{vis}) \}$. Given a collection specification $Spec$, its succinct reference implementation is given as an LTS $SRImp(Spec) = (Q_s,\Sigma,q_0,\rightarrow_s)$, which can be obtained from $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow)$ as follows: %use the transition rules of $\rightarrow$, and after every step we remove the redundant operations. Formally,
 
-Given a collection specification $Spec$, its succinct reference implementation is given as an LTS $SRImp(Spec) = (Q_s,\Sigma,q_0,\rightarrow_s)$, which can be obtained from $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow)$ as follows: %use the transition rules of $\rightarrow$, and after every step we remove the redundant operations. Formally,
-
+{\color {red}
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $Q_s = \{ q \vert q \in Q, $RdtA(q)$ = \emptyset \}$.
+\item[-] $Q_s$ is the set of $(O,\mathit{ro},\mathit{del},\mathit{arb})$ that does not contain redundant ADD operations. Here we permit $\mathit{arb}$ to contain more operations than $O$. 
+\item[-] $q_1 {\xrightarrow{\alpha}}_s q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{\alpha}} q_3 \wedge q_2 = suct(q_3)$. Here the transition rules of $\rightarrow$ does not need modification. 
+ 
+%\item[-] $q_1 {\xrightarrow{addDel(o,r)}}_s q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{addDel(o,r)}} q_3 \wedge q_2 = suct(q_3)$.
 
-\item[-] $q_1 {\xrightarrow{addDel(o,r)}}_s q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{addDel(o,r)}} q_3 \wedge q_2 = suct(q_3)$.
-
-\item[-] $q_1 {\xrightarrow{(m,a,b,r,\mathit{arb})}}_s q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{(m,a,b,r,\mathit{arb}')}}_s q_3$, $q_2 = forg(q_3,S)$, and $\mathit{arb}' - S = \mathit{arb}$.
+%\item[-] $q_1 {\xrightarrow{(m,a,b,r,\mathit{arb})}}_s q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{(m,a,b,r,\mathit{arb}')}}_s q_3$, $q_2 = forg(q_3,S)$, and $\mathit{arb}' - S = \mathit{arb}$.
 \end{itemize}
+}
 
-To obtain the annotated history of traces of $SRImp(Spec)$, let us define a relation $R_S$. Given two states $q=(O,\mathit{ro},\mathit{del},\mathit{vis}),q'$ of $RImp(Spec)$ and a set $S$ of operations, $(q,q') \in R_S$, if $P_f(O,\mathit{vis},S) \wedge q' = forg(q,S)$. With our definition of collections, we can see that $R_S$ satisfies the following properties:
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] If $(q,q') \in R_{ S_1 } \wedge (q',q'') \in R_{ S_2 }$, then $(q,q'') \in R_{ ( S_1 \cup S_2 ) }$.
-
-\item[-] If $(q_i,q'_i) \in R_{S} \wedge q'_i {\xrightarrow{\alpha'}} q'_{i+1}$, then $\exists \alpha$, such that $q_i {\xrightarrow{\alpha}} q_{i+1} \wedge (q_{i+1},q'_{i+1}) \in R_{S}$, where
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] If $\alpha' = addDel(o,r)$,then $\alpha = \alpha'$.
-
-    \item[-] If $\alpha'=(m,a,b,r,\mathit{arb}')$, then $\exists \mathit{arb}$, such that $\alpha=(m,a,b,r,\mathit{arb}) \wedge \mathit{arb}' = \mathit{arb} - S$.
-    \end{itemize}
-\end{itemize}
-
-
-Given an execution $t = \alpha_1 \cdot \ldots$ of $SRImp(Spec)$, its annotated history $anHis(t)$ is the annotated history of a trace $t' = \alpha'_1 \cdot \alpha''_2 \ldots$ of $RImp(Spec)$ generated as follows: Assume $q_0 {\xrightarrow{\alpha_1}}_s q_1 \ldots$ is an execution of $SRImp(Spec)$, and let $\rightarrow_r$ be the transition relation of $RImp(Spec)$,
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] $q_0 {\xrightarrow{\alpha_1}}_s q_1$: By definition of $\rightarrow_s$, $\exists \alpha'_1, q'_1$, such that $q_0 {\xrightarrow{\alpha'_1}}_r q'_1 \wedge q_1 = suct(q'_1)$. Assume we obtain $q_1$ from $q'_1$ by forgetting $S_1$. It is obvious that $(q'_1,q_1) \in R_{S_1}$.
-
-\item[-] $q_1 {\xrightarrow{\alpha_2}}_s q_2$: Similarly, $\exists \alpha'_2, q'_2, S_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_r q'_2 \wedge q_2 = suct(q'_2) \wedge (q'_2,q_2) \in R_{S_2}$. Since we already know that $(q'_1,q_1) \in R_{S_1} \wedge q_1 {\xrightarrow{\alpha'_2}}_r q'_2$, we can see that $\exists \alpha''_2,q''_2$, such that $q'_1 {\xrightarrow{\alpha''_2}}_r q''_2 \wedge (q''_2,q'_2) \in R_{S_1}$. Therefore, $(q''_2,q_2) \in R_{( O_1 \cup O_2)}$.
-
-%By definition of $\rightarrow_s$, $\exists \alpha'_2, q'_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_r q'_2 \wedge q_2 = suct(q'_2)$. Assume we obtain $q_2$ from $q'_2$ by forgetting $S_2$. It is obvious that $(q'_2,q_2) \in R_{S_2}$.
-\item[-] $q_k {\xrightarrow{\alpha_{\mathit{k+1}}}}_s q_{\mathit{k+1}}$ and $k \geq 2$: Similarly, $\exists \alpha'_{\mathit{k+1}}, q'_{\mathit{k+1}}, S_{\mathit{k+1}}$, such that $q_k {\xrightarrow{\alpha'_{\mathit{k+1}}}}_r q'_{\mathit{k+1}} \wedge q_{\mathit{k+1}} = suct(q'_{\mathit{k+1}}) \wedge (q'_{\mathit{k+1}},q_{\mathit{k+1}}) \in R_{S_{\mathit{k+1}}}$. Since we already know that $(q''_k,q_k) \in R_{( S_1 \cup \ldots \cup S_k )} \wedge q_k {\xrightarrow{\alpha'_\mathit{k+1}}}_r q'_{\mathit{k+1}}$, we can see that $\exists \alpha''_{\mathit{k+1}} ,q''_{\mathit{k+1}} $, such that $q'_k {\xrightarrow{\alpha''_{\mathit{k+1}} }}_r q''_{\mathit{k+1}}  \wedge (q''_{\mathit{k+1}} ,q'_{\mathit{k+1}} ) \in R_{( S_1 \cup \ldots \cup S_k )}$. Therefore, $(q''_{\mathit{k+1}} ,q_{\mathit{k+1}} ) \in R_{( S_1 \cup \ldots \cup S_{\mathit{k+1}}  )}$.
-\end{itemize}
-
-
-%\figurename~\ref{fig:the process of generate abstract trace for compacted reference implementation} shows the example when the trace of $CRImp(Spec)$ is $\alpha_1 \cdot \alpha_2 \cdot \alpha_3 \cdot \alpha_4$.
-
-%\begin{figure}[t]
-%  \centering
-%  \includegraphics[width=0.4 \textwidth]{figures/PIC-Generate-AbstractTrace-Compact.pdf}
-%\vspace{-10pt}
-%  \caption{The process of generate abstract trace for compacted reference implementation}
-%  \label{fig:the process of generate abstract trace for compacted reference implementation}
-%\end{figure}
 
 %Let $absT(RImp(Spec)) = \{ x \vert \exists t \in \llbracket RImp(Spec) \rrbracket, x = absT(t) \}$. Let $absT(CRImp(Spec)) = \{ x \vert \exists t \in \llbracket CRImp(Spec) \rrbracket, x = absT(t) \}$. The following lemma stats that $absT(CRImp(Spec)) \subseteq absT(RImp(Spec))$. It is obvious by definition.
 
-The following theorem states that the annotated history of traces of $SRImp(Spec)$ are CRVC w.r.t $Spec$. Its obvious from the definition of annotated histories of traces of $SRImp(Spec)$ and from Theorem \ref{theorem:executions of reference implementation are SRV consistent}.
+%The following theorem states that the annotated history of traces of $SRImp(Spec)$ are CRVC w.r.t $Spec$. Its obvious from the definition of annotated histories of traces of $SRImp(Spec)$ and from Theorem \ref{theorem:executions of reference implementation are SRV consistent}. 
 
+Given an trace $t$ of $SRImp(Spec)$, its history $his(t) = (O,\mathit{ro})$, where $O$ is the set of operations generated, and $\mathit{ro}$ is the time order on same replica. Let $his(SRImp(Spec))$ be the set of histories of traces of $SRImp(Spec)$, and similarly we define $his(RImp(Spec))$. The following lemma states that $SRImp(Spec)$ and $RImp(Spec)$ have same set of histories. 
+{\color {red}
 \begin{lemma}
 \label{lemma:the abstract trace of CRIMPSpec is a subset of the abstract trace of RIMPSpec}
-$\forall t \in \llbracket SRImp(Spec) \rrbracket$, $anHis(t)$ is CRVC consistent w.r.t $Spec$.
+$his(RImp(Spec)) = his(SRImp(Spec))$. 
 \end{lemma}
-
+}
 
 \noindent {\bf Example 3. OR-set}: OR-set is a collection specification, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given a set $O$ of update operations, an relation $<$ over $O$, and $o_a = add(a)$, $f_R(O,<,o_a) = Minus(O,<,o)$. The following lemma states that our definition of $f_R$ for OR-set satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
