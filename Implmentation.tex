@@ -3,9 +3,9 @@
 \section{Implementation}
 \label{sec:implementation}
 
-Let $\mathbb{RD}$ be the set of data of replica. Let $\mathbb{MSG}$ be the set of messages. Each message is of the from $msg=(dat,sorR,desR)$ and is generated when some replica does an operation. Here $dat \in \mathbb{RD}$ is the information carried by message, $sorR,desR \in \mathbb{R}$ are the replica identifier of the replica that launched the message and the destination replica of this message, respectively.
+Let $\Sigma_{\mathtt{RD}}$ be the set of data of each replica, and $\mathbb{MSG}$ be the set of messages. Each message is of the form $(data,r_s,r_d)$ where $r_s \in \mathbb{R}$ is the identifier of replica that generates this message, and $r_d \in \mathbb{R}$ is the destination replica identifier of this message. 
 
-A CRDT implementation $imp$ is defined as a tuple $(Mth,Apl,Pred,InitD)$, where
+A CRDT implementation $imp$ is defined as a tuple $(f_M,f_{apl},InitD)$, where
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}

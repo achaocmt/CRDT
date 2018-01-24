@@ -11,17 +11,17 @@ $Spec$ is called collection, if
 
 \item[-] Given a ADD operation $o_a \in O$ with $lab(o_a)= ADD(a)$, function $f_R(O,\mathit{vis},o_a) = \{ o_r \vert lab(o_r)=$REMOVE$(a),(o_a,o_r) \in \mathit{vis}$, $ \neg \exists o'_r, lab(o'_r) = $REMOVE$(a), (o_a,o'_r),(o'_r,o_r) \in \mathit{vis} \}$ is the set of corresponding REMOVE operations of $o_a$.
 
-\item[-] Let $RdtA(O,\mathit{vis})$ be the set of redundant ADD operations: $o_a \in Redt(O,\mathit{vis})$, if for each replica $r$, there exists $o_r \in f_R(O,<,o_a)$, such that $o_a$ and $o_r$ either happens on or delivered to replica $r$.
+\item[-] Let $RdtA(O,\mathit{vis})$ be the set of redundant ADD operations: $o_a \in Redt(O,\mathit{vis})$, if for each replica $r$, there exists $o_r \in f_R(O,\mathit{vis},o_a)$, such that $o_a$ and $o_r$ either happens on or delivered to replica $r$.
 
 \item[-] Predicate $P_{frg}$ is used to check if a set $S$ of operations can be forgotten. Given $S \subseteq O$, $P_{frg}(O,\mathit{vis},S) = \mathit{true}$, if $S = S_a \cup S_r$, such that $S_a \subseteq RdtA(O,\mathit{vis})$, and $S_r = \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,\mathit{vis},o_a) \} \subseteq S_a \}$.
 
 %\item[-] Given an operation context $x = (O,<,\mathit{arb})$ of $o_1$ and $S \subseteq O$, let $forg(x,S)$ be a operation context $(O',<',\mathit{arb}')$ of $o_1$ obtained from $x$ by forgetting operations in $S$: $O' = O \setminus S$, $<' = < \uparrow_{(O' \times O')}$, and $\mathit{arb}'$ is obtained from $\mathit{arb}$ by projection on $O' \cup \{ o_1 \}$.
 
-\item[-] Given an annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, let $frg(x,S)$ be a annotated history $(O',\mathit{vis}',\mathit{arb}')$ obtained from $x$ by forgetting operations in $S$: $O' = O \setminus S$, $<' = < \uparrow_{(O' \times O')}$, and $\mathit{arb}'$ is obtained from $\mathit{arb}$ by projection on $O'$.
+\item[-] Given an annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, let $frg(x,S)$ be a annotated history $(O',\mathit{vis}',\mathit{arb}')$ obtained from $x$ by forgetting operations in $S$: $O' = O \setminus S$, $\mathit{vis}' = \mathit{vis} \uparrow_{(O' \times O')}$, and $\mathit{arb}'$ is obtained from $\mathit{arb}$ by projection on $O'$.
 
 %\item[-] An extension of a operation context $(O,<,\mathit{arb})$ of $o_1$ is another operation context $(O',<',\mathit{arb}')$ of $o_1$, such that $O \subseteq O'$, $\mathit{arb}$ is the projection of $\mathit{arb}'$ over $O \cup \{ o_1 \}$ , $< \subseteq <'$, and $<' \cap ( (O'-O) \times O ) = \emptyset$.
 
-\item[-] An extension of an annotated history $(O,\mathit{vis},\mathit{arb})$ is another annotated history $(O',\mathit{vis}',\mathit{arb}')$, such that $O \subseteq O'$, $\mathit{arb}$ is the projection of $\mathit{arb}'$ over $O$ , $< \subseteq <'$, $<' \cap ( (O'-O) \times O ) = \emptyset \wedge <' \cap ( O \times O ) = \mathit{vis}$.
+\item[-] An extension of an annotated history $(O,\mathit{vis},\mathit{arb})$ is another annotated history $(O',\mathit{vis}',\mathit{arb}')$, such that $O \subseteq O'$, $\mathit{arb}$ is the projection of $\mathit{arb}'$ over $O$ , $\mathit{arb} \subseteq \mathit{arb}'$, $\mathit{arb}' \cap ( (O'-O) \times O ) = \emptyset \wedge \mathit{arb}' \cap ( O \times O ) = \mathit{vis}$.
 
 %\item[-] Let $Inv$ be a property that is satisfied by all states which are on executions of $RImp(Spec)$.
 
@@ -71,14 +71,14 @@ $his(RImp(Spec)) = his(SRImp(Spec))$.
 \end{lemma}
 }
 
-\noindent {\bf Example 3. OR-set}: OR-set is a collection specification, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given a set $O$ of update operations, an relation $<$ over $O$, and $o_a = add(a)$, $f_R(O,<,o_a) = Minus(O,<,o)$. The following lemma states that our definition of $f_R$ for OR-set satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
+\noindent {\bf Example 3. OR-set}: OR-set is a collection specification, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given an operation $o_a \in O$ with $lab(o_a) = add(a)$, $f_R(O,\mathit{vis},o_a) = Minus(O,\mathit{vis},o)$. The following lemma states that our definition of $f_R$ for OR-set satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
 \begin{lemma}
 \label{lemma:Minus for OR-set is correct}
 Our definition of $f_R$ for OR-set is correct.
 \end{lemma}
 
-\noindent {\bf Example 4. Distributed list}: Distributed list is a collection specification, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given a set $O$ of update operations, an relation $<$ over $O$, and $o_a = add(a,pos)$, $f_R(O,<,o_a) = \{ rem(a) \in O \}$. The following lemma states that our definition of $f_R$ for OR-set satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
+\noindent {\bf Example 4. Distributed list}: Distributed list is a collection specification, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given an operation $o_a \in O$ with $lab(o_a)=add(a,pos)$, $f_R(O,\mathit{vis},o_a) = \{ rem(a) \in O \}$. The following lemma states that our definition of $f_R$ for OR-set satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
 \begin{lemma}
 \label{lemma:Minus for distributed list is correct}

@@ -38,10 +38,14 @@ CRDT has two kinds of method: query methods and update methods. An annotated his
 
 \item[-] $\mathit{vis}$ is a irreflexive and acyclic relation over $O$, and is called the visibility relation. We require that for each operation $o \in O$, $\mathit{vis}^{-1}(o)$ is finite.
 
-\item[-] $\mathit{arb}$ is a partial order over update operations of $O$ and is called the arbitration order.
+%\item[-] $\mathit{arb}$ is a partial order over update operations of $O$ and is called the arbitration order. 
+{\color {red} 
+\item[-] $\mathit{arb}$ is a irreflexive total order over a subset of update operations of $O$ and is called the arbitration order. 
+}
 \end{itemize}
 
-A operation context of a operation $o$ is a tuple $(O,<,\mathit{arb})$, where $O$ is a set of update operations, $<$ is a relation over $O$, $o \notin O$, and $\mathit{arb}$ is a partial order over update operations of $O \cup \{ o \}$. A specification $Spec$ is a function that maps each operation label $\ell$ into a set of elements, while each of them is a operation context $(O,<,\mathit{arb})$ for some operation $o$ with $lab(o) = \ell$. A specification is deterministic, if there does not exists query method $m$ and tuple $(O,<,\mathit{arb})$, such that $(O,<,\mathit{arb}) \in Spec(m(a) \Rightarrow b)$, $(O,<,\mathit{arb}) \in Spec(m(a') \Rightarrow b')$, and $a \neq a' \vee b \neq b'$. From now on, we consider only deterministic specifications.
+A operation context of a operation $o$ is a tuple $(O,<,\mathit{arb})$, where $O$ is a set of update operations, $<$ is a relation over $O$, $o \notin O$, %and $\mathit{arb}$ is a partial order over update operations of $O \cup \{ o \}$. 
+{\color {red} and $\mathit{arb}$ is a irreflexive total order over a subset of update operations of $O \cup \{ o \}$.} A specification $Spec$ is a function that maps each operation label $\ell$ into a set of elements, while each of them is a operation context $(O,<,\mathit{arb})$ for some operation $o$ with $lab(o) = \ell$. A specification is deterministic, if there does not exists query method $m$ and tuple $(O,<,\mathit{arb})$, such that $(O,<,\mathit{arb}) \in Spec(m(a) \Rightarrow b)$, $(O,<,\mathit{arb}) \in Spec(m(a') \Rightarrow b')$, and $a \neq a' \vee b \neq b'$. From now on, we consider only deterministic specifications.
 
 Given an annotated history $(O,\mathit{vis},\mathit{arb})$ and an operation $o \in O$, the operation context of $o$ is a obtained by a tuple $ctxt(o)=(O',<,\mathit{arb}')$, where $O'$ is the set of update operations in $\mathit{vis}^{-1}(o)$, $<$ is the projection of $\mathit{vis}$ over $O'$, and $\mathit{arb}'$ is the projection of $\mathit{arb}$ over update operations of $O' \cup \{ o \}$. Therefore, given an annotated history $(O,\mathit{vis},\mathit{arb})$ and $o_1,o_2 \in O$, if $\mathit{vis}^{-1}(o_1) = \mathit{vis}^{-1}(o_2)$, then $O_1 = O_2$ and $<_1 = <_2$, where $ctxt(o_1)=(O_1,<_1,\mathit{arb}_1)$ and $ctxt(o_2)=(O_2,<_2,\mathit{arb}_2)$. This comply with the commutativity intuition of CRDT algorithm.
 
