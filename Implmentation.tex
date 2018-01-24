@@ -5,7 +5,7 @@
 
 Let $\Sigma_{\mathtt{RD}}$ be the set of data of each replica, and $\mathbb{MSG}$ be the set of messages. Each message is of the form $(data,r_s,r_d)$ where $r_s \in \mathbb{R}$ is the identifier of replica that generates this message, and $r_d \in \mathbb{R}$ is the destination replica identifier of this message. 
 
-A CRDT implementation $imp$ is defined as a tuple $(f_M,f_{apl},init,f_{abO},f_{arb})$, where
+A CRDT implementation $imp$ is defined as a tuple $(f_M,f_{apl},d_{\mathit{init}},f_{o},f_{arb})$, where
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt} 
@@ -13,14 +13,14 @@ A CRDT implementation $imp$ is defined as a tuple $(f_M,f_{apl},init,f_{abO},f_{
 
 \item[-] $f_{apl}: \Sigma_{\mathtt{RD}} \times \mathbb{R} \times \mathbb{MSG} \rightarrow \Sigma_{\mathtt{RD}}$. $f_{apl}(d,r,msg) = d'$ means that, if the current replica data of replica $r$ is $d$ and we apply message $msg$, then we obtain replica data $d'$.
 
-\item[-] $init \in \Sigma_{\mathtt{RD}}$ is the initial replica data. 
+\item[-] $d_{\mathit{init}} \in \Sigma_{\mathtt{RD}}$ is the initial replica data. 
 
-\item[-] $f_{abO}: \Sigma_{\mathtt{RD}}^{\vert \mathbb{R} \vert} \times Pow(\mathbb{MSG}) \Rightarrow Pow(\Sigma_{abO})$, where $\Sigma_{abO}$ is a set of elements and each element represents an operation. Given replica data of each replica, $f_{abO}$ is used to obtain the operations known by implementation.
+\item[-] $f_{o}: \Sigma_{\mathtt{RD}}^{\vert \mathbb{R} \vert} \times Pow(\mathbb{MSG}) \Rightarrow Pow(\Sigma_o)$, where $\Sigma_o$ is a set of elements and each element represents an operation. Given replica data of each replica, $f_{o}$ is used to obtain the operations known by implementation.
 
-\item[-] $f_{arb}: \Sigma_{\mathtt{RD}}^{\vert \mathbb{R} \vert} \times Pow(\mathbb{MSG}) \Rightarrow \Sigma_{abO}^*$. Given replica data of each replica, $f_{arb}$ is used to obtain the arbitration relation.
+\item[-] $f_{arb}: \Sigma_{\mathtt{RD}}^{\vert \mathbb{R} \vert} \times Pow(\mathbb{MSG}) \Rightarrow \Sigma_o^*$. Given replica data of each replica, $f_{arb}$ is used to obtain the arbitration relation.
 \end{itemize} 
 
-\noindent {\bf Example 5. OR-set algorithms of \cite{Shapiro:2011}}: The OR-set algorithms of \cite{Shapiro:2011} is defined as a tuple $(f_M,f_{apl},init,f_{abO},f_{arb})$, where 
+\noindent {\bf Example 5. OR-set algorithms of \cite{Shapiro:2011}}: The OR-set algorithms of \cite{Shapiro:2011} is defined as a tuple $(f_M,f_{apl},d_{\mathit{init}},f_{abO},f_{arb})$, where
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
@@ -34,46 +34,39 @@ A CRDT implementation $imp$ is defined as a tuple $(f_M,f_{apl},init,f_{abO},f_{
 
 \item[-] $f_{apl}((S,ctr),r,((a,S'),\_,r)) = (S \setminus \{ (a,id) \vert id \in S' \},ctr)$. 
 
-\item[-] $init = (\emptyset,0)$. 
+\item[-] $d_{\mathit{init}} = (\emptyset,0)$. 
 
-\item[-] $f_{abO}( d_1,\ldots,d_k,msgs ) = \{ (a,id) \in d_1,\ldots,d_k \} \cup \{ (a,S) \in msgs \}$. 
+\item[-] $f_o( d_1,\ldots,d_k,msgs ) = \{ (a,id) \in d_1,\ldots,d_k,$ or $id \in S$ for some $(a,S) \in msgs \} \cup \{ (a,S) \in msgs \}$. 
+
+\item[-] $f_{arb}$ maps each element in its domain into $\emptyset$. 
 \end{itemize} 
 
 
-
-
-The semantics of $imp$ is given as an LTS $\llbracket imp \rrbracket = (Q,\Sigma,\rightarrow,q_0)$ \footnote{{\color {red} For some implementations, more information may be used as tuple of state of $\llbracket imp \rrbracket$. Such information are only for make transition labels clear and do not influence execution. For example, for distributed list algorithm, the order of all known items may be used as a argument. Similarly, we may add more information into transition labels when it is necessary.}}, where
+The semantics of $imp$ is given as an LTS $Sem(imp) = (Q,\Sigma,\rightarrow,q_0)$, where 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] Each state $(repD,msgs,<_{sd}) \in Q$ contains three tuples. Here $repD: RId \rightarrow RepD$ is the replica data of each replica, $msgs \subseteq Msg$ is the set of messages, $<_{sd} \subseteq Meg \times Msg$ is used to record the order of messages. $<_{sd}$ only relates messages with the same source replica identifier and with the same destination replica identifier.
+\item[-] Each state $(data,msgs) \in Q$ contains two tuples: $data: \mathbb{R} \rightarrow \Sigma_{\mathtt{RD}}$ is the replica data for each replica, $msgs \subseteq \mathbb{MSG}$ is the set of messages. 
 
-Let $msgs(r,r') = \{ (\_,r,r') \in msgs \}$ denote the set of messages in $msgs$ whose source replica is $r$ and whose destination replica is $r'$. $\forall r,r' \in RId$, $<_{sd}$ is a irreflexive and acyclic total order on $msgs(r,r')$. %We also require that the transitive closure of $<_{ro}$ on operations being acyclic.
-The reason we introduce $<_{sd}$ into state is for defining simulation relation in the next section.
-
-\item[-] $\Sigma = \{ m(a,b,r), apply(msg) \vert m \in M, a,b \in D, r \in RId, msg \in Msg \}$ is the set of transition labels.
+\item[-] $\Sigma = \{ (m,a,b,r,\mathit{arb}), apply(msg) \vert m \in \mathbb{M}, a,b \in \mathbb{D}, r \in \mathbb{R}, msg \in \mathbb{MSG}, \mathit{arb} \in \Sigma_o^* \}$ is the set of transition labels.
 
 \item[-] $\rightarrow$ is the transition relation and is defined as follows:
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] Doing an operation:
+    \item[-] %Doing an operation:
 
-    $\begin{array}{l c} \bigfrac{ Mth(m,a,repD[r]) = (b,d,msgs'), msg \cap msgs' = \emptyset} {(repD,msgs,<_{sd}) {\xrightarrow{m(a,b,r)}} (repD[r:d],msgs \cup msgs',<_{sd} \odot msgs')} \end{array}$
+    $\begin{array}{l c} \bigfrac{ f_M(data[r],m,a,r) = (d,b,msgs'), msg \cap msgs' = \emptyset, f_{arb}(data[r:d],msgs \cup msgs') = \mathit{arb}} {(data,msgs) {\xrightarrow{(m,a,b,r,\mathit{arb})}} (data[r:d],msgs \cup msgs')} \end{array}$
 
-    Here $<_{sd} \odot msgs'$ is obtained from $<_{sd}$ by adding  $(m_1,m_2)$, when $m_1 \in msgs$, $m_2 \in msgs'$, the souce replica of $m_1$ is the same as that of $m_2$, and the desitination replica of $m_1$ is the same as that of $m_2$. {\color {red} We also require that $msg \cap msgs' = \emptyset$. This implies that no duplicate messages will be generated.}
+    \item[-] %Applying a message:
 
-    Recall that, if $m(a,b)$ is a query operation, then $msgs' = \emptyset$.
-
-    \item[-] Applying a message:
-
-    $\begin{array}{l c} \bigfrac{ m = (\_,\_,r) \in msgs,Apl(repD[r],m) = d } {(repD,msgs,<_{sd}) {\xrightarrow{apply(m)}} (repD[r:d],msgs - \{ m \},<_{sd}-m )} \end{array}$
+    $\begin{array}{l c} \bigfrac{ m = (\_,\_,r) \in msgs,f_{apl}(data[r],r,m) = d } {(data,msgs,<_{sd}) {\xrightarrow{apply(m)}} (data[r:d],msgs - \{ m \},<_{sd}-m )} \end{array}$
     \end{itemize}
 
-\item[-] $q_0$ is the initial state, which maps each replica identifier into $(InitD,\emptyset)$.
-\end{itemize}
+\item[-] $q_0$ is the initial state, which maps each replica identifier into $(d_{\mathit{init}},\emptyset)$. 
+\end{itemize} 
 
-We say that an execution of $\llbracket imp \rrbracket$ satisfies causal delivery, for each pair of update operations $(o_1,o_2)$, if $o_1 <_{hb} o_2$, let $(dat_1,r_1,\_)$ and $(dat_2,r_2,\_)$ be the message generated by $o_1$ and $o_2$, then for each replica $r$, the applying of $(dat_1,r_1,r)$ occurs before $(dat_2,r_2,r)$. The semantics of $imp$ with causal delivery is given as an LTS $\llbracket imp \rrbracket_{cd} = (Q_{cd},\Sigma,\rightarrow_{cd},q_{cd0})$, where
+An trace of implementation satisfies causal-delivery, if given $o_1 <_{\mathit{hb}} o_2$, then we can apply message generated by $o_2$ on a replica, if the message generated by $o_1$ has already been applied on this replica. The semantics of $imp$ with causal delivery is given as an LTS $OS(imp)_{\mathit{cd}} = (Q_{\mathit{cd}},\Sigma,\rightarrow_{\mathit{cd}},q_0)$, where
 
 \begin {itemize}
 \setlength{\itemsep}{0.5pt}
@@ -170,7 +163,7 @@ A CRDT implementation $imp$ is defined as a tuple $(Mth,Apl,Pred,InitD)$, where
 
 \item[-] $Apl: \mathbb{RD} \times \mathbb{MSG} \rightarrow \mathbb{RD}$. $Apl(d,msg) = d'$ means that, if the current replica data is $d$ and we apply message $msg$, then we obtain replica data $d'$.
 
-\item[-] $Pred: (\mathbb{M} \times \mathbb{D} \times \mathbb{RD} \rightarrow \{ \textit{true},\textit{false} \}) \cup (\mathbb{RD} \times \mathbb{MSG} \rightarrow \{ \textit{true},\textit{false} \})$ is used to check whether a method can proceed, or whether a message can be applied.
+\item[-] $Pred: (\mathbb{M} \times \mathbb{D} \times \mathbb{RD} \rightarrow \{ \mathit{true},\mathit{false} \}) \cup (\mathbb{RD} \times \mathbb{MSG} \rightarrow \{ \mathit{true},\mathit{false} \})$ is used to check whether a method can proceed, or whether a message can be applied.
 
 \item[-] $InitD \in \mathbb{RD}$ is the initial replica data.
 \end{itemize}
