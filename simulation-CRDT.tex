@@ -1,67 +1,86 @@
 %!TEX root = draft.tex
 
 \section{Simulation Relation for CRDT Implementations}
-\label{sec:simulation relation for CRDT implementations} 
+\label{sec:simulation relation for CRDT implementations}
 
 
 \subsection{Collection Specification without Causal Delivery}
-\label{subsec:collection specification without calusal delivery} 
+\label{subsec:collection specification without calusal delivery}
 
-%Given a succinct reference implementation $SRImp(Spec) = (Q_s,\Sigma_s,q_0^s,\rightarrow_s)$, and implementation $imp = (f_M,f_{apl},d_{\mathit{init}},f_{o},f_{arb})$ and its semantics $Sem(imp) = (Q_{\mathit{imp}},$ $\Sigma_{\mathit{imp}},\rightarrow_{\mathit{imp}},q_{\mathit{imp}}^0)$, a relation $R_{\mathit{sim}}$ is defined as follows: for $q_{\mathit{imp}} = (data,msgs) \in Q_{\mathit{imp}}$ and $q_s = (O_s,\mathit{ro}_s,\mathit{del}_s,\mathit{arb}_s) \in Q_s$, $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, if: Let $O_{\mathit{imp}} = f_{o}(data,msgs)$, 
+%Given a succinct reference implementation $SRImp(Spec) = (Q_s,\Sigma_s,q_0^s,\rightarrow_s)$, and implementation $imp = (f_M,f_{apl},d_{\mathit{init}},f_{o},f_{arb})$ and its semantics $Sem(imp) = (Q_{\mathit{imp}},$ $\Sigma_{\mathit{imp}},\rightarrow_{\mathit{imp}},q_{\mathit{imp}}^0)$, a relation $R_{\mathit{sim}}$ is defined as follows: for $q_{\mathit{imp}} = (data,msgs) \in Q_{\mathit{imp}}$ and $q_s = (O_s,\mathit{ro}_s,\mathit{del}_s,\mathit{arb}_s) \in Q_s$, $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, if: Let $O_{\mathit{imp}} = f_{o}(data,msgs)$,
 
-Given a state $q_{\mathit{imp}}$ of implementation and a state $q_s$ of specification, $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, if 
+Given a state $q_{\mathit{imp}}$ of implementation and a state $q_s$ of specification, $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, if
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $correct(q_{\mathit{imp}})$ and $correct(q_s)$ holds, while $correct$ is an inductive invariants. 
+\item[-] $correct(q_{\mathit{imp}})$ and $correct(q_s)$ holds, while $correct$ is an inductive invariants.
 
-\item[-] There exists a map $f$ between $op(q_{\mathit{imp}})$ and $op(q_s)$. 
+\item[-] There exists a map $f$ between $op(q_{\mathit{imp}})$ and $op(q_s)$.
 
-\item[-] $f(op(q_{\mathit{imp}})) \subseteq op(q_s)$. 
+\item[-] $f(op(q_{\mathit{imp}})) \subseteq op(q_s)$.
 
-\item[-] $f(arb(q_i))$ is a sub-sequence of $arb(q_s)$. 
+\item[-] $f(arb(q_i))$ is a sub-sequence of $arb(q_s)$.
 
 \item[-] $P_{\textit{redt}}(q_{\mathit{imp}},o)$, if and only if in $q_s$, $f(o)$ only occur in $arb(q_s)$. 
 
-\item[-] For non-redundant $o$, $(o,r) \in msgs$, if and only if $f(o) \notin visTo(q_s,r)$. 
+\item[-] For non-redundant operations, a condition of $f$ maps which REMOVE to be the corresponding REMOVE of which ADD. 
 
-\item[-] For non-redundant $o$, there are predicate about ADD and corresponding REMOVE. 
-\end{itemize} 
+\item[-] For non-redundant $o$, $(o,r) \in msgs$, if and only if $f(o) \notin visTo(q_s,r)$.
 
-Let us take the OR-set implementation of \cite{Shapiro:2011} as example. 
+\item[-] When $q_{\mathit{imp}}$ is in certain form, an ADD operation is seen to replica $r$, and there exists one of its corresponding REMOVE seen to replica $r$. 
+\end{itemize}
+
+Let us take the OR-set implementation of \cite{Shapiro:2011} as example.
 
 $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, if
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $q_{\mathit{imp}}$ is correct, if 
-    
+\item[-] $q_{\mathit{imp}}$ is correct, if
+
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] For each replica $r$, $E(r) \cap T(r) = \emptyset$. 
-    
-    \item[-] For each $(a,id)$ in message, it has already in $E \cup T$. 
-    
-    \item[-] The counter is correct. 
-    
-    \item[-] If $(a,S,r)$ is in message, then for each $id \in S$, $(a,id) \notin E(r) \wedge (a,id,\_,r) \notin msgs$. 
-    \end{itemize} 
+    \item[-] For each replica $r$, $E(r) \cap T(r) = \emptyset$.
 
-\item[-] $q_s$ is always correct. 
+    \item[-] For each $(a,id)$ in message, it has already in $E \cup T$.
 
-\item[-] $f$ maps $(a,id)$ into some $add(a)$ operation, and maps $(a,S)$ into some $rem(a)$ operation. 
+    \item[-] The counter is correct.
 
-\item[-] $P_{\textit{redt}}(q_{\mathit{imp}},(a,id))$ holds, if for each replica $r$, $(a,id) \in T(r)$.  
+    \item[-] If $(a,S,r)$ is in message, then for each $id \in S$, $(a,id) \notin E(r) \wedge (a,id,\_,r) \notin msgs$.
+    \end{itemize}
 
-\item[-] $(a,id) \in E(r)$, if and only if $f((a,id))$ is seen by $r$ and no of its corresponding remove is seen by replica $r$. 
+\item[-] $q_s$ is always correct.
+
+\item[-] $f$ maps $(a,id)$ into some $add(a)$ operation, and maps $(a,S,r)$ into some $rem(a)$ operation.
+
+\item[-] $P_{\textit{redt}}(q_{\mathit{imp}},(a,id))$ holds, if for each replica $r$, $(a,id) \in T(r)$. 
+
+\item[-] Given $x=(a,S,r)$: for $id \in S$, $f(x) \in Minus(q_s,f(a,id))$; while for $id \notin S$, $f(x) \notin Minus(q_s,f(a,id))$.
+
+\item[-] $(a,id) \in E(r)$, if and only if $f((a,id))$ is seen by $r$ and no of its corresponding remove is seen by replica $r$.
 
 \item[-] $(a,id) \in T(r)$, if some corresponding remove of $f((a,id))$ is seen by $r$. 
-
-\item[-] Given $x=(a,S,r)$: for $id \in S$, $f(x) \in Minus(q_s,f(a,id))$; while for $id \notin S$, $f(x) \notin Minus(q_s,f(a,id))$. 
-\end{itemize} 
+\end{itemize}
 
 
+The $f_s$-simulation relation is defined as follows: If $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}} \wedge q_{\mathit{imp}} {\xrightarrow{\alpha}}_{\mathit{imp}} q'_{\mathit{imp}}$ and let $f$ be the map between $q_{\mathit{imp}}$ and $q_s$, then, let $f_s$ be defined as follows:
 
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] If 
+\end{itemize}
+
+
+
+
+Relation $R \subseteq Q_1 \times Q_2$ is a $f_s$-simulation relation, if whenever $(q_1,q_2) \in R \wedge q_1 {\xrightarrow{\alpha}}_1 q'_1$,
+%A $f_s$-simulation relation $R \subseteq Q_A \times Q_B$ is a relation that satisfies: If $(q_a,q_b) \in R \wedge q_a {\xrightarrow{\alpha}}_A q'_a$ for some $q_a$, then
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] If $f_s(q_1,q_2,\alpha) \neq \epsilon$, then $q_2 {\xrightarrow{f_s(q_1,q_2,\alpha)}}_1 q'_2 \wedge (q'_1,q'_2) \in R$.
+
+\item[-] If $f_s(q_1,q_2,\alpha) = \epsilon$, then $(q'_1,q_2) \in R$.
+\end{itemize}
 
 
 
