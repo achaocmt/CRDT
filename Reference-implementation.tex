@@ -7,7 +7,7 @@
 
 An labeled transition system (LTS, for short) is a tuple $A = (Q,\Sigma,\rightarrow,q_0)$, where $Q$ is a set of states, $\Sigma$ is an alphabet of transition labels, $\rightarrow \subseteq Q \times \Sigma \times Q$ is a transition relation and $q_0$ is the initial state. A execution of $A$ is a sequences of transitions and states starting from the initial state $q_0$, and a trace is a sequence of transition labels of an execution. We say that $A$ is deterministic, if for each state $q$ and each transition label $\alpha$, $q$ has at most one $\rightarrow$ successor with transition label $\alpha$.
 
-Given a specification $Spec$, its reference implementation is given as an LTS $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow)$, where
+Given a specification $Spec$, its reference implementation is given as an LTS $RImp(Spec) = (Q,\Sigma,\rightarrow,q_0)$, where
 
 %\todo{Again, what is the purpose of $\mathit{li}$ and $correct$ ? The implementation should be a transition system like in the first section. No additional elements in the tuples.}
 
@@ -15,22 +15,23 @@ Given a specification $Spec$, its reference implementation is given as an LTS $R
 \setlength{\itemsep}{0.5pt}
 \item[-] Each state of $Q$ records the set of updates already executed, when they were delivered to the different replicas, and the arbitration order.
 
-    Each state $(O,\mathit{ro},\mathit{del},\mathit{arb}) \in Q$ contains four tuples: $O$ is a set of update operations where each operation in $O$ has unique operation identifier; $\mathit{ro}$ is the replica order and $(O,\mathit{ro})$ a history; $\mathit{del} \subseteq (O \times O) \cup (O \times \mathbb{R})$ is a relation that records operation delivery and is called deliver order. $(o_1,o_2) \in \mathit{del}$ represents that the effect of $o_1$ is delivered to the replica of $o_2$ before $o_2$ happens, while $(o,r) \in \mathit{del}$ represents that the effect of $o$ is delivered to replica $r$ after the time point of the last operation of replica $r$. we require $\mathit{del}$ to only relate operations with different replica identifier; $\mathit{arb} \subseteq O \times O$ is the arbitration order.
+    Each state $(O,\mathit{ro},\mathit{del},\mathit{arb}) \in Q$ contains four tuples: $O$ is a set of update operations where each operation in $O$ has unique operation identifier; $\mathit{ro}$ is the replica order and $(O,\mathit{ro})$ a history; $\mathit{del} \subseteq (O \times O) \cup (O \times \mathbb{R})$ is a relation that records operation delivery and is called deliver order. {\color {red}Assume $o_2$ happens in replica $r_2$. $(o_1,o_2) \in \mathit{del}$ represents that the time point of delivering the effect of $o_1$ to replica $r_2$ is after all operations of replica $r_2$ that happens earlier than $o_2$, and before the time point  $o_2$ happens}. $(o,r) \in \mathit{del}$ represents that the effect of $o$ is delivered to replica $r$ after the time point of the last operation of replica $r$. we require $\mathit{del}$ to only relate operations with different replica identifier; $\mathit{arb} \subseteq O \times O$ is the arbitration order. 
 %\todo{$vis$ shouldn't be in the state.}
 
-%\item[-] $\Sigma$ contains two kinds of transition labels: The first is operation labels tagged with replica identifier and arbitration order, in the form $(m,a,b,r,\mathit{arb})$, where $m \in \mathbb{M}, a,b \in \mathbb{D}, r \in \mathbb{R}$, and $arb \subseteq O \times O$; The second kind is events representing the points in time where operations are delivered, in the form $addDel(o,r)$, where $o \in \mathbb{O}, r \in \mathbb{R}$. 
+%\item[-] $\Sigma$ contains two kinds of transition labels: The first is operation labels tagged with replica identifier and arbitration order, in the form $(m,a,b,r,\mathit{arb})$, where $m \in \mathbb{M}, a,b \in \mathbb{D}, r \in \mathbb{R}$, and $arb \subseteq O \times O$; The second kind is events representing the points in time where operations are delivered, in the form $addDel(o,r)$, where $o \in \mathbb{O}, r \in \mathbb{R}$.
 
-{\color {red}
-\item[-] $\Sigma$ contains two kinds of transition labels: The first is operation labels tagged with replica identifier and modification of arbitration order, in the form $(m,a,b,r,ind)$, where $m \in \mathbb{M}, a,b \in \mathbb{D}, r \in \mathbb{R}$, and $ind \in \mathbb{N}$. Here $ind = 0$ means that the arbitration order does not change, while $ind >0$ means that the arbitration order is changed by inserting the newly generated operations into $ind$-th position; The second kind is events representing the points in time where operations are delivered, in the form $addDel(o,r)$, where $o \in \mathbb{O}, r \in \mathbb{R}$.
-} 
+
+%\item[-] $\Sigma$ contains two kinds of transition labels: The first is operation labels tagged with replica identifier and modification of arbitration order, in the form $(m,a,b,r,ind)$, where $m \in \mathbb{M}, a,b \in \mathbb{D}, r \in \mathbb{R}$, and $ind \in \mathbb{N}$. Here $ind = 0$ means that the arbitration order does not change, while $ind >0$ means that the arbitration order is changed by inserting the newly generated operations into $ind$-th position; The second kind is events representing the points in time where operations are delivered, in the form $addDel(o,r)$, where $o \in \mathbb{O}, r \in \mathbb{R}$.
+
+\item[-] $\Sigma$ contains two kinds of transition labels: The first is operation labels tagged with replica identifier and arbitration order, in the form $(m,a,b,r,\mathit{arb})$, where $m \in \mathbb{M}, a,b \in \mathbb{D}, r \in \mathbb{R}$, and $\mathit{arb}$ is the arbitration order. The second kind is events representing the points in time where operations are delivered, in the form $addDel(o,r)$, where $o \in \mathbb{O}, r \in \mathbb{R}$. 
 
 \item[-] $\rightarrow \subseteq Q \times \Sigma \times Q$ is the transition relation. The transition rules of $\rightarrow$ can be found in \figurename~\ref{fig:transition rules of RImpSpec}, and related notions are defined as follows:
 
 
     \begin {itemize}
-    \item[-] Let $\mathit{vis} = \mathit{del} \cdot \mathit{ro}$ be the visibility relation. We further require $\mathit{vis}$ to be acyclic and irreflexive, and $\mathit{vis}^{-1}$ to be finite. Let $visTo(O,r,\mathit{vis}) = \{ vis^{-1}(o') \vert o'=(\_,r,\_) \in O \} \cup (vis^{-1}(r))$ be the set of operations that are visible to replica $r$ or some operations of replica $r$.
+    \item[-] Let $\mathit{vis} = \mathit{del} \cdot \mathit{ro}$ be the visibility relation. We further require $\mathit{vis}$ to be acyclic and irreflexive, and $\mathit{vis}^{-1}$ to be finite. Let $visTo(O,r,\mathit{vis}) = \{ vis^{-1}(o') \vert o'=(\_,r,\_) \in O \} \cup (vis^{-1}(r))$ be the set of operations that are visible to newest time point of replica $r$ or some operations of replica $r$.
 
-    \item[-] Let function $f_{\mathit{ctxt}}$ be a function that generate possible operation context when $o$ is done: Given $q = (O,\mathit{ro},\mathit{del},\mathit{arb}) \in Q$ and $o=(\_,r,\_) \notin O$, $f_{\mathit{ctxt}}(q,o)$ is a set of elements, while each of them is a operation context of $o$ in an annotated history $(O',\mathit{vis}',\mathit{arb}')$, where
+    \item[-] Let function $f_{\mathit{ctxt}}$ be a function that generate possible operation context when $o$ is done on $q$: Given $q = (O,\mathit{ro},\mathit{del},\mathit{arb}) \in Q$ and $o=(\_,r,\_) \notin O$, $f_{\mathit{ctxt}}(q,o)$ is a set of elements, while each of them is a operation context of $o$ in an annotated history $(O',\mathit{vis}',\mathit{arb}')$, where
 
         \begin{itemize}
         \setlength{\itemsep}{0.5pt}
@@ -38,16 +39,16 @@ Given a specification $Spec$, its reference implementation is given as an LTS $R
 
         \item[-] $\mathit{vis'} = \mathit{vis} \uparrow_{(O' \times O')} \cup \{ (o',o) \vert (o',r) \in \mathit{vis} \}$.
 
-        %\item[-] If $o$ is an update operation, then $\mathit{arb}'$ is obtained from $\mathit{arb} \uparrow_{(O' \times O')}$ by possibly adding relations between $O'$ and $\{ o \}$; Else, $\mathit{arb}' = \mathit{arb} \uparrow_{(O' \times O')}$. 
-        \item[-] {\color {red} $\mathit{arb}'$ is obtained from $\mathit{arb} \uparrow_{(O' \times O')}$ by possibly insert update operation $o$ into some place.}
+        %\item[-] If $o$ is an update operation, then $\mathit{arb}'$ is obtained from $\mathit{arb} \uparrow_{(O' \times O')}$ by possibly adding relations between $O'$ and $\{ o \}$; Else, $\mathit{arb}' = \mathit{arb} \uparrow_{(O' \times O')}$.
+        \item[-] $\mathit{arb}'$ is obtained from $\mathit{arb} \uparrow_{(O' \times O')}$ by possibly insert update operation $o$ into some place.
         \end{itemize}
 
-    %\item[-] $f_{\mathit{ar}}(\mathit{arb},o)$ returns an arbitration order that is obtained from $\mathit{arb}$ by possibly adding relations between $O$ and $\{ o \}$. 
-    \item[-] {\color {red}$f_{\mathit{ar}}(\mathit{arb},o)$ returns an arbitration order that is obtained from $\mathit{arb}$ by possibly insert $o$ into some place.}
+    %\item[-] $f_{\mathit{ar}}(\mathit{arb},o)$ returns an arbitration order that is obtained from $\mathit{arb}$ by possibly adding relations between $O$ and $\{ o \}$.
+    \item[-] $f_{\mathit{ar}}(\mathit{arb},o)$ returns an arbitration order that is obtained from $\mathit{arb}$ by possibly insert update $o$ into some place.
 
-    \item[-] Let $ro \oplus o = ro \cup \{ (o',o) \vert o' = (\_,r,\_) \in O \}$, and $del \oplus o$ is obtained from $del$ by transforming each $(o',r)$ into $(o',o)$. 
-    
-    \item[-] $pos(l,a)$ returns the position of $a$ in list $l$. 
+    \item[-] Let $ro \oplus o = ro \cup \{ (o',o) \vert o' = (\_,r,\_) \in O \}$, and $del \oplus o$ is obtained from $del$ by transforming each $(o',r)$ into $(o',o)$.
+
+    %\item[-] $pos(l,a)$ returns the position of $a$ in list $l$.
     \end{itemize}
 
 \item[-] $q_0=(\emptyset,\emptyset,\emptyset,\emptyset)$ is the initial state.
@@ -69,13 +70,13 @@ Given a specification $Spec$, its reference implementation is given as an LTS $R
 %{ (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,\mathit{arb})}} (O,\mathit{ro},\mathit{del},\mathit{arb}) } {\mathit{Query}}
 %\end{array}
 %\]
-{\color {red}
+
 \[
 \begin{array}{l c}
-\bigfrac{ o=(\ell,r,\_) \notin O, \exists x, x \in f_{\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}),o) \wedge x \in Spec(\ell) }
-{ (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,0)}} (O,\mathit{ro},\mathit{del},\mathit{arb}) } %{\mathit{Query}}
+\bigfrac{ m \in \mathbb{Q}, \ell = m(a) \Rightarrow b, o=(\ell,r,\_) \notin O, \exists x, x \in f_{\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}),o) \wedge x \in Spec(\ell) }
+{ (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,\mathit{arb})}} (O,\mathit{ro},\mathit{del},\mathit{arb}) } %{\mathit{Query}}
 \end{array}
-\]
+\] 
 
 
 %\[
@@ -87,26 +88,37 @@ Given a specification $Spec$, its reference implementation is given as an LTS $R
 
 \[
 \begin{array}{l c}
-\bigfrac{ o = (\ell,r,\_) \notin O, \exists x, x = (O',\_,f_{\mathit{ar}}(\mathit{arb},o) \uparrow_{O'} ) \in f_{\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}),o) \wedge x \in Spec(\ell) }
-{ (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,pos( f_{\mathit{ar}}(\mathit{arb},o) ,o))}} (O \cup \{ o \},\mathit{ro} \oplus o ,\mathit{del} \oplus o,f_{\mathit{ar}}(\mathit{arb},o)) } %{\mathit{Update}}
+\bigfrac{ m \in \mathbb{Q}, \ell = m(a) \Rightarrow b, o = (\ell,r,\_) \notin O, \exists x, x = (O',\_,f_{\mathit{ar}}(\mathit{arb},o) \uparrow_{(O' \times O')} ) \in f_{\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}),o) \wedge x \in Spec(\ell) }
+{ (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,f_{\mathit{ar}}(\mathit{arb},o))}} (O \cup \{ o \},\mathit{ro} \oplus o ,\mathit{del} \oplus o,f_{\mathit{ar}}(\mathit{arb},o)) } %{\mathit{Update}}
 \end{array}
 \]
-}
+
 \caption{Transition rules of $\rightarrow$}
 \label{fig:transition rules of RImpSpec}
 \end{figure}
 
-%\FloatBarrier
-
-We further require that when a new operation is generated, its candidate of operation identifier is unique. Therefore, it is obvious that $RImp(Spec)$ is deterministic. Let $\llbracket RImp(Spec) \rrbracket$ be the set of traces of $RImp(Spec)$. Given an trace $ t= \alpha_1 \cdots$, the annotated history  $anHis(t) = (O,\mathit{vis},\mathit{arb})$ it admits is generated as follows: Let $e = q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ be the execution of $t$,
+%\FloatBarrier 
+{\color {red}
+\noindent {\bf Example 3}: 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $O$ is the operations generated for transition rules during $t$.
+\item[-] For OR-set, the arbitration order is fixed to be $\emptyset$. 
+
+\item[-] For distributed list: In $f_{\mathit{ctxt}}$, $\mathit{arb}'$ is obtained from $\mathit{arb} \uparrow_{(O' \times O')}$ by inserting $o$ into some place if $o$ is a $add$ operation, or unchanged otherwise. $f_{\mathit{ar}}(\mathit{arb},o)$ returns an arbitration order that is obtained from $\mathit{arb}$ by insert $o$ into some place if $o$ is a $add$ operation, or unchanged otherwise. 
+\end{itemize} 
+}
+
+
+We further require that when a new operation is generated, its candidate operation identifier is unique. Therefore, it is obvious that $RImp(Spec)$ is deterministic. Let $\llbracket RImp(Spec) \rrbracket$ be the set of traces of $RImp(Spec)$. Given an trace $ t= \alpha_1 \cdots$, the annotated history  $anHis(t) = (O,\mathit{vis},\mathit{arb})$ it admits is generated as follows: Let $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ be the execution of $t$,
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $O$ is the operations generated by transition rules during $t$.
 
 \item[-] $(o_1,o_2) \in \mathit{vis}$, if one of the following cases holds: (1) $o_1$ is delivered into replica of $o_2$ before $o_2$ happens, (2) $o_1$ and $o_2$ are of same replica and $o_1$ happens earlier than $o_2$.
 
-\item[-] $<_{\mathit{arb}}$ is the union of arbitration order of each $q_i$.
+\item[-] $\mathit{arb}$ is the union of arbitration order of each $q_i$.
 \end{itemize}
 
 The following theorem states that the annotated history admitted by reference implementation are CRVC w.r.t $Spec$. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.

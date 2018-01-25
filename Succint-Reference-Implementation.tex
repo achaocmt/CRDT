@@ -7,21 +7,28 @@ $Spec$ is called collection, if
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] It contains two update methods, one is called ADD and the other is called REMOVE.
+\item[-] It contains two update methods, one is called $add$ and the other is called $rem$. 
 
-\item[-] Given a ADD operation $o_a \in O$ with $lab(o_a)= ADD(a)$, function $f_R(O,\mathit{vis},o_a) = \{ o_r \vert lab(o_r)=$REMOVE$(a),(o_a,o_r) \in \mathit{vis}$, $ \neg \exists o'_r, lab(o'_r) = $REMOVE$(a), (o_a,o'_r),(o'_r,o_r) \in \mathit{vis} \}$ is the set of corresponding REMOVE operations of $o_a$.
+\item[-] {\color {red}Given a $add$ operation $o_a \in O$ with $lab(o_a)= add(a)$, let $\mathit{FstRem}(O,\mathit{vis},o_a) = \{ o_r \vert lab(o_r)=rem(a),(o_a,o_r) \in \mathit{vis}$, $ \neg \exists o'_r, lab(o'_r) = rem(a), (o_a,o'_r),(o'_r,o_r) \in \mathit{vis} \}$ be the set of first visible matching remove of $o_a$. 
 
-\item[-] Let $RdtA(O,\mathit{vis})$ be the set of redundant ADD operations: $o_a \in Redt(O,\mathit{vis})$, if for each replica $r$, there exists $o_r \in f_R(O,\mathit{vis},o_a)$, such that $o_a$ and $o_r$ either happens on or delivered to replica $r$.
+}
 
-\item[-] Predicate $P_{frg}$ is used to check if a set $S$ of operations can be forgotten. Given $S \subseteq O$, $P_{frg}(O,\mathit{vis},S) = \mathit{true}$, if $S = S_a \cup S_r$, such that $S_a \subseteq RdtA(O,\mathit{vis})$, and $S_r = \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,\mathit{vis},o_a) \} \subseteq S_a \}$.
+%Given a $add$ operation $o_a \in O$ with $lab(o_a)= ADD(a)$, function $f_R(O,\mathit{vis},o_a) = \{ o_r \vert lab(o_r)=$REMOVE$(a),(o_a,o_r) \in \mathit{vis}$, $ \neg \exists o'_r, lab(o'_r) = $REMOVE$(a), (o_a,o'_r),(o'_r,o_r) \in \mathit{vis} \}$ is the set of corresponding REMOVE operations of $o_a$. 
+
+\item[-] Let $\mathit{RdtA}(O,\mathit{vis})$ be the set of redundant $add$ operations of $O$: $add$ operation $o_a$ is in $Redt(O,\mathit{vis})$, if for each replica $r$, there exists $o_r \in \mathit{FstRem}(O,\mathit{vis},o_a)$, such that $o_a$ and $o_r$ either happens on or delivered to replica $r$. 
+
+\item[-] {\color {red} Given an annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, let $\mathit{frg}(x,S)$ be a annotated history $(O',\mathit{vis}',\mathit{arb})$ obtained from $x$ by forgetting operations in $S$ when $S$ can be forgotten from $O$. $S$ can be forgotten from $O$, if $S$ is a union of $add$ operations $S_a$ and $rem$ operations $S_r$, such that $S_a \subseteq \mathit{RdtA}(O,\mathit{vis})$, and $S_r = \{ o_r \vert  \{ o_a \vert o_r \in \mathit{FstRem}(O,\mathit{vis},o_a) \} \subseteq S_a \}$. By forgetting $S$, we have $O' = O \setminus S$ and $\mathit{vis}' = \mathit{vis} \uparrow_{(O' \times O')}$. Here we permit $\mathit{arb}$ to contain more operations than $O$ in annotated history. %, and $\mathit{arb}' = \mathit{arb} \uparrow_{(O' \times O')}$.
+}
+
+%\item[-] Predicate $P_{frg}$ is used to check if a set $S$ of operations can be forgotten. Given $S \subseteq O$, $P_{frg}(O,\mathit{vis},S) = \mathit{true}$, if $S = S_a \cup S_r$, such that $S_a \subseteq RdtA(O,\mathit{vis})$, and $S_r = \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,\mathit{vis},o_a) \} \subseteq S_a \}$.
 
 %\item[-] Given an operation context $x = (O,<,\mathit{arb})$ of $o_1$ and $S \subseteq O$, let $forg(x,S)$ be a operation context $(O',<',\mathit{arb}')$ of $o_1$ obtained from $x$ by forgetting operations in $S$: $O' = O \setminus S$, $<' = < \uparrow_{(O' \times O')}$, and $\mathit{arb}'$ is obtained from $\mathit{arb}$ by projection on $O' \cup \{ o_1 \}$.
 
-\item[-] Given an annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, let $frg(x,S)$ be a annotated history $(O',\mathit{vis}',\mathit{arb}')$ obtained from $x$ by forgetting operations in $S$: $O' = O \setminus S$, $\mathit{vis}' = \mathit{vis} \uparrow_{(O' \times O')}$, and $\mathit{arb}'$ is obtained from $\mathit{arb}$ by projection on $O'$.
+%\item[-] Given an annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, let $frg(x,S)$ be a annotated history $(O',\mathit{vis}',\mathit{arb}')$ obtained from $x$ by forgetting operations in $S$: $O' = O \setminus S$, $\mathit{vis}' = \mathit{vis} \uparrow_{(O' \times O')}$, and $\mathit{arb}'$ is obtained from $\mathit{arb}$ by projection on $O'$.
 
 %\item[-] An extension of a operation context $(O,<,\mathit{arb})$ of $o_1$ is another operation context $(O',<',\mathit{arb}')$ of $o_1$, such that $O \subseteq O'$, $\mathit{arb}$ is the projection of $\mathit{arb}'$ over $O \cup \{ o_1 \}$ , $< \subseteq <'$, and $<' \cap ( (O'-O) \times O ) = \emptyset$.
 
-\item[-] An extension of an annotated history $(O,\mathit{vis},\mathit{arb})$ is another annotated history $(O',\mathit{vis}',\mathit{arb}')$, such that $O \subseteq O'$, $\mathit{arb}$ is the projection of $\mathit{arb}'$ over $O$ , $\mathit{arb} \subseteq \mathit{arb}'$, $\mathit{arb}' \cap ( (O'-O) \times O ) = \emptyset \wedge \mathit{arb}' \cap ( O \times O ) = \mathit{vis}$.
+\item[-] An extension of an annotated history $(O,\mathit{vis},\mathit{arb})$ is another annotated history $(O',\mathit{vis}',\mathit{arb}')$, such that $O \subseteq O'$, $\mathit{arb}$ is the projection of $\mathit{arb}'$ over $O$ , $\mathit{vis} \uparrow_{(O \times O)} \subseteq \mathit{vis}' \uparrow_{(O' \times O')}$, $\mathit{vis}' \cap ( (O'-O) \times O ) = \emptyset \wedge \mathit{vis}' \cap ( O \times O ) = \mathit{vis}$.
 
 %\item[-] Let $Inv$ be a property that is satisfied by all states which are on executions of $RImp(Spec)$.
 
@@ -33,60 +40,66 @@ $Spec$ is called collection, if
 %    \item[-] If $f_R(O,<,S) \wedge forg((O,<,\mathit{arb}),S) = (O',<',\mathit{arb}') \wedge f_R(O',<',S') \wedge forg((O',<',\mathit{arb}'),S') = (O'',<'',\mathit{arb}'')$, then $f_R(O,<,S \cup S')$.
 %    \end{itemize}
 
+{\color {red}
 \item[-] Then, we require that,
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] For each annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, where $P_{frg}(O,\mathit{vis},S)$: For each operation $\ell$ and extension $x'$ of $x$, let $y'$ be the operation context of $x'$ and $o \in O$, and let $y''$ be the operation context of $frg(x',S)$ and $o$, then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$.
+    \item[-] For each annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, where $S$ can be forgotten from $O$: For each operation label $\ell$ and extension $x'$ of $x$, let $y'$ be the operation context of $x'$ and $o \in O$, and let $y''$ be the operation context of $frg(x',S)$ and $o$, then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$.
 
     %$x_1 \in Spec(\ell)$, if and only if $forg(x_1,S) \in Spec(\ell)$.
 
-    \item[-] If $P_{frg}(O,\mathit{vis},S) \wedge forg((O,\mathit{vis},\mathit{arb}),S) = (O',\mathit{vis}',\mathit{arb}') \wedge P_{frg}(O',\mathit{vis}',S') \wedge forg((O',\mathit{vis}',\mathit{arb}'),S') = (O'',\mathit{vis}'',\mathit{arb}'')$, then $P_{frg}(O,\mathit{vis},S \cup S')$.
+    %\item[-] If $P_{frg}(O,\mathit{vis},S) \wedge forg((O,\mathit{vis},\mathit{arb}),S) = (O',\mathit{vis}',\mathit{arb}') \wedge P_{frg}(O',\mathit{vis}',S') \wedge forg((O',\mathit{vis}',\mathit{arb}'),S') = (O'',\mathit{vis}'',\mathit{arb}'')$, then $P_{frg}(O,\mathit{vis},S \cup S')$. 
+    \item[-] If $\mathit{frg}((O,\mathit{vis},\mathit{arb}),S) = (O',\mathit{vis}',\mathit{arb}') \wedge \mathit{frg}((O',\mathit{vis}',\mathit{arb}'),S') = (O'',\mathit{vis}'',\mathit{arb}'')$, then $\mathit{frg}((O,\mathit{vis},\mathit{arb},S \cup S') = (O'',\mathit{vis}'',\mathit{arb}'')$. 
     \end{itemize}
+}
 \end{itemize}
+ 
 
-Similarly, we can forget operations $S$ from a state $(O,\mathit{ro},\mathit{del},\mathit{vis})$ by deleting $S$ from $O$, $\mathit{ro}$ and $\mathit{del}$. Given a state $q = (O,\mathit{ro},\mathit{del},\mathit{vis})$, its succinct version $suct(q)$ is obtained from $q$ by forgetting $RdtA(O,\mathit{vis}) \cup \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,\mathit{vis},o_a) \} \subseteq RdtA(O,\mathit{vis}) \}$. Given a collection specification $Spec$, its succinct reference implementation is given as an LTS $SRImp(Spec) = (Q_s,\Sigma,q_0,\rightarrow_s)$, which can be obtained from $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow)$ as follows: %use the transition rules of $\rightarrow$, and after every step we remove the redundant operations. Formally,
+Similarly, we can forget operations $S$ from a state $(O,\mathit{ro},\mathit{del},\mathit{vis})$ by deleting $S$ from $O$, $\mathit{ro}$ and $\mathit{del}$. Given a state $q = (O,\mathit{ro},\mathit{del},\mathit{vis})$, its succinct version $suct(q)$ is obtained from $q$ by forgetting $\mathit{RdtA}(O,\mathit{vis}) \cup \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,\mathit{vis},o_a) \} \subseteq \mathit{RdtA}(O,\mathit{vis}) \}$. Given a collection specification $Spec$, its succinct reference implementation is given as an LTS $SRImp(Spec) = (Q_s,\Sigma,\rightarrow_s,q_0)$, which can be obtained from $RImp(Spec) = (Q,\Sigma,\rightarrow,q_0)$ as follows: 
 
-{\color {red}
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $Q_s$ is the set of $(O,\mathit{ro},\mathit{del},\mathit{arb})$ that does not contain redundant ADD operations. Here we permit $\mathit{arb}$ to contain more operations than $O$. 
-\item[-] $q_1 {\xrightarrow{\alpha}}_s q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{\alpha}} q_3 \wedge q_2 = suct(q_3)$. Here the transition rules of $\rightarrow$ does not need modification. 
- 
+\item[-] $Q_s$ is the set of $(O,\mathit{ro},\mathit{del},\mathit{arb})$ that does not contain redundant ADD operations. %Here we permit $\mathit{arb}$ to contain more operations than $O$.
+\item[-] $q_1 {\xrightarrow{\alpha}}_s q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{\alpha}} q_3 \wedge q_2 = suct(q_3)$. %Here $\rightarrow$ temporarily does not need modification.
+
 %\item[-] $q_1 {\xrightarrow{addDel(o,r)}}_s q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{addDel(o,r)}} q_3 \wedge q_2 = suct(q_3)$.
 
 %\item[-] $q_1 {\xrightarrow{(m,a,b,r,\mathit{arb})}}_s q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{(m,a,b,r,\mathit{arb}')}}_s q_3$, $q_2 = forg(q_3,S)$, and $\mathit{arb}' - S = \mathit{arb}$.
-\end{itemize}
-}
+\end{itemize} 
+{\color {red}Here in $RImp(Spec)$ we temporarily permit that in state $(O,\mathit{ro},\mathit{del},\mathit{arb})$, $\mathit{arb}$ may contain more operation than $O$. While the transition rules of $RImp(Spec)$ do not change.} 
+
 
 
 %Let $absT(RImp(Spec)) = \{ x \vert \exists t \in \llbracket RImp(Spec) \rrbracket, x = absT(t) \}$. Let $absT(CRImp(Spec)) = \{ x \vert \exists t \in \llbracket CRImp(Spec) \rrbracket, x = absT(t) \}$. The following lemma stats that $absT(CRImp(Spec)) \subseteq absT(RImp(Spec))$. It is obvious by definition.
 
-%The following theorem states that the annotated history of traces of $SRImp(Spec)$ are CRVC w.r.t $Spec$. Its obvious from the definition of annotated histories of traces of $SRImp(Spec)$ and from Theorem \ref{theorem:executions of reference implementation are SRV consistent}. 
+%The following theorem states that the annotated history of traces of $SRImp(Spec)$ are CRVC w.r.t $Spec$. Its obvious from the definition of annotated histories of traces of $SRImp(Spec)$ and from Theorem \ref{theorem:executions of reference implementation are SRV consistent}.
 
-Given an trace $t$ of $SRImp(Spec)$, its history $his(t) = (O,\mathit{ro})$, where $O$ is the set of operations generated, and $\mathit{ro}$ is the time order on same replica. Let $his(SRImp(Spec))$ be the set of histories of traces of $SRImp(Spec)$, and similarly we define $his(RImp(Spec))$. The following lemma states that $SRImp(Spec)$ and $RImp(Spec)$ have same set of histories. 
+Given a trace of $SRImp(Spec)$, its history is a tuple $(O,\mathit{ro})$, where $O$ is the set of operations generated, and $\mathit{ro}$ is the time order on same replica. Let $his(SRImp(Spec))$ be the set of histories of traces of $SRImp(Spec)$, and similarly we define $his(RImp(Spec))$. The following lemma states that $SRImp(Spec)$ and $RImp(Spec)$ have same set of histories.
 {\color {red}
 \begin{lemma}
 \label{lemma:the abstract trace of CRIMPSpec is a subset of the abstract trace of RIMPSpec}
-$his(RImp(Spec)) = his(SRImp(Spec))$. 
+$his(RImp(Spec)) = his(SRImp(Spec))$.
 \end{lemma}
 }
 
-\noindent {\bf Example 3. OR-set}: OR-set is a collection specification, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given an operation $o_a \in O$ with $lab(o_a) = add(a)$, $f_R(O,\mathit{vis},o_a) = Minus(O,\mathit{vis},o)$. The following lemma states that our definition of $f_R$ for OR-set satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
+\noindent {\bf Example 4. OR-set}: OR-set is a collection specification. %, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given an operation $o_a \in O$ with $lab(o_a) = add(a)$, $f_R(O,\mathit{vis},o_a) = Minus(O,\mathit{vis},o)$. 
+The following lemma states that our definition of $\mathit{FstRem}$ for OR-set satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
 \begin{lemma}
 \label{lemma:Minus for OR-set is correct}
-Our definition of $f_R$ for OR-set is correct.
+Our definition of $\mathit{FstRem}$ for OR-set is correct. 
 \end{lemma}
 
-\noindent {\bf Example 4. Distributed list}: Distributed list is a collection specification, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given an operation $o_a \in O$ with $lab(o_a)=add(a,pos)$, $f_R(O,\mathit{vis},o_a) = \{ rem(a) \in O \}$. The following lemma states that our definition of $f_R$ for OR-set satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
+\noindent {\bf Example 5. Distributed list}: Distributed list is a collection specification. %, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given an operation $o_a \in O$ with $lab(o_a)=add(a,pos)$, $f_R(O,\mathit{vis},o_a) = \{ rem(a) \in O \}$. 
+The following lemma states that our definition of $\mathit{FstRem}$ for distributed list satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
 \begin{lemma}
 \label{lemma:Minus for distributed list is correct}
-Our definition of $f_R$ for distributed list is correct.
+Our definition of $\mathit{FstRem}$ for distributed list is correct.
 \end{lemma}
 
 
-\noindent {\bf Causal-Delivery}: The succinct reference implementation of collection specification $Spec$ with causal delivery is given as an LTS $SRImp(Spec)_{\mathit{cd}} = (Q,\Sigma,q_0,\rightarrow_{\mathit{cd}})$. $CRImp(Spec)_{\mathit{cd}}$ can be obtained from $SRImp(Spec) = (Q,\Sigma,q_0,\rightarrow_s)$ by changing the $addDel$  transition rules as follows: $q_1 {\xrightarrow{addDel(o,r)}}_{cd} q_2$ if $q_1 {\xrightarrow{addDel(o,r)}}_s q_2 \wedge o$ is minimal w.r.t $<_{hb}$ among operations not visible to replica $r$ nor operation of replica $r$ in $q_1 \}$. Note that, we are not able to require causal-delivery for the redundant operations. However, by definition their delivery brings no difference.
+\noindent {\bf Causal-Delivery}: The succinct reference implementation of collection specification $Spec$ with causal delivery is given as an LTS $SRImp(Spec)_{\mathit{cd}} = (Q,\Sigma,\rightarrow_{\mathit{cd}},q_0)$. $CRImp(Spec)_{\mathit{cd}}$ can be obtained from $SRImp(Spec) = (Q,\Sigma,\rightarrow_s,q_0)$ by changing the $addDel$  transition rules as follows: $q_1 {\xrightarrow{addDel(o,r)}}_{cd} q_2$ if $q_1 {\xrightarrow{addDel(o,r)}}_s q_2 \wedge o$ is minimal w.r.t $<_{hb}$ among operations not visible to replica $r$ nor operation of replica $r$ in $q_1 \}$. Note that, we are not able to require causal-delivery for the redundant operations. However, by definition their delivery brings no difference.
 
 
 
