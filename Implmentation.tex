@@ -5,7 +5,7 @@
 
 Let $\mathbb{L}$ be the set of local state for a replica, and $\mathbb{MSG}$ be the set of messages. Each message is of the form $(d,r_s,r_d)$ where $r_s \in \mathbb{R}$ is the identifier of replica that generates this message, and $r_d \in \mathbb{R}$ is the destination replica identifier of this message.
 
-A CRDT implementation $imp$ is defined as a tuple {\color {red}$(\rightarrow_o,\rightarrow_m,d_0,\rightarrow_{\mathit{arb}})$, where 
+A CRDT implementation $imp$ is defined as a tuple {\color {red}$(\rightarrow_o,\rightarrow_m,d_0,\rightarrow_{\mathit{arb}}, \Sigma_e)$, where 
 %$(f_M,f_{apl},d_{\mathit{init}},f_{o},f_{arb})$, where
 
 \begin{itemize}
@@ -53,29 +53,33 @@ An trace of implementation satisfies causal-delivery, if given $o_1 <_{\mathit{h
 
 
 
-\noindent {\bf Example 6. OR-set algorithms of \cite{Shapiro:2011}}: The OR-set algorithms of \cite{Shapiro:2011} is defined as a tuple $(f_M,f_{apl},d_{\mathit{init}},f_{abO},f_{arb})$, where
+\noindent {\bf Example 6. OR-set algorithms of \cite{Shapiro:2011}}: The OR-set algorithms of \cite{Shapiro:2011} is defined as a tuple $(\rightarrow_o,\rightarrow_m,d_0,\rightarrow_{\mathit{arb}})$, where
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] Each element of $\Sigma_{\mathtt{RD}}$ is a tuple $(S,ctr)$, where $S \subseteq \{ (a,id) \}$, $id$ contains replica identifier and a number, and $ctr$ is used to generate the next identifier.
+\item[-] $\mathbb{L} = \{ (S,ctr) \vert S \subseteq \mathbb{D} \times (\mathbb{R} \times \mathbb{N}), ctr \in \mathbb{N} \}$. Each element of $\mathbb{L}$ is of the form $(a,id)$, and $ctr$ is per-replica counter to make $id$ unique. 
+    
+\item[-] $((S,ctr),add,a,r) \rightarrow_o ((S',ctr+1),msgs)$, where $S'=S \cup \{ (a,id) \}$, and $msgs = \{ (a,id,r,r') \vert r' \neq r \}$, where $id = (r,ctr)$. 
 
-\item[-] $f_M((S,ctr),add,a,r) = ((S',ctr+1),msgs)$, where $S'=S \cup \{ (a,(r,ctr)) \}$, and $msgs = \{ ((a,(r,ctr)),r,r') \vert r' \neq r \}$.
+\item[-] $((S,ctr),rem,a,r) \rightarrow_o ((S',ctr),msgs)$, where $S'=S \setminus \{ (a,id) \in S \}$, $msgs = \{ (a,S'',r,r') \vert r' \neq r \} $, $S'' = \{ id \vert (a,id) \in S \}$ and we require that $S'' \neq \emptyset$. 
 
-\item[-] $f_M((S,ctr),rem,a,r) = ((S',ctr),msgs)$, where $S'=S \setminus \{ (a,id) \in S \}$, $msgs = \{ ((a,S''),r,r') \vert r' \neq r \} $ where $S'' = \{ id \vert (a,id) \in S \}$.
+\item[-] $((S,ctr),lookup,a,r) \rightarrow_o ((S,ctr),\textit{true},\emptyset)$, if there exists $id$, such that $(a,id) \in S$. 
 
-\item[-] $f_{apl}((S,ctr),r,((a,id),\_,r)) = (S \cup \{ (a,id) \},ctr)$.
+\item[-] $((S,ctr),lookup,a,r) \rightarrow_o ((S,ctr),\textit{false},\emptyset)$, if for each $id$, we have $(a,id) \notin S$. 
 
-\item[-] $f_{apl}((S,ctr),r,((a,S'),\_,r)) = (S \setminus \{ (a,id) \vert id \in S' \},ctr)$.
+\item[-] Given $m=(a,id,\_,r)$, $((S,ctr),r,m) \rightarrow_m (S \cup \{ (a,id) \},ctr)$. 
 
-\item[-] $d_{\mathit{init}} = (\emptyset,0)$.
+\item[-] Given $m=(a,S',\_,r)$, $((S,ctr),r,m) \rightarrow_m (S \setminus \{ (a,id) \vert id \in S' \},ctr)$.
 
-\item[-] $f_o( d_1,\ldots,d_k,msgs ) = \{ (a,id) \in d_1,\ldots,d_k,$ or $id \in S$ for some $(a,S) \in msgs \} \cup \{ (a,S,r) \in msgs \}$.
+\item[-] $d_0 = (\emptyset,0)$. 
 
-\item[-] $f_{arb}$ maps each element in its domain into $\emptyset$.
+\item[-] $\Sigma_e$ is the union of (1) the set of $(a,id)$ for $(a,id) \in S$ or $(a,S',\_,\_)$ in messages and $id \in S'$, and (2) the set of $(a,S,r)$ when $(a,S,r,\_)$ is in messages. 
+
+\item[-] $f_{arb}$ always return $\emptyset$. 
 \end{itemize}
 
 
-\noindent {\bf Example 7. woot algorithms of \cite{a}}:
+\noindent {\bf Example 7. woot algorithms of \cite{Oster:2006}}: 
 
 
 
