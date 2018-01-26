@@ -32,7 +32,7 @@ $\newline$ \noindent - We require that $f(f_{arb}(data,msgs))$ be a sub-sequence
 
 $\newline$ \noindent - For each $x \in \Sigma_e$, there is a message of $x$ waiting to be applied to replica $r$, if and only if $f(x) \notin visTo(O,r,\mathit{vis})$. 
 
-$\newline$ \noindent - There exists a method to check whether an ``$add$ operation'' of $\Sigma_e$ is redundant. If $x$ is redundant, then $f(x) \notin O_s$, and there is no message of $x$ in $msgs$.
+$\newline$ \noindent - There exists a method to check whether an ``$add$ operation'' of $\Sigma_e$ is redundant. If $x$ is redundant, then $f(x) \notin O_s$, and when applying message of $x$, nothing change. 
 
 Example: $(a,id)$ is redundant, if for each replica $r$, $(a,id) \notin data[r].S$.  
 
@@ -93,8 +93,48 @@ Nearly the same as above subsection, and we do not need to deal with happen-befo
 
 \noindent {\bf Example 7. woot algorithms}:  $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, if 
 
- 
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] The inductive invariant of $q_{\mathit{imp}}$ requires that 
 
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] For each $x$ or $(x,y,z)$ of $\Sigma_e$, its counter is less or equal than counter of replica $r$.
+
+    \item[-] For all the $(x)$ or $(x,y,z)$ of $\Sigma_e$ in local states and messages, they could be execute and no element is not executable.
+    \end{itemize}
+
+    The inductive invariants of $q_s$ requires that, each $rem$ operation is in $\mathit{FstRem}$ of some $add$ operation. 
+
+\item[-] $f$ maps $((\_,a,\_,\_,\_),y,z)$ into $add(a)$ and maps $x = (\_,a,\_,\_,\_)$ into $rem(a)$.  
+
+\item[-] $(\_,a,\_,\_,\_)$ is redundant, if for each replica $r$, either $(\_,a,\mathit{false},\_,\_)$ is in $data[r].str$, or $((\_,a,\_,\_,\_),\_,r) \in msgs$. 
+
+\item[-] $\mathit{FstRem}((x,y,z)) = x'$, while $x=(\_,a,\_,\_,\_)$ and $x' = ((\_,a,\_,\_,\_),\_,\_)$. 
+
+\item[-] $x = (\_,a,\mathit{true},\_,\_) \in data[r].str$, if and only if $f(x) \in visTo(O,r,\mathit{vis})$; $x = (\_,a,\mathit{false},\_,\_) \in data[r].str$, if and only if there exists $y \in \mathit{FstRem}(f(x))$, such that $y \in visTo(O,r,\mathit{vis})$. 
+\end{itemize}
+
+To ensure that applying messages on different replicas does not make arbitration order violated, in Appendix \ref{sec:appendix definitions and proofs of section simulation relation for CRDT implementations},we need to prove that, applying the $add$ in any order converge to a same consequence. 
+
+In Appendix \ref{sec:appendix definitions and proofs of section simulation relation for CRDT implementations}, we proves simulation for four algorithms, including:
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] OR-set algorithms of \cite{Shapiro:2011}: OR-set specification, collection specification, causal-delivery. 
+
+\item[-] Another OR-set algorithms of \cite{Bieniusa:2012}: OR-set specification, collection specification, no causal-delivery. 
+
+\item[-] Replicated Growable Array (RGA, for short) algorithms of \cite{Attiya:2016}: list specification, collection specification, causal-delivery. 
+
+\item[-] Woot algorithm: list specification, collection specification, no causal-delivery. 
+
+%\item[-] Counter of \cite{Shapiro:2011}: counter specification, no collection specification, causal-delivery. 
+
+%\item[-] Last-write-win Register of \cite{Shapiro:2011}: register specification, no collection specification, causal-delivery. 
+
+%\item[-] 2P-set of \cite{Shapiro:2011}: set specification, no collection specification, causal-delivery. 
+\end{itemize}
 
 
 
