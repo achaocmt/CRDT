@@ -24,7 +24,7 @@ Example: The inductive invariant of $q_{\mathit{imp}}$ requires that
     
     The inductive invariants of $q_s$ requires that, each $rem$ operation is in $\mathit{FstRem}$ of some $add$ operation. 
 
-$\newline$ \noindent - There exists a map $f$ between $\Sigma_e$ and $O_s$, where $O_s$ is union of $O$ and operations in $\mathit{arb}$. 
+$\newline$ \noindent - There exists a map $f$ between $\Sigma_e$ and $O_s$, where $O_s$ is union of $O$ and operations in arbitration order. 
 
 Example: $f$ maps $(a,id)$ into $add(a)$ and maps $(a,\mathit{Set},r)$ into $rem(a)$. 
 
@@ -44,6 +44,8 @@ $\newline$ \noindent - The visibility for elements of $\Sigma_e$.
 
 Example: $(a,id) \in data[r].S$, if and only if $f((a,id)) \in visTo(O,r,\mathit{vis})$, and for each $o_r \in \mathit{FstRem}(O,\mathit{vis},f((a,id)))$, $o_r \notin visTo(O,r,\mathit{vis})$. 
 
+$\newline$ \noindent - The happen-before relation of messages is preserved by $f$: if $(m_1,m_2) \in \mathit{hb}$, $m_1$ is of element $x_1 \in \Sigma_e$ and $m_2$ is of element $x_2 \in \Sigma_e$, then $f(x_1)$ happens before $f(x_2)$. 
+
 $\newline$ 
 
 Given implementation state $q_{\mathit{imp}}$, specification state $q_s$ and a implementation transition label $\alpha$, where $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$ and $f$ is the map between $\Sigma_e$ and operations of $q_s$. The function $f_s$ of $f_s$-simulation is defined as follows: 
@@ -54,29 +56,45 @@ Given implementation state $q_{\mathit{imp}}$, specification state $q_s$ and a i
 
 \item[-] If $\alpha = apply(m)$, $m$ is a message of $x \in \Sigma_e$ and $x$ is not redundant, then $f_s(q_{\mathit{imp}},q_s,\alpha) = addDel(f(x),r)$, where $r$ is the destination replica of $m$. 
 
-\item[-] If $\alpha = (m,a,b,r,\mathit{arb}_{\mathit{imp}})$, then $f_s(q_{\mathit{imp}},q_s,\alpha) = (m,a,b,r,\mathit{arb}'_s)$. If $\alpha$ is a query operation or a $\mathit{rem}$ operation, then $\mathit{arb}'_s$ is same as the arbitration order of $q_s$; Else, if $\alpha$ is a $add$ operation, then $\mathit{arb}'_s$ is obtained from the arbitration order of $q_s$ by inserting the $add$ operation at some place. 
+\item[-] If $\alpha = (m,a,b,r,\mathit{arb}_{\mathit{imp}})$: If $\alpha$ is a query operation or a $\mathit{rem}$ operation, or if $add$ operations are also ignored in arbitration order, then $\mathit{arb}'_s$ is same as the arbitration order of $q_s$; Else, $\mathit{arb}'_s$ is obtained from the arbitration order of $q_s$ by inserting the $add$ operation at some place, while consistent with $\mathit{arb}_{\mathit{imp}}$.
 \end{itemize} 
 
-To define function $f_t$, we further require that, if $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, $q_{\mathit{imp}} {\xrightarrow{\alpha}}_{\mathit{imp}} q'_{\mathit{imp}}$, let $f$ is the map for $q_{\mathit{imp}}$ and $q_s$, then,
+To define function $f_t$, we further require that, if $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, $q_{\mathit{imp}} {\xrightarrow{\alpha}}_{\mathit{imp}} q'_{\mathit{imp}}$, let $f$ be the map for $q_{\mathit{imp}}$ and $q_s$, then, 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
 \item[-] If $f_s(q_{\mathit{imp}},q_s,\alpha) \neq \epsilon$, then $q_s {\xrightarrow{f_s(q_{\mathit{imp}},q_s,\alpha)}}_s q'_s$, $(q'_{\mathit{imp}},q'_s) \in R$. Let $f'$ be the map for $q'_{\mathit{imp}}$ and $q'_s$, then $f'$ and $f$ map same element into same operation. 
 
-\item[-] If $f_s(q_{\mathit{imp}},q_s,\alpha) = \epsilon$, then $f$ is the map for $(q'_{\mathit{imp}},q_s) \in R$. 
+\item[-] If $f_s(q_{\mathit{imp}},q_s,\alpha) = \epsilon$, then the map for $(q'_{\mathit{imp}},q_s) \in R$ is $f$.  
 \end{itemize}
 
-The function $f_t$ is defined as follows: Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $Sem(imp)$, $f_t(t)$ works as follows: 
+Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $Sem(imp)$, $f_t(t)$ works as follows: 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] Starts from the initial state of $SRImp(Spec)$. Assume we have already dealt with $\alpha_1 \cdot \ldots \cdot \alpha_{u-1}$ and reach state $q_{u-1}$ of $SRImp(Spec)$.    
+\item[-] We have a state $q_s$ and a map $\mathit{map}$. Their initial value is the initial state of $SRImp(Spec)$ and $\emptyset$, respectively.  
 
-\item[-] When $\alpha_u$
+\item[-] Assume we have already dealt with $\alpha_1 \cdot \ldots \cdot \alpha_{u-1}$. 
 
+\item[-] If $\alpha_u = apply(m)$, where $m$ is of element $x$ and its destination replica is $r$: $\beta_u = addDel(map(x),r)$, and update $q_s$ with $\beta_u$. 
+
+\item[-] If $\alpha_u = (m,a,b,r,\mathit{arb}_{\mathit{imp}})$: Let $\mathit{arb}_{u-1}^s$ is the arbitration of $q_s$. If $m$ is a query or $\mathit{rem}$ operation, or if $add$ operations are also ignored in arbitration order, then $\beta_u = (m,a,b,r,\mathit{arb}_{u-1}^s)$; Else, $\beta_u = (m,a,b,r,\mathit{arb}_{u-1}^{'s})$, where $\mathit{arb}_{u-1}^{'s}$ is obtained from the arbitration order of $q_s$ by inserting the $add$ operation at some place, while consistent with $\mathit{arb}_{\mathit{imp}}$. After we obtain $\beta_u$, we update $q_s$ with $\beta_u$. 
+
+\item[-] $f_t(t) = \beta_k$. 
 \end{itemize}
 
-$A_2$ refines $A_1$ w.r.t $f_t$, if for each trace $t_1 = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $A_1$, $t_2 = f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)$ is an execution of $A_2$.
+
+
+
+\subsection{Collection Specification without Causal Delivery}
+\label{subsec:collection specification without calusal delivery}
+
+Nearly the same as above subsection, and we do not need to deal with happen-before relation of messages any more. 
+
+\noindent {\bf Example 7. woot algorithms}:  $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, if 
+
+ 
+
 
 
 

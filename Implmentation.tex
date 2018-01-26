@@ -5,7 +5,7 @@
 
 Let $\mathbb{L}$ be the set of local state for a replica, and $\mathbb{MSG}$ be the set of messages. Each message is of the form $(d,r_s,r_d)$ where $r_s \in \mathbb{R}$ is the identifier of replica that generates this message, and $r_d \in \mathbb{R}$ is the destination replica identifier of this message.
 
-A CRDT implementation $imp$ is defined as a tuple {\color {red}$(\rightarrow_o,\rightarrow_m,d_0,\rightarrow_{\mathit{arb}}, \Sigma_e)$, where
+A CRDT implementation $imp$ is defined as a tuple {\color {red}$(\rightarrow_o,\rightarrow_m,d_0,f_{\mathit{arb}}, \Sigma_e)$, where
 %$(f_M,f_{apl},d_{\mathit{init}},f_{o},f_{arb})$, where
 
 \begin{itemize}
@@ -16,7 +16,7 @@ A CRDT implementation $imp$ is defined as a tuple {\color {red}$(\rightarrow_o,\
 
 \item[-] $d_0 \in \mathbb{L}$ is the initial local state.
 
-\item[-] $\rightarrow_{\mathit{arb}}$ takes several local states and a set of messages as arguments, and returns a total order over elements, while each element represents an operation. To do this, we need a method to extract elements from local states and messages. Let the set of extracted elements to be $\Sigma_e$.
+\item[-] $f_{\mathit{arb}}$ takes several local states and a set of messages as arguments, and returns a total order over elements, while each element represents an operation. To do this, we need a method to extract elements from local states and messages. Let the set of extracted elements to be $\Sigma_e$.
 
 %\item[-] $f_{o}: \Sigma_{\mathtt{RD}}^{\vert \mathbb{R} \vert} \times Pow(\mathbb{MSG}) \Rightarrow Pow(\Sigma_o)$, where $\Sigma_o$ is a set of elements and each element represents an operation. Given replica data of each replica, $f_{o}$ is used to obtain the ``operations'' known by current state of implementation.
 
@@ -38,7 +38,7 @@ The semantics of $imp$ is given as an LTS $Sem(imp) = (Q,\Sigma,\rightarrow,q_0)
     \setlength{\itemsep}{0.5pt}
     \item[-] %Doing an operation:
 
-    $\begin{array}{l c} \bigfrac{ (data[r],m,a,r) \rightarrow_o (d,b,msgs'), msg \cap msgs' = \emptyset, (data[r:d],msgs \cup msgs') \rightarrow_{\mathit{arb}} \mathit{arb}} {(data,msgs) {\xrightarrow{(m,a,b,r,\mathit{arb})}} (data[r:d],msgs \cup msgs')} \end{array}$
+    $\begin{array}{l c} \bigfrac{ (data[r],m,a,r) \rightarrow_o (d,b,msgs'), msg \cap msgs' = \emptyset, f_{\mathit{arb}}((data[r:d], msgs \cup msgs')) = \mathit{arb}} {(data,msgs) {\xrightarrow{(m,a,b,r,\mathit{arb})}} (data[r:d],msgs \cup msgs')} \end{array}$
 
     \item[-] %Applying a message:
 
