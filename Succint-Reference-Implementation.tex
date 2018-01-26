@@ -7,17 +7,17 @@ $Spec$ is called collection, if
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] It contains two update methods, one is called $add$ and the other is called $rem$. 
+\item[-] It contains two update methods, one is called $add$ and the other is called $rem$.
 
-\item[-] {\color {red}Given a $add$ operation $o_a \in O$ with $lab(o_a)= add(a)$, let $\mathit{FstRem}(O,\mathit{vis},o_a) = \{ o_r \vert lab(o_r)=rem(a),(o_a,o_r) \in \mathit{vis}$, $ \neg \exists o'_r, lab(o'_r) = rem(a), (o_a,o'_r),(o'_r,o_r) \in \mathit{vis} \}$ be the set of first visible matching remove of $o_a$. 
+\item[-] {\color {red}Given a $add$ operation $o_a \in O$ with $lab(o_a)= add(a)$, let $\mathit{FstRem}(O,\mathit{vis},o_a) = \{ o_r \vert lab(o_r)=rem(a),(o_a,o_r) \in \mathit{vis}$, $ \neg \exists o'_r, lab(o'_r) = rem(a), (o_a,o'_r),(o'_r,o_r) \in \mathit{vis} \}$ be the set of first visible matching remove of $o_a$.
 
 }
 
-%Given a $add$ operation $o_a \in O$ with $lab(o_a)= ADD(a)$, function $f_R(O,\mathit{vis},o_a) = \{ o_r \vert lab(o_r)=$REMOVE$(a),(o_a,o_r) \in \mathit{vis}$, $ \neg \exists o'_r, lab(o'_r) = $REMOVE$(a), (o_a,o'_r),(o'_r,o_r) \in \mathit{vis} \}$ is the set of corresponding REMOVE operations of $o_a$. 
+%Given a $add$ operation $o_a \in O$ with $lab(o_a)= ADD(a)$, function $f_R(O,\mathit{vis},o_a) = \{ o_r \vert lab(o_r)=$REMOVE$(a),(o_a,o_r) \in \mathit{vis}$, $ \neg \exists o'_r, lab(o'_r) = $REMOVE$(a), (o_a,o'_r),(o'_r,o_r) \in \mathit{vis} \}$ is the set of corresponding REMOVE operations of $o_a$.
 
-\item[-] Let $\mathit{RdtA}(O,\mathit{vis})$ be the set of redundant $add$ operations of $O$: $add$ operation $o_a$ is in $Redt(O,\mathit{vis})$, if for each replica $r$, there exists $o_r \in \mathit{FstRem}(O,\mathit{vis},o_a)$, such that $o_a$ and $o_r$ either happens on or delivered to replica $r$. 
+\item[-] Let $\mathit{RdtA}(O,\mathit{vis})$ be the set of redundant $add$ operations of $O$: $add$ operation $o_a$ is in $Redt(O,\mathit{vis})$, if for each replica $r$, there exists $o_r \in \mathit{FstRem}(O,\mathit{vis},o_a)$, such that $o_a$ and $o_r$ either happens on or delivered to replica $r$.
 
-\item[-] {\color {red} Given an annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, let $\mathit{frg}(x,S)$ be a annotated history $(O',\mathit{vis}',\mathit{arb})$ obtained from $x$ by forgetting operations in $S$ when $S$ can be forgotten from $O$. $S$ can be forgotten from $O$, if $S$ is a union of $add$ operations $S_a$ and $rem$ operations $S_r$, such that $S_a \subseteq \mathit{RdtA}(O,\mathit{vis})$, and $S_r = \{ o_r \vert  \{ o_a \vert o_r \in \mathit{FstRem}(O,\mathit{vis},o_a) \} \subseteq S_a \}$. By forgetting $S$, we have $O' = O \setminus S$ and $\mathit{vis}' = \mathit{vis} \uparrow_{(O' \times O')}$. Here we permit $\mathit{arb}$ to contain more operations than $O$ in annotated history. %, and $\mathit{arb}' = \mathit{arb} \uparrow_{(O' \times O')}$.
+\item[-] {\color {red} Given an annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, let $\mathit{frg}(x,S)$ be a annotated history $(O',\mathit{vis}',\mathit{arb})$ obtained from $x$ by forgetting operations in $S$ when $S$ can be forgotten from $O$. $S$ can be forgotten from $O$, if $S$ is a union of $add$ operations $S_a$ and $rem$ operations $S_r$, such that $S_a \subseteq \mathit{RdtA}(O,\mathit{vis})$, and $S_r = \{ o_r \vert  \{ o_a \vert o_r \in \mathit{FstRem}(O,\mathit{vis},o_a) \} \subseteq S_a \}$. By forgetting $S$, we have $O' = O \setminus S$ and $\mathit{vis}' = \mathit{vis} \uparrow_{(O' \times O')}$, and $\mathit{arb}' = \mathit{arb} \uparrow_{(O' \times O')}$. %Here we permit $\mathit{arb}$ to contain more operations than $O$ in annotated history. %, and $\mathit{arb}' = \mathit{arb} \uparrow_{(O' \times O')}$.
 }
 
 %\item[-] Predicate $P_{frg}$ is used to check if a set $S$ of operations can be forgotten. Given $S \subseteq O$, $P_{frg}(O,\mathit{vis},S) = \mathit{true}$, if $S = S_a \cup S_r$, such that $S_a \subseteq RdtA(O,\mathit{vis})$, and $S_r = \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,\mathit{vis},o_a) \} \subseteq S_a \}$.
@@ -48,14 +48,14 @@ $Spec$ is called collection, if
 
     %$x_1 \in Spec(\ell)$, if and only if $forg(x_1,S) \in Spec(\ell)$.
 
-    %\item[-] If $P_{frg}(O,\mathit{vis},S) \wedge forg((O,\mathit{vis},\mathit{arb}),S) = (O',\mathit{vis}',\mathit{arb}') \wedge P_{frg}(O',\mathit{vis}',S') \wedge forg((O',\mathit{vis}',\mathit{arb}'),S') = (O'',\mathit{vis}'',\mathit{arb}'')$, then $P_{frg}(O,\mathit{vis},S \cup S')$. 
-    \item[-] If $\mathit{frg}((O,\mathit{vis},\mathit{arb}),S) = (O',\mathit{vis}',\mathit{arb}') \wedge \mathit{frg}((O',\mathit{vis}',\mathit{arb}'),S') = (O'',\mathit{vis}'',\mathit{arb}'')$, then $\mathit{frg}((O,\mathit{vis},\mathit{arb},S \cup S') = (O'',\mathit{vis}'',\mathit{arb}'')$. 
+    %\item[-] If $P_{frg}(O,\mathit{vis},S) \wedge forg((O,\mathit{vis},\mathit{arb}),S) = (O',\mathit{vis}',\mathit{arb}') \wedge P_{frg}(O',\mathit{vis}',S') \wedge forg((O',\mathit{vis}',\mathit{arb}'),S') = (O'',\mathit{vis}'',\mathit{arb}'')$, then $P_{frg}(O,\mathit{vis},S \cup S')$.
+    \item[-] If $\mathit{frg}((O,\mathit{vis},\mathit{arb}),S) = (O',\mathit{vis}',\mathit{arb}') \wedge \mathit{frg}((O',\mathit{vis}',\mathit{arb}'),S') = (O'',\mathit{vis}'',\mathit{arb}'')$, then $\mathit{frg}((O,\mathit{vis},\mathit{arb},S \cup S') = (O'',\mathit{vis}'',\mathit{arb}'')$.
     \end{itemize}
 }
 \end{itemize}
- 
 
-Similarly, we can forget operations $S$ from a state $(O,\mathit{ro},\mathit{del},\mathit{vis})$ by deleting $S$ from $O$, $\mathit{ro}$ and $\mathit{del}$. Given a state $q = (O,\mathit{ro},\mathit{del},\mathit{vis})$, its succinct version $suct(q)$ is obtained from $q$ by forgetting $\mathit{RdtA}(O,\mathit{vis}) \cup \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,\mathit{vis},o_a) \} \subseteq \mathit{RdtA}(O,\mathit{vis}) \}$. Given a collection specification $Spec$, its succinct reference implementation is given as an LTS $SRImp(Spec) = (Q_s,\Sigma,\rightarrow_s,q_0)$, which can be obtained from $RImp(Spec) = (Q,\Sigma,\rightarrow,q_0)$ as follows: 
+
+Similarly, we can forget operations $S$ from a state $(O,\mathit{ro},\mathit{del},\mathit{vis})$ by deleting $S$ from $O$, $\mathit{ro}$ and $\mathit{del}$. Given a state $q = (O,\mathit{ro},\mathit{del},\mathit{vis})$, its succinct version $suct(q)$ is obtained from $q$ by forgetting $\mathit{RdtA}(O,\mathit{vis}) \cup \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,\mathit{vis},o_a) \} \subseteq \mathit{RdtA}(O,\mathit{vis}) \}$. Given a collection specification $Spec$, its succinct reference implementation is given as an LTS $SRImp(Spec) = (Q_s,\Sigma,\rightarrow_s,q_0)$, which can be obtained from $RImp(Spec) = (Q,\Sigma,\rightarrow,q_0)$ as follows:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
@@ -65,8 +65,8 @@ Similarly, we can forget operations $S$ from a state $(O,\mathit{ro},\mathit{del
 %\item[-] $q_1 {\xrightarrow{addDel(o,r)}}_s q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{addDel(o,r)}} q_3 \wedge q_2 = suct(q_3)$.
 
 %\item[-] $q_1 {\xrightarrow{(m,a,b,r,\mathit{arb})}}_s q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{(m,a,b,r,\mathit{arb}')}}_s q_3$, $q_2 = forg(q_3,S)$, and $\mathit{arb}' - S = \mathit{arb}$.
-\end{itemize} 
-{\color {red}Here in $RImp(Spec)$ we temporarily permit that in state $(O,\mathit{ro},\mathit{del},\mathit{arb})$, $\mathit{arb}$ may contain more operation than $O$. While the transition rules of $RImp(Spec)$ do not change.} 
+\end{itemize}
+{\color {red}Here in $RImp(Spec)$ we temporarily permit that in state $(O,\mathit{ro},\mathit{del},\mathit{arb})$, $\mathit{arb}$ may contain more operation than $O$. While the transition rules of $RImp(Spec)$ do not change.}
 
 
 
@@ -82,15 +82,15 @@ $his(RImp(Spec)) = his(SRImp(Spec))$.
 \end{lemma}
 }
 
-\noindent {\bf Example 4. OR-set}: OR-set is a collection specification. %, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given an operation $o_a \in O$ with $lab(o_a) = add(a)$, $f_R(O,\mathit{vis},o_a) = Minus(O,\mathit{vis},o)$. 
+\noindent {\bf Example 4. OR-set}: OR-set is a collection specification. %, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given an operation $o_a \in O$ with $lab(o_a) = add(a)$, $f_R(O,\mathit{vis},o_a) = Minus(O,\mathit{vis},o)$.
 The following lemma states that our definition of $\mathit{FstRem}$ for OR-set satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
 \begin{lemma}
 \label{lemma:Minus for OR-set is correct}
-Our definition of $\mathit{FstRem}$ for OR-set is correct. 
+Our definition of $\mathit{FstRem}$ for OR-set is correct.
 \end{lemma}
 
-\noindent {\bf Example 5. Distributed list}: Distributed list is a collection specification. %, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given an operation $o_a \in O$ with $lab(o_a)=add(a,pos)$, $f_R(O,\mathit{vis},o_a) = \{ rem(a) \in O \}$. 
+\noindent {\bf Example 5. Distributed list}: Distributed list is a collection specification. %, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given an operation $o_a \in O$ with $lab(o_a)=add(a,pos)$, $f_R(O,\mathit{vis},o_a) = \{ rem(a) \in O \}$.
 The following lemma states that our definition of $\mathit{FstRem}$ for distributed list satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
 \begin{lemma}

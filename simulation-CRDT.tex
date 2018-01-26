@@ -24,17 +24,17 @@ Example: The inductive invariant of $q_{\mathit{imp}}$ requires that
     
     The inductive invariants of $q_s$ requires that, each $rem$ operation is in $\mathit{FstRem}$ of some $add$ operation. 
 
-$\newline$ \noindent - There exists a map $f$ between $\Sigma_e$ and $O_s$, where $O_s$ is union of $O$ and operations in arbitration order. 
-
-Example: $f$ maps $(a,id)$ into $add(a)$ and maps $(a,\mathit{Set},r)$ into $rem(a)$. 
-
-$\newline$ \noindent - We require that $f(f_{arb}(data,msgs))$ be a sub-sequence of $\mathit{arb}$. 
-
-$\newline$ \noindent - For each $x \in \Sigma_e$, there is a message of $x$ waiting to be applied to replica $r$, if and only if $f(x) \notin visTo(O,r,\mathit{vis})$. 
-
-$\newline$ \noindent - There exists a method to check whether an ``$add$ operation'' of $\Sigma_e$ is redundant. If $x$ is redundant, then $f(x) \notin O_s$, and when applying message of $x$, nothing change. 
+$\newline$ \noindent - There exists a method to check whether an ``$add$ operation'' of $\Sigma_e$ is redundant. If $x$ is redundant, then applying message of $x$ does not change anything. 
 
 Example: $(a,id)$ is redundant, if for each replica $r$, $(a,id) \notin data[r].S$.  
+
+$\newline$ \noindent - There exists a map $f$ between $\Sigma_e$ that are not redundant and $O$.%, where $O_s$ is union of $O$ and operations in arbitration order. 
+
+Example: $f$ maps $(a,id)$ that are not redundant into $add(a)$ and maps $(a,\mathit{Set},r)$ into $rem(a)$. 
+
+$\newline$ \noindent - We require that $f(f_{arb}(data,msgs))$ be a sup-sequence of $\mathit{arb}$. 
+
+$\newline$ \noindent - For each $x \in \Sigma_e$, there is a message of $x$ waiting to be applied to replica $r$, if and only if $f(x) \notin visTo(O,r,\mathit{vis})$. 
 
 $\newline$ \noindent - Stating the $\mathit{FstRem}$ relations for elements of $\Sigma_e$. 
 
@@ -44,7 +44,7 @@ $\newline$ \noindent - The visibility for elements of $\Sigma_e$.
 
 Example: $(a,id) \in data[r].S$, if and only if $f((a,id)) \in visTo(O,r,\mathit{vis})$, and for each $o_r \in \mathit{FstRem}(O,\mathit{vis},f((a,id)))$, $o_r \notin visTo(O,r,\mathit{vis})$. 
 
-$\newline$ \noindent - The happen-before relation of messages is preserved by $f$: if $(m_1,m_2) \in \mathit{hb}$, $m_1$ is of element $x_1 \in \Sigma_e$ and $m_2$ is of element $x_2 \in \Sigma_e$, then $f(x_1)$ happens before $f(x_2)$. 
+$\newline$ \noindent - The happen-before relation of messages is preserved by $f$: Given message $m_1$ of element $x_1 \in \Sigma_e$ and message $m_2$ of element $x_2 \in \Sigma_e$, $(m_1,m_2) \in \mathit{hb}$, if and only if $f(x_1)$ happens before $f(x_2)$. 
 
 $\newline$ 
 
@@ -56,7 +56,7 @@ Given implementation state $q_{\mathit{imp}}$, specification state $q_s$ and a i
 
 \item[-] If $\alpha = apply(m)$, $m$ is a message of $x \in \Sigma_e$ and $x$ is not redundant, then $f_s(q_{\mathit{imp}},q_s,\alpha) = addDel(f(x),r)$, where $r$ is the destination replica of $m$. 
 
-\item[-] If $\alpha = (m,a,b,r,\mathit{arb}_{\mathit{imp}})$: If $\alpha$ is a query operation or a $\mathit{rem}$ operation, or if $add$ operations are also ignored in arbitration order, then $\mathit{arb}'_s$ is same as the arbitration order of $q_s$; Else, $\mathit{arb}'_s$ is obtained from the arbitration order of $q_s$ by inserting the $add$ operation at some place, while consistent with $\mathit{arb}_{\mathit{imp}}$.
+\item[-] If $\alpha = (m,a,b,r,\mathit{arb}_{\mathit{imp}})$: $f_s(q_{\mathit{imp}},q_s,\alpha) = (m,a,b,r,\mathit{arb}'_s)$. If $\alpha$ is a query operation or a $\mathit{rem}$ operation, or if $add$ operations are also ignored in arbitration order, then $\mathit{arb}'_s$ is same as the arbitration order of $q_s$; Else, $\mathit{arb}'_s$ is obtained from the arbitration order of $q_s$ by inserting the $add$ operation at some place, while consistent with $\mathit{arb}_{\mathit{imp}}$.
 \end{itemize} 
 
 To define function $f_t$, we further require that, if $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, $q_{\mathit{imp}} {\xrightarrow{\alpha}}_{\mathit{imp}} q'_{\mathit{imp}}$, let $f$ be the map for $q_{\mathit{imp}}$ and $q_s$, then, 
@@ -78,7 +78,7 @@ Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $Sem(imp)$, $f_t(t)$
 
 \item[-] If $\alpha_u = apply(m)$, where $m$ is of element $x$ and its destination replica is $r$: $\beta_u = addDel(map(x),r)$, and update $q_s$ with $\beta_u$. 
 
-\item[-] If $\alpha_u = (m,a,b,r,\mathit{arb}_{\mathit{imp}})$: Let $\mathit{arb}_{u-1}^s$ is the arbitration of $q_s$. If $m$ is a query or $\mathit{rem}$ operation, or if $add$ operations are also ignored in arbitration order, then $\beta_u = (m,a,b,r,\mathit{arb}_{u-1}^s)$; Else, $\beta_u = (m,a,b,r,\mathit{arb}_{u-1}^{'s})$, where $\mathit{arb}_{u-1}^{'s}$ is obtained from the arbitration order of $q_s$ by inserting the $add$ operation at some place, while consistent with $\mathit{arb}_{\mathit{imp}}$. After we obtain $\beta_u$, we update $q_s$ with $\beta_u$. 
+\item[-] If $\alpha_u = (m,a,b,r,\mathit{arb}_{\mathit{imp}})$: Let $\mathit{arb}_{u-1}^s$ is the arbitration of $q_s$. If $m$ is a query or $\mathit{rem}$ operation, then $\beta_u = (m,a,b,r,\mathit{arb}_{u-1}^s)$; Else, $\beta_u = (m,a,b,r,\mathit{arb}_{u-1}^{'s})$, where $\mathit{arb}_{u-1}^{'s}$ is obtained from $\mathit{arb}_{u-1}^s$ by inserting the $add$ operation at some place, while consistent with $\mathit{arb}_{\mathit{imp}}$. After we obtain $\beta_u$, we update $q_s$ with $\beta_u$.
 
 \item[-] $f_t(t) = \beta_k$. 
 \end{itemize}
