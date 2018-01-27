@@ -12,7 +12,7 @@ An labeled transition system (LTS, for short) is a tuple $A = (Q,\Sigma,\rightar
   \centering
   \includegraphics[width=0.8 \textwidth]{figures/PIC-RImp.pdf}
 %\vspace{-10pt}
-  \caption{Reference implementation for OR-set. Arrow of same replica represents $\mathit{ro}$ relation, while arrow between different replica represents $\mathit{del}$ relation.}
+  \caption{Reference implementation for OR-set. Arrow of same replica represents replica order, while arrow between different replica represents delivery order.}
   \label{fig:reference implementation for OR-set}
 \end{figure}
 
@@ -22,11 +22,11 @@ An labeled transition system (LTS, for short) is a tuple $A = (Q,\Sigma,\rightar
 \setlength{\itemsep}{0.5pt}
 \item[-] Each state of $\mathit{Spec}$ is an annotated history. Since CRDT normally does not use speculative execution, the annotated history increase monotonously during transitions of $\mathit{Spec}$. For simplicity these annotated history only contains update operations. We introduce a new relation $\mathit{del}$ called delivery relation to capture the intuition that CRDT only broadcast effect of one operation.
     
-    In $q_1$ of \figurename~\ref{fig:reference implementation for OR-set}, $(+a,r_2) \in \mathit{del}$ represents that the effect of $+a$ is delivered to replica $r_2$ after all operations of $r_2$ ($+b$ and $+c$) happens. While in $q_1$ of \figurename~\ref{fig:reference implementation for OR-set}, $(+a,-a_2) \in \mathit{del}$ represents that the effect of $+a$ is delivered to replica $r_2$ at a time point earlier than $-a_2$ happens and later than $+b$ and $+c$ happens. The visibility relation $\mathit{vis}$ of annotated history is defined as the composition of composition zero or one time of $\mathit{del}$ and $\mathit{ro}$.
+    In $q_1$ of \figurename~\ref{fig:reference implementation for OR-set}, $(+a_2,r_1) \in \mathit{del}$ represents that the effect of $+a_2$ is delivered to replica $r_1$ after all operations of $r_1$ ($+a_1$ and $-a_1$) happens. While in $q_1$ of \figurename~\ref{fig:reference implementation for OR-set}, $(+a_1,-a_2) \in \mathit{del}$ represents that the effect of $+a_1$ is delivered to replica $r_2$ at a time point earlier than $-a_2$ happens and later than $+a_2$ happens. The visibility relation $\mathit{vis}$ of annotated history is defined as the composition of composition zero or one time of $\mathit{del}$ and one time of $\mathit{ro}$.
 
 \item[-] To do a $\ell$ operation on replica $r$, we check whether the operation context of the newest time-point of replica $r$ is in $\mathit{Spec}(\ell)$. If $\ell$ is query, then we have a loop transition, as the self-loop of $q_2$ in \figurename~\ref{fig:reference implementation for OR-set}; if $\ell$ is update, we increasing the annotated history by put a $\ell$ operation in the newest time-point of replica $r$, as the transition from $q_1$ to $q_2$ in \figurename~\ref{fig:reference implementation for OR-set}. 
 
-\item[-] To make LTS be deterministic, we make the event of when a operation becomes visible to a replica also transition label. For example, the transition from $q_2$ to $q_3$ in \figurename~\ref{fig:reference implementation for OR-set} represents that $+c$ is visible to replica $r_1$. Thus, every change to visibility relation is explicitly. 
+\item[-] To make LTS be deterministic, we make the event of when a operation becomes visible to a replica also transition label. For example, the transition from $q_2$ to $q_3$ in \figurename~\ref{fig:reference implementation for OR-set} represents that $-a_2$ begins to be visible to replica $r_1$. Thus, every change to visibility relation is explicitly. 
 \end{itemize} }
 
 Formally, the reference implementation $\mathit{RImp}(\mathit{Spec}) = (Q,\Sigma,\rightarrow,q_0)$ is constructed as follows: 
@@ -149,7 +149,7 @@ For each $h \in \mathit{his}(\mathit{RImp}(\mathit{Spec}))$, $h$ is CRVC consist
 
 \noindent {\bf Reference Implementation with Causal Delivery}:
 
-An operation $o_1$ happens-before \cite{Lamport:1978} an operation $o_2$, denoted $o_1 <_{\mathit{hb}} o_2$, if $(o_1,o_2) \in (\mathit{ro},\mathit{del})^*$. A trace satisfies causal delivery, if for each pair of update operations $(o_1,o_2)$ of this trace and $o_1 <_{\mathit{hb}} o_2$, $o_2$ can be delivered to replica $r$ if $o_1$ has already been delivered to replica $r$. {\color {red}For example, the execution of \figurename~\ref{fig:reference implementation for OR-set} does not satisfy causal-delivery, since in $+b <_{\mathit{hb}} +c$, but when $+c$ is delivered to replica $r_1$, $+b$ is still not delivered to replica $r_1$.} 
+An operation $o_1$ happens-before \cite{Lamport:1978} an operation $o_2$, denoted $o_1 <_{\mathit{hb}} o_2$, if $(o_1,o_2) \in (\mathit{ro},\mathit{del})^*$. A trace satisfies causal delivery, if for each pair of update operations $(o_1,o_2)$ of this trace and $o_1 <_{\mathit{hb}} o_2$, $o_2$ can be delivered to replica $r$ if $o_1$ has already been delivered to replica $r$. {\color {red}For example, the annotated history of $q_3$ in \figurename~\ref{fig:reference implementation for OR-set} satisfies causal-delivery, since in $+a_2 <_{\mathit{hb}} -a_2$, and when $-a_2$ is delivered to replica $r_1$ , $+a_2$ has already been delivered to replica $r_1$.}
 
 To abstract CRDT implementations that assume causal delivery, we use a class of reference implementations $\mathit{RImp}(\mathit{Spec})_{\mathit{cd}}$ where operations are delivered in the causal order. Formally, this consists in strengthening the transition rule corresponding to delivery events as follows:
 
