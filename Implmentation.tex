@@ -3,111 +3,126 @@
 \section{Implementation}
 \label{sec:implementation}
 
-Let $\mathbb{L}$ be the set of local state for a replica, and $\mathbb{MSG}$ be the set of messages. Each message is of the form $(d,r_s,r_d)$ where $r_s \in \mathbb{R}$ is the identifier of replica that generates this message, and $r_d \in \mathbb{R}$ is the destination replica identifier of this message.
-
-A CRDT implementation $imp$ is defined as a tuple {\color {red}$(\rightarrow_o,\rightarrow_m,d_0,f_{\mathit{arb}}, \Sigma_e)$, where
-%$(f_M,f_{apl},d_{\mathit{init}},f_{o},f_{arb})$, where
+{\color {red}In CRDT algorithm, each replica has a local state. When a replica do a operation, it is done locally without synchronization with other replica. If this is an update operation, then this replica will broadcast a message to all other replicas.} Let $\mathbb{L}$ be the set of local state, and $\mathbb{MSG}$ be the set of messages. Each message is of the form $(d,r_s,r_d)$ where $r_s \in \mathbb{R}$ is the identifier of replica that generates this message, and $r_d \in \mathbb{R}$ is the destination replica identifier of this message. A CRDT implementation $\mathit{imp}$ is defined as a tuple $(\rightarrow_o,\rightarrow_m,d_0,f_{\mathit{arb}}, \Sigma_e)$, where 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\rightarrow_o: \mathbb{L} \times \mathbb{M} \times \mathbb{D} \times \mathbb{R} \rightarrow \mathbb{L} \times \mathbb{D} \times Pow(\mathbb{MSG})$ shows how method update local state and generate messages. $(d,m,a,r) \rightarrow_o (d',b,msgs)$ means that, when the local state of replica $r$ is $d$, if we call method $m$ with argument $a$ in replica $r$, then we obtain return value $b$, change the local state of replica $r$ into $d'$, and generate a set $msgs$ of messages. $Pow(\mathbb{MSG})$ means the power set of $\mathbb{MSG}$. Moreover, if $m \in \mathbb{I}$, then $msgs = \{ (x,r,r') \vert r' \in \mathbb{R} \wedge r \neq r' \}$ for some $x$. Otherwise, $msgs = \emptyset$.
+\item[-] $\rightarrow_o: \mathbb{L} \times \mathbb{M} \times \mathbb{D} \times \mathbb{R} \rightarrow \mathbb{L} \times \mathbb{D} \times \mathit{Pow}(\mathbb{MSG})$ shows how method update local state and generate messages. $(d,m,a,r) \rightarrow_o (d',b,\mathit{msgs})$ represents that, when the local state of replica $r$ is $d$, if we call method $m$ with argument $a$ in replica $r$, then we obtain return value $b$, change the local state of replica $r$ into $d'$, and generate a set $\mathit{msgs}$ of messages. Here $\mathit{Pow}(\mathbb{MSG})$ is the power set of $\mathbb{MSG}$. If $m \in \mathbb{U}$, then $\mathit{msgs} = \{ (x,r,r') \vert r' \in \mathbb{R} \wedge r \neq r' \}$ for some $x$. Otherwise, $\mathit{msgs} = \emptyset$. {\color {red}The violation of pre-condition of method is modeled by mapping to $\mathit{undef}$.} 
 
-\item[-] $\rightarrow_m: \mathbb{L} \times \mathbb{R} \times \mathbb{MSG} \rightarrow \mathbb{L}$. $(d,r,msg) \rightarrow_m d'$ means that, if the local state of replica $r$ is $d$ and we apply message $msg$, then we obtain local state $d'$.
+\item[-] $\rightarrow_m: \mathbb{L} \times \mathbb{R} \times \mathbb{MSG} \rightarrow \mathbb{L}$. $(d,r,\mathit{msg}) \rightarrow_m d'$ represents that, if the local state of replica $r$ is $d$ and we apply message $\mathit{msg}$, then we obtain local state $d'$. {\color {red}The violation of pre-condition of applying a message is modeled by mapping to $\mathit{undef}$.} 
 
 \item[-] $d_0 \in \mathbb{L}$ is the initial local state.
 
-\item[-] $f_{\mathit{arb}}$ takes several local states and a set of messages as arguments, and returns a total order over elements, while each element represents an operation. To do this, we need a method to extract elements from local states and messages. Let the set of extracted elements to be $\Sigma_e$.
+\item[-] $f_{\mathit{arb}}$ takes the local states of each replica, and a set of messages as arguments, and returns a total order over elements, while each element represents an operation. Let $\Sigma_e$ be the set of such elements. 
+    
+    %To do this, we need a method to extract elements from local states and messages. Let the set of extracted elements to be $\Sigma_e$.
 
 %\item[-] $f_{o}: \Sigma_{\mathtt{RD}}^{\vert \mathbb{R} \vert} \times Pow(\mathbb{MSG}) \Rightarrow Pow(\Sigma_o)$, where $\Sigma_o$ is a set of elements and each element represents an operation. Given replica data of each replica, $f_{o}$ is used to obtain the ``operations'' known by current state of implementation.
 
 %\item[-] $f_{arb}: \Sigma_{\mathtt{RD}}^{\vert \mathbb{R} \vert} \times Pow(\mathbb{MSG}) \Rightarrow \Sigma_o^*$. Given replica data of each replica and messages, $f_{arb}$ is used to obtain the arbitration relation.
 \end{itemize}
-}
 
-The semantics of $imp$ is given as an LTS $Sem(imp) = (Q,\Sigma,\rightarrow,q_0)$, where
+
+The semantics of $\mathit{imp}$ is given as an LTS $\mathit{Sem}(\mathit{imp}) = (Q,\Sigma,\rightarrow,q_0)$, where
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] Each state $(data,msgs) \in Q$ contains two tuples: $data: \mathbb{R} \rightarrow \mathbb{L}$ is the local state each replica, $msgs \subseteq \mathbb{MSG}$ is the set of messages.
+\item[-] Each state $(\mathit{data},\mathit{msgs}) \in Q$ contains two tuples: $\mathit{data}: \mathbb{R} \rightarrow \mathbb{L}$ is the local state of each replica, $\mathit{msgs} \subseteq \mathbb{MSG}$ is the set of messages that are waiting to be applied.  
 
-\item[-] {\color {red}$\Sigma = \{ (m,a,b,r,\mathit{arb}), apply(msg) \vert m \in \mathbb{M}, a,b \in \mathbb{D}, r \in \mathbb{R}, msg \in \mathbb{MSG},\mathit{arb} \subseteq \Sigma_e \times \Sigma_e \}$ is the set of transition labels. Here $\mathit{arb}$ is a irreflexive total order over a subset of update operations $\Sigma_e$.}
+\item[-] $\Sigma$ contains two kinds of transition labels. $m(a,b,r,\mathit{arb})$ represents that a $m(a) \Rightarrow b$ operation is done in replica $r$ and the arbitration order is changed into $\mathit{arb}$. $\mathit{apply}(\mathit{msg})$ represents applying message $\mathit{msg}$. 
 
 \item[-] $\rightarrow$ is the transition relation and is defined as follows:
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] %Doing an operation:
+    \item[-] %{\color {red}When doing operations, we keep messages unique.}  
 
-    $\begin{array}{l c} \bigfrac{ (data[r],m,a,r) \rightarrow_o (d,b,msgs'), msg \cap msgs' = \emptyset, f_{\mathit{arb}}((data[r:d], msgs \cup msgs')) = \mathit{arb}} {(data,msgs) {\xrightarrow{(m,a,b,r,\mathit{arb})}} (data[r:d],msgs \cup msgs')} \end{array}$
+    $\begin{array}{l c} \bigfrac{ (\mathit{data}[r],m,a,r) \rightarrow_o (d,b,\mathit{msgs}'), \mathit{msg} \cap \mathit{msgs}' = \emptyset, f_{\mathit{arb}}((\mathit{data}[r:d], \mathit{msgs} \cup \mathit{msgs}')) = \mathit{arb}} {(\mathit{data},\mathit{msgs}) {\xrightarrow{(m,a,b,r,\mathit{arb})}} (\mathit{data}[r:d], \mathit{msgs} \cup \mathit{msgs}')} \end{array}$
 
-    \item[-] %Applying a message:
+    \item[-] {\color {red} When a message is applied, we remove it from $\mathit{msgs}$.}
 
-    $\begin{array}{l c} \bigfrac{ m = (\_,\_,r) \in msgs,(data[r],r,m) \rightarrow_m d } {(data,msgs) {\xrightarrow{apply(m)}} (data[r:d],msgs - \{ m \}} \end{array}$
+    $\begin{array}{l c} \bigfrac{ \mathit{msg} = (\_,\_,r) \in \mathit{msgs},(\mathit{data}[r],r,\mathit{msg}) \rightarrow_m d } {(\mathit{data},\mathit{msgs}) {\xrightarrow{\mathit{apply}(\mathit{msg})}} (\mathit{data}[r:d],\mathit{msgs} - \{ \mathit{msg} \})} \end{array}$
     \end{itemize}
 
 \item[-] $q_0 = (data_0,\emptyset)$ is the initial state, where $data_0$ maps each replica identifier into $d_0$.
 \end{itemize}
 
-An trace of implementation satisfies causal-delivery, if given $o_1 <_{\mathit{hb}} o_2$, then we can apply message generated by $o_2$ on a replica, if the message generated by $o_1$ has already been applied on this replica. The semantics of $imp$ with causal delivery is given as an LTS $OS(imp)_{\mathit{cd}}$, and we give its detailed definition in Appendix \ref{sec:appendix definitions and proofs of section implementation}. Each state of $OS(imp)_{\mathit{cd}}$ is a tuple $(data,msgs,\mathit{hb})$, while $\mathit{hb}$ record the happen-before relation between messages with same destination replica.
+An trace of $\mathit{imp}$ satisfies causal-delivery, if given $o_1 <_{\mathit{hb}} o_2$, then we can apply message generated by $o_2$ on a replica, if the message generated by $o_1$ has already been applied on this replica. The semantics of $\mathit{imp}$ with causal-delivery is given as an LTS $\mathit{Sem}(\mathit{imp})_{\mathit{cd}}$, and we give its detailed definition in Appendix \ref{sec:appendix definitions and proofs of section implementation}. Each state of $\mathit{Sem}(\mathit{imp})_{\mathit{cd}}$ is a tuple $(\mathit{data},\mathit{msgs},\mathit{msghb})$. {\color {red}Here $\mathit{msghb}$ record the happen-before relation between messages with same destination replica, and we can only apply a minimal messages of $\mathit{msgs}$ w.r.t $\mathit{msghb}$.} 
 
 
 
 
-\noindent {\bf Example 6. OR-set algorithms of \cite{Shapiro:2011}}: The OR-set algorithms of \cite{Shapiro:2011} is defined as a tuple $(\rightarrow_o,\rightarrow_m,d_0,\rightarrow_{\mathit{arb}}, \Sigma_e)$, where
+\noindent {\bf Example 6. OR-set algorithms of \cite{Shapiro:2011}}: This algorithm assumes causal-delivery. Its tuple are as follows: 
 
+{\color {red}
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\mathbb{L} = \{ (S,ctr) \vert S \subseteq \mathbb{D} \times (\mathbb{R} \times \mathbb{N}), ctr \in \mathbb{N} \}$. Each element of $\mathbb{L}$ is of the form $(a,id)$, and $ctr$ is per-replica counter to make $id$ unique.
+\item[-] $\mathbb{L} = \{ (S,\mathit{ctr}) \vert S \subseteq \mathbb{D} \times (\mathbb{R} \times \mathbb{N}), \mathit{ctr} \in \mathbb{N} \}$. Elements of $S$ are of form $(a,id)$, and $\mathit{ctr}$ is per-replica counter to make $id$ unique. 
 
-\item[-] $((S,ctr),add,a,r) \rightarrow_o ((S',ctr+1),msgs)$, where $S'=S \cup \{ (a,id) \}$, and $msgs = \{ (a,id,r,r') \vert r' \neq r \}$, where $id = (r,ctr)$.
+\item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{msgs} = \{ (a,\mathit{id},r,r') \vert r' \neq r \}]{(\mathit{add},a,r)}_o (S \cup \{ (a,\mathit{id}) \}, \mathit{ctr}+1)$ and $\mathit{id} = (r,\mathit{ctr})$. 
 
-\item[-] $((S,ctr),rem,a,r) \rightarrow_o ((S',ctr),msgs)$, where $S'=S \setminus \{ (a,id) \in S \}$, $msgs = \{ (a,S'',r,r') \vert r' \neq r \} $, $S'' = \{ id \vert (a,id) \in S \}$ and we require that $S'' \neq \emptyset$.
+\item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{msgs} = \{ (a,S'',r,r') \vert r' \neq r \} ]{(\mathit{rem},a,r)}_o (S \setminus \{ (a,id) \in S \}, \mathit{ctr})$, where $S'' = \{ id \vert (a,id) \in S \} \neq \emptyset$. 
 
-\item[-] $((S,ctr),lookup,a,r) \rightarrow_o ((S,ctr),\mathit{true},\emptyset)$, if there exists $id$, such that $(a,id) \in S$.
+\item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{msgs} = \emptyset]{(\mathit{lookup},a,\mathit{true},r)}_o (S, \mathit{ctr})$, if there exists $\mathit{id}$ such that $(a,\mathit{id}) \in S$. 
 
-\item[-] $((S,ctr),lookup,a,r) \rightarrow_o ((S,ctr),\mathit{false},\emptyset)$, if for each $id$, we have $(a,id) \notin S$.
+\item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{msgs} = \emptyset]{(\mathit{lookup},a,\mathit{false},r)}_o (S, \mathit{ctr})$, if $(a,\mathit{id}) \notin S$ for each $\mathit{id}$. 
 
-\item[-] Given $m=(a,id,\_,r)$, $((S,ctr),r,m) \rightarrow_m (S \cup \{ (a,id) \},ctr)$.
+\item[-] $(S,\mathit{ctr}) \xrightarrow{\mathit{apply}((a,id,\_,r))}_m (S \cup \{ (a,id) \}, \mathit{ctr})$. 
 
-\item[-] Given $m=(a,S',\_,r)$, $((S,ctr),r,m) \rightarrow_m (S \setminus \{ (a,id) \vert id \in S' \},ctr)$.
+\item[-] $(S,\mathit{ctr}) \xrightarrow{\mathit{apply}((a,S',\_,r))}_m (S \setminus \{ (a,id) \vert id \in S' \}, \mathit{ctr})$. 
 
 \item[-] $d_0 = (\emptyset,0)$.
 
-\item[-] $\Sigma_e$ is the union of (1) the set of $(a,id)$ for $(a,id) \in S$ or $(a,S',\_,\_)$ in messages and $id \in S'$, and (2) the set of $(a,S,r)$ when $(a,S,r,\_)$ is in messages.
+\item[-] $\Sigma_e$ is the union of (1) $(a,id)$ in either $\mathit{data}[\_].S$, or $\exists (a,S',\_,\_) \in \mathit{msgs}$ and $id \in S'$, and (2) $(a,S',r)$ in $\mathit{msgs}$. 
 
-\item[-] $f_{arb}$ always return $\emptyset$.
+\item[-] $f_{\mathit{arb}}$ always return $\emptyset$.
 \end{itemize}
+} 
 
 
-\noindent {\bf Example 7. woot algorithms of \cite{Oster:2006}}: Let us introduce the woot algorithm. A W-character $x$ is a five-tuple $(id,a,v,id_p,id_n)$, where $id$ is the identifier of $x$; $a$ is the value of $x$; $v \in \{ \mathit{true},\mathit{false} \}$ indicates whether $x$ is visible or tombstone; $id_p$ and $id_n$ are the identifier of previous and next W-character of $x$, while each W-character is generated to be inserted in between $id_p$ and $id_n$. Here $id=(r,c)$ where $r \in \mathbb{R}$ and $c \in \mathbb{N}$.
 
-$\mathbb{L} = \{ (ctr, str) \vert ctr \in \mathbb{N}, str$ is a string of W-character $\}$. $str$ is the list seen by this replica, and $ctr$ is per-replica counter to make unique identifier. Let $<_{\mathit{ts}}$ be the order of time stamp, such that $(r_1,c_1) <_{\mathit{ts}} (r_2,c_2)$, if $(c_1 < c_2) \vee (c_1 = c_2 \wedge r_1 < r_2)$. Given a sequence $s$, let $<_s$ be order of $x$, such that $a <_s b$, if they are both in $s$ and a has smaller index.
-
-Let us explain $\rightarrow_o$ for each methods of woot:
+\noindent {\bf Example 7. woot algorithms \cite{Oster:2006}}: Woot algorithm does not assume causal-delivery. A W-character $x$ is a five-tuple $(\mathit{id},a,v,\mathit{id}_p,\mathit{id}_n)$, where $\mathit{id} \in \mathbb{R} \times \mathbb{N}$ is the identifier of $x$; $a$ is the value of $x$; $v \in \{ \mathit{true},\mathit{false} \}$ indicates whether $x$ is visible or tombstone; $\mathit{id}_p$ and $\mathit{id}_n$ are the identifier of previous and next W-character of $x$, while each W-character is generated to be inserted in between two W-characters. 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-]  If there exists $y \in str$, such that $y = (\_,x,\mathit{true},\_,\_)$, then we have $((ctr,str),rem,x,r) \rightarrow_o ((ctr,str'),msgs)$, where $str'$ is obtained from $str$ by changing the flag of $y$ into $\mathit{false}$, and $msgs = \{ (y,r,r') \vert r' \neq r \}$; Else, $((ctr,str),rem,x,r) \rightarrow_o \mathit{undef}$.
+\item[-] $\mathbb{L} = \{ (\mathit{ctr}, \mathit{str}) \vert \mathit{ctr} \in \mathbb{N}, \mathit{str}$ is a string of W-character $\}$. $\mathit{str}$ is the list seen by this replica, and $\mathit{ctr}$ is per-replica counter to make unique identifier. Let $<_{\mathit{ts}}$ be the order of time stamp, such that $(r_1,c_1) <_{\mathit{ts}} (r_2,c_2)$, if $(c_1 < c_2) \vee (c_1 = c_2 \wedge r_1 < r_2)$. Given a sequence $s$, let $<_s$ be order of $s$, such that $a <_s b$, if they are both in $s$ and $a$ has smaller index. 
 
-\item[-] $((ctr,str),read,r) \rightarrow_o ((ctr,str),l,\emptyset)$, where $l$ is the sequence of values of elements in $str$ with flag $\mathit{true}$.
+{\color {red}
+\item[-] $(\mathit{ctr},\mathit{str}) \xrightarrow[\mathit{msgs} = \{ (y,r,r') \vert r' \neq r \}]{(\mathit{rem},x,r)}_o (\mathit{ctr},\mathit{str}')$, if there exists $y = (\_,x,\textit{true},\_,\_) \in \mathit{str}$, and $\mathit{str}'$ is obtained from $\mathit{str}$ by changing the flag of $y$ into $\mathit{false}$. 
 
-\item[-] $((ctr,str),add,x,pos,r) \rightarrow_o ((ctr+1,str'),msgs)$: Assume $str[pos]=b$ and $str[pos+1]=c$, let $y = ((r,ctr),x,\mathit{true},b.id,c.id)$, then $msgs = \{ (y,b,c,r,r') \vert r' \neq r \}$, and $str' = \mathit{insert}(y,b,c)$ for recursive function $\mathit{insert}$ defined in Algorithm \ref{alg:insert}. Notions of Algorithm \ref{alg:insert} are as follows: Given $d_u = (id,a,v,id_p,id_n)$, $pre(d_u) = id_p$ and $next(d_u)=id_n$; $subseq(str,c_p,c_n)$ returns the sub-sequence of $str$ between $c_p$ and $c_n$; $pos(str,c_n)$ returns the position of $c_n$ in $str$; $ins(str,c,pos)$ inserts $c$ into $str$ at position $pos$.
-\end{itemize}
+\item[-] $(\mathit{ctr},\mathit{str}) \xrightarrow[\mathit{msgs} = \emptyset]{(\mathit{read},l,r)}_o (\mathit{ctr},\mathit{str})$, where $l$ is the sequence of values of elements in $\mathit{str}$ with flag $\mathit{true}$. 
 
+\item[-] $(\mathit{ctr},\mathit{str}) \xrightarrow[\mathit{msgs} = \{ (w_3,w_1,w_2,r,r') \vert r' \neq r \}]{(\mathit{add},x,\mathit{pos},r)}_o (\mathit{ctr}+1,\mathit{str}')$: Assume $\mathit{str}[\mathit{pos}]=w_1$ and $\mathit{str}[\mathit{pos}+1]=w_2$, then let $w_3 = ((r,\mathit{ctr}),x,\mathit{true},w_1.\mathit{id},w_2.\mathit{id})$, and $\mathit{str}' = \mathit{insert}(w_3,w_1,w_2)$ for the recursive function defined in Algorithm \ref{alg:insert}. Notions of Algorithm \ref{alg:insert} are as follows: Given $d_u = (\mathit{id},a,v,\mathit{id}_p,\mathit{id}_n)$, $\mathit{pre}(d_u) = \mathit{id}_p$ and $\mathit{next}(d_u)=\mathit{id}_n$; $\mathit{subseq}(\mathit{str},c_p,c_n)$ returns the sub-sequence of $\mathit{str}$ between $c_p$ and $c_n$; $\mathit{pos}(\mathit{str},c_n)$ returns the position of $c_n$ in $\mathit{str}$; $\mathit{ins}(\mathit{str},c,\mathit{pos})$ inserts $c$ into $\mathit{str}$ at position $\mathit{pos}$. 
+
+\item[-] $(\mathit{ctr},\mathit{str}) \xrightarrow{\mathit{apply}((\_,a,\_,\_,\_))}_m (\mathit{ctr},\mathit{str}')$, if $\mathit{str}$ contains W-character $w$ with value $a$, and $\mathit{str}'$ is obtained from $\mathit{str}$ by changing the flag of $w$ into $\mathit{false}$. 
+
+\item[-] $(\mathit{ctr},\mathit{str}) \xrightarrow{\mathit{apply}((w_1,w_2,w_3,\_,\_))}_m (\mathit{ctr},\mathit{str}')$, if $\mathit{str}$ contains $w_2$ and $w_3$, and $\mathit{str}' = \mathit{insert}(w_1,w_2,w_3)$ for the recursive function defined in Algorithm \ref{alg:insert}.
+}
+
+\item[-] $d_0 = (0,\epsilon)$.
+
+\item[-] $\Sigma_e$ is the union of (1) W-character $w$ in local states and messages, and (2) $(w_1,w_2,w_3,r,\_)$ in messages. 
+
+\item[-] {\color {red}$f_{arb}$ is obtained by applying $\mathit{insert}$ to all W-character in $\mathit{str}$ from $\epsilon$. \cite{Oster:2006} proves convergence. We give another convergence proof in Appendix \ref{sec:appendix definitions and proofs of section implementation}. We prove that, if operations in $S$ are convergent and $o_1$, $o_2$ replies on $S$, then applying $S \cup \{ o_1,o_2 \}$ also convergent.} 
+
+%$f_{arb}$ orders $x$ and $y$ as follows: Given $x = (id,a,v,id_p,id_n)$, we say that $x$ relies on W-character with identifiers $id_p$ and $id_n$. We say that $(x,y) \in f_{arb}$, if one of the following cases holds: (1) there exists $z_1,\ldots,z_k$, such that $x=z_1$, $y=z_k$, and for each $u$, $next(z_u)=z_{u+1} \vee pre(z_{u+1}) = z_u$. (2) Starting from $\epsilon$, we put all elements that $y$ and $z$ rely, then we put $y$ and $z$, and find that $y$ is before $z$ in $str$ of the resulting local state.
+    
+    
+\end{itemize} 
 
 \begin{algorithm}[t]
 \KwIn {$c$, $c_p$, $c_n$}
 \KwOut{a W-character string}
 
-Let $str' = subseq(str,c_p,c_n)$ \;
+Let $s' = \mathit{subseq}(\mathit{str},c_p,c_n)$ \;
 
-\If {$str' = \epsilon$}
+\If {$s' = \epsilon$}
 {
-    \Return $ins(str,c,pos(str,c_n))$\;
+    \Return $\mathit{ins}(\mathit{str},c,\mathit{pos}(\mathit{str},c_n))$\;
 }
 \Else
 {
-    let $L = c_p \cdot d_0 \cdot \ldots \cdot d_k \cdot c_n$, where $d_0,\ldots,d_k$ are the W-char in $str'$ such that $pre(d_u) \leq_{str} c_p$ and $c_n \leq_{str} next(d_u)$\;
+    let $L = c_p \cdot d_0 \cdot \ldots \cdot d_k \cdot c_n$, where $d_0,\ldots,d_k$ are the W-char $d_u$ in $s'$ such that $\mathit{pre}(d_u) \leq_{\mathit{str}} c_p$ and $c_n \leq_{\mathit{str}} \mathit{next}(d_u)$\;
     let $j = 1$\;
     {\bf while} $(j < \vert L \vert -1 \wedge L[j] <_{\mathit{ts}} c)$\ {\bf do}
     {
@@ -117,26 +132,7 @@ Let $str' = subseq(str,c_p,c_n)$ \;
 }
 \caption{$\mathit{insert}$}
 \label{alg:insert}
-\end{algorithm}
-
-The other part of woot is defined as follows:
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] $\rightarrow_m$:
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] Given $m=((\_,a,\_,\_,\_),\_,r)$: If $str$ contains element $y$ that has value $a$ and flag $\mathit{true}$, then we have $((ctr,str),r,m) \rightarrow_m (ctr,str')$, where $str'$ is obtained from $str$ by changing the flag of $y$ into $\mathit{false}$.
-
-    \item[-] Given $m=(x,y,z,\_,r)$: If $str$ contains $y$ and $z$, then we have $((ctr,str),r,m) \rightarrow_m (ctr,str')$, where $str' = \mathit{insert}(x,y,z)$.
-    \end{itemize}
-
-\item[-] $d_0 = (0,\epsilon)$.
-
-\item[-] $\Sigma_e$ is the union of (1) the set of $a$ for values in local states and messages, and (2) the set of $(x,y,z)$ in messages. 
-
-\item[-] $f_{arb}$ orders $x$ and $y$ as follows: Given $x = (id,a,v,id_p,id_n)$, we say that $x$ relies on W-character with identifiers $id_p$ and $id_n$. We say that $(x,y) \in f_{arb}$, if one of the following cases holds: (1) there exists $z_1,\ldots,z_k$, such that $x=z_1$, $y=z_k$, and for each $u$, $next(z_u)=z_{u+1} \vee pre(z_{u+1}) = z_u$. (2) Starting from $\epsilon$, we put all elements that $y$ and $z$ rely, then we put $y$ and $z$, and find that $y$ is before $z$ in $str$ of the resulting local state. 
-\end{itemize}
+\end{algorithm} 
 
 
 
