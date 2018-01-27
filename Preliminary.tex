@@ -78,6 +78,7 @@ An annotated history $(O,\mathit{vis},\mathit{arb})$ is CRVC w.r.t specification
 A history $(O,\mathit{ro})$ is CRVC w.r.t $\mathit{Spec}$, if there exists $\mathit{vis}$ and $\mathit{arb}$, such that $\mathit{ro} \subseteq \mathit{vis}$, and $(O,\mathit{vis},\mathit{arb})$ is CRVC consistent w.r.t $\mathit{Spec}$.
 \end{definition}
 
+
 \noindent {\bf Example 1. OR-set}: Observed-Remove Set (OR-set for short) \cite{Shapiro:2011,Bieniusa:2012} contains four methods: (1) $\mathit{add}(a)$ inserts $a$ into set, (2) $\mathit{rem}(a)$ remove $a$ from set, (3) $\mathit{lookup}(a)\Rightarrow \mathit{true}$ (resp., $\mathit{lookup}(a)\Rightarrow \mathit{false}$) represents that $a$ is in set (resp., $a$ is not in set), and $\mathit{elements}() \Rightarrow S$ represents that the set content is $S$.
 
 %\todo{Why do you need $\top$ as argument ?? If it's because you want to use operation labels for messages as well, I don't like it. Each part of the formalism should be as clear as possible, without unnecessary junk.}
