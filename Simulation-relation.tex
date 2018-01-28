@@ -11,7 +11,7 @@
 
 {\color {red}In this section, we will give simulation relations $R_{\mathit{sim}}$ between implementation and succinct reference implementation, or reference implementation if the specification is not collection. Such simulation relation will immediate imply history inclusion, and by Theorem \ref{theorem:histories of reference implementation are SRV consistent} and Theorem \ref{theorem:SRIMPSpec and RIMPSpec have same history}, this implies that such implementations are CRVC consistent w.r.t specification.
 
-According to \cite{Abadi:1991,Lynch:1995}, forward simulation is equivalent to refinement provided the right-hand LTS is deterministic. Since the transition labels of $\mathit{Sem}(\mathit{imp})$ and $\mathit{SRImp}(\mathit{Spec})$ are different in message, delivery and arbitration order, $R_{\mathit{sim}}$ needs to do translation between two LTS. To solve this, we model $R_{\mathit{sim}}$ as an relation called $f_s$-simulation, where $f_s$ are used to do translation. We also propose the corresponding refinement $f_t$ of $f_s$-simulation. When $f_s$-simulation and refinement w.r.t $f_t$ satisfies a condition called compatibility, they become equivalent.} 
+According to \cite{Abadi:1991,Lynch:1995}, forward simulation is equivalent to refinement provided the right-hand LTS is deterministic. Since the transition labels of $\mathit{Sem}(\mathit{imp})$ and $\mathit{SRImp}(\mathit{Spec})$ are different in message, delivery and arbitration order, $R_{\mathit{sim}}$ needs to do translation between two LTS. To solve this, we model $R_{\mathit{sim}}$ as an relation called $f_s$-simulation, where $f_s$ are used to do translation. We also propose the corresponding refinement $f_t$ of $f_s$-simulation. When $f_s$-simulation and refinement w.r.t $f_t$ satisfies a condition called compatibility, they become equivalent.}
 
 Given two LTS $A_1 = (Q_1,\Sigma_1,\rightarrow_1,q_{0}^1)$ and $A_2 = (Q_2,\Sigma_2,\rightarrow_2,q_{0}^2)$ and two functions $f_s: Q_1 \times Q_2 \times \Sigma_1 \rightarrow \Sigma_2$ and $f_t:\Sigma_1^* \rightarrow \Sigma_2$, we define our simulation and refinement relations as follows:
 
@@ -55,53 +55,53 @@ Given an LTS $A_1$ and a deterministic LTS $A_2$ and functions $f_s,f_t$, such t
 
 
 
-\subsection{Collection Specification with Causal-Delivery}
-\label{subsec:collection specification with calusal-delivery}
+\subsection{Collection Specification with Causal Delivery}
+\label{subsec:collection specification with calusal delivery}
 
-{\color {red}We prove simulation relation for implementations in Table \ref{tab:checked implementations}. Here the first four implementations is more complex and worth consideration. In this subsection, we take the OR-set of \cite{Shapiro:2011} as example to see that for collection specification with causal-delivery, how to construct its simulation relation $R_{\mathit{sim}}$, and how to construct functions $f_s$ and $f_t$ for it.} 
+{\color {red}We prove simulation relation for implementations in Table \ref{tab:checked implementations}. Here the first four implementations is more complex and worth consideration. In this subsection, we take the OR-set of \cite{Shapiro:2011} as example to see that for collection specification with causal delivery, how to construct its simulation relation $R_{\mathit{sim}}$, and how to construct functions $f_s$ and $f_t$ for it.}
 
 \begin{table}[h]
 	\centering
 	\begin{tabular}{|l|c|c|c|}\hline
 		%Implmenentations&\multicolumn{2}{c|}{A4 size paper}\\\hline
-        Implmenentations&Assumes Causal-Delivery&Specification&Collection\\\hline
+        Implmenentations&Assumes causal delivery&Specification&Collection\\\hline
 		OR-Set of \cite{Shapiro:2011} &  $\surd$ & OR-set & $\surd$\\
 		OR-Set of \cite{Bieniusa:2012} & $\times$ & OR-set & $\surd$\\
-        woot of \cite{Oster:2006} & $\times$ & list & $\surd$\\ 
-        replicated growable array of \cite{Attiya:2016} & $\surd$ & list & $\surd$\\ 
-        counter of \cite{Shapiro:2011} &  $\times$ & counter & $\times$\\ 
-        register of \cite{Shapiro:2011} &  $\times$ & register & $\times$\\\hline 
+        woot of \cite{Oster:2006} & $\times$ & list & $\surd$\\
+        replicated growable array of \cite{Attiya:2016} & $\surd$ & list & $\surd$\\
+        counter of \cite{Shapiro:2011} &  $\times$ & counter & $\times$\\
+        register of \cite{Shapiro:2011} &  $\times$ & register & $\times$\\\hline
 	\end{tabular}
 	\caption{Checked Implementations}
 	\label{tab:checked implementations}
-\end{table} 
+\end{table}
 
-%Let us take the OR-set algorithms of \cite{Shapiro:2011} as example to define the simulation relation $R_{\mathit{sim}}$. 
+%Let us take the OR-set algorithms of \cite{Shapiro:2011} as example to define the simulation relation $R_{\mathit{sim}}$.
 Given a state $q_{\mathit{imp}} = (\mathit{data},\mathit{msgs},\mathit{msghb})$ of implementation and a state $q_s = (O,\mathit{ro},\mathit{del},\mathit{arb})$ of specification, $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$ normally has the following requirements:
 
-\noindent - A inductive invariants for both $q_{\mathit{imp}}$ and $q_s$. %The inductive invariants normally states some features of local states and operations for executions starting from initial state. 
+\noindent - A inductive invariants for both $q_{\mathit{imp}}$ and $q_s$. %The inductive invariants normally states some features of local states and operations for executions starting from initial state.
 
-For example: The inductive invariant of $q_{\mathit{imp}}$ requires that (1) For each $\mathit{id} = (r,c)$ in $S \cup \mathit{msgs}$, $c$ is less or equal than counter of replica $r$, and (2) If $(a,S',r,\_)$ is in message, then for each $\mathit{id} \in S'$, $(a,\mathit{id}) \notin \mathit{data}[r].S \wedge (a,\mathit{id},\_,r) \notin \mathit{msgs}$; while The inductive invariants of $q_s$ requires each $\mathit{rem}$ operation is in $\mathit{FstRem}$ of some $\mathit{add}$ operation. 
+For example: The inductive invariant of $q_{\mathit{imp}}$ requires that (1) For each $\mathit{id} = (r,c)$ in $S \cup \mathit{msgs}$, $c$ is less or equal than counter of replica $r$, and (2) If $(a,S',r,\_)$ is in message, then for each $\mathit{id} \in S'$, $(a,\mathit{id}) \notin \mathit{data}[r].S \wedge (a,\mathit{id},\_,r) \notin \mathit{msgs}$; while The inductive invariants of $q_s$ requires each $\mathit{rem}$ operation is in $\mathit{FstRem}$ of some $\mathit{add}$ operation.
 
 \noindent - A method to check whether an ``$\mathit{add}$ operation'' of $\Sigma_e$ is redundant. If it is, then applying messages of this operation does not change local state.
 
-Example: $(a,\mathit{id})$ is redundant, if for each replica $r$, $(a,\mathit{id}) \notin \mathit{data}[r].S$. 
+Example: $(a,\mathit{id})$ is redundant, if for each replica $r$, $(a,\mathit{id}) \notin \mathit{data}[r].S$.
 
 \noindent - A map $f$ between non-redundant elements of $\Sigma_e$ and $O$.%, where $O_s$ is union of $O$ and operations in arbitration order.
 
-Example: $f$ maps $(a,\mathit{id})$ that are not redundant into $\mathit{add}(a)$ and maps $(a,S',r)$ into $\mathit{rem}(a)$. 
+Example: $f$ maps $(a,\mathit{id})$ that are not redundant into $\mathit{add}(a)$ and maps $(a,S',r)$ into $\mathit{rem}(a)$.
 
 %\noindent - We require that $f(f_{arb}(data,msgs))$ be a sup-sequence of $\mathit{arb}$.
 
 \noindent - There is a message of $x \in \Sigma_e$ waiting to be applied to replica $r$, if and only if $f(x) \notin \mathit{visTo}(O,r,\mathit{vis})$.
 
-\noindent - Recognize the $\mathit{FstRem}$ relations for elements of $\Sigma_e$. 
+\noindent - Recognize the $\mathit{FstRem}$ relations for elements of $\Sigma_e$.
 
 Example: Given $x=(a,S',r)$: for each $\mathit{id} \in S'$, $f(x) \in \mathit{FstRem}(O,\mathit{vis},f(a,\mathit{id}))$; while for each $\mathit{id} \notin S'$, $f(x) \notin \mathit{FstRem}(O,\mathit{vis},f(a,\mathit{id}))$.
 
 \noindent - Recognize the visibility relation for elements of $\Sigma_e$.
 
-Example: $(a,\mathit{id}) \in data[r].S$, if and only if $f((a,\mathit{id})) \in \mathit{visTo}(O,r,\mathit{vis})$, and for each $o_r \in \mathit{FstRem}(O,\mathit{vis},f((a,\mathit{id})))$, $o_r \notin \mathit{visTo}(O,r,\mathit{vis})$. 
+Example: $(a,\mathit{id}) \in data[r].S$, if and only if $f((a,\mathit{id})) \in \mathit{visTo}(O,r,\mathit{vis})$, and for each $o_r \in \mathit{FstRem}(O,\mathit{vis},f((a,\mathit{id})))$, $o_r \notin \mathit{visTo}(O,r,\mathit{vis})$.
 
 \noindent - {\color {red}$\mathit{msghb}$ record the happen before relation of messages. Given $m_1,m_2 \in \mathit{msgs}$ and assume that their ``operations in $\Sigma_e$'' is $x_1$ and $x_2$, respectively. $(m_1,m_2) \in \mathit{msghb}$ indicates that the corresponding operation of $x_1$ happens before that of $x_2$. If both $x_1$ and $x_2$ are in domain of $f$, then we have $(f(x_1),f(x_2)) \in \mathit{hb}$.}
 
@@ -111,44 +111,44 @@ Example: $(a,\mathit{id}) \in data[r].S$, if and only if $f((a,\mathit{id})) \in
   \centering
   \includegraphics[width=0.8 \textwidth]{figures/PIC-OR-set-Implementation-Execution.pdf}
 %\vspace{-10pt}
-  \caption{OR-set implementation for \figurename~\ref{fig:succinct reference implementation for OR-set}.} 
+  \caption{OR-set implementation for \figurename~\ref{fig:succinct reference implementation for OR-set}.}
   \label{fig:or-set implemtation for succinct or-set specification}
 \end{figure}
 
-{\color {red}\figurename~\ref{fig:or-set implemtation for succinct or-set specification} gives the states of OR-set implementation that simulate states of specification in \figurename~\ref{fig:succinct reference implementation for OR-set}. State $p_1$, $p_2$ and $p_3$ simulates states $q'_1$, $q'_2$ and $q'_3$ of \figurename~\ref{fig:succinct reference implementation for OR-set}, respectively. To explain $(p_1,q'_1) \in R_{\mathit{sim}}$, we choose $(a,\mathit{id}_1)$ to be redundant, and $f$ maps $(a,\mathit{id}_2)$ into $+a_2$ and maps $(a,\{ \mathit{id}_2 \},r_2)$ into $-a_2$. This $f$ satisfies the requirements for message, $\mathit{FstRem}$ and visibility. To deal with the transitions from $p_1$ to $p_2$, we extend $f$ to additionally maps $(b,\mathit{id}_3)$ into $+b$, and put $(\mathit{msg}_1,\mathit{msg}_3)$ into $\mathit{msghb}$ to record the operation of $(a_1,\{ \mathit{id}_1 \},r_1)$ happens before the operation of $(b,\mathit{id}_3)$. Then it is easy to see that $(p_2,q'_2) \in R_{\mathit{sim}}$. To deal with the transitions from $p_2$ to $p_3$, we translate $\mathit{addDel}(-a_2,r_1)$ into $\mathit{msg}_2$. In $p_3$, $(a,\mathit{id}_1)$ and $(a,\mathit{id}_2)$ are both redundant, and $f$ maps $(b,\mathit{id}_3)$ into $+b$. Then it is easy to see $(p_3,q'_3) \in R_{\mathit{sim}}$. 
+{\color {red}\figurename~\ref{fig:or-set implemtation for succinct or-set specification} gives the states of OR-set implementation that simulate states of specification in \figurename~\ref{fig:succinct reference implementation for OR-set}. State $p_1$, $p_2$ and $p_3$ simulates states $q'_1$, $q'_2$ and $q'_3$ of \figurename~\ref{fig:succinct reference implementation for OR-set}, respectively. To explain $(p_1,q'_1) \in R_{\mathit{sim}}$, we choose $(a,\mathit{id}_1)$ to be redundant, and $f$ maps $(a,\mathit{id}_2)$ into $+a_2$ and maps $(a,\{ \mathit{id}_2 \},r_2)$ into $-a_2$. This $f$ satisfies the requirements for message, $\mathit{FstRem}$ and visibility. To deal with the transitions from $p_1$ to $p_2$, we extend $f$ to additionally maps $(b,\mathit{id}_3)$ into $+b$, and put $(\mathit{msg}_1,\mathit{msg}_3)$ into $\mathit{msghb}$ to record the operation of $(a_1,\{ \mathit{id}_1 \},r_1)$ happens before the operation of $(b,\mathit{id}_3)$. Then it is easy to see that $(p_2,q'_2) \in R_{\mathit{sim}}$. To deal with the transitions from $p_2$ to $p_3$, we translate $\mathit{addDel}(-a_2,r_1)$ into $\mathit{msg}_2$. In $p_3$, $(a,\mathit{id}_1)$ and $(a,\mathit{id}_2)$ are both redundant, and $f$ maps $(b,\mathit{id}_3)$ into $+b$. Then it is easy to see $(p_3,q'_3) \in R_{\mathit{sim}}$.
 
 Let us explain how to construct function $f_s$. $f_s$ is used to translate implementation transition label into specification transition label. It uses function $f$ to find operation of a message and to construct arbitration order. It ignores translating applying message of redundant operations. Formally, given implementation state $q_{\mathit{imp}}$, specification state $q_s$, where $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, $f$ is the map between $\Sigma_e$ of $q_{\mathit{imp}}$ and operations of $q_s$, and $q_{\mathit{imp}} {\xrightarrow{\alpha}} q'_{\mathit{imp}}$. Then,
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\alpha = apply(m)$: Let $m$ be message of $x \in \Sigma_e$. If $x$ is redundant, then $f_s(q_{\mathit{imp}},q_s,\alpha) = \epsilon$; Else, $f_s(q_{\mathit{imp}},q_s,\alpha) = addDel(f(x),r)$, where $r$ is the destination replica of $m$. 
+\item[-] $\alpha = apply(m)$: Let $m$ be message of $x \in \Sigma_e$. If $x$ is redundant, then $f_s(q_{\mathit{imp}},q_s,\alpha) = \epsilon$; Else, $f_s(q_{\mathit{imp}},q_s,\alpha) = addDel(f(x),r)$, where $r$ is the destination replica of $m$.
 
-\item[-] $\alpha = (m,a,b,r,\mathit{arb}_{\mathit{imp}})$: $f_s(q_{\mathit{imp}},q_s,\alpha) = (m,a,b,r,\mathit{arb}'_s)$. If $m \in \mathbb{Q} \cup \{ \mathit{rem} \}$, then $\mathit{arb}'_s$ is same as the arbitration order of $q_s$; Else, assume the arbitration of $q'_{\mathit{imp}}$ is obtained from that of $q'_{\mathit{imp}}$ by inserting a new element in the $k$-th position, then $\mathit{arb}'_s$ is obtained from the arbitration order of $q_s$ by inserting $o$ at the $k$-th position, where $o=(m(a)\Rightarrow b,r,)$ is the unique possible operation for newly generated $m(a)\Rightarrow b$. 
+\item[-] $\alpha = (m,a,b,r,\mathit{arb}_{\mathit{imp}})$: $f_s(q_{\mathit{imp}},q_s,\alpha) = (m,a,b,r,\mathit{arb}'_s)$. If $m \in \mathbb{Q} \cup \{ \mathit{rem} \}$, then $\mathit{arb}'_s$ is same as the arbitration order of $q_s$; Else, assume the arbitration of $q'_{\mathit{imp}}$ is obtained from that of $q'_{\mathit{imp}}$ by inserting a new element in the $k$-th position, then $\mathit{arb}'_s$ is obtained from the arbitration order of $q_s$ by inserting $o$ at the $k$-th position, where $o=(m(a)\Rightarrow b,r,)$ is the unique possible operation for newly generated $m(a)\Rightarrow b$.
 \end{itemize}
 
-Here we implicitly assume that, when we comes to a pair of states, we change $f$ by only inserting or removing pairs of operations, not by changing existing pairs of operations. Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $\mathit{Sem}(\mathit{imp})$, function $f_t(t) = \beta_k$ works as follows: From the initial states $q_0^{\mathit{imp}}$ of $\mathit{Sem}(\mathit{imp})$, the initial state $q_0^{s}$ of $\mathit{SRImp}(\mathit{Spec})$, and $\alpha_1$, work as $f_s$ to obtain transition label $\beta_1$ and a new state $q_q^{s}$ of $\mathit{SRImp}(\mathit{Spec})$, and so on. The detailed definition can be found in Appendix \ref{sec:appendix definitions and proofs of section simulation and refinement}. It is easy to see that functions $f_s$ and $f_t$ hold as required. 
-} 
+Here we implicitly assume that, when we comes to a pair of states, we change $f$ by only inserting or removing pairs of operations, not by changing existing pairs of operations. Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $\mathit{Sem}(\mathit{imp})$, function $f_t(t) = \beta_k$ works as follows: From the initial states $q_0^{\mathit{imp}}$ of $\mathit{Sem}(\mathit{imp})$, the initial state $q_0^{s}$ of $\mathit{SRImp}(\mathit{Spec})$, and $\alpha_1$, work as $f_s$ to obtain transition label $\beta_1$ and a new state $q_q^{s}$ of $\mathit{SRImp}(\mathit{Spec})$, and so on. The detailed definition can be found in Appendix \ref{sec:appendix definitions and proofs of section simulation and refinement}. It is easy to see that functions $f_s$ and $f_t$ hold as required.
+}
 
 
 
 \subsection{Collection Specification without Causal Delivery}
-\label{subsec:collection specification without calusal delivery} 
+\label{subsec:collection specification without calusal delivery}
 
-In this subsection, we sketch the simulation relation for woot algorithm. The other part is similar to above subsection. For woot algorithm, $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, if 
+In this subsection, we sketch the simulation relation for woot algorithm. The other part is similar to above subsection. For woot algorithm, $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, if
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] An inductive invariant, such as for each replica $r$, we could execute the recursive function $\mathit{insert}$ of Algorithm \ref{alg:insert} for all operations of  $\mathit{data}[r].\mathit{str}$. 
+\item[-] An inductive invariant, such as for each replica $r$, we could execute the recursive function $\mathit{insert}$ of Algorithm \ref{alg:insert} for all operations of  $\mathit{data}[r].\mathit{str}$.
 
-\item[-] $f$ maps $(w_1,w_2,w_3)$ into $\mathit{add}(a)$ if $a$ is the value of $w_1$, and maps $(w,r)$ into $\mathit{rem}(a)$ if $a$ is the value of $w$.  
+\item[-] $f$ maps $(w_1,w_2,w_3)$ into $\mathit{add}(a)$ if $a$ is the value of $w_1$, and maps $(w,r)$ into $\mathit{rem}(a)$ if $a$ is the value of $w$.
 
 \item[-] a W-character $w$ with value $a$ is redundant, if for each replica $r$, either $(\_,a,\mathit{false},\_,\_)$ is in $data[r].str$, or $((\_,a,\_,\_,\_),\_,r) \in msgs$.
 
 \item[-] Recognize the $\mathit{FstRem}$ relations: $\mathit{FstRem}((w_1,w_2,w_3)) = w_4$, while $w_1$ is of value $a$ and $f(w_4) = \mathit{rem}(a)$. %$w_1=(\_,a,\_,\_,\_)$ and $w_4 = ((\_,a,\_,\_,\_),\_,\_)$.
 
-\item[-] Recognize the visibility relation: $x = (\_,a,\mathit{true},\_,\_) \in data[r].str$, if and only if $f(x) \in \mathit{visTo}(O,r,\mathit{vis})$, and for each $o_r \in mathit{FstRem}(f(x))$, $o_r \notin \mathit{visTo}(O,r,\mathit{vis})$; $x = (\_,a,\mathit{false},\_,\_) \in data[r].str$, if and only if there exists $y \in \mathit{FstRem}(f(x))$, such that $y \in \mathit{visTo}(O,r,\mathit{vis})$. 
+\item[-] Recognize the visibility relation: $x = (\_,a,\mathit{true},\_,\_) \in data[r].str$, if and only if $f(x) \in \mathit{visTo}(O,r,\mathit{vis})$, and for each $o_r \in mathit{FstRem}(f(x))$, $o_r \notin \mathit{visTo}(O,r,\mathit{vis})$; $x = (\_,a,\mathit{false},\_,\_) \in data[r].str$, if and only if there exists $y \in \mathit{FstRem}(f(x))$, such that $y \in \mathit{visTo}(O,r,\mathit{vis})$.
 
-\item[-] Arbitration order: We require that the arbitration order of $q_s$ is a sub-sequence of $f(f_{\mathit{arb}}(data,msgs))$.  
+\item[-] Arbitration order: We require that the arbitration order of $q_s$ is a sub-sequence of $f(f_{\mathit{arb}}(data,msgs))$.
 \end{itemize}
 
 

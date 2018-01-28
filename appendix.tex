@@ -3,13 +3,13 @@
 \section{Definitions and Proofs of Section \ref{sec:reference implementation}}
 \label{sec:appendix definitions and proofs of section reference implementation}
 
-{\noindent \bf Theorem \ref{lemma:executions of reference implementation are SRV consistent}}: $\forall t \in \llbracket RImp(Spec) \rrbracket$, $anHis(t)$ is SRVC consistent w.r.t $Spec$.
+{\noindent \bf Theorem \ref{theorem:histories of reference implementation are SRV consistent}}: For each $h \in \mathit{his}(\mathit{RImp}(\mathit{Spec}))$, $h$ is CRVC consistent w.r.t $\mathit{Spec}$. 
 
-\begin {proof}
+\begin {proof} 
 
-Assume $RImp(Spec) = (Q,\Sigma,q_0,\rightarrow)$, $t = \alpha_1, \ldots, $ and $q_1,\ldots \in Q$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$. Let $anHis(t) = (O_t,\mathit{ro}_t,\mathit{vis}_t,\mathit{arb}_t)$.
+Assume $\mathit{RImp}(\mathit{Spec}) = (Q,\Sigma,\rightarrow,q_0)$. We prove this lemma by proving that, given a trace $t = \alpha_1 \cdot \ldots$ of $\mathit{RImp}(\mathit{Spec})$, its annotated history $\mathit{ah}_t$ is SRVC consistent w.r.t $\mathit{Spec}$. 
 
-According to the construction of $anHis(t)$, it is easy to see that $\mathit{ro}_t \subseteq \mathit{vis}_t \wedge \mathit{vis}_t$ is acyclic.
+Let $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ be the execution of $t$. Let $\mathit{ah}_t = (O_t,\mathit{vis}_t,\mathit{arb}_t)$. According to the construction of $\mathit{ah}_t$, it is easy to see that $\mathit{ro}_t \subseteq \mathit{vis}_t \wedge \mathit{vis}_t$ is acyclic.
 
 We need to prove that, there exists function $ctxt$, such that $\forall o \in O_t$, $ctxt(o) = (O_o,<_o,arb_o) \in Spec(lab(o))$. Assume $o$ is generated with the transition $q_k = (O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k)$ ${\xrightarrow{\alpha_{k+1}}} q_{k+1}$. It is easy to see that
 
@@ -17,32 +17,19 @@ We need to prove that, there exists function $ctxt$, such that $\forall o \in O_
 \setlength{\itemsep}{0.5pt}
 \item[-] $O_k$ is the set of update operations in $\alpha_1 \cdot \ldots \cdot \alpha_k$,
 
-\item[-] $(\mathit{ro}_k \cdot \mathit{del}_k) \uparrow_{ (O_k \times O_k) }$ is the visibility relation of update operations of $\alpha_1 \cdot \ldots \cdot \alpha_k$,
+\item[-] $(\mathit{ro}_k \cup (\mathit{del}_k \cdot \mathit{ro}_k)) \uparrow_{ Q_k }$ is the visibility relation of update operations of $\alpha_1 \cdot \ldots \cdot \alpha_k$,
 
 \item[-] $\mathit{arb}_k$ is the projection of $arb_t$ into $O_k \times O_k$.
 \end{itemize}
 
-By the definition of transition relation of $RImp(Spec)$,
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] If $o$ is a query operation, then there exists function $ctxt'$, such that for $\ell = m(a) \Rightarrow b$,
-
-     $\begin{array}{l c} \bigfrac{ o=(\ell,r,\_) \notin O_k, \exists O', ctxt'((O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k),o) = (O',\_,arb \uparrow_{ (Q' \times Q') })  \in Spec(\ell)} {(O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k) {\xrightarrow{m(a,b,r,arb)}} (O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k)}  \end{array}$
-
-\item[-] If $o$ is a update operation, then there exists function $ctxt'$ and $\mathit{arb}'$. $\mathit{arb}'$ is obtained from $arb$ by adding $o$ and possibly relations between $O$ and $\{ o \}$.For $\ell = m(a) \Rightarrow b$,
-
-     $\begin{array}{l c} \bigfrac{o = (\ell,r,\_) \notin O_k, \exists O', ctxt'((O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k),o) = (O',\_,arb' \uparrow_{(O' \cup \{ o \})}) \in Spec(\ell)} {(O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k) {\xrightarrow{m(a,b,r,arb')}} (O_k \cup \{ o \},\mathit{ro}_k \oplus o ,\mathit{del}_k \oplus o,\mathit{arb}')}  \end{array}$
-
-     Note that, when arbitration order is changed by adding a new operation, the relations of existing operations never change. $o_x$. Therefore, it is easy to see that $\mathit{arb}'$ is obtained by projection $arb_t$ into $O_k \cup \{ o \}$.
-\end{itemize}
-
-For both cases, let $ctxt(o) = ctxt'(o)$. It is easy to see that $ctxt(o)$ defines a operation context of $o$ in $anHis(t)$ and it is obvious that $ctxt(o) \in Spec(lab(o))$. This completes the proof of this lemma. $\qed$
+By the definition of transition relation of $\mathit{RImp}(\mathit{Spec})$, we can always choose $ctxt(o)$ to be $f_{\mathit{ctxt}}((O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k),o)$. It is easy to see that $ctxt(o)$ to be $ctxt(o) = f_{\mathit{ctxt}}((O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k),o)$ holds as required. This completes the proof of this lemma. $\qed$
 \end {proof}
 
 
 
 
+
+Let $\mathit{trace}(A)$ be the set of traces of LTS $A$. The following lemma states that the trace of $\mathit{RImp}(\mathit{Spec})_{\mathit{cd}}$ is the set of traces of $\mathit{RImp}(\mathit{Spec})$ that satisfies causal-delivery. 
 
 
 {\noindent \bf Lemma \ref{lemma:RImpcdSpec contains all the sequences of RImpSpec that are causal delivery}}: $\llbracket RImp(Spec)_{\mathit{cd}} \rrbracket = \{ t \vert t \in \llbracket RImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$.

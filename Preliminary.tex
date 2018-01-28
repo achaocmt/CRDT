@@ -28,8 +28,8 @@
 
 Given a finite set $\mathbb{M}$ of method names, a possibly infinite set $\mathbb{D}$ of data domain for argument and return values, a finite set $\mathbb{R}$ of replica identifiers, and a infinite set $\mathbb{O}$ of operation identifiers. A operation label is a tuple $m(a)\Rightarrow b$ where $m \in \mathbb{M}$ and $a,b \in \mathbb{D}$. $m(a) \Rightarrow b$ represents that $m$ is called with argument $a$ and returns b. When $m$ does not use the argument (resp., return value), we write $m()\Rightarrow b$ (resp., $m(a)$) instead. An operation $o$ is a tuple $(\ell,r,i)$, where $\ell$ is a operation label, $r \in \mathbb{R},i \in \mathbb{O}$. Let $\mathit{lab}(o)$ be the operation label of $o$. This definition extends naturally to the case when there are more than one arguments. Methods of $\mathbb{M}$ can be divided into query methods with names in $\mathbb{Q}$ and update methods with names in $\mathbb{U}$.
 
-{\color {red}We use the notion of history to capture capture the user-observable behaviors, which contains operations and their order on each replica.} A history is a tuple $(O,\mathit{ro})$, where $O$ is a set of operations, and $\mathit{ro}$ is called the replica order. For each replica $r \in \mathbb{R}$, $\mathit{ro}$ is a irreflexive total order over operations with replica identifier $r$. $\mathit{ro}$ does not relate operations with different replica identifiers. %We also require that for each operation $o \in O$, $\mathit{ro}^{-1}(o)$ is finite.
-{\color {red}An example of distributed list history is shown in \figurename~\ref{fig:history, annotated history and operation context} (a).} 
+{\color {red}We use the notion of history to capture the user-observable behaviors, which contains operations and their order on each replica.} A history is a tuple $(O,\mathit{ro})$, where $O$ is a set of operations, and $\mathit{ro}$ is called the replica order. For each replica $r \in \mathbb{R}$, $\mathit{ro}$ is a irreflexive total order over operations with replica identifier $r$. $\mathit{ro}$ does not relate operations with different replica identifiers. %We also require that for each operation $o \in O$, $\mathit{ro}^{-1}(o)$ is finite.
+{\color {red}An example of distributed list history is shown in \figurename~\ref{fig:history, annotated history and operation context} (a).}
 
 %CRDT has two kinds of method: query methods and update methods.
 {\color{red}To check the correctness of a history, we augment it with additional information to explain the observed operations. In this way we obtain annotated history.} An annotated history is a tuple $(O,\mathit{vis},\mathit{arb})$, where $O$ is a set of operations, $\mathit{vis}$ is called the visibility relation and is a irreflexive and acyclic relation over $O$ , and $\mathit{arb}$ is called the arbitration order and is a irreflexive total order over a subset of update operations of $O$. {\color {red} Visibility relation tells how update operations are delivered, and arbitration order represents some global orders that are used to determine return values on each replica, such as list order in \cite{Attiya:2016} or time stamp order.} We further require that for each operation $o \in O$, $\mathit{vis}^{-1}(o)$ is finite. {\color {red}The annotated history for history of \figurename~\ref{fig:history, annotated history and operation context} (a) is given in \figurename~\ref{fig:history, annotated history and operation context} (b).} % with arbitration order $\mathit{add}(b,1) \cdot \mathit{add}(c,2) \cdot \mathit{add}(a,1)$.}
@@ -42,7 +42,7 @@ Given a finite set $\mathbb{M}$ of method names, a possibly infinite set $\mathb
 
 %\item[-] $\mathit{arb}$ is a partial order over update operations of $O$ and is called the arbitration order.
 %\item[-] $\mathit{arb}$ is a irreflexive total order over a subset of update operations of $O$ and is called the arbitration order.
-%\end{itemize} 
+%\end{itemize}
 
 
 \begin{figure}[t]
@@ -84,16 +84,16 @@ A history $(O,\mathit{ro})$ is CRVC w.r.t $\mathit{Spec}$, if there exists $\mat
 %\todo{Why do you need $\top$ as argument ?? If it's because you want to use operation labels for messages as well, I don't like it. Each part of the formalism should be as clear as possible, without unnecessary junk.}
 
 %Let $\Sigma_{\mathit{ORS}} = \{ add(a,\top),rem(\top,a) \vert a \in \mathbb{D} \}$ be the set of contents of update operations.
-The specification $S_{\mathit{ORS}}$ is as follows: (1) For $x=\mathit{add}(a)$, $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,\emptyset)$, (2) For $x=\mathit{lookup}(a) \Rightarrow \mathit{true}$ (resp., $x=\mathit{lookup}(a) \Rightarrow \mathit{false}$), $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,\emptyset)$, such that the projection of $<$ over $\mathit{add}(a)$ and $\mathit{rem}(a)$ in $O$ contains a maximal element with operation label $\mathit{add}(a)$ (resp., contains no maximal element with operation label $\mathit{add}(a)$), (3) For $x = \mathit{rem}(a)$, $S_{\mathit{ORS}}(x)$ is the same as $x = \mathit{lookup}(a) \Rightarrow \mathit{true}$, and (4) $S_{\mathit{ORS}}(\mathit{elements}() \Rightarrow S)$ is all the tuples $(O,<,\emptyset)$ that are in $S_{\mathit{ORS}}(\mathit{lookup}(a) \Rightarrow \mathit{true})$ for each $a \in S$, and are in $S_{\mathit{ORS}}(\mathit{lookup}(a)) \Rightarrow \mathit{false}$ for each $a \notin S$. {\color {red} $S_{\mathit{ORS}}$ make $\mathit{rem}$ cancel only $\mathit{add}$ operations ``visible'' to them. For example, \figurename~\ref{fig:history, annotated history and operation context} (e) is in $S_{\mathit{ORS}}(\mathit{lookup}(a) \Rightarrow \mathit{true})$.} 
+The specification $S_{\mathit{ORS}}$ is as follows: (1) For $x=\mathit{add}(a)$, $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,\emptyset)$, (2) For $x=\mathit{lookup}(a) \Rightarrow \mathit{true}$ (resp., $x=\mathit{lookup}(a) \Rightarrow \mathit{false}$), $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,\emptyset)$, such that the projection of $<$ over $\mathit{add}(a)$ and $\mathit{rem}(a)$ in $O$ contains a maximal element with operation label $\mathit{add}(a)$ (resp., contains no maximal element with operation label $\mathit{add}(a)$), (3) For $x = \mathit{rem}(a)$, $S_{\mathit{ORS}}(x)$ is the same as $x = \mathit{lookup}(a) \Rightarrow \mathit{true}$, and (4) $S_{\mathit{ORS}}(\mathit{elements}() \Rightarrow S)$ is all the tuples $(O,<,\emptyset)$ that are in $S_{\mathit{ORS}}(\mathit{lookup}(a) \Rightarrow \mathit{true})$ for each $a \in S$, and are in $S_{\mathit{ORS}}(\mathit{lookup}(a)) \Rightarrow \mathit{false}$ for each $a \notin S$. {\color {red} $S_{\mathit{ORS}}$ make $\mathit{rem}$ cancel only $\mathit{add}$ operations ``visible'' to them. For example, \figurename~\ref{fig:history, annotated history and operation context} (e) is in $S_{\mathit{ORS}}(\mathit{lookup}(a) \Rightarrow \mathit{true})$.}
 
-\noindent {\bf Example 2. Distributed list}: Distributed list has three methods: (1) $\mathit{add}(a,\mathit{pos})$ inserts identifier $a$ into position $\mathit{pos} \in \mathbb{N}$, (2) $\mathit{rem}(a)$ removes the identifier $a$ from list, and (3) $\mathit{read}() \Rightarrow l$ returns the list content. Here intuitively, we assume that each identifier are putted at most once globally. 
+\noindent {\bf Example 2. Distributed list}: Distributed list has three methods: (1) $\mathit{add}(a,\mathit{pos})$ inserts identifier $a$ into position $\mathit{pos} \in \mathbb{N}$, (2) $\mathit{rem}(a)$ removes the identifier $a$ from list, and (3) $\mathit{read}() \Rightarrow l$ returns the list content. Here intuitively, we assume that each identifier are putted at most once globally.
 
 %Let $\Sigma_{\mathit{list}} = \{ add(a,pos,\top),rem(\top,a) \vert a \in \mathbb{D},pos \in \mathbb{N} \}$ be the set of contents of update operations.
 The specification $S_{\mathit{list}}$ is defined as follows: $(O,<,\mathit{arb}) \in S_{\mathit{list}}(\ell)$, if
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] %$<^{-1}$ contains finite elements, $<$ is acyclic and 
+\item[-] %$<^{-1}$ contains finite elements, $<$ is acyclic and
 $arb$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin O$ and is in domain of $arb$.
 
 \item[-] Let $R = \{ i \vert \exists b, (add(b),\_,i),(rem(b),\_,\_) \in O \}$ and $\mathit{seq} = \mathit{arb} \uparrow_{ O \cup \{ o \} \setminus R }$. Then,
@@ -104,13 +104,13 @@ $arb$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin 
 
     \item[-] Or $\ell = rem(a) \wedge (add(a),\_,\_) \in O$,
 
-    \item[-] Or $\ell = read() \Rightarrow l$ and $l$ is obtained by using $\mathit{lab}$ on $\mathit{seq}$. 
+    \item[-] Or $\ell = read() \Rightarrow l$ and $l$ is obtained by using $\mathit{lab}$ on $\mathit{seq}$.
     \end{itemize}
 \end{itemize}
 
 %\todo{Give a declarative specification of the list, like for OR-set. Descriptions which look like ``imperative programs'', e.g., "We can go through operations", "During this process".}
 
-Where for a relation $R$, $R \uparrow_{S}$ means projection $R$ on $S \times S$. We essentially use the ist order of strong list specification in \cite{Attiya:2016} as the arbitration order. 
+Where for a relation $R$, $R \uparrow_{S}$ means projection $R$ on $S \times S$. We essentially use the ist order of strong list specification in \cite{Attiya:2016} as the arbitration order.
 
 
 \begin{remark}
