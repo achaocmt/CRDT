@@ -66,12 +66,35 @@ The following lemma states that, if $q'_1 = \mathit{frg}(q_1,S)$ and $q_1 {\xrig
 
 \begin{lemma}
 \label{lemma:RImpcdSpec contains all the sequences of RImpSpec that are causal delivery}
-If $q'_1 = \mathit{frg}(q_1,S)$ and $q_1 {\xrightarrow{\alpha}}_r q_2$ in $\mathit{RImp}(\mathit{Spec})$, then $q'_1 {\xrightarrow{\alpha}}_s q'_2$ in in $\mathit{SRImp}(\mathit{Spec})$ and $q'_2 = \mathit{frg}(q_2,S)$, where $\alpha'$ is obtained from $\alpha$ by removing operation of $S$. 
+If $q'_1 = \mathit{frg}(q_1,S)$ and $q_1 {\xrightarrow{\alpha}}_r q_2$ in $\mathit{RImp}(\mathit{Spec})$, then $q'_1 {\xrightarrow{\alpha}}_s q'_2$ in in $\mathit{SRImp}(\mathit{Spec})$ and $q'_2 = \mathit{frg}(q_2,S)$. If $\alpha = \mathit{addDel}(o,r) \wedge o \in S$, then $\alpha' = \epsilon$; Else, $\mathit{arb}'$ is obtained from $\alpha$ by removing operation of $S$. 
 \end{lemma}
 
 \begin {proof} 
 
-Let us 
+Let us consider all possible cases of transition: 
+
+\[
+\begin{array}{l c}
+\bigfrac{ o \in O, (o,r)\notin visTo(O,r,\mathit{vis}) }
+{ (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{addDel(o,r)}} (O,\mathit{ro},\mathit{del} \cup \{ (o,r) \},\mathit{arb}) } %{\mathit{Delivery}}
+\end{array}
+\]
+
+
+\[
+\begin{array}{l c}
+\bigfrac{ m \in \mathbb{Q}, \ell = m(a) \Rightarrow b, o=(\ell,r,\_) \notin O, \exists x, x \in f_{\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}),o) \wedge x \in Spec(\ell) }
+{ (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,\mathit{arb})}} (O,\mathit{ro},\mathit{del},\mathit{arb}) } %{\mathit{Query}}
+\end{array}
+\]
+
+
+\[
+\begin{array}{l c}
+\bigfrac{ m \in \mathbb{U}, \ell = m(a) \Rightarrow b, o = (\ell,r,\_) \notin O, \exists y=\mathit{rand}(\mathit{arb},o), \exists x = (O',\_,y \uparrow_{O'} ) \in f_{\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}),o) \wedge x \in Spec(\ell) }
+{ (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,y)}} (O \cup \{ o \},\mathit{ro} \oplus o ,\mathit{del} \oplus o,y) } %{\mathit{Update}}
+\end{array}
+\]
 
 This completes the proof of this lemma. $\qed$
 \end {proof}
