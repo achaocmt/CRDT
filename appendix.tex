@@ -234,6 +234,20 @@ This completes the proof of this lemma. $\qed$
 
 
 
+Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $Sem(imp)$, $f_t(t)$ works as follows:
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] We have a state $q_s$ and a map $\mathit{map}$. Their initial value is the initial state of $SRImp(Spec)$ and $\emptyset$, respectively.
+
+\item[-] Assume we have already dealt with $\alpha_1 \cdot \ldots \cdot \alpha_{u-1}$.
+
+\item[-] If $\alpha_u = apply(m)$, where $m$ is of element $x$ and its destination replica is $r$: $\beta_u = addDel(map(x),r)$, and update $q_s$ with $\beta_u$.
+
+\item[-] If $\alpha_u = (m,a,b,r,\mathit{arb}_{\mathit{imp}})$: Let $\mathit{arb}_{u-1}^s$ is the arbitration of $q_s$. If $m$ is a query or $\mathit{rem}$ operation, then $\beta_u = (m,a,b,r,\mathit{arb}_{u-1}^s)$; Else, $\beta_u = (m,a,b,r,\mathit{arb}_{u-1}^{'s})$, where $\mathit{arb}_{u-1}^{'s}$ is obtained from $\mathit{arb}_{u-1}^s$ by inserting the $add$ operation at some place, while consistent with $\mathit{arb}_{\mathit{imp}}$. After we obtain $\beta_u$, we update $q_s$ with $\beta_u$.
+
+\item[-] $f_t(t) = \beta_k$.
+\end{itemize}
 
 
 

@@ -4,137 +4,12 @@
 \label{sec:simulation relation for CRDT implementations}
 
 
-\subsection{Collection Specification with Causal Delivery}
-\label{subsec:collection specification with calusal delivery}
-
-%Given a succinct reference implementation $SRImp(Spec) = (Q_s,\Sigma_s,q_0^s,\rightarrow_s)$, and implementation $imp = (f_M,f_{apl},d_{\mathit{init}},f_{o},f_{arb})$ and its semantics $Sem(imp) = (Q_{\mathit{imp}},$ $\Sigma_{\mathit{imp}},\rightarrow_{\mathit{imp}},q_{\mathit{imp}}^0)$, a relation $R_{\mathit{sim}}$ is defined as follows: for $q_{\mathit{imp}} = (data,msgs) \in Q_{\mathit{imp}}$ and $q_s = (O_s,\mathit{ro}_s,\mathit{del}_s,\mathit{arb}_s) \in Q_s$, $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, if: Let $O_{\mathit{imp}} = f_{o}(data,msgs)$, 
-
-Let us take the OR-set algorithms of \cite{Shapiro:2011} as example to define the simulation relation $R_{\mathit{sim}}$. Given a state $q_{\mathit{imp}} = (data,msgs,\mathit{hb})$ of implementation and a state $q_s = (O,\mathit{ro},\mathit{del},\mathit{arb})$ of specification, $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$ often has the following requirements: 
-
-$\newline$ \noindent - A inductive invariants for both $q_{\mathit{imp}}$ and $q_s$. The inductive invariants normally states some features of local states and operations for executions starting from initial state.
-
-Example: The inductive invariant of $q_{\mathit{imp}}$ requires that  
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] For each $id = (r,c)$ in $S \cup msgs$, $c$ is less or equal than counter of replica $r$. 
-
-    \item[-] If $(a,\mathit{Set},r)$ is in message, then for each $id \in \mathit{Set}$, $(a,id) \notin data[r].S \wedge (a,id,\_,r) \notin msgs$. 
-    \end{itemize} 
-    
-    The inductive invariants of $q_s$ requires that, each $rem$ operation is in $\mathit{FstRem}$ of some $add$ operation. 
-
-$\newline$ \noindent - There exists a method to check whether an ``$add$ operation'' of $\Sigma_e$ is redundant. If $x$ is redundant, then applying message of $x$ does not change anything. 
-
-Example: $(a,id)$ is redundant, if for each replica $r$, $(a,id) \notin data[r].S$.  
-
-$\newline$ \noindent - There exists a map $f$ between $\Sigma_e$ that are not redundant and $O$.%, where $O_s$ is union of $O$ and operations in arbitration order. 
-
-Example: $f$ maps $(a,id)$ that are not redundant into $add(a)$ and maps $(a,\mathit{Set},r)$ into $rem(a)$. 
-
-$\newline$ \noindent - We require that $f(f_{arb}(data,msgs))$ be a sup-sequence of $\mathit{arb}$. 
-
-$\newline$ \noindent - For each $x \in \Sigma_e$, there is a message of $x$ waiting to be applied to replica $r$, if and only if $f(x) \notin visTo(O,r,\mathit{vis})$. 
-
-$\newline$ \noindent - Stating the $\mathit{FstRem}$ relations for elements of $\Sigma_e$. 
-
-Example: Given $x=(a,\mathit{Set},r)$: for each $id \in \mathit{Set}$, $f(x) \in \mathit{FstRem}(O,\mathit{vis},f(a,id))$; while for each $id \notin mathit{Set}$, $f(x) \notin \mathit{FstRem}(O,\mathit{vis},f(a,id))$.
-
-$\newline$ \noindent - The visibility for elements of $\Sigma_e$. 
-
-Example: $(a,id) \in data[r].S$, if and only if $f((a,id)) \in visTo(O,r,\mathit{vis})$, and for each $o_r \in \mathit{FstRem}(O,\mathit{vis},f((a,id)))$, $o_r \notin visTo(O,r,\mathit{vis})$. 
-
-$\newline$ \noindent - The happen-before relation of messages is preserved by $f$: Given message $m_1$ of element $x_1 \in \Sigma_e$ and message $m_2$ of element $x_2 \in \Sigma_e$, $(m_1,m_2) \in \mathit{hb}$, if and only if $f(x_1)$ happens before $f(x_2)$. 
-
-$\newline$ 
-
-Given implementation state $q_{\mathit{imp}}$, specification state $q_s$ and a implementation transition label $\alpha$, where $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$ and $f$ is the map between $\Sigma_e$ and operations of $q_s$. The function $f_s$ of $f_s$-simulation is defined as follows: 
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] If $\alpha = apply(m)$, $m$ is a message of $x \in \Sigma_e$ and $x$ is redundant, then $f_s(q_{\mathit{imp}},q_s,\alpha) = \epsilon$. 
-
-\item[-] If $\alpha = apply(m)$, $m$ is a message of $x \in \Sigma_e$ and $x$ is not redundant, then $f_s(q_{\mathit{imp}},q_s,\alpha) = addDel(f(x),r)$, where $r$ is the destination replica of $m$. 
-
-\item[-] If $\alpha = (m,a,b,r,\mathit{arb}_{\mathit{imp}})$: $f_s(q_{\mathit{imp}},q_s,\alpha) = (m,a,b,r,\mathit{arb}'_s)$. If $\alpha$ is a query operation or a $\mathit{rem}$ operation, or if $add$ operations are also ignored in arbitration order, then $\mathit{arb}'_s$ is same as the arbitration order of $q_s$; Else, $\mathit{arb}'_s$ is obtained from the arbitration order of $q_s$ by inserting the $add$ operation at some place, while consistent with $\mathit{arb}_{\mathit{imp}}$.
-\end{itemize} 
-
-To define function $f_t$, we further require that, if $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, $q_{\mathit{imp}} {\xrightarrow{\alpha}}_{\mathit{imp}} q'_{\mathit{imp}}$, let $f$ be the map for $q_{\mathit{imp}}$ and $q_s$, then, 
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] If $f_s(q_{\mathit{imp}},q_s,\alpha) \neq \epsilon$, then $q_s {\xrightarrow{f_s(q_{\mathit{imp}},q_s,\alpha)}}_s q'_s$, $(q'_{\mathit{imp}},q'_s) \in R$. Let $f'$ be the map for $q'_{\mathit{imp}}$ and $q'_s$, then $f'$ and $f$ map same element into same operation. 
-
-\item[-] If $f_s(q_{\mathit{imp}},q_s,\alpha) = \epsilon$, then the map for $(q'_{\mathit{imp}},q_s) \in R$ is $f$.  
-\end{itemize}
-
-Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $Sem(imp)$, $f_t(t)$ works as follows: 
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] We have a state $q_s$ and a map $\mathit{map}$. Their initial value is the initial state of $SRImp(Spec)$ and $\emptyset$, respectively.  
-
-\item[-] Assume we have already dealt with $\alpha_1 \cdot \ldots \cdot \alpha_{u-1}$. 
-
-\item[-] If $\alpha_u = apply(m)$, where $m$ is of element $x$ and its destination replica is $r$: $\beta_u = addDel(map(x),r)$, and update $q_s$ with $\beta_u$. 
-
-\item[-] If $\alpha_u = (m,a,b,r,\mathit{arb}_{\mathit{imp}})$: Let $\mathit{arb}_{u-1}^s$ is the arbitration of $q_s$. If $m$ is a query or $\mathit{rem}$ operation, then $\beta_u = (m,a,b,r,\mathit{arb}_{u-1}^s)$; Else, $\beta_u = (m,a,b,r,\mathit{arb}_{u-1}^{'s})$, where $\mathit{arb}_{u-1}^{'s}$ is obtained from $\mathit{arb}_{u-1}^s$ by inserting the $add$ operation at some place, while consistent with $\mathit{arb}_{\mathit{imp}}$. After we obtain $\beta_u$, we update $q_s$ with $\beta_u$.
-
-\item[-] $f_t(t) = \beta_k$. 
-\end{itemize}
 
 
 
 
-\subsection{Collection Specification without Causal Delivery}
-\label{subsec:collection specification without calusal delivery}
 
-Nearly the same as above subsection, and we do not need to deal with happen-before relation of messages any more. 
 
-\noindent {\bf Example 7. woot algorithms}:  $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, if 
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] The inductive invariant of $q_{\mathit{imp}}$ requires that 
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] For each $x$ or $(x,y,z)$ of $\Sigma_e$, its counter is less or equal than counter of replica $r$.
-
-    \item[-] For all the $(x)$ or $(x,y,z)$ of $\Sigma_e$ in local states and messages, they could be execute and no element is not executable.
-    \end{itemize}
-
-    The inductive invariants of $q_s$ requires that, each $rem$ operation is in $\mathit{FstRem}$ of some $add$ operation. 
-
-\item[-] $f$ maps $((\_,a,\_,\_,\_),y,z)$ into $add(a)$ and maps $x = (\_,a,\_,\_,\_)$ into $rem(a)$.  
-
-\item[-] $(\_,a,\_,\_,\_)$ is redundant, if for each replica $r$, either $(\_,a,\mathit{false},\_,\_)$ is in $data[r].str$, or $((\_,a,\_,\_,\_),\_,r) \in msgs$. 
-
-\item[-] $\mathit{FstRem}((x,y,z)) = x'$, while $x=(\_,a,\_,\_,\_)$ and $x' = ((\_,a,\_,\_,\_),\_,\_)$. 
-
-\item[-] $x = (\_,a,\mathit{true},\_,\_) \in data[r].str$, if and only if $f(x) \in visTo(O,r,\mathit{vis})$; $x = (\_,a,\mathit{false},\_,\_) \in data[r].str$, if and only if there exists $y \in \mathit{FstRem}(f(x))$, such that $y \in visTo(O,r,\mathit{vis})$. 
-\end{itemize}
-
-To ensure that applying messages on different replicas does not make arbitration order violated, in Appendix \ref{sec:appendix definitions and proofs of section simulation relation for CRDT implementations},we need to prove that, applying the $add$ in any order converge to a same consequence. 
-
-In Appendix \ref{sec:appendix definitions and proofs of section simulation relation for CRDT implementations}, we proves simulation for four algorithms, including:
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] OR-set algorithms of \cite{Shapiro:2011}: OR-set specification, collection specification, causal-delivery. 
-
-\item[-] Another OR-set algorithms of \cite{Bieniusa:2012}: OR-set specification, collection specification, no causal-delivery. 
-
-\item[-] Replicated Growable Array (RGA, for short) algorithms of \cite{Attiya:2016}: list specification, collection specification, causal-delivery. 
-
-\item[-] Woot algorithm: list specification, collection specification, no causal-delivery. 
-
-%\item[-] Counter of \cite{Shapiro:2011}: counter specification, no collection specification, causal-delivery. 
-
-%\item[-] Last-write-win Register of \cite{Shapiro:2011}: register specification, no collection specification, causal-delivery. 
-
-%\item[-] 2P-set of \cite{Shapiro:2011}: set specification, no collection specification, causal-delivery. 
-\end{itemize}
 
 
 
@@ -177,7 +52,7 @@ $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, if
 
 \item[-] $(a,id) \in E(r)$, if and only if $f((a,id))$ is seen by $r$ and no of its corresponding remove is seen by replica $r$.
 
-\item[-] $(a,id) 
+\item[-] $(a,id)
 }
 
 
