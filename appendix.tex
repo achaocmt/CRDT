@@ -7,7 +7,7 @@
 
 \begin {proof} 
 
-Assume $\mathit{RImp}(\mathit{Spec}) = (Q,\Sigma,\rightarrow,q_0)$. We prove this lemma by proving that, given a trace $t = \alpha_1 \cdot \ldots$ of $\mathit{RImp}(\mathit{Spec})$, its annotated history $\mathit{ah}_t$ is SRVC consistent w.r.t $\mathit{Spec}$. 
+Assume $\mathit{RImp}(\mathit{Spec}) = (Q,\Sigma,\rightarrow,q_0)$. We prove this theorem by proving that, given a trace $t = \alpha_1 \cdot \ldots$ of $\mathit{RImp}(\mathit{Spec})$, its annotated history $\mathit{ah}_t$ is SRVC consistent w.r.t $\mathit{Spec}$. 
 
 Let $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ be the execution of $t$. Let $\mathit{ah}_t = (O_t,\mathit{vis}_t,\mathit{arb}_t)$. According to the construction of $\mathit{ah}_t$, it is easy to see that $\mathit{ro}_t \subseteq \mathit{vis}_t \wedge \mathit{vis}_t$ is acyclic.
 
@@ -22,29 +22,146 @@ We need to prove that, there exists function $ctxt$, such that $\forall o \in O_
 \item[-] $\mathit{arb}_k$ is the projection of $arb_t$ into $O_k \times O_k$.
 \end{itemize}
 
-By the definition of transition relation of $\mathit{RImp}(\mathit{Spec})$, we can always choose $ctxt(o)$ to be $f_{\mathit{ctxt}}((O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k),o)$. It is easy to see that $ctxt(o)$ to be $ctxt(o) = f_{\mathit{ctxt}}((O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k),o)$ holds as required. This completes the proof of this lemma. $\qed$
+By the definition of transition relation of $\mathit{RImp}(\mathit{Spec})$, we can always choose $ctxt(o)$ to be $f_{\mathit{ctxt}}((O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k),o)$. It is easy to see that $ctxt(o)$ to be $ctxt(o) = f_{\mathit{ctxt}}((O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k),o)$ holds as required. This completes the proof of this theorem. $\qed$
 \end {proof}
 
 
 
 
 
-Let $\mathit{trace}(A)$ be the set of traces of LTS $A$. The following lemma states that the trace of $\mathit{RImp}(\mathit{Spec})_{\mathit{cd}}$ is the set of traces of $\mathit{RImp}(\mathit{Spec})$ that satisfies causal-delivery. 
+Let $\mathit{trace}(A)$ be the set of traces of LTS $A$. The following lemma states that the trace of $\mathit{RImp}(\mathit{Spec})_{\mathit{cd}}$ is the set of traces of $\mathit{RImp}(\mathit{Spec})$ that satisfies causal delivery. 
 
-
-{\noindent \bf Lemma \ref{lemma:RImpcdSpec contains all the sequences of RImpSpec that are causal delivery}}: $\llbracket RImp(Spec)_{\mathit{cd}} \rrbracket = \{ t \vert t \in \llbracket RImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$.
+\begin{lemma}
+\label{lemma:RImpcdSpec contains all the sequences of RImpSpec that are causal delivery}
+$\mathit{trace}( \mathit{RImp}(\mathit{Spec})_{\mathit{cd}} ) = \{ t \vert t \in \mathit{trace}( \mathit{RImp}(\mathit{Spec}) ) \wedge t$ satisfies causal delivery $\}$. 
+\end{lemma} 
 
 \begin {proof}
 
-Let us prove the $\subseteq$ direction. We prove it by contradiction. Assume $\exists t =\alpha_1 \cdot \ldots \cdot \alpha_k \in \llbracket RImp(Spec)_{\mathit{cd}} \rrbracket$ and $t$ does not satisfy causal delivery. Then there exists operations $o_1,o_2$ and replica $r$, such that $o_1 <_{hb} o_2$ and in $t$, when $o_2$ is delivered to replica $r$, $o_1$ has not been delivered to replica $r$ yet.
+Let us prove the $\subseteq$ direction. We prove it by contradiction. Assume $\exists t =\alpha_1 \cdot \ldots \cdot \alpha_k \in \mathit{trace}( \mathit{RImp}(\mathit{Spec})_{\mathit{cd}} )$ and $t$ does not satisfy causal delivery. Then there exists operations $o_1,o_2$ and replica $r$, such that $(o_1,o_2) \in \mathit{hb}$ and in $t$, when $o_2$ is delivered to replica $r$, $o_1$ has not been delivered to replica $r$ yet.
 
-Let $q_1,\ldots,q_k$ be the states, such that $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots {\xrightarrow{\alpha_k}} q_k$. Assume that for each $k$, $q_k = (O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k)$. It is easy to prove by induction that, for each $k$, when both $o_1$ and $o_2$ are in $O_k$, $(o_1,o_2)$ is in $(\mathit{ro}_k \cup \mathit{del}_k)^*$. Let $\alpha_u = addDel(o_2,r)$. Then, we can see that $(o_1,o_2) \in (\mathit{ro}_{u-1} \cup \mathit{del}_{u-1})^*$, and $o_1,o_2 \notin visTo(O_{u-1},r,\mathit{vis}_{u-1})$. By our definition of transition relation of $RImp(Spec)$, we could not launch $addDel(o_2,r)$ transition from $q_{u-1}$, contradiction happens.
+Let $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots {\xrightarrow{\alpha_k}} q_k$ be the execution of $t$. Assume that for each $u$, $q_u = (O_u,\mathit{ro}_u,\mathit{del}_u,\mathit{arb}_u)$. It is easy to prove by induction that, for each $u$, when both $o_1$ and $o_2$ are in $O_u$, $(o_1,o_2) \in \mathit{vis}_u = (\mathit{ro}_u \cup \mathit{del}_u)^*$. Let $\alpha_v = \mathit{addDel}(o_2,r)$. Then, we can see that $(o_1,o_2) \in \mathit{vis}_{v-1} = (\mathit{ro}_{v-1} \cup \mathit{del}_{v-1})^*$, and $o_1,o_2 \notin \mathit{visTo}(O_{v-1},r,\mathit{vis}_{v-1})$. By our definition of transition relation of $\mathit{RImp}(\mathit{Spec})$, we could not launch $\mathit{addDel}(o_2,r)$ transition from $q_{u-1}$, contradiction happens. 
 
-It is easy to see that $t_1$ Let us prove the $\supseteq$ direction. We prove its contrapositive. Assume that $t_1 =\alpha_1 \cdot \ldots \cdot \alpha_k \notin \llbracket RImp(Spec)_{\mathit{cd}} \rrbracket$, we need to prove that $t_1 \notin \{ t \vert t \in \llbracket RImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$. This holds trivially when $t_1 \notin \llbracket RImp(Spec) \rrbracket$.
+Let us prove the $\supseteq$ direction. We prove its contrapositive. Assume that $t_1 =\alpha_1 \cdot \ldots \cdot \alpha_k \notin \mathit{trace}( \mathit{RImp}(\mathit{Spec})_{\mathit{cd}} )$, we need to prove that $t_1 \notin \{ t \vert t \in \mathit{trace}( \mathit{RImp}(\mathit{Spec}) ) \wedge t$ satisfies causal delivery $\}$. This holds trivially when $t_1 \notin \mathit{trace}( \mathit{RImp}(\mathit{Spec}) )$. 
 
-Since $t_1 \notin \llbracket RImp(Spec)_{\mathit{cd}} \rrbracket$, there exists a number $k$, such that $\alpha_1 \cdot \ldots \cdot \alpha_k \notin \llbracket RImp(Spec)_{\mathit{cd}} \rrbracket$ and $\alpha_1 \cdot \ldots \cdot \alpha_{k-1} \in \llbracket RImp(Spec)_{\mathit{cd}} \rrbracket$. Since $RImp(Spec)_{\mathit{cd}}$ is deterministic, it is easy to see that $\alpha_k$ is a $addDel$ transition and it violates the transition condition of $RImp(Spec)_{\mathit{cd}}$. Assume that $q_{\mathit{k-1}} = (O_{k-1},\mathit{ro}_{k-1},\mathit{del}_{k-1},\mathit{arb}_{k-1})$. Then, there must exists $o_3,o_4 \in O_{k-1}$, such that $(o_3,o_4) \in \mathit{vis}_{k-1}$, $o_3,o_4 \notin visTo(O_{k-1},r,\mathit{k-1})$, and $\alpha_k = addDel(o_4,r)$. This violates the causal delivery. $\qed$
+For the case when $t_1 \in \mathit{trace}( \mathit{RImp}(\mathit{Spec}) )$. Since $t_1 \notin \mathit{trace}( \mathit{RImp}(\mathit{Spec})_{\mathit{cd}} )$, there exists a number $u$, such that $\alpha_1 \cdot \ldots \cdot \alpha_u \notin \mathit{trace}( \mathit{RImp}(\mathit{Spec})_{\mathit{cd}} )$ and $\alpha_1 \cdot \ldots \cdot \alpha_{u-1} \in \mathit{trace}( \mathit{RImp}(\mathit{Spec})_{\mathit{cd}} )$. Since $\mathit{RImp}(\mathit{Spec})_{\mathit{cd}}$ is deterministic, it is easy to see that $\alpha_u$ is a $\mathit{addDel}$ transition and it violates the transition condition of $\mathit{RImp}(\mathit{Spec})_{\mathit{cd}}$. Assume that $q_{\mathit{u-1}} = (O_{u-1},\mathit{ro}_{u-1},\mathit{del}_{u-1},\mathit{arb}_{u-1})$. Then, there must exists $o_3,o_4 \in O_{u-1}$, such that $(o_3,o_4) \in \mathit{hb}_{u-1}$, $o_3,o_4 \notin \mathit{visTo}(O_{u-1},r,\mathit{vis}_{u-1})$, and $\alpha_u = \mathit{addDel}(o_4,r)$. This violates causal delivery. $\qed$ 
 \end {proof}
 
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Definitions and Proofs of Section \ref{sec:succinct reference implementations of collection data types}}
+\label{sec:appendix definitions and proofs of section succinct reference implementations of collection data types} 
+
+The following lemma states that, if $q'_1 = \mathit{frg}(q_1,S)$ and $q_1 {\xrightarrow{\alpha}}_r q_2$ in $\mathit{RImp}(\mathit{Spec})$, then $q'_1 {\xrightarrow{\alpha}}_s q'_2$ in in $\mathit{SRImp}(\mathit{Spec})$ and $q'_2 = \mathit{frg}(q_2,S)$, where $\alpha'$ is obtained from $\alpha$ by removing operation of $S$.  
+
+\begin{lemma}
+\label{lemma:RImpcdSpec contains all the sequences of RImpSpec that are causal delivery}
+If $q'_1 = \mathit{frg}(q_1,S)$ and $q_1 {\xrightarrow{\alpha}}_r q_2$ in $\mathit{RImp}(\mathit{Spec})$, then $q'_1 {\xrightarrow{\alpha}}_s q'_2$ in in $\mathit{SRImp}(\mathit{Spec})$ and $q'_2 = \mathit{frg}(q_2,S)$, where $\alpha'$ is obtained from $\alpha$ by removing operation of $S$. 
+\end{lemma}
+
+\begin {proof} 
+
+Let us 
+
+This completes the proof of this lemma. $\qed$
+\end {proof}
+
+
+
+
+
+
+{\noindent \bf Theorem \ref{theorem:SRIMPSpec and RIMPSpec have same history}}: $\mathit{his}(\mathit{RImp}(\mathit{Spec})) = \mathit{his}(\mathit{SRImp}(\mathit{Spec}))$. 
+
+\begin {proof} 
+
+Let $\rightarrow_r$ and $\rightarrow_s$ be the transition relation of $\mathit{RImp}(\mathit{Spec})$ and $\mathit{SRImp}(\mathit{Spec})$, respectively. Let us use $\mathit{Prop}_1$ to refer to 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] For each annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, where $S$ can be forgotten from $O$: For each operation label $\ell$ and extension $x'$ of $x$, let $y'$ be the operation context of $x'$ and $o \in O$, and let $y''$ be the operation context of $frg(x',S)$ and $o$, then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$. 
+\end{itemize}
+
+Let us use $\mathit{Prop}_2$ to refer to 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt} 
+\item[-] If $\mathit{frg}(q,S) = q' \wedge \mathit{frg}(q',S') = q''$, then $\mathit{frg}(q,S \cup S') =q''$.
+\end{itemize}
+
+
+
+
+Let us prove the $\subseteq$ direction. Given a execution $q_0 {\xrightarrow{\alpha_1}}_r q_1 \ldots$ of $t$, 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $q_0 {\xrightarrow{\alpha_1}}_r q_1$: By definition of $\rightarrow_s$, we know that there exists $S_1$ and state $q'_1$, such that $q'_1 = \mathit{frg}(q_1,S)$ and $q_0 {\xrightarrow{\alpha_1}}_s q'_1$. 
+
+\item[-] $q_1 {\xrightarrow{\alpha_2}}_r q_2$: Since $q'_1 = \mathit{frg}(q_1,S)$ and $\mathit{Prop}_1$, we can see that $q'_1 {\xrightarrow{\alpha'_2}}_r q'_2$, $q'_2 = \mathit{frg}(q_2,S_1)$, where $\alpha'_2$ is generated from $\alpha_2$ by removing operations of $S_1$ from the arbitration order.
+
+By definition of $\rightarrow_s$, we know that there exists $S_1$ and state $q'_1$, such that $q'_1 = \mathit{frg}(q_1,S)$ and $q_0 {\xrightarrow{\alpha_1}}_s q'_1$.
+\end{itemize}
+
+This completes the proof of this lemma. 
+
+$\qed$
+\end {proof}
+
+
+
+
+
+
+To obtain the annotated history of traces of $SRImp(Spec)$, let us define a relation $R_S$. Given two states $q=(O,\mathit{ro},\mathit{del},\mathit{vis}),q'$ of $RImp(Spec)$ and a set $S$ of operations, $(q,q') \in R_S$, if $P_f(O,\mathit{vis},S) \wedge q' = forg(q,S)$. With our definition of collections, we can see that $R_S$ satisfies the following properties:
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] If $(q,q') \in R_{ S_1 } \wedge (q',q'') \in R_{ S_2 }$, then $(q,q'') \in R_{ ( S_1 \cup S_2 ) }$.
+
+\item[-] If $(q_i,q'_i) \in R_{S} \wedge q'_i {\xrightarrow{\alpha'}} q'_{i+1}$, then $\exists \alpha$, such that $q_i {\xrightarrow{\alpha}} q_{i+1} \wedge (q_{i+1},q'_{i+1}) \in R_{S}$, where
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] If $\alpha' = addDel(o,r)$,then $\alpha = \alpha'$.
+
+    \item[-] If $\alpha'=(m,a,b,r,\mathit{arb}')$, then $\exists \mathit{arb}$, such that $\alpha=(m,a,b,r,\mathit{arb}) \wedge \mathit{arb}' = \mathit{arb} - S$.
+    \end{itemize}
+\end{itemize}
+
+
+Given an execution $t = \alpha_1 \cdot \ldots$ of $SRImp(Spec)$, its annotated history $anHis(t)$ is the annotated history of a trace $t' = \alpha'_1 \cdot \alpha''_2 \ldots$ of $RImp(Spec)$ generated as follows: Assume $q_0 {\xrightarrow{\alpha_1}}_s q_1 \ldots$ is an execution of $SRImp(Spec)$, and let $\rightarrow_r$ be the transition relation of $RImp(Spec)$,
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $q_0 {\xrightarrow{\alpha_1}}_s q_1$: By definition of $\rightarrow_s$, $\exists \alpha'_1, q'_1$, such that $q_0 {\xrightarrow{\alpha'_1}}_r q'_1 \wedge q_1 = suct(q'_1)$. Assume we obtain $q_1$ from $q'_1$ by forgetting $S_1$. It is obvious that $(q'_1,q_1) \in R_{S_1}$.
+
+\item[-] $q_1 {\xrightarrow{\alpha_2}}_s q_2$: Similarly, $\exists \alpha'_2, q'_2, S_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_r q'_2 \wedge q_2 = suct(q'_2) \wedge (q'_2,q_2) \in R_{S_2}$. Since we already know that $(q'_1,q_1) \in R_{S_1} \wedge q_1 {\xrightarrow{\alpha'_2}}_r q'_2$, we can see that $\exists \alpha''_2,q''_2$, such that $q'_1 {\xrightarrow{\alpha''_2}}_r q''_2 \wedge (q''_2,q'_2) \in R_{S_1}$. Therefore, $(q''_2,q_2) \in R_{( O_1 \cup O_2)}$.
+
+%By definition of $\rightarrow_s$, $\exists \alpha'_2, q'_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_r q'_2 \wedge q_2 = suct(q'_2)$. Assume we obtain $q_2$ from $q'_2$ by forgetting $S_2$. It is obvious that $(q'_2,q_2) \in R_{S_2}$.
+\item[-] $q_k {\xrightarrow{\alpha_{\mathit{k+1}}}}_s q_{\mathit{k+1}}$ and $k \geq 2$: Similarly, $\exists \alpha'_{\mathit{k+1}}, q'_{\mathit{k+1}}, S_{\mathit{k+1}}$, such that $q_k {\xrightarrow{\alpha'_{\mathit{k+1}}}}_r q'_{\mathit{k+1}} \wedge q_{\mathit{k+1}} = suct(q'_{\mathit{k+1}}) \wedge (q'_{\mathit{k+1}},q_{\mathit{k+1}}) \in R_{S_{\mathit{k+1}}}$. Since we already know that $(q''_k,q_k) \in R_{( S_1 \cup \ldots \cup S_k )} \wedge q_k {\xrightarrow{\alpha'_\mathit{k+1}}}_r q'_{\mathit{k+1}}$, we can see that $\exists \alpha''_{\mathit{k+1}} ,q''_{\mathit{k+1}} $, such that $q'_k {\xrightarrow{\alpha''_{\mathit{k+1}} }}_r q''_{\mathit{k+1}}  \wedge (q''_{\mathit{k+1}} ,q'_{\mathit{k+1}} ) \in R_{( S_1 \cup \ldots \cup S_k )}$. Therefore, $(q''_{\mathit{k+1}} ,q_{\mathit{k+1}} ) \in R_{( S_1 \cup \ldots \cup S_{\mathit{k+1}}  )}$.
+\end{itemize}
+
+
+%\figurename~\ref{fig:the process of generate abstract trace for compacted reference implementation} shows the example when the trace of $CRImp(Spec)$ is $\alpha_1 \cdot \alpha_2 \cdot \alpha_3 \cdot \alpha_4$.
+
+%\begin{figure}[t]
+%  \centering
+%  \includegraphics[width=0.4 \textwidth]{figures/PIC-Generate-AbstractTrace-Compact.pdf}
+%\vspace{-10pt}
+%  \caption{The process of generate abstract trace for compacted reference implementation}
+%  \label{fig:the process of generate abstract trace for compacted reference implementation}
+%\end{figure}
 
 
 
@@ -164,44 +281,6 @@ This completes the proof of this lemma. $\qed$
 
 
 
-%\begin{figure}[t]
-%  \centering
-%  \includegraphics[width=0.6 \textwidth]{figures/PIC-Generate-AbstractTrace-NormaltoCompact.pdf}
-%\vspace{-10pt}
-%  \caption{The process of generate a trace of $CRImp(Spec)$ from a trace of $RImp(Spec)$}
-%  \label{fig:the process of generate a trace of CRImpSpec from a trace of RImpSpec}
-%\end{figure}
-
-
-
-
-%{\noindent \bf Lemma \ref{lemma:RIMPSpec and CRIMPSpec have same abstract traces}}: $absT(RImp(Spec)) = absT(CRImp(Spec))$
-%\begin {proof}
-%The $\supseteq$ direction is obvious from the definition of $absT(CRImp(Spec))$.
-%To prove the $\subseteq$ direction. Given a execution $t_1 = \alpha_1 \cdot \ldots \in \llbracket RImp(Spec) \rrbracket$. Let us show how to construct a path of $CRImp(Spec)$.
-%\begin{itemize}
-%\setlength{\itemsep}{0.5pt}
-%\item[-] $q_1 {\xrightarrow{\alpha_2}}_r q_2$: By definition of $\rightarrow_c$, $\exists \alpha'_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_c q'_2 \wedge conc(q_2)=q'_2$. Then, it is obvious that $(q_2,q'_2) \in R_{O_2}$ for some $O_2$.
-
-%\item[-] $q_2 {\xrightarrow{\alpha_3}}_r q_3$: Since $(q_2,q'_2) \in R_{O_2} \wedge q_2 {\xrightarrow{\alpha_3}}_r q_3 $, we can see that $\exists \alpha'_3,q'_3$, such that $q'_2 {\xrightarrow{\alpha'_3}}_r q'_3 \wedge (q_3,q'_3) \in R_{O_2}$.
-
-    %By definition of $\rightarrow_c$, $\exists \alpha''_3$, such that $q'_2 {\xrightarrow{\alpha''_3}}_c q''_3 \wedge conc(q'_3)=q''_3$. Then, it is obvious that $(q'_3,q''_3) \in R_{O_3}$ for some $O_3$. Therefore, $(q_3,q''_3) \in R_{(O_2 \cup O_3)}$.
-
-%\item[-] If $i \geq 3 \wedge q_i {\xrightarrow{addDel(o,r)}}_r q_{i+1} \wedge o \in S_p(q_i) \cup S_m(q_i)$: We already know that $(q_i,q''_i) \in R_{O}$ for some $O$, then it is obvious that $(q_{i+1},q''_{i+1}) \in R_{O}$, where $q''_{i+1} = q''_i$.
-
-%\item[-] If $i \geq 3 \wedge q_i {\xrightarrow{\alpha_{i+1}}}_r q_{i+1} \neg (\alpha_i = addDel(o,r) \wedge o \in S_p(q_i) \cup S_m(q_i))$: We already know that $(q_i,q''_i) \in R_{O}$ for some $O$. Since $q_i {\xrightarrow{\alpha_{i+1}}}_r q_{i+1}$, we can see that $\exists \alpha'_{i+1},q'_{i+1}$, such that $q''_i {\xrightarrow{\alpha'_{i+1}}}_r q'_{i+1} \wedge (q_{i+1},q'_{i+1}) \in R_{O}$.
-
-    %By definition of $\rightarrow_c$, $\exists \alpha''_{i+1}$, such that $q''_i {\xrightarrow{\alpha''_{i+1}}}_c q''_{i+1} \wedge conc(q'_{i+1})=q''_{i+1}$. Then, it is obvious that $(q'_{i+1},q''_{i+1}) \in R_{O_{i+1}}$ for some $O_{i+1}$. Therefore, $(q_{i+1},q''_{i+1}) \in R_{(O \cup O_{i+1})}$.
-%\end{itemize}
-
-%\figurename~\ref{fig:the process of generate a trace of CRImpSpec from a trace of RImpSpec} given an example when (1) $q_0 {\xrightarrow{\alpha_1}}_r q_1 {\xrightarrow{\alpha_2}}_r q_2 {\xrightarrow{\alpha_3}}_r q_3 {\xrightarrow{\alpha_4}}_r q_4 {\xrightarrow{\alpha_5}}_r q_6 {\xrightarrow{\alpha_6}}_r q_6$ is a path of $RImp(Spec)$, (2) $\alpha_5=addDel(o,r) \wedge o \in S_p(q_4) \cup S_m(q_4)$, and $\forall i \neq 5$, $\neg ( \alpha_i=addDel(o,r) \wedge o \in S_p(q_{i-1}) \cup S_m(q_{i-1})$.
-
-%It is easy to see that the abstract trace of $\alpha_1 \cdot \alpha_2 \cdot \alpha_3 \cdot \alpha_4$ in $RImp(Spec)$ is the abstract trace of $\alpha_1 \cdot \alpha'_2 \cdot \alpha''_3 \cdot \alpha''_4$ in $CRImp(Spec)$. This completes the proof of this lemma. $\qed$
-%\end {proof}
-
-
-
-
 
 
 
@@ -215,10 +294,6 @@ This completes the proof of this lemma. $\qed$
 
 \section{Definitions and Proofs of Section \ref{sec:simulation relation for CRDT implementations}}
 \label{sec:appendix definitions and proofs of section simulation relation for CRDT implementations}
-
-
-
-
 
 
 Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $Sem(imp)$, $f_t(t)$ works as follows:
@@ -245,51 +320,6 @@ Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $Sem(imp)$, $f_t(t)$
 
 
 
-
-
-
-\section{Definitions and Proofs of Section \ref{sec:succinct reference implementations of collection data types}}
-\label{sec:appendix definitions and proofs of section succinct reference implementations of collection data types}
-
-To obtain the annotated history of traces of $SRImp(Spec)$, let us define a relation $R_S$. Given two states $q=(O,\mathit{ro},\mathit{del},\mathit{vis}),q'$ of $RImp(Spec)$ and a set $S$ of operations, $(q,q') \in R_S$, if $P_f(O,\mathit{vis},S) \wedge q' = forg(q,S)$. With our definition of collections, we can see that $R_S$ satisfies the following properties:
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] If $(q,q') \in R_{ S_1 } \wedge (q',q'') \in R_{ S_2 }$, then $(q,q'') \in R_{ ( S_1 \cup S_2 ) }$.
-
-\item[-] If $(q_i,q'_i) \in R_{S} \wedge q'_i {\xrightarrow{\alpha'}} q'_{i+1}$, then $\exists \alpha$, such that $q_i {\xrightarrow{\alpha}} q_{i+1} \wedge (q_{i+1},q'_{i+1}) \in R_{S}$, where
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] If $\alpha' = addDel(o,r)$,then $\alpha = \alpha'$.
-
-    \item[-] If $\alpha'=(m,a,b,r,\mathit{arb}')$, then $\exists \mathit{arb}$, such that $\alpha=(m,a,b,r,\mathit{arb}) \wedge \mathit{arb}' = \mathit{arb} - S$.
-    \end{itemize}
-\end{itemize}
-
-
-Given an execution $t = \alpha_1 \cdot \ldots$ of $SRImp(Spec)$, its annotated history $anHis(t)$ is the annotated history of a trace $t' = \alpha'_1 \cdot \alpha''_2 \ldots$ of $RImp(Spec)$ generated as follows: Assume $q_0 {\xrightarrow{\alpha_1}}_s q_1 \ldots$ is an execution of $SRImp(Spec)$, and let $\rightarrow_r$ be the transition relation of $RImp(Spec)$,
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] $q_0 {\xrightarrow{\alpha_1}}_s q_1$: By definition of $\rightarrow_s$, $\exists \alpha'_1, q'_1$, such that $q_0 {\xrightarrow{\alpha'_1}}_r q'_1 \wedge q_1 = suct(q'_1)$. Assume we obtain $q_1$ from $q'_1$ by forgetting $S_1$. It is obvious that $(q'_1,q_1) \in R_{S_1}$.
-
-\item[-] $q_1 {\xrightarrow{\alpha_2}}_s q_2$: Similarly, $\exists \alpha'_2, q'_2, S_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_r q'_2 \wedge q_2 = suct(q'_2) \wedge (q'_2,q_2) \in R_{S_2}$. Since we already know that $(q'_1,q_1) \in R_{S_1} \wedge q_1 {\xrightarrow{\alpha'_2}}_r q'_2$, we can see that $\exists \alpha''_2,q''_2$, such that $q'_1 {\xrightarrow{\alpha''_2}}_r q''_2 \wedge (q''_2,q'_2) \in R_{S_1}$. Therefore, $(q''_2,q_2) \in R_{( O_1 \cup O_2)}$.
-
-%By definition of $\rightarrow_s$, $\exists \alpha'_2, q'_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_r q'_2 \wedge q_2 = suct(q'_2)$. Assume we obtain $q_2$ from $q'_2$ by forgetting $S_2$. It is obvious that $(q'_2,q_2) \in R_{S_2}$.
-\item[-] $q_k {\xrightarrow{\alpha_{\mathit{k+1}}}}_s q_{\mathit{k+1}}$ and $k \geq 2$: Similarly, $\exists \alpha'_{\mathit{k+1}}, q'_{\mathit{k+1}}, S_{\mathit{k+1}}$, such that $q_k {\xrightarrow{\alpha'_{\mathit{k+1}}}}_r q'_{\mathit{k+1}} \wedge q_{\mathit{k+1}} = suct(q'_{\mathit{k+1}}) \wedge (q'_{\mathit{k+1}},q_{\mathit{k+1}}) \in R_{S_{\mathit{k+1}}}$. Since we already know that $(q''_k,q_k) \in R_{( S_1 \cup \ldots \cup S_k )} \wedge q_k {\xrightarrow{\alpha'_\mathit{k+1}}}_r q'_{\mathit{k+1}}$, we can see that $\exists \alpha''_{\mathit{k+1}} ,q''_{\mathit{k+1}} $, such that $q'_k {\xrightarrow{\alpha''_{\mathit{k+1}} }}_r q''_{\mathit{k+1}}  \wedge (q''_{\mathit{k+1}} ,q'_{\mathit{k+1}} ) \in R_{( S_1 \cup \ldots \cup S_k )}$. Therefore, $(q''_{\mathit{k+1}} ,q_{\mathit{k+1}} ) \in R_{( S_1 \cup \ldots \cup S_{\mathit{k+1}}  )}$.
-\end{itemize}
-
-
-%\figurename~\ref{fig:the process of generate abstract trace for compacted reference implementation} shows the example when the trace of $CRImp(Spec)$ is $\alpha_1 \cdot \alpha_2 \cdot \alpha_3 \cdot \alpha_4$.
-
-%\begin{figure}[t]
-%  \centering
-%  \includegraphics[width=0.4 \textwidth]{figures/PIC-Generate-AbstractTrace-Compact.pdf}
-%\vspace{-10pt}
-%  \caption{The process of generate abstract trace for compacted reference implementation}
-%  \label{fig:the process of generate abstract trace for compacted reference implementation}
-%\end{figure}
 
 
 
