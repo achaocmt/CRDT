@@ -99,7 +99,7 @@ An trace of $\mathit{imp}$ satisfies causal delivery, if given $o_1 <_{\mathit{h
 
 \item[-] $d_0 = (\emptyset,0)$.
 
-\item[-] $\Sigma_e$ is the union of (1) identifier $a$ in $N$, $T$, and in $(\mathit{add},a,\_,\_,\_,\_) \in \mathit{msgs}$, and (2) $(a,r)$ for $(\mathit{rem},a,r,\_) \in \mathit{msgs}$. 
+\item[-] $\Sigma_e$ is the union of (1) identifier $(\mathit{add},a,t)$ in $N$, $T$, and in $(\mathit{add},a,\_,\_,\_,\_) \in \mathit{msgs}$, and (2) $(\mathit{rem},a,r)$ for $(\mathit{rem},a,r,\_) \in \mathit{msgs}$.
 \item[-] $f_{\mathit{arb}}$ return a sequence that is obtained as follows: Let $S$ be the union of $\mathit{data}[r].N$ for each replica. $f_{\mathit{arb}}$ traverses $S$ with prefix order and returns identifiers of nodes. 
 \end{itemize}
 }
