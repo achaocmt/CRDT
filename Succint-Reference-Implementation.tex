@@ -27,7 +27,7 @@ Given a specification $\mathit{Spec}$ with two update methods $\mathit{add}$ and
 \item[-] Given an annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, let $\mathit{frg}(x,S)$ be a annotated history $(O',\mathit{vis}',\mathit{arb})$ obtained from $x$ by forgetting operations in $S$ when $S$ can be forgotten from $O$. $S$ can be forgotten from $O$, if $S$ is a union of $\mathit{add}$ operations $S_a$ and $\mathit{rem}$ operations $S_r$, such that $S_a \subseteq \mathit{RdtA}(O,\mathit{vis})$, and $S_r = \{ o_r \vert  \{ o_a \vert o_r \in \mathit{FstRem}(O,\mathit{vis},o_a) \} \subseteq S_a \}$. By forgetting $S$, we have $O' = O \setminus S$ and $\mathit{vis}' = \mathit{vis} \uparrow_{O'}$, and $\mathit{arb}' = \mathit{arb} \uparrow_{O'}$.
 \end{itemize}
 
-{\color {red} For example, in state $q_1$ of \figurename~\ref{fig:reference implementation for OR-set}, $\mathit{FstRem}(+a_1) = \{ -a_1,-a_2 \}$, $+a_1 \in \mathit{RdtA}(q_1,+a_1)$, and $S_a = \{ +a \}$ and $S_r = \{ -a_1 \}$. Therefore, we could forget $+a_1$ and $-a_1$, and obtain state $q'_1$ of \figurename~\ref{fig:succinct reference implementation for OR-set}.}
+{\color {red} For example, in state $q_1$ of \figurename~\ref{fig:reference implementation for OR-set}, $\mathit{FstRem}(+a_1) = \{ -a_1,-a_2 \}$, $+a_1 \in \mathit{RdtA}(q_1,+a_1)$, and $S_a = \{ +a \}$ and $S_r = \{ -a_1 \}$. So, we could forget $+a_1$ and $-a_1$, and obtain state $q'_1$ of \figurename~\ref{fig:succinct reference implementation for OR-set}.}
 
 An extension of an annotated history $(O,\mathit{vis},\mathit{arb})$ is another annotated history $(O',\mathit{vis}',\mathit{arb}')$, such that $O \subseteq O'$, $\mathit{arb}$ is the projection of $\mathit{arb}'$ over $O$ , $\mathit{vis} \subseteq \mathit{vis}'$, $\mathit{vis}' \cap ( (O'-O) \times O ) = \emptyset$ and $\mathit{vis}' \uparrow_{O} = \mathit{vis}$. {\color {red}Formally, $\mathit{Spec}$ is a collection, if
 
@@ -39,7 +39,7 @@ An extension of an annotated history $(O,\mathit{vis},\mathit{arb})$ is another 
     
 \item[-] If $\mathit{frg}(q,S) = q' \wedge \mathit{frg}(q',S') = q''$, then $\mathit{frg}(q,S \cup S') =q''$. 
 
-\item[-] Given an annotated history $x = (O,\_,\_)$ and one of its extension $x' = (O',\_,\_)$. Assume $S$ can be removed from the set of operations of $x$, and $x''$ is obtained from $x'$ by adding or removing pairs in $\{ (o_1,o_2) \vert o_1 \in S, o_2 \in O' \setminus O \}$. Then the set of operations can be removed of $x'$ is the same as that of $x''$. 
+\item[-] Given an annotated history $x = (O,\_,\_)$ and its extension $x' = (O',\_,\_)$. Assume $S$ can be removed from the set of operations of $x$, and $x''$ is obtained from $x'$ by adding or removing pairs in $\{ (o_1,o_2) \vert o_1 \in S, o_2 \in O' \setminus O \}$. Then the set of operations can be removed of $x'$ is the same as that of $x''$.
 \end{itemize}
 }
 
