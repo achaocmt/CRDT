@@ -118,7 +118,7 @@ Formally, the reference implementation $\mathit{RImp}(\mathit{Spec}) = (Q,\Sigma
 
 \[
 \begin{array}{l c}
-\bigfrac{ m \in \mathbb{U}, \ell = m(a) \Rightarrow b, o = (\ell,r,\_) \notin O, \exists y=\mathit{rand}(\mathit{arb},o), \exists x = (O',\_,y \uparrow_{O'} ) \in f_{\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}),o) \wedge x \in Spec(\ell) }
+\bigfrac{ m \in \mathbb{U}, \ell = m(a) \Rightarrow b, o = (\ell,r,\_) \notin O, \exists y=\mathit{rand}(\mathit{arb},o), x = (O',\_,y \uparrow_{O'} ) \in f_{\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}),o) \wedge x \in Spec(\ell) }
 { (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,y)}} (O \cup \{ o \},\mathit{ro} \oplus o ,\mathit{del} \oplus o,y) } %{\mathit{Update}}
 \end{array}
 \]

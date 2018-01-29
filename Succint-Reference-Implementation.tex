@@ -29,20 +29,19 @@ Given a specification $\mathit{Spec}$ with two update methods $\mathit{add}$ and
 
 {\color {red} For example, in state $q_1$ of \figurename~\ref{fig:reference implementation for OR-set}, $\mathit{FstRem}(+a_1) = \{ -a_1,-a_2 \}$, $+a_1 \in \mathit{RdtA}(q_1,+a_1)$, and $S_a = \{ +a \}$ and $S_r = \{ -a_1 \}$. Therefore, we could forget $+a_1$ and $-a_1$, and obtain state $q'_1$ of \figurename~\ref{fig:succinct reference implementation for OR-set}.}
 
-An extension of an annotated history $(O,\mathit{vis},\mathit{arb})$ is another annotated history $(O',\mathit{vis}',\mathit{arb}')$, such that $O \subseteq O'$, $\mathit{arb}$ is the projection of $\mathit{arb}'$ over $O$ , $\mathit{vis} \subseteq \mathit{vis}'$, $\mathit{vis}' \cap ( (O'-O) \times O ) = \emptyset$ and $\mathit{vis}' \uparrow_{O} = \mathit{vis}$. {\color {red}Formally, $\mathit{Spec}$ is a collection, if}
+An extension of an annotated history $(O,\mathit{vis},\mathit{arb})$ is another annotated history $(O',\mathit{vis}',\mathit{arb}')$, such that $O \subseteq O'$, $\mathit{arb}$ is the projection of $\mathit{arb}'$ over $O$ , $\mathit{vis} \subseteq \mathit{vis}'$, $\mathit{vis}' \cap ( (O'-O) \times O ) = \emptyset$ and $\mathit{vis}' \uparrow_{O} = \mathit{vis}$. {\color {red}Formally, $\mathit{Spec}$ is a collection, if
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] For each annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, where $S$ can be forgotten from $O$: For each operation label $\ell$ and extension $x'$ of $x$, let $y'$ be the operation context of $x'$ and $o \in O$, and let $y''$ be the operation context of $frg(x',S)$ and $o$, then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$.
+\item[-] Given an annotated history $x$ if $S$ can be forgotten from the set of operations of $x$, then for each extension $x'$ of $x$, $S$ can be forgotten from the set of operations of $x'$.
 
-    %$x_1 \in Spec(\ell)$, if and only if $forg(x_1,S) \in Spec(\ell)$.
+\item[-] For each annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, where $S$ can be forgotten from $O$: For each operation label $\ell$ and extension $x'$ of $x$, let $y'$ be the operation context of $x'$ and $o \in O$, and let $y''$ be the operation context of $frg(x',S)$ and $o$, then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$. 
+    
+\item[-] If $\mathit{frg}(q,S) = q' \wedge \mathit{frg}(q',S') = q''$, then $\mathit{frg}(q,S \cup S') =q''$. 
 
-    %\item[-] If $P_{frg}(O,\mathit{vis},S) \wedge forg((O,\mathit{vis},\mathit{arb}),S) = (O',\mathit{vis}',\mathit{arb}') \wedge P_{frg}(O',\mathit{vis}',S') \wedge forg((O',\mathit{vis}',\mathit{arb}'),S') = (O'',\mathit{vis}'',\mathit{arb}'')$, then $P_{frg}(O,\mathit{vis},S \cup S')$.
-%\item[-] If $\mathit{frg}((O,\mathit{vis},\mathit{arb}),S) = (O',\mathit{vis}',\mathit{arb}') \wedge \mathit{frg}((O',\mathit{vis}',\mathit{arb}'),S') = (O'',\mathit{vis}'',\mathit{arb}'')$, then $\mathit{frg}((O,\mathit{vis},\mathit{arb},S \cup S') = (O'',\mathit{vis}'',\mathit{arb}'')$.
-
-\item[-] If $\mathit{frg}(q,S) = q' \wedge \mathit{frg}(q',S') = q''$, then $\mathit{frg}(q,S \cup S') =q''$.
+\item[-] Given an annotated history $x = (O,\_,\_)$ and one of its extension $x' = (O',\_,\_)$. Assume $S$ can be removed from the set of operations of $x$, and $x''$ is obtained from $x'$ by adding or removing pairs in $\{ (o_1,o_2) \vert o_1 \in S, o_2 \in O' \setminus O \}$. Then the set of operations can be removed of $x'$ is the same as that of $x''$. 
 \end{itemize}
-
+}
 
 Similarly, we can forget operations $S$ from a state $(O,\mathit{ro},\mathit{del},\mathit{vis})$ by deleting $S$ from $O$, $\mathit{ro}$, $\mathit{del}$ and $\mathit{arb}$. {\color {red}Given a state $q = (O,\mathit{ro},\mathit{del},\mathit{vis})$ of $\mathit{RImp}(\mathit{Spec})$, let $\mathit{frg}^*(q)$ be obtained from $q$ by forgetting} $\mathit{RdtA}(O,\mathit{vis}) \cup \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,\mathit{vis},o_a) \} \subseteq \mathit{RdtA}(O,\mathit{vis}) \}$. Given a collection specification $\mathit{Spec}$, its succinct reference implementation is given as an LTS $\mathit{SRImp}(\mathit{Spec}) = (Q_s,\Sigma,\rightarrow_s,q_0)$, which can be obtained from $\mathit{RImp}(\mathit{Spec}) = (Q,\Sigma,\rightarrow,q_0)$ as follows:
 
@@ -93,7 +92,7 @@ Distributed list specification $S_{\mathit{list}}$ is a collection specification
 
 
 \noindent {\bf Causal Delivery}: The succinct reference implementation of collection specification $\mathit{Spec}$ with causal delivery is given as an LTS $\mathit{SRImp}(\mathit{Spec})_{\mathit{cd}} = (Q,\Sigma,\rightarrow_{\mathit{cd}},q_0)$. $\mathit{CRImp}(\mathit{Spec})_{\mathit{cd}}$ can be obtained from $\mathit{SRImp}(\mathit{Spec}) = (Q,\Sigma,\rightarrow_s,q_0)$ by changing the $\mathit{addDel}$ transition rule as follows: $q_1 {\xrightarrow{\mathit{addDel}(o,r)}}_{cd} q_2$ if $q_1 {\xrightarrow{\mathit{addDel}(o,r)}}_s q_2 \wedge o$ is minimal w.r.t $<_{hb}$ among operations not in $\mathit{visTo}(O,r,\mathit{vis})$. %visible to replica $r$ nor operation of replica $r$ in $q_1 \}$.
-{\color {red}Note that, for the operations been forgotten, we can not control their delivery. However, from the definition of collection specification, we could see that, adding more delivery relation for the forgotten operations does not changing the operation context any more.}
+{\color {red}Note that, for the operations been forgotten, we can not control their delivery. However, from the definition of collection specification, we could see that, adding more delivery relation for the forgotten operations does not changing the operation context any more, and also does not change the operation set can be removed any more.} 
 
 
 
