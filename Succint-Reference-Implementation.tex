@@ -36,8 +36,8 @@ An extension of an annotated history $(O,\mathit{vis},\mathit{arb})$ is another 
 \item[-] Given an annotated history $x$ if $S$ can be forgotten from the set of operations of $x$, then for each extension $x'$ of $x$, $S$ can be forgotten from the set of operations of $x'$.
 
 \item[-] For each annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, where $S$ can be forgotten from $O$: For each operation label $\ell$ and extension $x'$ of $x$, let $y'$ be the operation context of $x'$ and a maximal $o \in O$, and let $y''$ be the operation context of $frg(x',S)$ and $o$, then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$.
-    
-\item[-] If $\mathit{frg}(q,S) = q' \wedge \mathit{frg}(q',S') = q''$, then $\mathit{frg}(q,S \cup S') =q''$. 
+
+\item[-] If $\mathit{frg}(q,S) = q' \wedge \mathit{frg}(q',S') = q''$, then $\mathit{frg}(q,S \cup S') =q''$.
 
 \item[-] Given an annotated history $x = (O,\_,\_)$ and its extension $x' = (O',\_,\_)$. Assume $S$ can be removed from the set of operations of $x$, and $x''$ is obtained from $x'$ by adding or removing pairs in $\{ (o_1,o_2) \vert o_1 \in S, o_2 \in O' \setminus O \}$. Then the set of operations that can be forgotten of $x'$ is the same as that of $x''$.
 \end{itemize}
@@ -66,7 +66,9 @@ Similarly, we can forget operations $S$ from a state $(O,\mathit{ro},\mathit{del
 $\mathit{his}(\mathit{RImp}(\mathit{Spec})) = \mathit{his}(\mathit{SRImp}(\mathit{Spec}))$.
 \end{theorem}
 
-\noindent {\bf Example 4.}: {\color {red}Assume in state of $\mathit{RImp}(S_{\mathit{list}})$, for each identifier $a$, there is at most one $o_a = \mathit{add}(a,\_)$ in $O$, and each $o_r = \mathit{rem}(a)$ is in $\mathit{FstRem}(O,\mathit{vis},o_a)$. The following two lemma states that OR-set specification and list specification are collection specification. Their proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.}
+\noindent {\bf Example 4.}: {\color {red}%Assume in state of $\mathit{RImp}(S_{\mathit{list}})$, for each identifier $a$, there is at most one $o_a = \mathit{add}(a)$ in $O$, and each $o_r = \mathit{rem}(a)$ is in $\mathit{FstRem}(O,\mathit{vis},o_a)$. 
+The following two lemma states that OR-set specification and list specification are collection specification. Their proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}. To prove Lemma \ref{lemma:list is collection specification}, we slightly modify the second requirement of collection to deal with list, where the non-maximal operation need not be checked.  
+}
 
 
 
@@ -92,7 +94,7 @@ Distributed list specification $S_{\mathit{list}}$ is a collection specification
 
 
 \noindent {\bf Causal Delivery}: The succinct reference implementation of collection specification $\mathit{Spec}$ with causal delivery is given as an LTS $\mathit{SRImp}(\mathit{Spec})_{\mathit{cd}} = (Q,\Sigma,\rightarrow_{\mathit{cd}},q_0)$. $\mathit{CRImp}(\mathit{Spec})_{\mathit{cd}}$ can be obtained from $\mathit{SRImp}(\mathit{Spec}) = (Q,\Sigma,\rightarrow_s,q_0)$ by changing the $\mathit{addDel}$ transition rule as follows: $q_1 {\xrightarrow{\mathit{addDel}(o,r)}}_{cd} q_2$ if $q_1 {\xrightarrow{\mathit{addDel}(o,r)}}_s q_2 \wedge o$ is minimal w.r.t $<_{hb}$ among operations not in $\mathit{visTo}(O,r,\mathit{vis})$. %visible to replica $r$ nor operation of replica $r$ in $q_1 \}$.
-{\color {red}Note that, for the operations been forgotten, we can not control their delivery. However, from the definition of collection specification, we could see that, adding more delivery relation for the forgotten operations does not changing the operation context any more, and also does not change the operation set can be removed any more.} 
+{\color {red}Note that, for the operations been forgotten, we can not control their delivery. However, from the definition of collection specification, we could see that, adding more delivery relation for the forgotten operations does not changing the operation context any more, and also does not change the operation set can be removed any more.}
 
 
 

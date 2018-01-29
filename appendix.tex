@@ -193,7 +193,7 @@ Let us prove the requirements of collection specification one by one:
 \item[-] Requirement $1$: Given an annotated history $x = (O,\mathit{vis},\emptyset)$, if $S$ can be forgotten from $O$, then for each extension $x' = (O',\mathit{vis}',\emptyset)$ of $x$, $S$ can be forgotten from $O'$. 
     
     Proof of requirement $1$: This holds since $\mathit{vis}' \uparrow_{O} = \mathit{vis}$. $\newline$ 
-\item[-] Requirement $2$: For each annotated history $x = (O,\mathit{vis},\emptyset)$ and $S \subseteq O$, where $S$ can be forgotten from $O$. For each operation label $\ell$ and extension $x' = (O',\mathit{vis}',\emptyset)$ of $x$, let $y'$ be the operation context of $x'$ and $o \in O$, and let $y''$ be the operation context of $frg(x',S) = (O'',\mathit{vis}'',\emptyset)$ and $o$, then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$.
+\item[-] Requirement $2$: For each annotated history $x = (O,\mathit{vis},\emptyset)$ and $S \subseteq O$, where $S$ can be forgotten from $O$. For each operation label $\ell$ and extension $x' = (O',\mathit{vis}',\emptyset)$ of $x$, let $y'$ be the operation context of $x'$ and a maximal $o \in O$, and let $y''$ be the operation context of $frg(x',S) = (O'',\mathit{vis}'',\emptyset)$ and $o$, then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$.
     
     Proof of requirement $2$: Let us prove by considering all kinds of $\ell$: 
     
@@ -250,35 +250,18 @@ Let us prove the requirements of collection specification one by one:
 \item[-] Requirement $1$: Given an annotated history $x = (O,\mathit{vis},\mathit{arb})$, if $S$ can be forgotten from $O$, then for each extension $x' = (O',\mathit{vis}',\mathit{arb}')$ of $x$, $S$ can be forgotten from $O'$. 
 
     Proof of requirement $1$: This holds since $\mathit{vis}' \uparrow_{O} = \mathit{vis}$. $\newline$
-\item[-] Requirement $2$: For each annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, where $S$ can be forgotten from $O$. For each operation label $\ell$ and extension $x' = (O',\mathit{vis}',\mathit{arb}')$ of $x$, let $y'$ be the operation context of $x'$ and $o \in O$, and let $y''$ be the operation context of $frg(x',S) = (O'',\mathit{vis}'',\mathit{arb}'')$ and $o$, then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$. 
+\item[-] Requirement $2$: For each annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, where $S$ can be forgotten from $O$. For each operation label $\ell$ and extension $x' = (O',\mathit{vis}',\mathit{arb}')$ of $x$, let $y'$ be the operation context of $x'$ and a maximal $o \in O$, and let $y''$ be the operation context of $frg(x',S) = (O'',\mathit{vis}'',\mathit{arb}'')$ and $o$, then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$. 
 
-    Proof of requirement $2$: We already know that $\mathit{Ind}(S_{\mathit{list}})(y')$ holds. It remains to prove that $\mathit{Ind}(S_{\mathit{list}})(y'')$ holds. 
-    
-    
-    
-    Let us prove by considering all kinds of $\ell$:
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] $\ell = \mathit{add}(a)$: Trivially holds.
-
-    \item[-] $\ell = \mathit{lookup}(a) \Rightarrow \mathit{true}$: Since $\mathit{vis}' \uparrow_{O} = \mathit{vis}'' \uparrow_{O} = \mathit{vis}$, if $o\in O$, then this holds obviously.
-
-        Let us consider the case where $o \notin O$. If $S$ does not contain $\mathit{add}(a)$, then this obviously holds since $\mathit{vis}' \uparrow_{O''} = \mathit{vis}''$.
-
-        Else, if $S$ contains $\mathit{add}(a)$. If $o_{\mathit{aa}} \in S$ with operation label $\mathit{add}(a)$ is in $y'$ or $y''$, then by construction of $S$ and by the construction of operation text of OR-set, there exists a $o_{\mathit{rr}} \in S$ with operation label $\mathit{rem}(a)$, such that $o_{\mathit{rr}}$ is also in $y'$ or $y''$, and $y'$ or $y''$ could know $o_{\mathit{rr}} \in \mathit{FstRem}( o_{\mathit{aa}} )$. This implies that there exists a maximal $\mathit{add}(a)$ operation $o_1 \notin S$ in $y'$ or $y''$. Since the order of $y'$ and $y''$ preserves order of $\mathit{FstRem}$, we can see that $o_1$ is maximal in both $y'$ and $y''$. Therefore, $y',y'' \in \mathit{Spec}(\ell)$.
-
-    \item[-] $\ell = \mathit{lookup}(a) \Rightarrow \mathit{false}$: Since $\mathit{vis}' \uparrow_{O} = \mathit{vis}'' \uparrow_{O} = \mathit{vis}$, if $o\in O$, then this holds obviously. Else, since the order of $y'$ and $y''$ preserves order of $\mathit{FstRem}$, it is easy to see that $y',y'' \in \mathit{Spec}(\ell)$.
-
-    \item[-] $\ell = \mathit{rem}(a)$: Similar as the case of $\ell = \mathit{lookup}(a) \Rightarrow \mathit{true}$.
-
-    \item[-] $\ell = \mathit{elements}()\Rightarrow S$: This holds since the cases of $\ell = \mathit{lookup}(a) \Rightarrow \mathit{true}$ and $\ell = \mathit{lookup}(a) \Rightarrow \mathit{false}$ hold.
-    \end{itemize}
-    $\newline$
+    Proof of requirement $2$: Since each value is putted only once, and for each $o_a = \mathit{add}(a,\_) \in S$, there exists a $o_r = \mathit{rem}(a)$, such that both $o_a$ and $o_r$ are seen by $o$. Therefore, such $o_a$ and $o_r$ does not take effects in both $y'$ and $y''$. $\newline$
 
 \item[-] Requirement $3$: If $\mathit{frg}(q,S) = q' \wedge \mathit{frg}(q',S') = q''$, then $\mathit{frg}(q,S \cup S') =q''$.
 
-    Proof of requirement $3$: Assume $q = (O,\mathit{ro},\mathit{del},\mathit{arb})$ and $q' = (O',\mathit{ro}',\mathit{del}',\mathit{arb}')$. For each $o_a = (\mathit{add}(a),\_,\_) \in S \cup S'$, we can see that it has been visible to each replica in $\mathit{vis}$ and $\mathit{vis}'$. For each $o_r = (\mathit{rem}(a),\_,\_) \in S \cup S'$, if $o_r \in S$, then $\{ o_a \vert o_r \in \mathit{FstRem}(O,\mathit{vis},o_a) \} \subseteq S \subset S \cup S'$. Else, if $o_r \notin S$, then $\{ o_a \vert o_r \in \mathit{FstRem}(O',\mathit{vis}',o_a) \} \subseteq S'$, and we can see that $\{ o_a \vert o_r \in \mathit{FstRem}(O,\mathit{vis},o_a) \} \subseteq S' \cup S$, since $\mathit{vis} \uparrow_{O'} = \mathit{vis}'$. $\newline$
+    Proof of requirement $3$: It is easy to see that $S \cap S' = \emptyset$. $S$ contains several $add$ operations, and for each $\mathit{add}(a,\_) \in S$ and each replica $r$, there exists a $\mathit{rem}(a)$ operation of replica $r$ in $S$. The same holds in $S'$. 
+    
+    Similar as case $2$,  
+    
+    
+    Assume $q = (O,\mathit{ro},\mathit{del},\mathit{arb})$ and $q' = (O',\mathit{ro}',\mathit{del}',\mathit{arb}')$. For each $o_a = (\mathit{add}(a),\_,\_) \in S \cup S'$, we can see that it has been visible to each replica in $\mathit{vis}$ and $\mathit{vis}'$. For each $o_r = (\mathit{rem}(a),\_,\_) \in S \cup S'$, if $o_r \in S$, then $\{ o_a \vert o_r \in \mathit{FstRem}(O,\mathit{vis},o_a) \} \subseteq S \subset S \cup S'$. Else, if $o_r \notin S$, then $\{ o_a \vert o_r \in \mathit{FstRem}(O',\mathit{vis}',o_a) \} \subseteq S'$, and we can see that $\{ o_a \vert o_r \in \mathit{FstRem}(O,\mathit{vis},o_a) \} \subseteq S' \cup S$, since $\mathit{vis} \uparrow_{O'} = \mathit{vis}'$. $\newline$
 
 \item[-] Requirement $4$: Given an annotated history $x = (O,\_,\_)$ and its extension $x' = (O',\_,\_)$. Assume $S$ can be removed from the set of operations of $x$, and $x''$ is obtained from $x'$ by adding or removing pairs in $\{ (o_1,o_2) \vert o_1 \in S, o_2 \in O' \setminus O \}$. Then the set of operations that can be forgotten of $x'$ is the same as that of $x''$.
 

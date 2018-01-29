@@ -136,7 +136,14 @@ Formally, the reference implementation $\mathit{RImp}(\mathit{Spec}) = (Q,\Sigma
 \item[-] {\color {red}For OR-set, $f_{\mathit{ctxt}}$ and $\mathit{rand}(\mathit{arb},o)$ uses only arbitration order $\emptyset$.}
 
 \item[-] For distributed list: In $f_{\mathit{ctxt}}$, $\mathit{arb}'$ is obtained from $\mathit{arb} \uparrow_{O'}$ by inserting $o$ into some place if $o$ is a $add$ operation, or unchanged otherwise. $\mathit{rand}(\mathit{arb},o)$ returns an arbitration order that is obtained from $\mathit{arb}$ by insert $o$ into some place if $o$ is a $add$ operation, or unchanged otherwise.
-\end{itemize}
+\end{itemize} 
+
+{\color {red}
+\begin{remark}
+\label{remark: RImp for list}
+To comply with the simplification in next section, in construction $\mathit{RImp}(S_{\mathit{list}})$, in state $(Q,\mathit{ro},\mathit{del},\mathit{vis})$, elements of $Q$ are not a complete operations, they are without argument $\mathit{pos}$. Or we could say, elements of $Q$ are $(\ell,r,i)$ where $\ell$ is ${add}(a)$ or $\mathit{rem}(a)$ for $a \in \mathbb{R}$.
+\end{remark}
+}
 
 
 We further require that when a new operation is generated, its candidate operation identifier is unique. Therefore, it is obvious that $\mathit{RImp}(\mathit{Spec})$ is deterministic. {\color {red}Given a execution $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ of $\mathit{RImp}(\mathit{Spec})$, its annotated history $(O,\mathit{vis},\mathit{arb})$ can be easily obtained: $O$ is the set of operations generated during execution; $\mathit{vis}$ can be applied from replica order and delivery; we can safely choose $\mathit{arb}$ to be the union of arbitration order of each $q_i$, since we construct arbitration order in a way where later-add operations does not influence earlier execution. With this annotated history, we can prove that the corresponding history is CRVC w.r.t $\mathit{Spec}$. Let $\mathit{his}(\mathit{RImp}(\mathit{Spec}))$ be the set of histories of $\mathit{RImp}(\mathit{Spec})$. The following theorem states that each history of $\mathit{his}(\mathit{RImp}(\mathit{Spec}))$ is CRVC consistent w.r.t $\mathit{Spec}$.} Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
@@ -188,7 +195,7 @@ Here $Minus(q,o_1)$ is defined as follows: (1) if $lab(o_1)=add(a)$, then $Minus
     \end{itemize}
 \end{itemize}
 
-\noindent {\bf Example 4. $RImp(S_{\mathit{list}})$}: function $ctxt$ and predicate $cor$ are defined as follows:
+\noindent {\bf Example 4. $RImp(S_{\mathit{list}})$}: function $ctxt$ and predicate $cor$ are defined as follows: 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
