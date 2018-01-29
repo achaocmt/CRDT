@@ -128,7 +128,7 @@ With Lemma \ref{lemma:RImpSpec is simulated by SRimpSpec} and Lemma \ref{lemma:S
 
 Let $\rightarrow_r$ and $\rightarrow_s$ be the transition relation of $\mathit{RImp}(\mathit{Spec})$ and $\mathit{SRImp}(\mathit{Spec})$, respectively. 
 
-Let us prove the $\subseteq$ direction. Given a execution $q_0 {\xrightarrow{\alpha_1}}_r q_1 \ldots$ of $\mathit{RImp}(\mathit{Spec})$, 
+Let us prove the $\subseteq$ direction. Given a execution $e_r = q_0 {\xrightarrow{\alpha_1}}_r q_1 \ldots$ of $\mathit{RImp}(\mathit{Spec})$, 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
@@ -142,66 +142,39 @@ By definition of $\rightarrow_s$, we know that there exists $S_1$ and state $q''
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] If $\alpha_{u+1} = \mathit{addDel}(o,r)$ and $o$ is redundant in $q_u$: Let $q''_{u+1} = q''_u$. It is easy to see that $q''_{u+1} = \mathit{frg}(q_u,S'_u)$. 
+    \item[-] If $\alpha_{u+1} = \mathit{addDel}(o,r)$ and $o$ is in the set of operations that can be forgotten from $q_u$: Let $q''_{u+1} = q''_u$. It is easy to see that $q''_{u+1} = \mathit{frg}(q_u,S'_u)$.
     
-    \item[-] Otherwise:  
+    \item[-] Otherwise: Since $q''_u = \mathit{frg}(q_u,S'_u)$, by Lemma \ref{lemma:RImpSpec is simulated by SRimpSpec} we can see that $\exists \alpha'_{u+1}, q'_{u+1}$, such that $q''_u {\xrightarrow{\alpha'_{u+1}}}_r q'_{u+1}$ and $q'_{u+1} = \mathit{frg}(q_{u+1},S'_u)$. 
+
+    By definition of $\rightarrow_s$, we know that there exists $S_{u+1}$ and state $q''_{u+1}$, such that $q''_{u+1} = \mathit{frg}^*(q'_{u+1})$, $q''_{u+1} = \mathit{frg}(q'_{u+1},S_{u+1})$ and $q''_u {\xrightarrow{\alpha'_{u+1}}}_s q''_{u+1}$. By the property of collection specification, we have $q''_{u+1} = \mathit{frg}(q_{u+1},S'_u \cup S_{u+1})$.
     \end{itemize}
- 
-\end{itemize}
+\end{itemize} 
 
-This completes the proof of this lemma.
+With this method, we build a execution $e_s$ of $\mathit{SRImp}(\mathit{Spec})$, and by Lemma \ref{lemma:RImpSpec is simulated by SRimpSpec} it is easy to see that the history of $e_r$ is the same as that of $e_s$. 
 
-$\qed$
+Let us prove the $\supseteq$ direction. Given a execution $e'_s = q_0 {\xrightarrow{\beta_1}}_s q_1 \ldots$ of $\mathit{SRImp}(\mathit{Spec})$, 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $q_0 {\xrightarrow{\alpha_1}}_s q_1$: By definition of $\rightarrow_s$, we know that there exists $S_1$ and state $q'_1$, such that $q_1 = \mathit{frg}^*(q'_1)$, $q_1 = \mathit{frg}(q'_1,S_1)$ and $q_0 {\xrightarrow{\alpha_1}}_r q'_1$. 
+
+\item[-] $q_1 {\xrightarrow{\alpha_2}}_s q_2$: By definition of $\rightarrow_s$, we know that there exists $S_2$ and state $q'_2$, such that $q_2 = \mathit{frg}^*(q'_2)$, $q_2 = \mathit{frg}(q'_2,S_2)$ and $q_1 {\xrightarrow{\alpha_2}}_r q'_2$. 
+    
+    Since $q_1 {\xrightarrow{\alpha_2}}_r q'_2$ and $q_1 = \mathit{frg}(q'_1,S_1)$, by Lemma \ref{lemma:SRImpSpec is simulated by RimpSpec} we can see that $\exists \alpha'_2, q''_2$, such that $q'_1 {\xrightarrow{\alpha'_2}}_r q''_2$ and $q'_2 = \mathit{frg}(q''_2,S_1)$. By the property of collection specification, we have $q_2 = \mathit{frg}(q''_2,S_1 \cup S_2)$.
+
+\item[-] $q_u {\xrightarrow{\alpha_{u+1}}}_s q_{u+1}$ for $u \geq 2$: By definition of $\rightarrow_s$, we know that there exists $S_{u+1}$ and state $q'_{u+1}$, such that $q_{u+1} = \mathit{frg}^*(q'_{u+1})$, $q_{u+1} = \mathit{frg}(q'_{u+1},S_{u+1})$ and $q_u {\xrightarrow{\alpha_{u+1}}}_r q'_{u+1}$.
+
+    We already know that $q_u = \mathit{frg}(q''_u,S_1 \cup \ldots \cup S_u)$. Since $q_u {\xrightarrow{\alpha_{u+1}}}_r q'_{u+1}$, by Lemma \ref{lemma:SRImpSpec is simulated by RimpSpec} we can see that $\exists \alpha'_{u+1}, q''_{u+1}$, such that $q'_u {\xrightarrow{\alpha'_{u+1}}}_r q''_{u+1}$ and $q'_{u+1} = \mathit{frg}(q''_{u+1},S_1 \cup \ldots \cup S_u)$. By the property of collection specification, we have $q_{u+1} = \mathit{frg}(q''_{u+1},S_1 \cup \ldots \cup S_{u+1})$.
+\end{itemize} 
+
+With this method, we build a execution $e'_r$ of $\mathit{RImp}(\mathit{Spec})$, and by Lemma \ref{lemma:SRImpSpec is simulated by RimpSpec} it is easy to see that the history of $e'_s$ is the same as that of $e'_r$. This completes the proof of this lemma. $\qed$ 
 \end {proof}
 
 
 
+The proof of Lemma \ref{lemma:OR-set is collection specification} is as follows. 
 
-
-
-To obtain the annotated history of traces of $SRImp(Spec)$, let us define a relation $R_S$. Given two states $q=(O,\mathit{ro},\mathit{del},\mathit{vis}),q'$ of $RImp(Spec)$ and a set $S$ of operations, $(q,q') \in R_S$, if $P_f(O,\mathit{vis},S) \wedge q' = forg(q,S)$. With our definition of collections, we can see that $R_S$ satisfies the following properties:
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] If $(q,q') \in R_{ S_1 } \wedge (q',q'') \in R_{ S_2 }$, then $(q,q'') \in R_{ ( S_1 \cup S_2 ) }$.
-
-\item[-] If $(q_i,q'_i) \in R_{S} \wedge q'_i {\xrightarrow{\alpha'}} q'_{i+1}$, then $\exists \alpha$, such that $q_i {\xrightarrow{\alpha}} q_{i+1} \wedge (q_{i+1},q'_{i+1}) \in R_{S}$, where
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] If $\alpha' = addDel(o,r)$,then $\alpha = \alpha'$.
-
-    \item[-] If $\alpha'=(m,a,b,r,\mathit{arb}')$, then $\exists \mathit{arb}$, such that $\alpha=(m,a,b,r,\mathit{arb}) \wedge \mathit{arb}' = \mathit{arb} - S$.
-    \end{itemize}
-\end{itemize}
-
-
-Given an execution $t = \alpha_1 \cdot \ldots$ of $SRImp(Spec)$, its annotated history $anHis(t)$ is the annotated history of a trace $t' = \alpha'_1 \cdot \alpha''_2 \ldots$ of $RImp(Spec)$ generated as follows: Assume $q_0 {\xrightarrow{\alpha_1}}_s q_1 \ldots$ is an execution of $SRImp(Spec)$, and let $\rightarrow_r$ be the transition relation of $RImp(Spec)$,
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] $q_0 {\xrightarrow{\alpha_1}}_s q_1$: By definition of $\rightarrow_s$, $\exists \alpha'_1, q'_1$, such that $q_0 {\xrightarrow{\alpha'_1}}_r q'_1 \wedge q_1 = suct(q'_1)$. Assume we obtain $q_1$ from $q'_1$ by forgetting $S_1$. It is obvious that $(q'_1,q_1) \in R_{S_1}$.
-
-\item[-] $q_1 {\xrightarrow{\alpha_2}}_s q_2$: Similarly, $\exists \alpha'_2, q'_2, S_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_r q'_2 \wedge q_2 = suct(q'_2) \wedge (q'_2,q_2) \in R_{S_2}$. Since we already know that $(q'_1,q_1) \in R_{S_1} \wedge q_1 {\xrightarrow{\alpha'_2}}_r q'_2$, we can see that $\exists \alpha''_2,q''_2$, such that $q'_1 {\xrightarrow{\alpha''_2}}_r q''_2 \wedge (q''_2,q'_2) \in R_{S_1}$. Therefore, $(q''_2,q_2) \in R_{( O_1 \cup O_2)}$.
-
-%By definition of $\rightarrow_s$, $\exists \alpha'_2, q'_2$, such that $q_1 {\xrightarrow{\alpha'_2}}_r q'_2 \wedge q_2 = suct(q'_2)$. Assume we obtain $q_2$ from $q'_2$ by forgetting $S_2$. It is obvious that $(q'_2,q_2) \in R_{S_2}$.
-\item[-] $q_k {\xrightarrow{\alpha_{\mathit{k+1}}}}_s q_{\mathit{k+1}}$ and $k \geq 2$: Similarly, $\exists \alpha'_{\mathit{k+1}}, q'_{\mathit{k+1}}, S_{\mathit{k+1}}$, such that $q_k {\xrightarrow{\alpha'_{\mathit{k+1}}}}_r q'_{\mathit{k+1}} \wedge q_{\mathit{k+1}} = suct(q'_{\mathit{k+1}}) \wedge (q'_{\mathit{k+1}},q_{\mathit{k+1}}) \in R_{S_{\mathit{k+1}}}$. Since we already know that $(q''_k,q_k) \in R_{( S_1 \cup \ldots \cup S_k )} \wedge q_k {\xrightarrow{\alpha'_\mathit{k+1}}}_r q'_{\mathit{k+1}}$, we can see that $\exists \alpha''_{\mathit{k+1}} ,q''_{\mathit{k+1}} $, such that $q'_k {\xrightarrow{\alpha''_{\mathit{k+1}} }}_r q''_{\mathit{k+1}}  \wedge (q''_{\mathit{k+1}} ,q'_{\mathit{k+1}} ) \in R_{( S_1 \cup \ldots \cup S_k )}$. Therefore, $(q''_{\mathit{k+1}} ,q_{\mathit{k+1}} ) \in R_{( S_1 \cup \ldots \cup S_{\mathit{k+1}}  )}$.
-\end{itemize}
-
-
-%\figurename~\ref{fig:the process of generate abstract trace for compacted reference implementation} shows the example when the trace of $CRImp(Spec)$ is $\alpha_1 \cdot \alpha_2 \cdot \alpha_3 \cdot \alpha_4$.
-
-%\begin{figure}[t]
-%  \centering
-%  \includegraphics[width=0.4 \textwidth]{figures/PIC-Generate-AbstractTrace-Compact.pdf}
-%\vspace{-10pt}
-%  \caption{The process of generate abstract trace for compacted reference implementation}
-%  \label{fig:the process of generate abstract trace for compacted reference implementation}
-%\end{figure}
-
-
-
-{\noindent \bf Lemma \ref{lemma:Minus for OR-set is correct}}: Our definition of $Minus$ for OR-set is correct.
+{\noindent \bf Lemma \ref{lemma:OR-set is collection specification}}: OR-set specification $S_{\mathit{ORS}}$ is a collection specification. 
 
 \begin {proof}
 
