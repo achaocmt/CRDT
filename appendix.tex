@@ -62,39 +62,39 @@ For the case when $t_1 \in \mathit{trace}( \mathit{RImp}(\mathit{Spec}) )$. Sinc
 \section{Definitions and Proofs of Section \ref{sec:succinct reference implementations of collection data types}}
 \label{sec:appendix definitions and proofs of section succinct reference implementations of collection data types}
 
-The following two lemma states that, $\mathit{frg}$ has some feature of weak bi-simulation. 
+The following two lemma states that, $\mathit{frg}$ has some feature of weak bi-simulation.
 
 \begin{lemma}
-\label{lemma:RImpSpec is simulated by SRimpSpec} 
+\label{lemma:RImpSpec is simulated by SRimpSpec}
 If $q'_1 = \mathit{frg}(q_1,S)$ and $q_1 {\xrightarrow{\alpha}}_r q_2$ in $\mathit{RImp}(\mathit{Spec})$, then $\exists q'_2$, such that $q'_1 {\xrightarrow{\alpha}'}_r q'_2$ in $\mathit{RImp}(\mathit{Spec})$ and $q'_2 = \mathit{frg}(q_2,S)$. If $\alpha = \mathit{addDel}(o,r) \wedge o \in S$, then $\alpha' = \epsilon$ and $q'_2 = q'_1$; Else, if $\alpha$ is of query method or $\alpha = \mathit{addDel}(o,r)$, then $\alpha' = \alpha$; Else, $\alpha'$ is obtained from $\alpha$ by removing operations of $S$ from arbitration order.
 \end{lemma}
 
-\begin {proof} 
+\begin {proof}
 
-Assume $q_1 = (O_1,\mathit{ro}_1,\mathit{del}_1,\mathit{arb}_1)$, and $q'_1 = (O'_1,\mathit{ro}'_1,\mathit{del}'_1,\mathit{arb}'_1)$. Let us consider all possible cases of transition: 
+Assume $q_1 = (O_1,\mathit{ro}_1,\mathit{del}_1,\mathit{arb}_1)$, and $q'_1 = (O'_1,\mathit{ro}'_1,\mathit{del}'_1,\mathit{arb}'_1)$. Let us consider all possible cases of transition:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\alpha = \mathit{addDel}(o,r) \wedge o \in S$: by definition it is obvious that $q'_1 = \mathit{frg}(q_2,S)$. 
+\item[-] $\alpha = \mathit{addDel}(o,r) \wedge o \in S$: by definition it is obvious that $q'_1 = \mathit{frg}(q_2,S)$.
 
 \item[-] $\alpha = \mathit{addDel}(o,r) \wedge o \notin S$: We can see that $(o,r)\notin visTo(O_1,r,\mathit{vis}_1)$. Since $\mathit{frg}$ keeps visibility relation for non-$S$ operations, we can see that $(o,r)\notin visTo(O'_1,r,\mathit{vis}'_1)$. Therefore, we have $ (O'_1,\mathit{ro}'_1,\mathit{del}'_1,\mathit{arb}'_1) {\xrightarrow{addDel(o,r)}}_r q'_2 = (O'_1,\mathit{ro}'_1,\mathit{del}'_1 \cup \{ (o,r) \},\mathit{arb}'_1)$ and it is obvious that $q'_2 = \mathit{frg}(q_2,S)$.
 
 \item[-] $\alpha = (\ell,r,\_)$ is of a query method: Let annotated history $\mathit{ah}_1 = (O_{\mathit{ah1}},\mathit{vis}_{\mathit{ah1}},\mathit{arb}_{\mathit{ah1}})$, where $O_{\mathit{ah1}} = O_1 \cup \{ o \}$, $o \notin O$, $\mathit{lab}(o)=\ell$, $\mathit{vis}_{\mathit{ah1}}$ is obtained from replica order $\mathit{ro}_1 \cup \{ (o',o) \vert o' = (\_,r,\_) \in O_1\}$ and delivery order $\mathit{del}_1$, and $\mathit{arb}_{\mathit{ah1}} = \mathit{arb}_1$. It is easy to see that $S$ can be forgotten from the set of states of $\mathit{ah}_1$, and let annotated history $\mathit{ah}_2$ be obtained by $\mathit{ah}_2 = \mathit{frg}(\mathit{ah}_1,S)$.
-    
+
     Let $y'$ be the operation context of $\mathit{ah}_1$ and $o$, and let $y''$ be the operation context of $\mathit{ah}_2$ and $o$. By transition $q_1 {\xrightarrow{\alpha}}_r q_2$ we ensure that $y' \in \mathit{Spec}(\ell)$. By the property of collection specification, we can see that $y'' \in \mathit{Spec}(\ell)$. This implies that $(O'_1,\mathit{ro}'_1,\mathit{del}'_1,\mathit{arb}'_1) {\xrightarrow{(m,a,b,r,\mathit{arb}'_1)}}_r q'_2 = (O'_1,\mathit{ro}'_1,\mathit{del}'_1,\mathit{arb}'_1)$ and it is obvious that $q'_2 = \mathit{frg}(q_2,S)$.
 
-\item[-] $\alpha = (\ell,r,\_)$ is of a update method: Let annotated history $\mathit{ah}_1 = (O_{\mathit{ah1}},\mathit{vis}_{\mathit{ah1}},\mathit{arb}_{\mathit{ah1}})$, where $O_{\mathit{ah1}} = O_1 \cup \{ o \}$, $o \notin O$, $\mathit{lab}(o)=\ell$, $\mathit{vis}_{\mathit{ah1}}$ is obtained from replica order $\mathit{ro}_1 \cup \{ (o',o) \vert o' = (\_,r,\_) \in O_1\}$ and delivery order $\mathit{del}_1$, and $\mathit{arb}_{\mathit{ah1}}$ equals the arbitration order of $q_2$. It is easy to see that $S$ can be forgotten from the set of states of $\mathit{ah}_1$, and let annotated history $\mathit{ah}_2$ be obtained by $\mathit{ah}_2 = \mathit{frg}(\mathit{ah}_1,S)$. 
+\item[-] $\alpha = (\ell,r,\_)$ is of a update method: Let annotated history $\mathit{ah}_1 = (O_{\mathit{ah1}},\mathit{vis}_{\mathit{ah1}},\mathit{arb}_{\mathit{ah1}})$, where $O_{\mathit{ah1}} = O_1 \cup \{ o \}$, $o \notin O$, $\mathit{lab}(o)=\ell$, $\mathit{vis}_{\mathit{ah1}}$ is obtained from replica order $\mathit{ro}_1 \cup \{ (o',o) \vert o' = (\_,r,\_) \in O_1\}$ and delivery order $\mathit{del}_1$, and $\mathit{arb}_{\mathit{ah1}}$ equals the arbitration order of $q_2$. It is easy to see that $S$ can be forgotten from the set of states of $\mathit{ah}_1$, and let annotated history $\mathit{ah}_2$ be obtained by $\mathit{ah}_2 = \mathit{frg}(\mathit{ah}_1,S)$.
 
     Let $y'$ be the operation context of $\mathit{ah}_1$ and $o$, and the arbitration order of $y'$ is the projection of arbitration order of $q_2$ into operations of $y'$. Let $y''$ be the operation context of $\mathit{ah}_2$ and $o$, and the arbitration order of $y''$ is the projection of the arbitration order of $y'$ into operations of $y''$. By transition $q_1 {\xrightarrow{\alpha}}_r q_2$ we ensure that $y' \in \mathit{Spec}(\ell)$. By the property of collection specification, we can see that $y'' \in \mathit{Spec}(\ell)$. This implies that $(O'_1,\mathit{ro}'_1,\mathit{del}'_1,\mathit{arb}'_1) {\xrightarrow{(m,a,b,r,\mathit{arb}'_2)}}_r q'_2 =  (O'_1 \cup \{ o \},\mathit{ro}' \oplus o ,\mathit{del}' \oplus o,\mathit{arb}'_2)$, where $\mathit{arb}'_2$ is the projection of arbitration order of $q_2$ into operations of $q'_2$. It is obvious that $q'_2 = \mathit{frg}(q_2,S)$.
-\end{itemize} 
+\end{itemize}
 This completes the proof of this lemma. $\qed$
-\end {proof} 
+\end {proof}
 
 
 
 \begin{lemma}
 \label{lemma:SRImpSpec is simulated by RimpSpec}
-If $q'_1 = \mathit{frg}(q_1,S)$ and $q'_1 {\xrightarrow{\alpha}'}_r q'_2$ in $\mathit{RImp}(\mathit{Spec})$, then $\exists q_2$, such that $q_1 {\xrightarrow{\alpha}}_r q_2$ in $\mathit{RImp}(\mathit{Spec})$ and $q'_2 = \mathit{frg}(q_2,S)$. If $\alpha'$ is of query method or $\alpha' = \mathit{addDel}(o,r)$, then $\alpha = \alpha'$; Else, $\alpha$ is a transition label such that $\alpha'$ is obtained from $\alpha$ by removing operations of $S$ from arbitration order. 
+If $q'_1 = \mathit{frg}(q_1,S)$ and $q'_1 {\xrightarrow{\alpha}'}_r q'_2$ in $\mathit{RImp}(\mathit{Spec})$, then $\exists q_2$, such that $q_1 {\xrightarrow{\alpha}}_r q_2$ in $\mathit{RImp}(\mathit{Spec})$ and $q'_2 = \mathit{frg}(q_2,S)$. If $\alpha'$ is of query method or $\alpha' = \mathit{addDel}(o,r)$, then $\alpha = \alpha'$; Else, $\alpha$ is a transition label such that $\alpha'$ is obtained from $\alpha$ by removing operations of $S$ from arbitration order.
 \end{lemma}
 
 \begin {proof}
@@ -103,7 +103,7 @@ Assume $q'_1 = (O'_1,\mathit{ro}'_1,\mathit{del}'_1,\mathit{arb}'_1)$, and $q_1 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\alpha' = \mathit{addDel}(o,r)$: We can see that $(o,r)\notin visTo(O'_1,r,\mathit{vis}_1)$. Since $\mathit{frg}$ keeps visibility relation for non-$S$ operations, we can see that $(o,r)\notin visTo(O_1,r,\mathit{vis}'_1)$. Therefore, we have $ (O_1,\mathit{ro}_1,\mathit{del}_1,\mathit{arb}_1) {\xrightarrow{addDel(o,r)}}_r q_2 = (O_1,\mathit{ro}_1,\mathit{del}_1 \cup \{ (o,r) \},\mathit{arb}_1)$ and it is obvious that $q'_2 = \mathit{frg}(q_2,S)$. 
+\item[-] $\alpha' = \mathit{addDel}(o,r)$: We can see that $(o,r)\notin visTo(O'_1,r,\mathit{vis}_1)$. Since $\mathit{frg}$ keeps visibility relation for non-$S$ operations, we can see that $(o,r)\notin visTo(O_1,r,\mathit{vis}'_1)$. Therefore, we have $ (O_1,\mathit{ro}_1,\mathit{del}_1,\mathit{arb}_1) {\xrightarrow{addDel(o,r)}}_r q_2 = (O_1,\mathit{ro}_1,\mathit{del}_1 \cup \{ (o,r) \},\mathit{arb}_1)$ and it is obvious that $q'_2 = \mathit{frg}(q_2,S)$.
 
 \item[-] $\alpha' = (\ell,r,\_)$ is of a query method: Let annotated history $\mathit{ah}_1 = (O_{\mathit{ah1}},\mathit{vis}_{\mathit{ah1}},\mathit{arb}_{\mathit{ah1}})$, where $O_{\mathit{ah1}} = O_1 \cup \{ o \}$, $o \notin O$, $\mathit{lab}(o)=\ell$, $\mathit{vis}_{\mathit{ah1}}$ is obtained from replica order $\mathit{ro}_1 \cup \{ (o',o) \vert o' = (\_,r,\_) \in O_1\}$ and delivery order $\mathit{del}_1$, and $\mathit{arb}_{\mathit{ah1}} = \mathit{arb}_1$. It is easy to see that $S$ can be forgotten from the set of states of $\mathit{ah}_1$, and let annotated history $\mathit{ah}_2$ be obtained by $\mathit{ah}_2 = \mathit{frg}(\mathit{ah}_1,S)$.
 
@@ -118,7 +118,7 @@ This completes the proof of this lemma. $\qed$
 
 
 
-With Lemma \ref{lemma:RImpSpec is simulated by SRimpSpec} and Lemma \ref{lemma:SRImpSpec is simulated by RimpSpec}, we could prove Theorem \ref{theorem:SRIMPSpec and RIMPSpec have same history}. 
+With Lemma \ref{lemma:RImpSpec is simulated by SRimpSpec} and Lemma \ref{lemma:SRImpSpec is simulated by RimpSpec}, we could prove Theorem \ref{theorem:SRIMPSpec and RIMPSpec have same history}.
 
 
 
@@ -126,15 +126,15 @@ With Lemma \ref{lemma:RImpSpec is simulated by SRimpSpec} and Lemma \ref{lemma:S
 
 \begin {proof}
 
-Let $\rightarrow_r$ and $\rightarrow_s$ be the transition relation of $\mathit{RImp}(\mathit{Spec})$ and $\mathit{SRImp}(\mathit{Spec})$, respectively. 
+Let $\rightarrow_r$ and $\rightarrow_s$ be the transition relation of $\mathit{RImp}(\mathit{Spec})$ and $\mathit{SRImp}(\mathit{Spec})$, respectively.
 
-Let us prove the $\subseteq$ direction. Given a execution $e_r = q_0 {\xrightarrow{\alpha_1}}_r q_1 \ldots$ of $\mathit{RImp}(\mathit{Spec})$, 
+Let us prove the $\subseteq$ direction. Given a execution $e_r = q_0 {\xrightarrow{\alpha_1}}_r q_1 \ldots$ of $\mathit{RImp}(\mathit{Spec})$,
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
 \item[-] $q_0 {\xrightarrow{\alpha_1}}_r q_1$: By definition of $\rightarrow_s$, we know that there exists $S_1$ and state $q'_1$, such that $q'_1 = \mathit{frg}^*(q_1)$, $q'_1 = \mathit{frg}(q_1,S_1)$ and $q_0 {\xrightarrow{\alpha_1}}_s q'_1$.
 
-\item[-] $q_1 {\xrightarrow{\alpha_2}}_r q_2$: Since $q'_1 = \mathit{frg}(q_1,S_1)$, by Lemma \ref{lemma:RImpSpec is simulated by SRimpSpec} we can see that $\exists \alpha'_2, q'_2$, such that $q'_1 {\xrightarrow{\alpha'_2}}_r q'_2$ and $q'_2 = \mathit{frg}(q_2,S_1)$. 
+\item[-] $q_1 {\xrightarrow{\alpha_2}}_r q_2$: Since $q'_1 = \mathit{frg}(q_1,S_1)$, by Lemma \ref{lemma:RImpSpec is simulated by SRimpSpec} we can see that $\exists \alpha'_2, q'_2$, such that $q'_1 {\xrightarrow{\alpha'_2}}_r q'_2$ and $q'_2 = \mathit{frg}(q_2,S_1)$.
 
 By definition of $\rightarrow_s$, we know that there exists $S_1$ and state $q''_2$, such that $q''_2 = \mathit{frg}^*(q'_2)$, $q''_2 = \mathit{frg}(q'_2,S_2)$ and $q'_1 {\xrightarrow{\alpha'_2}}_s q''_2$. By the property of collection specification, we have $q''_2 = \mathit{frg}(q_2,S_1 \cup S_2)$.
 
@@ -143,99 +143,108 @@ By definition of $\rightarrow_s$, we know that there exists $S_1$ and state $q''
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
     \item[-] If $\alpha_{u+1} = \mathit{addDel}(o,r)$ and $o$ is in the set of operations that can be forgotten from $q_u$: Let $q''_{u+1} = q''_u$. It is easy to see that $q''_{u+1} = \mathit{frg}(q_u,S'_u)$.
-    
-    \item[-] Otherwise: Since $q''_u = \mathit{frg}(q_u,S'_u)$, by Lemma \ref{lemma:RImpSpec is simulated by SRimpSpec} we can see that $\exists \alpha'_{u+1}, q'_{u+1}$, such that $q''_u {\xrightarrow{\alpha'_{u+1}}}_r q'_{u+1}$ and $q'_{u+1} = \mathit{frg}(q_{u+1},S'_u)$. 
+
+    \item[-] Otherwise: Since $q''_u = \mathit{frg}(q_u,S'_u)$, by Lemma \ref{lemma:RImpSpec is simulated by SRimpSpec} we can see that $\exists \alpha'_{u+1}, q'_{u+1}$, such that $q''_u {\xrightarrow{\alpha'_{u+1}}}_r q'_{u+1}$ and $q'_{u+1} = \mathit{frg}(q_{u+1},S'_u)$.
 
     By definition of $\rightarrow_s$, we know that there exists $S_{u+1}$ and state $q''_{u+1}$, such that $q''_{u+1} = \mathit{frg}^*(q'_{u+1})$, $q''_{u+1} = \mathit{frg}(q'_{u+1},S_{u+1})$ and $q''_u {\xrightarrow{\alpha'_{u+1}}}_s q''_{u+1}$. By the property of collection specification, we have $q''_{u+1} = \mathit{frg}(q_{u+1},S'_u \cup S_{u+1})$.
     \end{itemize}
-\end{itemize} 
+\end{itemize}
 
-With this method, we build a execution $e_s$ of $\mathit{SRImp}(\mathit{Spec})$, and by Lemma \ref{lemma:RImpSpec is simulated by SRimpSpec} it is easy to see that the history of $e_r$ is the same as that of $e_s$. 
+With this method, we build a execution $e_s$ of $\mathit{SRImp}(\mathit{Spec})$, and by Lemma \ref{lemma:RImpSpec is simulated by SRimpSpec} it is easy to see that the history of $e_r$ is the same as that of $e_s$.
 
-Let us prove the $\supseteq$ direction. Given a execution $e'_s = q_0 {\xrightarrow{\beta_1}}_s q_1 \ldots$ of $\mathit{SRImp}(\mathit{Spec})$, 
+Let us prove the $\supseteq$ direction. Given a execution $e'_s = q_0 {\xrightarrow{\beta_1}}_s q_1 \ldots$ of $\mathit{SRImp}(\mathit{Spec})$,
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $q_0 {\xrightarrow{\alpha_1}}_s q_1$: By definition of $\rightarrow_s$, we know that there exists $S_1$ and state $q'_1$, such that $q_1 = \mathit{frg}^*(q'_1)$, $q_1 = \mathit{frg}(q'_1,S_1)$ and $q_0 {\xrightarrow{\alpha_1}}_r q'_1$. 
+\item[-] $q_0 {\xrightarrow{\alpha_1}}_s q_1$: By definition of $\rightarrow_s$, we know that there exists $S_1$ and state $q'_1$, such that $q_1 = \mathit{frg}^*(q'_1)$, $q_1 = \mathit{frg}(q'_1,S_1)$ and $q_0 {\xrightarrow{\alpha_1}}_r q'_1$.
 
-\item[-] $q_1 {\xrightarrow{\alpha_2}}_s q_2$: By definition of $\rightarrow_s$, we know that there exists $S_2$ and state $q'_2$, such that $q_2 = \mathit{frg}^*(q'_2)$, $q_2 = \mathit{frg}(q'_2,S_2)$ and $q_1 {\xrightarrow{\alpha_2}}_r q'_2$. 
-    
+\item[-] $q_1 {\xrightarrow{\alpha_2}}_s q_2$: By definition of $\rightarrow_s$, we know that there exists $S_2$ and state $q'_2$, such that $q_2 = \mathit{frg}^*(q'_2)$, $q_2 = \mathit{frg}(q'_2,S_2)$ and $q_1 {\xrightarrow{\alpha_2}}_r q'_2$.
+
     Since $q_1 {\xrightarrow{\alpha_2}}_r q'_2$ and $q_1 = \mathit{frg}(q'_1,S_1)$, by Lemma \ref{lemma:SRImpSpec is simulated by RimpSpec} we can see that $\exists \alpha'_2, q''_2$, such that $q'_1 {\xrightarrow{\alpha'_2}}_r q''_2$ and $q'_2 = \mathit{frg}(q''_2,S_1)$. By the property of collection specification, we have $q_2 = \mathit{frg}(q''_2,S_1 \cup S_2)$.
 
 \item[-] $q_u {\xrightarrow{\alpha_{u+1}}}_s q_{u+1}$ for $u \geq 2$: By definition of $\rightarrow_s$, we know that there exists $S_{u+1}$ and state $q'_{u+1}$, such that $q_{u+1} = \mathit{frg}^*(q'_{u+1})$, $q_{u+1} = \mathit{frg}(q'_{u+1},S_{u+1})$ and $q_u {\xrightarrow{\alpha_{u+1}}}_r q'_{u+1}$.
 
     We already know that $q_u = \mathit{frg}(q''_u,S_1 \cup \ldots \cup S_u)$. Since $q_u {\xrightarrow{\alpha_{u+1}}}_r q'_{u+1}$, by Lemma \ref{lemma:SRImpSpec is simulated by RimpSpec} we can see that $\exists \alpha'_{u+1}, q''_{u+1}$, such that $q'_u {\xrightarrow{\alpha'_{u+1}}}_r q''_{u+1}$ and $q'_{u+1} = \mathit{frg}(q''_{u+1},S_1 \cup \ldots \cup S_u)$. By the property of collection specification, we have $q_{u+1} = \mathit{frg}(q''_{u+1},S_1 \cup \ldots \cup S_{u+1})$.
-\end{itemize} 
+\end{itemize}
 
-With this method, we build a execution $e'_r$ of $\mathit{RImp}(\mathit{Spec})$, and by Lemma \ref{lemma:SRImpSpec is simulated by RimpSpec} it is easy to see that the history of $e'_s$ is the same as that of $e'_r$. This completes the proof of this lemma. $\qed$ 
+With this method, we build a execution $e'_r$ of $\mathit{RImp}(\mathit{Spec})$, and by Lemma \ref{lemma:SRImpSpec is simulated by RimpSpec} it is easy to see that the history of $e'_s$ is the same as that of $e'_r$. This completes the proof of this lemma. $\qed$
 \end {proof}
 
 
-Given a state $q = (O,\mathit{ro},\mathit{del},\mathit{arb})$ of $\mathit{RImp}( S_{\mathit{ORS}} )$, let a inductive variants $\mathit{Ind}(S_{\mathit{ORS}})(q)$ be defined as follows: 
+Given a state $q = (O,\mathit{ro},\mathit{del},\mathit{arb})$ of $\mathit{RImp}( S_{\mathit{ORS}} )$, let a inductive variants $\mathit{Ind}(S_{\mathit{ORS}})(q)$ be defined as follows:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
 \item[-] $\mathit{Ind}(S_{\mathit{ORS}})(q)$: For each $o_r \in O$ with $\mathit{lab}(o) = \mathit{rem}(a)$, there exists $o_a \in O$ with $\mathit{lab}(o_a) = \mathit{add}(a)$, such that $o_r \in \mathit{FstRem}(O,\mathit{vis},o_a)$
 \end{itemize}
 
-From now on, for $\mathit{RImp}( S_{\mathit{ORS}} )$, we only consider its states that satisfy $\mathit{Ind}(S_{\mathit{ORS}})(q)$. With this assumption, we prove Lemma \ref{lemma:OR-set is collection specification} as follows.  
+From now on, for $\mathit{RImp}( S_{\mathit{ORS}} )$, we only consider its states that satisfy $\mathit{Ind}(S_{\mathit{ORS}})(q)$. With this assumption, we prove Lemma \ref{lemma:OR-set is collection specification} as follows.
 
-{\noindent \bf Lemma \ref{lemma:OR-set is collection specification}}: OR-set specification $S_{\mathit{ORS}}$ is a collection specification. 
+{\noindent \bf Lemma \ref{lemma:OR-set is collection specification}}: OR-set specification $S_{\mathit{ORS}}$ is a collection specification.
 
 \begin {proof}
 
-%Let $\rightarrow$ be the transition relation of $RImp(S_{\mathit{ORS}})$. Given $(q_k,q'_k) \in R_{S}$, let $f$ be short for $map_{(q_k,q'_k,S)}$, assume $q_k = (O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k)$ and $q'_k = (O'_k,\mathit{ro}'_k,\mathit{del}'_k,\mathit{arb}'_k)$. 
+%Let $\rightarrow$ be the transition relation of $RImp(S_{\mathit{ORS}})$. Given $(q_k,q'_k) \in R_{S}$, let $f$ be short for $map_{(q_k,q'_k,S)}$, assume $q_k = (O_k,\mathit{ro}_k,\mathit{del}_k,\mathit{arb}_k)$ and $q'_k = (O'_k,\mathit{ro}'_k,\mathit{del}'_k,\mathit{arb}'_k)$.
 
-Let us prove the requirements of collection specification one by one: 
+Let us prove the requirements of collection specification one by one:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] Requirement $1$: Given an annotated history $x = (O,\mathit{vis},\emptyset)$, if $S$ can be forgotten from $O$, then for each extension $x' = (O',\mathit{vis}',\emptyset)$ of $x$, $S$ can be forgotten from $O'$. 
-    
-    Proof of requirement $1$: This holds since $\mathit{vis}' \uparrow_{O} = \mathit{vis}$. $\newline$ 
+\item[-] Requirement $1$: Given an annotated history $x = (O,\mathit{vis},\emptyset)$, if $S$ can be forgotten from $O$, then for each extension $x' = (O',\mathit{vis}',\emptyset)$ of $x$, $S$ can be forgotten from $O'$.
+
+    Proof of requirement $1$: This holds since $\mathit{vis}' \uparrow_{O} = \mathit{vis}$. $\newline$
 \item[-] Requirement $2$: For each annotated history $x = (O,\mathit{vis},\emptyset)$ and $S \subseteq O$, where $S$ can be forgotten from $O$. For each operation label $\ell$ and extension $x' = (O',\mathit{vis}',\emptyset)$ of $x$, let $y'$ be the operation context of $x'$ and a maximal $o \in O$, and let $y''$ be the operation context of $frg(x',S) = (O'',\mathit{vis}'',\emptyset)$ and $o$, then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$.
-    
-    Proof of requirement $2$: Let us prove by considering all kinds of $\ell$: 
-    
+
+    Proof of requirement $2$: Let us prove by considering all kinds of $\ell$:
+
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
-    \item[-] $\ell = \mathit{add}(a)$: Trivially holds. 
-    
+    \item[-] $\ell = \mathit{add}(a)$: Trivially holds.
+
     \item[-] $\ell = \mathit{lookup}(a) \Rightarrow \mathit{true}$: Since $\mathit{vis}' \uparrow_{O} = \mathit{vis}'' \uparrow_{O} = \mathit{vis}$, if $o\in O$, then this holds obviously.
-        
-        Let us consider the case where $o \notin O$. If $S$ does not contain $\mathit{add}(a)$, then this obviously holds since $\mathit{vis}' \uparrow_{O''} = \mathit{vis}''$.  
-        
-        Else, if $S$ contains $\mathit{add}(a)$. If $o_{\mathit{aa}} \in S$ with operation label $\mathit{add}(a)$ is in $y'$ or $y''$, then by construction of $S$ and by the construction of operation text of OR-set, there exists a $o_{\mathit{rr}} \in S$ with operation label $\mathit{rem}(a)$, such that $o_{\mathit{rr}}$ is also in $y'$ or $y''$, and $y'$ or $y''$ could know $o_{\mathit{rr}} \in \mathit{FstRem}( o_{\mathit{aa}} )$. This implies that there exists a maximal $\mathit{add}(a)$ operation $o_1 \notin S$ in $y'$ or $y''$. Since the order of $y'$ and $y''$ preserves order of $\mathit{FstRem}$, we can see that $o_1$ is maximal in both $y'$ and $y''$. Therefore, $y',y'' \in \mathit{Spec}(\ell)$. 
-    
-    \item[-] $\ell = \mathit{lookup}(a) \Rightarrow \mathit{false}$: Since $\mathit{vis}' \uparrow_{O} = \mathit{vis}'' \uparrow_{O} = \mathit{vis}$, if $o\in O$, then this holds obviously. Else, since the order of $y'$ and $y''$ preserves order of $\mathit{FstRem}$, it is easy to see that $y',y'' \in \mathit{Spec}(\ell)$. 
-    
-    \item[-] $\ell = \mathit{rem}(a)$: Similar as the case of $\ell = \mathit{lookup}(a) \Rightarrow \mathit{true}$. 
-    
-    \item[-] $\ell = \mathit{elements}()\Rightarrow S$: This holds since the cases of $\ell = \mathit{lookup}(a) \Rightarrow \mathit{true}$ and $\ell = \mathit{lookup}(a) \Rightarrow \mathit{false}$ hold. 
+
+        Let us consider the case where $o \notin O$. If $S$ does not contain $\mathit{add}(a)$, then this obviously holds since $\mathit{vis}' \uparrow_{O''} = \mathit{vis}''$.
+
+        Else, if $S$ contains $\mathit{add}(a)$. If $o_{\mathit{aa}} \in S$ with operation label $\mathit{add}(a)$ is in $y'$ or $y''$, then by construction of $S$ and by the construction of operation text of OR-set, there exists a $o_{\mathit{rr}} \in S$ with operation label $\mathit{rem}(a)$, such that $o_{\mathit{rr}}$ is also in $y'$ or $y''$, and $y'$ or $y''$ could know $o_{\mathit{rr}} \in \mathit{FstRem}( o_{\mathit{aa}} )$. This implies that there exists a maximal $\mathit{add}(a)$ operation $o_1 \notin S$ in $y'$ or $y''$. Since the order of $y'$ and $y''$ preserves order of $\mathit{FstRem}$, we can see that $o_1$ is maximal in both $y'$ and $y''$. Therefore, $y',y'' \in \mathit{Spec}(\ell)$.
+
+    \item[-] $\ell = \mathit{lookup}(a) \Rightarrow \mathit{false}$: Since $\mathit{vis}' \uparrow_{O} = \mathit{vis}'' \uparrow_{O} = \mathit{vis}$, if $o\in O$, then this holds obviously. Else, since the order of $y'$ and $y''$ preserves order of $\mathit{FstRem}$, it is easy to see that $y',y'' \in \mathit{Spec}(\ell)$.
+
+    \item[-] $\ell = \mathit{rem}(a)$: Similar as the case of $\ell = \mathit{lookup}(a) \Rightarrow \mathit{true}$.
+
+    \item[-] $\ell = \mathit{elements}()\Rightarrow S$: This holds since the cases of $\ell = \mathit{lookup}(a) \Rightarrow \mathit{true}$ and $\ell = \mathit{lookup}(a) \Rightarrow \mathit{false}$ hold.
     \end{itemize}
-    $\newline$ 
+    $\newline$
 
-\item[-] Requirement $3$: If $\mathit{frg}(q,S) = q' \wedge \mathit{frg}(q',S') = q''$, then $\mathit{frg}(q,S \cup S') =q''$. 
+\item[-] Requirement $3$: If $\mathit{frg}(q,S) = q' \wedge \mathit{frg}(q',S') = q''$, then $\mathit{frg}(q,S \cup S') =q''$.
 
-    Proof of requirement $3$: Assume $q = (O,\mathit{ro},\mathit{del},\mathit{arb})$ and $q' = (O',\mathit{ro}',\mathit{del}',\mathit{arb}')$. For each $o_a = (\mathit{add}(a),\_,\_) \in S \cup S'$, we can see that it has been visible to each replica in $\mathit{vis}$ and $\mathit{vis}'$. For each $o_r = (\mathit{rem}(a),\_,\_) \in S \cup S'$, if $o_r \in S$, then $\{ o_a \vert o_r \in \mathit{FstRem}(O,\mathit{vis},o_a) \} \subseteq S \subset S \cup S'$. Else, if $o_r \notin S$, then $\{ o_a \vert o_r \in \mathit{FstRem}(O',\mathit{vis}',o_a) \} \subseteq S'$, and we can see that $\{ o_a \vert o_r \in \mathit{FstRem}(O,\mathit{vis},o_a) \} \subseteq S' \cup S$, since $\mathit{vis} \uparrow_{O'} = \mathit{vis}'$. $\newline$ 
+    Proof of requirement $3$: Assume $q = (O,\mathit{ro},\mathit{del},\mathit{arb})$ and $q' = (O',\mathit{ro}',\mathit{del}',\mathit{arb}')$. For each $o_a = (\mathit{add}(a),\_,\_) \in S \cup S'$, we can see that it has been visible to each replica in $\mathit{vis}$ and $\mathit{vis}'$. For each $o_r = (\mathit{rem}(a),\_,\_) \in S \cup S'$, if $o_r \in S$, then $\{ o_a \vert o_r \in \mathit{FstRem}(O,\mathit{vis},o_a) \} \subseteq S \subset S \cup S'$. Else, if $o_r \notin S$, then $\{ o_a \vert o_r \in \mathit{FstRem}(O',\mathit{vis}',o_a) \} \subseteq S'$, and we can see that $\{ o_a \vert o_r \in \mathit{FstRem}(O,\mathit{vis},o_a) \} \subseteq S' \cup S$, since $\mathit{vis} \uparrow_{O'} = \mathit{vis}'$. $\newline$
 
 \item[-] Requirement $4$: Given an annotated history $x = (O,\_,\_)$ and its extension $x' = (O',\_,\_)$. Assume $S$ can be removed from the set of operations of $x$, and $x''$ is obtained from $x'$ by adding or removing pairs in $\{ (o_1,o_2) \vert o_1 \in S, o_2 \in O' \setminus O \}$. Then the set of operations that can be forgotten of $x'$ is the same as that of $x''$.
-    
-    Proof of requirement $4$: For the case when $x''$ is obtained from $x'$ by adding one such pair $(o_1,o_2)$: The $\mathit{FstRem}$ relation for pairs of operations where both are in $O$ or in $O' \setminus O$ remains the same. By definition there is no $\mathit{FstRem}$ relation for pairs of $\mathit{add}$ in $O' \setminus O$ and $\mathit{rem}$ in $O$. By the definition of $\mathit{FstRem}$, it is easy to see that the pair of $\mathit{add}$ in $S$ and $\mathit{rem}$ in $O' \setminus O$ can not be in $\mathit{FstRem}$. Therefore, the $\mathit{FstRem}$ in $x'$ and $x''$ is the same. The case when $x''$ is obtained from $x'$ by removing one such pair $(o_1,o_2)$ can be similarly dealt with. 
+
+    Proof of requirement $4$: For the case when $x''$ is obtained from $x'$ by adding one such pair $(o_1,o_2)$: The $\mathit{FstRem}$ relation for pairs of operations where both are in $O$ or in $O' \setminus O$ remains the same. By definition there is no $\mathit{FstRem}$ relation for pairs of $\mathit{add}$ in $O' \setminus O$ and $\mathit{rem}$ in $O$. By the definition of $\mathit{FstRem}$, it is easy to see that the pair of $\mathit{add}$ in $S$ and $\mathit{rem}$ in $O' \setminus O$ can not be in $\mathit{FstRem}$. Therefore, the $\mathit{FstRem}$ in $x'$ and $x''$ is the same. The case when $x''$ is obtained from $x'$ by removing one such pair $(o_1,o_2)$ can be similarly dealt with.
 \end{itemize}
 
 This completes the proof of this lemma. $\qed$
 \end {proof}
 
-%Given a state $(O,\mathit{ro},\mathit{del},\mathit{arb})$, its annotated history is a tuple $(o,\mathit{vis} \uparrow_{O},\mathit{arb})$. 
-Given a state $q = (O,\mathit{ro},\mathit{del},\mathit{arb})$ of $\mathit{RImp}( S_{\mathit{list}} )$, let a inductive variants $\mathit{Ind}(S_{\mathit{list}})(q)$ be defined as follows: 
+%Given a state $(O,\mathit{ro},\mathit{del},\mathit{arb})$, its annotated history is a tuple $(o,\mathit{vis} \uparrow_{O},\mathit{arb})$.
+Given a state $q = (O,\mathit{ro},\mathit{del},\mathit{arb})$ of $\mathit{RImp}( S_{\mathit{list}} )$, let a inductive variants $\mathit{Ind}(S_{\mathit{list}})(q)$ be defined as follows:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\mathit{Ind}(S_{\mathit{list}})(q)$: For each operation $o \in O$, the operation context of $o$ in the annotated history $(o,\mathit{vis} \uparrow_{O},\mathit{arb})$ is in $S_{\mathit{list}}(\mathit{lab}(o))$.
+\item[-] $\mathit{Ind}(S_{\mathit{list}})(q)$: For each $a$, there is at most one $\mathit{add}(a) \in O$, and for each replica $r$, there is at most one $o = \mathit{rem}(a) \in \mathit{visTo}(O,\mathit{vis},r)$. 
 \end{itemize}
 
-From now on, for $\mathit{RImp}( S_{\mathit{list}} )$, we only consider its states that satisfy $\mathit{Ind}(S_{\mathit{list}})$. With this assumption, we prove Lemma \ref{lemma:list is collection specification} as follows.
+From now on, for $\mathit{RImp}( S_{\mathit{list}} )$, we only consider its states that satisfy $\mathit{Ind}(S_{\mathit{list}})$. We slightly modify the second requirement of collection into the following: 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] For each annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, where $S$ can be forgotten from $O$. For each operation label $\ell$ and extension $x' = (O',\mathit{vis}',\mathit{arb}')$ of $x$, let $y'$ be the operation context of $x'$ and a maximal $o \in O$, and let $y''$ be the operation context of $frg(x',S) = (O'',\mathit{vis}'',\mathit{arb}'')$ and $o$. Here we only permit $o$ to have argument $\mathit{pos}$ (if it is $\mathit{add}$) while such argument for other operations are ignored by definition. Then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$.
+\end{itemize}
+
+With this modified collection, we can similarly define Lemma \ref{lemma:RImpSpec is simulated by SRimpSpec} and Lemma \ref{lemma:SRImpSpec is simulated by RimpSpec}. 
+
+Then, let us prove Lemma \ref{lemma:list is collection specification} as follows.
 
 {\noindent \bf Lemma \ref{lemma:list is collection specification}}: Distributed list specification $S_{\mathit{list}}$ is a collection specification.
 
@@ -247,29 +256,145 @@ Let us prove the requirements of collection specification one by one:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] Requirement $1$: Given an annotated history $x = (O,\mathit{vis},\mathit{arb})$, if $S$ can be forgotten from $O$, then for each extension $x' = (O',\mathit{vis}',\mathit{arb}')$ of $x$, $S$ can be forgotten from $O'$. 
+\item[-] Requirement $1$: Given an annotated history $x = (O,\mathit{vis},\mathit{arb})$, if $S$ can be forgotten from $O$, then for each extension $x' = (O',\mathit{vis}',\mathit{arb}')$ of $x$, $S$ can be forgotten from $O'$.
 
     Proof of requirement $1$: This holds since $\mathit{vis}' \uparrow_{O} = \mathit{vis}$. $\newline$
-\item[-] Requirement $2$: For each annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, where $S$ can be forgotten from $O$. For each operation label $\ell$ and extension $x' = (O',\mathit{vis}',\mathit{arb}')$ of $x$, let $y'$ be the operation context of $x'$ and a maximal $o \in O$, and let $y''$ be the operation context of $frg(x',S) = (O'',\mathit{vis}'',\mathit{arb}'')$ and $o$, then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$. 
+\item[-] Requirement $2$: For each annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, where $S$ can be forgotten from $O$. For each operation label $\ell$ and extension $x' = (O',\mathit{vis}',\mathit{arb}')$ of $x$, let $y'$ be the operation context of $x'$ and a maximal $o \in O$, and let $y''$ be the operation context of $frg(x',S) = (O'',\mathit{vis}'',\mathit{arb}'')$ and $o$. Here we only permit $o$ to have argument $\mathit{pos}$ (if it is $\mathit{add}$) while such argument for other operations are ignored by definition. Then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$.
 
-    Proof of requirement $2$: Since each value is putted only once, and for each $o_a = \mathit{add}(a,\_) \in S$, there exists a $o_r = \mathit{rem}(a)$, such that both $o_a$ and $o_r$ are seen by $o$. Therefore, such $o_a$ and $o_r$ does not take effects in both $y'$ and $y''$. $\newline$
+    Proof of requirement $2$: The only difference in operation context of $o$ is $S$. Since the values putted in $S$ is seen by each replica and also its remove is seen by each replica, they does take effect in both $y'$ and $y''$. $\newline$
 
 \item[-] Requirement $3$: If $\mathit{frg}(q,S) = q' \wedge \mathit{frg}(q',S') = q''$, then $\mathit{frg}(q,S \cup S') =q''$.
 
-    Proof of requirement $3$: It is easy to see that $S \cap S' = \emptyset$. $S$ contains several $add$ operations, and for each $\mathit{add}(a,\_) \in S$ and each replica $r$, there exists a $\mathit{rem}(a)$ operation of replica $r$ in $S$. The same holds in $S'$. 
-    
-    Similar as case $2$,  
-    
-    
-    Assume $q = (O,\mathit{ro},\mathit{del},\mathit{arb})$ and $q' = (O',\mathit{ro}',\mathit{del}',\mathit{arb}')$. For each $o_a = (\mathit{add}(a),\_,\_) \in S \cup S'$, we can see that it has been visible to each replica in $\mathit{vis}$ and $\mathit{vis}'$. For each $o_r = (\mathit{rem}(a),\_,\_) \in S \cup S'$, if $o_r \in S$, then $\{ o_a \vert o_r \in \mathit{FstRem}(O,\mathit{vis},o_a) \} \subseteq S \subset S \cup S'$. Else, if $o_r \notin S$, then $\{ o_a \vert o_r \in \mathit{FstRem}(O',\mathit{vis}',o_a) \} \subseteq S'$, and we can see that $\{ o_a \vert o_r \in \mathit{FstRem}(O,\mathit{vis},o_a) \} \subseteq S' \cup S$, since $\mathit{vis} \uparrow_{O'} = \mathit{vis}'$. $\newline$
+    Proof of requirement $3$: It is easy to see that $S \cap S' = \emptyset$. this holds since the identifiers in $S$ and $S'$ are different. 
 
 \item[-] Requirement $4$: Given an annotated history $x = (O,\_,\_)$ and its extension $x' = (O',\_,\_)$. Assume $S$ can be removed from the set of operations of $x$, and $x''$ is obtained from $x'$ by adding or removing pairs in $\{ (o_1,o_2) \vert o_1 \in S, o_2 \in O' \setminus O \}$. Then the set of operations that can be forgotten of $x'$ is the same as that of $x''$.
 
-    Proof of requirement $4$: For the case when $x''$ is obtained from $x'$ by adding one such pair $(o_1,o_2)$: The $\mathit{FstRem}$ relation for pairs of operations where both are in $O$ or in $O' \setminus O$ remains the same. By definition there is no $\mathit{FstRem}$ relation for pairs of $\mathit{add}$ in $O' \setminus O$ and $\mathit{rem}$ in $O$. By the definition of $\mathit{FstRem}$, it is easy to see that the pair of $\mathit{add}$ in $S$ and $\mathit{rem}$ in $O' \setminus O$ can not be in $\mathit{FstRem}$. Therefore, the $\mathit{FstRem}$ in $x'$ and $x''$ is the same. The case when $x''$ is obtained from $x'$ by removing one such pair $(o_1,o_2)$ can be similarly dealt with.
+    Proof of requirement $4$: This holds since each value is putted only once globally, and removed only once for each replica.  
 \end{itemize}
 
 This completes the proof of this lemma. $\qed$
 \end {proof}
+
+
+
+
+
+
+
+
+
+
+\section{Definitions and Proofs of Section \ref{sec:implementation}}
+\label{sec:appendix definitions and proofs of section implementation}
+
+The semantics of $\mathit{imp}$ with causal delivery is given as an LTS $\mathit{Sem}(\mathit{imp})_{\mathit{cd}} = (Q_{\mathit{cd}},\Sigma,\rightarrow_{\mathit{cd}},q_0)$, where
+
+\begin {itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] Each state of $Q_{\mathit{cd}}$ is for the from $(\mathit{data},\mathit{msgs},\mathit{msghb})$, where $\mathit{data}$ and $\mathit{msgs}$ is the same as that in $\mathit{Sem}(\mathit{imp})$, and $\mathit{msghb} \subseteq (\mathit{msgs} \times \mathit{msgs}) \cup (\mathit{msgs} \times \mathbb{R})$ is a transitive, acyclic and irreflexive relation. $\mathit{msghb}$ is used to record the happen-before relation between ``operations'' of messages. %$(m_1,m_2) \in <$ represents that the $op(m_1)$ happen before $op(m_2)$, while $(m,r) \in <$ represents that $op(m)$ is visible to replica $r$ and does not happen before any operation of replica $r$ that we could know.
+    $(\mathit{msg}_1,\mathit{msg}_2) \in \mathit{msghb}$, if the operation generating $\mathit{msg}_1$ happens before the operation generating $\mathit{msg}_2$, and $\mathit{msg}_1$ and $\mathit{msg}_2$ have same destination replica. $(\mathit{msg},r) \in \mathit{hb}$ represents that the operation generating $\mathit{msg}$ is visible to replica $r$ and does not happen before any operation of replica $r$ currently. 
+
+\item[-] $\rightarrow_{\mathit{cd}}$ is the transition relation:
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] When $m$ is a query method:
+
+    $\begin{array}{l c} \bigfrac{ (\mathit{data}[r],m,a,r) \rightarrow_o (d,b,\emptyset),f_{\mathit{arb}}(\mathit{data}[r:d],\mathit{msgs}) = \mathit{arb}} {(\mathit{data},\mathit{msgs},\mathit{msghb}) {\xrightarrow{(m,a,b,r,\mathit{arb})}} (\mathit{data}[r:d],\mathit{msgs},\mathit{msghb})} \end{array}$
+
+    \item[-] When $m$ is a update method:
+
+    $\begin{array}{l c} \bigfrac{ (\mathit{data}[r],m,a,r) \rightarrow_o (b,d,\mathit{msgs}'), f_{\mathit{arb}}(\mathit{data}[r:d], \mathit{msgs} \cup \mathit{msgs}') = \mathit{arb} } {(\mathit{data},\mathit{msgs},\mathit{msghb}) {\xrightarrow{(m,a,b,r,\mathit{arb})}} (\mathit{data}[r:d],\mathit{msgs} \cup \mathit{msgs}',\mathit{msghb} \otimes \mathit{msgs}')} \end{array}$
+
+    Assume message of $\mathit{msgs}'$ is in the form $(\mathit{da},\_,\_)$. Let $\mathit{msgs}(r)$ be the set of messages of $\mathit{msgs}$ with destination replica identifier $r$. $\mathit{msghb} \otimes \mathit{msgs}'$ returns a new message happen-before relation as follows:
+
+        \begin{itemize}
+        \setlength{\itemsep}{0.5pt}
+        \item[-] For each replica $r' \in \mathbb{R}$, in $\mathit{msgs}(r')$, if $(\mathit{msg}_1,r) \in \mathit{hb}$, then remove $(\mathit{msg}_1,r)$ from $\mathit{msghb}$ and add $(m_1,(\mathit{da},r,r'))$ into $\mathit{hb}$,
+
+        \item[-] For each replica $r' \in \mathbb{R}$, if $\mathit{msg}_1$ is maximal among $\{ (\_,r,r') \}$ w.r.t $\mathit{msghb}$, then add $(\mathit{msg}_1,(\mathit{da},r,r'))$ into $\mathit{hb}$.
+
+        \item[-] Make $\mathit{msghb}$ a transitive closure.
+        \end{itemize}
+
+    \item[-]
+
+        $\begin{array}{l c} \bigfrac{ (\mathit{data}[r],r,m) \rightarrow_m d, m \ is \ minimal \ w.r.t \ \mathit{msghb} \ among \ \mathit{msgs}(r) } {(\mathit{data},\mathit{msgs},\mathit{msghb}) {\xrightarrow{\mathit{apply}(m)}} (\mathit{data}[r:d],\mathit{msgs} \setminus \{ m \}, \mathit{msghb} \otimes m )} \end{array}$
+
+         Assume $m = (\mathit{da},r_1,r)$. $\mathit{msghb} \otimes m$ returns a new happen-before relation as follows:
+
+        \begin{itemize}
+        \setlength{\itemsep}{0.5pt}
+        \item[-] Remove $m$ from pairs in $\mathit{msghb}$ while keeps the relation for other elements unchanged.
+
+        \item[-] Then, for each $r' \neq r$, if $(\mathit{da},r_1,r') \in \mathit{msgs}(r')$, then add $((\mathit{da},r_m,r'),r)$ into $\mathit{msghb}$.
+
+        \item[-] Make $\mathit{msghb}$ a transitive closure.
+        \end{itemize}
+    \end{itemize}
+%\item[-] $q_0$ is the initial state, which maps each replica identifier into $(InitD,\emptyset,\emptyset)$.
+\end{itemize}
+
+The following lemma states that, $\mathit{Sem}(\mathit{imp})_{\mathit{cd}}$ contains the set of causal delivery executions of $\mathit{Sem}(\mathit{imp})$. 
+
+\begin{lemma}
+\label{lemma:semantics of imp cd contains the set of causal delivery executions of semantics of imp}
+$\mathit{trace}( \mathit{Sem}(\mathit{imp})_{\mathit{cd}} ) = \{ t \vert t \in \mathit{trace}( \mathit{Sem}(\mathit{imp}) ) \wedge t$ satisfies causal delivery $\}$.
+\end{lemma}
+
+\begin {proof} 
+
+Let $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ be the execution of $t = \alpha_1 \cdot \ldots \in \mathit{trace}( \mathit{Sem}(\mathit{imp})_{\mathit{cd}} )$. Let $\alpha[1,u] = \alpha_1 \cdot \ldots \cdot \alpha_u$. We need to prove the following properties: On each state $q_i=(\mathit{data}_i,\mathit{msgs}_i,<_i)$, 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $\mathit{Prop}_1$: $\mathit{msgs}_i = \{ (\mathit{da},r,r') \vert$ the operation generating this message is launched by replica $r$ and its message has not been applied to replica $r'$ in $t[1,i]\}$.
+
+\item[-] $\mathit{Prop}_2$: $\mathit{msg}_1 <_i \mathit{msg}_2$, iff $\mathit{msg}_1$ and $\mathit{msg}_2$ have same destination replica, and the operation generating $\mathit{msg}_1$ happens before the operation generating $\mathit{msg}_2$ in $t[1,i]$.
+
+\item[-] $\mathit{Prop}_3$: $\mathit{msg} <_i r$, iff the destination replica of $\mathit{msg}$ is not $r$, and the operation generating $\mathit{msg}$ is visible to replica $r$ in $t[1,i]$, and does not happen before ``any operation that launched by replica $r$'' in $t[1,i]$. 
+\end{itemize}
+
+By definition it is easy to see that each trace of $\mathit{trace}( \mathit{Sem}(\mathit{imp})_{\mathit{cd}} )$ is also a trace of $\mathit{trace}( \mathit{Sem}(\mathit{imp}) )$. Once we prove that $\mathit{Prop}_1$, $\mathit{Prop}_2$ and $\mathit{Prop}_3$ holds for each $q_i$, let us prove this lemma by contradiction: Assume that update operations $o_1 <_{hb} o_2$, messages of $o_1$ are $\{ (d_1,r_1,\_) \}$, messages of $o_2$ are \{ $(d_2,r_2,\_) \}$, $\alpha_i = apply((d_2,r_2,r'))$, and no $apply((d_1,r_1,r'))$ happens earlier than $\alpha_i$ in $t$. Then in $q_i=(\mathit{data}_i,\mathit{msgs}_i,<_i)$, since $o_1 <_{hb} o_2$ and transition rules of $\mathit{trace}( \mathit{Sem}(\mathit{imp})_{\mathit{cd}} )$, we could not launch $apply((d_2,r_2,r'),)$ transition, which is the contradiction. 
+
+
+Let us begin to prove that each state $q_i=(\mathit{data}_i,\mathit{msgs}_i,<_i)$ satisfies properties $\mathit{Prop}_1$, $\mathit{Prop}_2$ and $\mathit{Prop}_3$. We prove this by induction on $t$.
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] It is obvious that $q_0$ satisfies properties $\mathit{Prop}_1$, $\mathit{Prop}_2$ and $\mathit{Prop}_3$.
+
+\item[-] Since $\alpha_1$ must be either a query transition or an update transition, it is easy to see that $<_1 = \emptyset$ and $q_1$ satisfies properties $\mathit{Prop}_1$, $\mathit{Prop}_2$ and $\mathit{Prop}_3$.
+
+\item[-] Assume that $q_k=(\mathit{data}_k,\mathit{msgs}_k,<_k)$ satisfies properties $\mathit{Prop}_1$, $\mathit{Prop}_2$ and $\mathit{Prop}_3$. let us consider $q_{k+1}= (\mathit{data}_{k+1},\mathit{msgs}_{k+1},<_{k+1})$, 
+
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] If $q_{k+1}$ is obtained from $q_k$ by a query transition, then this holds obviously.
+
+    \item[-] Else, if $q_{k+1}$ is obtained from $q_k$ by a update transition. Then we can see that $(\mathit{data}_k,\mathit{msgs}_k,<_k) {\xrightarrow{(m,a,b,r)}} (\mathit{data}_{k+1},\mathit{msgs}_{k+1}= \mathit{msgs} \cup \{ (\mathit{da},r,r') \vert  r' \in \mathbb{R} \wedge r \neq r' \},<_{k+1} = <_k \otimes \{ (\mathit{da},r,r') \vert  r' \in \mathbb{R} \wedge r \neq r' \}$.
+
+        Since we add messages $\{ (\mathit{da},r,r') \vert  r' \in \mathbb{R} \wedge r \neq r' \}$ into $\mathit{msgs}_i$, we can see that $\mathit{Prop}_1$ holds.
+
+        To satisfy $\mathit{Prop}_2$ and $\mathit{Prop}_3$, we need to make newly add messages maximal w.r.t $<$ and still keep transitivity, which is done by $<_k \otimes \{ (\mathit{da},r,r') \vert  r' \in \mathbb{R} \wedge r \neq r' \}$. 
+
+    \item[-] Else, $q_{k+1}$ is obtained from $q_k$ by a applying transition. Then we can see that $(\mathit{data}_k,msgs_k,<_k) {\xrightarrow{apply(\mathit{msg}=(\mathit{da},r_1,r))}} (\mathit{data}_{k+1},\mathit{msgs}_{k+1} = \mathit{msgs}_k \setminus \{ \mathit{msg} \}, <_{k+1} = <_k \otimes \mathit{msg} )$, where $\mathit{msg}$ is minimal w.r.t $<_k$ among messages in $\mathit{msgs}_i(r)$.
+
+        Since we use one message $\mathit{msg}$ in this process and remove it from $\mathit{msgs}_i$, we can see that $\mathit{Prop}_1$ holds.
+
+        Applying message will introduce new visibility relation. To satisfy $\mathit{Prop}_2$ and $\mathit{Prop}_3$, we need to first forget $\mathit{msg}$, record the newly introduced visibility relation, and still keep transitivity. This is done by $<_k \otimes \mathit{msg}$. 
+    \end{itemize}
+\end{itemize}
+
+This completes the proof of this lemma. $\qed$
+\end {proof}
+
+
+
+
+
+
+
 
 
 
@@ -327,116 +452,7 @@ Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $Sem(imp)$, $f_t(t)$
 
 
 
-\section{Definitions and Proofs of Section \ref{sec:implementation}}
-\label{sec:appendix definitions and proofs of section implementation}
 
-
-An trace of implementation satisfies causal-delivery, if given $o_1 <_{\mathit{hb}} o_2$, then we can apply message generated by $o_2$ on a replica, if the message generated by $o_1$ has already been applied on this replica. The semantics of $imp$ with causal delivery is given as an LTS $OS(imp)_{\mathit{cd}} = (Q_{\mathit{cd}},\Sigma,\rightarrow_{\mathit{cd}},q_0)$, where
-
-\begin {itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] Each state of $Q_{\mathit{cd}}$ is for the from $(data,msgs,\mathit{hb})$, where $data$ and $msgs$ is the same as that in $OS(imp)$, and $\mathit{hb} \subseteq (msgs \times msgs) \cup (msgs \times \mathbb{R})$ is a transitive, acyclic and irreflexive relation. $\mathit{hb}$ is used to record the happen-before relation between ``operations'' of messages. %$(m_1,m_2) \in <$ represents that the $op(m_1)$ happen before $op(m_2)$, while $(m,r) \in <$ represents that $op(m)$ is visible to replica $r$ and does not happen before any operation of replica $r$ that we could know.
-    $(m_1,m_2) \in \mathit{hb}$, if the operation generating $m_1$ happens before the operation generating $m_2$, and $m_1$ and $m_2$ have same destination replica. $(m,r) \in \mathit{hb}$ represents that the operation generating $m$ is visible to replica $r$ and does not happen before any operation of replica $r$ currently.
-
-\item[-] $\rightarrow_{\mathit{cd}}$ is the transition relation:
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] When $m$ is a query method:
-
-    $\begin{array}{l c} \bigfrac{ f_M(data[r],m,a,r) = (d,b,\emptyset),f_{arb}(data[r:d],msgs) = \mathit{arb}} {(data,msgs,\mathit{hb}) {\xrightarrow{(m,a,b,r,\mathit{arb})}} (data[r:d],msgs,\mathit{hb})} \end{array}$
-
-    \item[-] When $m$ is a update method:
-
-    $\begin{array}{l c} \bigfrac{ f_M(data[r],m,a,r)= (b,d,msgs'), f_{arb}(data[r:d],msgs \cup msgs') = \mathit{arb} } {(data,msgs,\mathit{hb}) {\xrightarrow{(m,a,b,r,\mathit{arb})}} (data[r:d],msgs \cup msgs',\mathit{hb} \otimes msgs')} \end{array}$
-
-    Assume message of $msgs'$ is in the form $(da,\_,\_)$. Let $msgs(r)$ be the set of messages of $msgs$ with destination replica identifier $r$. $\mathit{hb} \otimes msgs'$ returns a new happen-before relation as follows:
-
-        \begin{itemize}
-        \setlength{\itemsep}{0.5pt}
-        \item[-] For each replica $r' \in \mathbb{R}$, in $msgs(r')$, if $(m_1,r) \in \mathit{hb}$, then remove $(m_1,r)$ from $\mathit{hb}$ and add $(m_1,(da,r,r'))$ into $\mathit{hb}$,
-
-        \item[-] For each replica $r' \in \mathbb{R}$, if $m_1$ is maximal among $\{ (\_,r,r') \}$ w.r.t $\mathit{hb}$, then add $(m_1,(da,r,r'))$ into $\mathit{hb}$.
-
-        \item[-] Make $\mathit{hb}$ a transitive closure.
-        \end{itemize}
-
-    \item[-]
-
-        $\begin{array}{l c} \bigfrac{ f_{apl}(data[r],r,m) = d, m \ is \ minimal \ w.r.t \ \mathit{hb} \ among \ msgs(r) } {(data,msgs,\mathit{hb}) {\xrightarrow{apply(m)}} (data[r:d],msgs - \{ m \}, \mathit{hb} \otimes m )} \end{array}$
-
-         Assume $m = (da,r_m,r)$. $\mathit{hb} \otimes m$ returns a new happen-before relation as follows:
-
-        \begin{itemize}
-        \setlength{\itemsep}{0.5pt}
-        \item[-] Remove $m$ from $\mathit{hb}$ while keeps the relation for other elements unchanged.
-
-        \item[-] Then, for each $r' \neq r$, if $(da,r_1,r') \in msgs(r')$, then add $((da,r_m,r'),r)$ into $\mathit{hb}$.
-
-        \item[-] Make $\mathit{hb}$ a transitive closure.
-        \end{itemize}
-    \end{itemize}
-%\item[-] $q_0$ is the initial state, which maps each replica identifier into $(InitD,\emptyset,\emptyset)$.
-\end{itemize}
-
-The following lemma states that, $\llbracket imp \rrbracket_{cd}$ contains the set of causal delivery executions of $\llbracket imp \rrbracket$. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section implementation}.
-
-\begin{lemma}
-\label{lemma:semantics of imp cd contains the set of causal delivery executions of semantics of imp}
-
-$\llbracket imp \rrbracket_{cd} = \{ t \vert t \in \llbracket imp \rrbracket \wedge t$ satisfies causal delivery $\}$.
-\end{lemma}
-
-
-{\noindent \bf Lemma \ref{lemma:semantics of imp cd contains the set of causal delivery executions of semantics of imp}}: $\llbracket imp \rrbracket_{cd} = \{ t \vert t \in \llbracket imp \rrbracket \wedge t$ satisfies causal delivery $\}$.
-
-\begin {proof}
-
-Given $t = \alpha_1 \cdot \ldots \in \llbracket imp \rrbracket_{cd}$, if there exists $q_1,\ldots \in Q$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 {\xrightarrow{\alpha_2}} \ldots$. We need to prove the following property: On each state $q_i=(repD_i,msgs_i,<_i)$,
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] $P_1$: $msgs_i = \{ (dat,r,r') \vert$ the operation generating this message is launched by replica $r$ and its message has not been applied to replica $r'$ in $t[1,i]\}$.
-
-\item[-] $P_2$: $m_1 <_i m_2$, iff $m_1$ and $m_2$ have same destination replica, and the operation generating $m_1$ happens before the operation generating $m_2$ in $t[1,i]$.
-
-\item[-] $P_3$: $m <_i r$, iff the destination replica of $m$ is not $r$, and the operation generating $m$ is visible to replica $r$ in $t[1,i]$, and does not happen before ``any operation that launched by replica $r$'' in $t[1,i]$.
-\end{itemize}
-
-Once we prove that $P_1$, $P_2$ and $P_3$ holds for each $q_i$, let us prove this lemma by contradiction: Assume that update operations $o_1 <_{hb} o_2$, messages of $o_1$ are $\{ (d_1,r_1,\_) \}$, messages of $o_2$ are \{ $(d_2,r_2,\_) \}$, $\alpha_i = apply((d_2,r_2,r'),r')$, $\alpha_j = apply((d_1,r_1,r'),r')$, and $i<j$. Then in $q_i=(repD_i,msgs_i,<_i)$, since $o_1 <_{hb} o_2$ and transition rules of $\llbracket imp \rrbracket_{cd}$, we could not launch $apply((d_2,r_2,r'),r')$ transition, which is the contradiction.
-
-
-
-Let us begin to prove that each state $q_i=(repD_i,msgs_i,<_i)$ satisfies properties $P_1$, $P_2$ and $P_3$. We prove this by induction on $t$.
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] It is obvious that $q_0$ satisfies properties $P_1$, $P_2$ and $P_3$.
-
-\item[-] Since $\alpha_1$ must be either a query transition or an update transition, it is easy to see that $<_1 = \emptyset$ and $q_1$ satisfies properties $P_1$, $P_2$ and $P_3$.
-
-\item[-] Assume that $q_i=(repD_i,msgs_i,<_i)$ satisfies properties $P_1$, $P_2$ and $P_3$. let us consider $q_{i+1}= (repD_{i+1},msgs_{i+1},<_{i+1})$,
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] If $q_{i+1}$ is obtained from $q_i$ by a query transition, then this holds obviously.
-
-    \item[-] Else, if $q_{i+1}$ is obtained from $q_i$ by a update transition. Then we can see that $(repD_i,msgs_i,<_i) {\xrightarrow{m(a,b,r)}} (repD_{i+1},msgs_{i+1}=msgs \cup \{ (dat,r,r') \vert  r' \in RId \wedge r \neq r' \},<_{i+1} = <_i \otimes dat)$.
-
-        Since we add messages $\{ (dat,r,r') \vert  r' \in RId \wedge r \neq r' \}$ into $msgs_i$, we can see that $P_1$ holds.
-
-        To satisfy $P_2$ and $P_3$, we need to make newly add messages maximal w.r.t $<$ and still keep transitivity, which is done by $<_i \otimes dat$.
-
-    \item[-] Else, $q_{i+1}$ is obtained from $q_i$ by a applying transition. Then we can see that $(repD_i,msgs_i,<_i) {\xrightarrow{apply(m=(dat,r_1,r))}} (repD_{i+1},msgs_{i+1} = msgs_i - \{ m \}, <_{i+1} = <_i \otimes m )$, where $m$ is minimal w.r.t $<_i$ among messages in $msgs_i(r)$.
-
-        Since we use one message $m$ in this process and remove it from $msgs_i$, we can see that $P_1$ holds.
-
-        Applying message will introduce new visibility relation. To satisfy $P_2$ and $P_3$, we need to first forget $m$, record the newly introduced visibility relation, and still keep transitivity. This is done by $<_i \otimes m$.
-    \end{itemize}
-\end{itemize}
-
-This completes the proof of this lemma. $\qed$
-\end {proof}
 
 
 
@@ -581,216 +597,71 @@ Let us prove that $(q'_{imp},q'_s) \in R$. From above discussion, it is not hard
 
 
 
-
-
-
-
-\forget
-{
-
-\section{Definitions of Section \ref{sec:specifications and consistencies}}
-\label{sec:appendix definitions of section specifications and consistencies}
-
-Let us give the definition of specification $S_{\mathit{list}}$ of distributed list specification. $(O,<,<_{\mathit{arb}}) \in S_{\mathit{list}}(x)$, if
+\forget{
+Given a set $S$ of W-character, we say that $S$ is executable, if there is a order of applying all elements in $S$ with the recursive function $\mathit{insert}$. Assume there are two guard W-character $w_b$ and $w_n$. Given a set $S$ of W-characters, define a notion $\mathit{level}(S,k)$ as follows:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $<^{-1}$ contains finite elements, $<$ is acyclic and $<_{\mathit{arb}}$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin O$ and $o$ is in domain of $<_{\mathit{arb}}$. By definition of poset we can see that $cont(o)=x$. Let $KnownRemoved=\emptyset$.
+\item[-] $\mathit{level}(S,0) = \{ (\_,\_,\_,w_b,w_e) \in S \}$.
 
-\item[-] Step $1$: For each minimal operation $o_1$ w.r.t $<$, let $Op(o_1)=\{ o_1 \}$, $seq(o_1)$ be obtained by ordering elements of $Op(o_1)$ with $<_{\mathit{arb}}$ order. We require $cont(o_1)=add(\_,1)$.
-
-\item[-] Step $i+1$: For each $o_2$, which are immediate successor of some $o_1$ of step $i$.
-
-    If $<^{-1}(o_2)$ does not contain $rem$ operations:
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] Let $Op(o_2)$ be the set of $add$ operations in $<^{-1}(o_2) \cup \{ o_2 \}$, and let $seq(o_2)$ be obtained by ordering elements of $Op(o_2)$ with $<_{\mathit{arb}}$ order.
-
-    \item[-] If $cont(o_2) = add(a,pos)$, then $seq(o_2)[pos] = o_2$.
-
-    \item[-] Else, if $cont(o_2) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$. Let $o_a=seq(o_2)[pos]$. Let $KnownRemoved = KnownRemoved \cup \{ (o_a,o_2) \}$.
-    \end{itemize}
-
-    If $<^{-1}(o_2)$ contains $rem$ operations:
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] Let $O_r$ be the set of $rem$ operations in $<^{-1}(o_2)$. According to our construction, $\forall o_r \in O_r$, $\exists o_p$, such that $(o_p,o_r) \in KnownRemoved$.
-
-    \item[-] Let $Op(o_2) = \{ o' \vert o'$ is a $add$ operation in $<^{-1}(o_2) \cup \{ o_2 \} \} - \{ o'_p \vert \exists o', (o'_p,o') \in KnownRemoved \}$. Let $seq(o_2)$ be obtained by ordering elements of $Op(o_2)$ with $<_{\mathit{arb}}$ order.
-
-    \item[-] If $cont(o_2) = add(a,pos)$, then $seq(o_2)[pos] = o_2$.
-
-    \item[-] Else, if $cont(o_2) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$. Let $o_a=seq(o_2)[pos]$. Let $KnownRemoved = KnownRemoved \cup \{ (o_a,o_2) \}$.
-    \end{itemize}
-
-\item[-] Assume we have investigated all operations in $O$.
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] Let $O_r$ be the set of $rem$ operations in $O$. According to our construction, $\forall o_r \in O_r$, $\exists o_p$, such that $(o_p,o_r) \in KnownRemoved$.
-
-    \item[-] Let $Op(o) = \{ o' \vert o'$ is a $add$ operation in $O \cup \{ o \} \} - \{ o'_p \vert \exists o', (o'_p,o') \in KnownRemoved \}$. Let $seq(o)$ be obtained by ordering elements of $Op(o)$ with $<_{\mathit{arb}}$ order.
-
-    \item[-] If $cont(o) = add(a,pos)$, then $seq(o)[pos] = o$.
-
-    \item[-] Else, if $cont(o) = rem(pos,a)$, then $cont(seq(o_2)[pos])=add(a,\_)$.
-
-    \item[-] Else, if $cont(o)=read(\top,l)$, then is the sequence of operation contents of $seq(o)$.
-    \end{itemize}
+\item[-] For $k \geq 1$, $\mathit{level}(S,k) = \{ (\_,\_,\_,w_b,w_e) \in S \vert w_b,w_e \in \mathit{level}(S,0) \cup \ldots \cup \mathit{level}(S,k-1) \} \setminus \mathit{level}(S,k-1)$.
 \end{itemize}
 
+We say $w=(\_,\_,\_,w_p,w_n)$ and $w'=(\_,\_,\_,w'_p,w'_n)$ are W-current in $\mathit{str}$, if $w,w' \in \mathit{str}$, and $w'_p <_{\mathit{str}} w <_{\mathit{str}} w'_n$ and $w_p <_{\mathit{str}} w' <_{\mathit{str}} w_n$. \cite{Oster:2006} proves that, $w <_{\mathit{str}} w'$, if and only if $w <_{\mathit{ts}} w'$.
 
-\begin{itemize}
-\item[-] We check correctness of operations of $O$ with a procedure: Let $O_k$ be the operations we have already checked, and $KR$ record pairs $(o_1,o_2)$ such that the item added by $o_1$ have been removed by $o_2$. At the beginning, $O_k = \emptyset$ and $KR = \emptyset$. Then in each loop,
+The following lemma states that, for all possible $L$ of recursive method $\mathit{insert}$, $L$ is ordered by $<_{\mathit{ts}}$.
 
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] Let $O_k = O_k \cup \{ o_1 \}$, where $<^{-1}(o_1) \subseteq O_k$.
-
-    \item[-] Let $O_r$ be the set of $rem$ operations in $<^{-1}(o_1)$. %According to our construction, $\forall o_r \in O_r$, $\exists o_p$, such that $(o_p,o_r) \in KnownRemoved$.
-
-    \item[-] Let $Op(o_1) = \{ o_2 \vert lab(o_2)=add(\_,\_) \in <^{-1}(o_1) \cup \{ o_1 \} \} - \{ o_3 \vert \exists o_4, (o_3,o_4) \in KR \}$. Let $seq(o_1)$ be obtained by ordering elements of $Op(o_1)$ with $arb$ order.
-
-    \item[-] If $lab(o_1) = rem(pos,a)$, then we require that $lab(seq(o_1)[pos])=add(a,\_)$, and change $KR$ into $KR \cup \{ (seq(o_1)[pos],o_1) \}$.
-
-    \item[-] Else, if $lab(o_1) = add(a,pos)$, then we require that $seq(o_1)[pos] = o_1$.
-    \end{itemize}
-
-    We require that this procedure be terminated with $O_k = O$.
-
-\item[-] {\color {red}Let $Op(o) = \{ o_1 \vert lab(o_1)=add(\_,\_) \in <^{-1}(o) \cup \{ o \} \} - \{ o_2 \vert \exists o_3, (o_2,o_3) \in KR \}$, and let $seq(o)$ be obtained by ordering elements of $Op(o)$ with $arb$ order.}
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] If $lab(o)=add(a,pos)$, then we require that $seq(o)[pos]=o$.
-
-    \item[-] Else, if $lab(o)=rem(pos,a)$, then we require that $lab(seq(o)[pos]) = add(a,\_)$.
-
-    \item[-] Else, if $lab(o)=read(\top,list)$, then $list$ is the sequence of operation labels of seq(o).
-    \end{itemize}
-\end{itemize}
-
-
-\section{Definitions and Proofs of Section \ref{sec:reference implementation}}
-\label{sec:appendix definitions and proofs of section reference implementation}
-
-
-
-
-We further require that when a new operation is generated, its candidate operation identifier is unique. Therefore, it is obvious that $RImp(Spec)$ is deterministic. Let $\llbracket RImp(Spec) \rrbracket$ be the set of traces of $RImp(Spec)$. Given an trace $ t= \alpha_1 \cdots$, the annotated history  $anHis(t) = (O,\mathit{vis},\mathit{arb})$ it admits is generated as follows: Let $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ be the execution of $t$,
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] $O$ is the operations generated by transition rules during $t$.
-
-\item[-] $(o_1,o_2) \in \mathit{vis}$, if one of the following cases holds: (1) $o_1$ is delivered into replica of $o_2$ before $o_2$ happens, (2) $o_1$ and $o_2$ are of same replica and $o_1$ happens earlier than $o_2$.
-
-\item[-] $\mathit{arb}$ is the union of arbitration order of each $q_i$.
-\end{itemize}
-
-
-
-\subsection{Proof of Lemma \ref{lemma:executions of reference implementation are eventual consistent}}
-\label{subsec:appendix proof of lemma executions of reference implementation are eventual consistent}
-
-{\noindent \bf Lemma \ref{lemma:executions of reference implementation are eventual consistent}}: $\forall t \in \llbracket RImp(Spec) \rrbracket$, $poSet(t)$ is eventual consistent w.r.t $Spec$.
+\begin{lemma}
+\label{lemma:all possible L of insert are ordered by time stamp}
+If $\mathit{str}$ is obtained from $w_b \cdot w_e$ by applying W-characters in $S$ in some order. For each pairs $w,w' \in \mathit{str}$, where index of $w$ is smaller. let $L = w \cdot w_0 \cdot \ldots \cdot w_u \cdot w'$, where $w_0,\ldots,w_u$ are the W-characters $x$ in $\mathit{str}$ such that $\mathit{pre}(x) \leq_{\mathit{str}} c_p$ and $c_n \leq_{\mathit{str}} \mathit{next}(x)$. Then, elements of $L$ are ordered by $<_{\mathit{ts}}$.
+\end{lemma}
 
 \begin {proof}
 
-Assume $RImp(Spec) = (Q,\Sigma,vis,,q_0,li,\rightarrow,livReq)$, let $t = \alpha_1, \ldots, $ and $\exists q_1,\ldots$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 {\xrightarrow{\alpha_2}} \ldots$, and $livReq(t) = \mathit{true}$. Let $poSet(t)=(O_t,<_t)$. Let $gi = (O_t,<_{gi})$ be the global interpretation of $t$.
-
-For each operation $o$, assume $o$ is first introduced by a transition from $q_i$ to $q_{i+1}$, then, the local interpretation of $o$ is $li(q_i,r)$, where $r$ is the replica of $o$.
-
-We prove this lemma by consider the four requirements individually:
+Let us prove by induction. Assume that the applying order is $w'_1,\ldots,w'_k$.
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\mathit{GIpf}$: Let us consider two kinds of operations $o$.
+\item[-] After applying $w'_1$, this holds trivially.
 
-If $\exists o'$, such that $o' <_{gi} o$, then $\exists i < j$, such that $o'$ and $o$ are the operations of $\alpha_i$ and $\alpha_j$, respectively, and one of the following cases holds: (1) $o'$ and $o$ are of same replica, or (2) $\exists i', i < i' < j$, $\alpha_{i'}=addDel(o',r')$ and $r'$ is the replica of $o$. In each case, it is easy to see that $<^{-1}_{gi}(o)$ contains lee or equal operations than the set of operations in $t[1,j]$ and its number is obviously finite.
+\item[-] Assume that this holds after applying $w'_v$. Let us prove that this still holds after applying $w'_{v+1}$.
 
-    If $\neg \exists o'$, such that $o' <_{gi} o$, then it is easy to see that $o$ is the first operation of its replica and no operation is delivered to that replica before $o$. In this case, it is obvious that $<^{-1}_{gi}(o)$ is finite.
+We prove by contradiction. Assume that after applying $w'_{v+1}$ this does not holds. Then there must exists $w'_j$ with $j < v+1$, such that either $w'_{v+1} <_{\mathit{str}} w'_j \wedge w'_j <_{\mathit{ts}} w'_{v+1}$, or $w'_j <_{\mathit{str}} w'_{v+1} \wedge w'_{v+1} <_{\mathit{ts}} w'_j$.
 
-\item[-] $\mathit{THINAIR}$: According to the definition, we could see that on each state $q_i$, local interpretation is a subset of visibility relation, and $ro$ is also a subset of visibility relation. It is easy to prove that on each state, $vis$ is acyclic.
-
-\item[-] $\mathit{RVAL}$: We only need to consider query operations for $\mathit{RVAL}$ property, since only query operations have return values. According to construction of $\llbracket RImp(Spec) \rrbracket$, to launch a query operation $(m,a,b,rid,oid)$ transition of replica $r$ from state $q_i$, we already check whether $li(q_i,r)$, the local interpretation w.r.t $q_i$ and $r$, is in $Spec(m,a,b)$.
-
-\item[-] $\mathit{EVENTUAL}$: Let $P=(O_P,<_P)$ be a finite prefix of $gi$.
-
-We can see that $<_P$ is the visibility relation of operations in $O_P$. Let $O'_P = \{ o \vert \exists o_1,o_2 \in O_P,$ $o_1$ is visible to $o_2$ via $o'_1,\ldots,o'_m$, and $o \in \{ o'_1,\ldots,o'_n \} \}$. It is easy to see that $O'_P$ is finite, and assume that operations of $O_P \cup O'_P$ are chosen before $\alpha_{idx}$
-
-Since $livReq(t)=true$, $\exists idx1$, such that in $t[1,idx1]$, all operations in $t[1,idx]$ has been delivered to every replica. According to our construction of $li$, this implies that for each state after $\alpha_{idx1}$ and each replica (1) its local interpretation contains $O_P$ and $O'_P$, and (2) the relation of local interpretation then contains the visibility relation between operations in $O_P$.
+Since they are both in some $L$, we can see that $w'_{v+1}$ and $w'_j$ is W-concurrent. Therefore, they are ordered by $<_{\mathit{ts}}$, contradiction.
 \end{itemize}
 
 This completes the proof of this lemma. $\qed$
 \end {proof}
 
+The following lemma states that in woot algorithm, not matter how we choose orders, as long as we can apply all W-characters, we always have an unique result.
 
-
-
-
-
-
-
-\section{Definitions and Proofs of Section \ref{sec:implementation}}
-\label{sec:appendix definitions and proofs of section implementation}
-
-
-
-{\noindent \bf Lemma \ref{lemma:semantics of imp cd contains the set of causal delivery executions of semantics of imp}}: $\llbracket imp \rrbracket_{cd} = \{ t \vert t \in \llbracket imp \rrbracket \wedge t$ satisfies causal delivery $\}$.
+\begin{lemma}
+\label{lemma:all possible L of insert are ordered by time stamp}
+Given a set $S$ of W-characters, let $\textit{str}$ and $\textit{str}'$ be obtained from $w_b \cdot w_n$ by applying W-characters in $S$ in different orders. Then, $\mathit{str} = \mathit{str}'$.
+\end{lemma}
 
 \begin {proof}
 
-Given $t = \alpha_1 \cdot \ldots \in \llbracket imp \rrbracket_{cd}$, if there exists $q_1,\ldots \in Q$, such that $q_0 {\xrightarrow{\alpha_1}} q_1 {\xrightarrow{\alpha_2}} \ldots$. We need to prove the following property: On each state $q_i=(repD_i,msgs_i,<_i)$,
+Let $\textit{str}_k$ and $\textit{str}'_k$ be obtained from $w_b \cdot w_n$ by applying all W-characters in $\mathit{level}(S,0) \cup \ldots \cup \mathit{level}(S,k)$ in different orders. We prove this lemma by proving the following property:
+
+$\mathit{Prop}$: For each $k$, $\textit{str}_k = \textit{str}'_k$.
+
+It is easy to see that this lemma is the case when $k$ is the largest level of $S$.
+
+We prove $\mathit{Prop}$ by induction on $k$:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $P_1$: $msgs_i = \{ (dat,r,r') \vert$ the operation generating this message is launched by replica $r$ and its message has not been applied to replica $r'$ in $t[1,i]\}$.
+\item[-] $k=0$: This holds trivially, since we need to run only one loop in $\mathit{insert}$, all elements of $\mathit{level}(S,0)$ are in this loop, and by Lemma \ref{lemma:all possible L of insert are ordered by time stamp} they are ordered by $<_{\mathit{ts}}$.
 
-\item[-] $P_2$: $m_1 <_i m_2$, iff $m_1$ and $m_2$ have same destination replica, and the operation generating $m_1$ happens before the operation generating $m_2$ in $t[1,i]$.
+\item[-] Assume that $\textit{Prop}$ holds when $k=u$. Let us prove the case when $k = u+1$.
 
-\item[-] $P_3$: $m <_i r$, iff the destination replica of $m$ is not $r$, and the operation generating $m$ is visible to replica $r$ in $t[1,i]$, and does not happen before ``any operation that launched by replica $r$'' in $t[1,i]$.
-\end{itemize}
-
-Once we prove that $P_1$, $P_2$ and $P_3$ holds for each $q_i$, let us prove this lemma by contradiction: Assume that update operations $o_1 <_{hb} o_2$, messages of $o_1$ are $\{ (d_1,r_1,\_) \}$, messages of $o_2$ are \{ $(d_2,r_2,\_) \}$, $\alpha_i = apply((d_2,r_2,r'),r')$, $\alpha_j = apply((d_1,r_1,r'),r')$, and $i<j$. Then in $q_i=(repD_i,msgs_i,<_i)$, since $o_1 <_{hb} o_2$ and transition rules of $\llbracket imp \rrbracket_{cd}$, we could not launch $apply((d_2,r_2,r'),r')$ transition, which is the contradiction.
-
-
-
-Let us begin to prove that each state $q_i=(repD_i,msgs_i,<_i)$ satisfies properties $P_1$, $P_2$ and $P_3$. We prove this by induction on $t$.
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] It is obvious that $q_0$ satisfies properties $P_1$, $P_2$ and $P_3$.
-
-\item[-] Since $\alpha_1$ must be either a query transition or an update transition, it is easy to see that $<_1 = \emptyset$ and $q_1$ satisfies properties $P_1$, $P_2$ and $P_3$.
-
-\item[-] Assume that $q_i=(repD_i,msgs_i,<_i)$ satisfies properties $P_1$, $P_2$ and $P_3$. let us consider $q_{i+1}= (repD_{i+1},msgs_{i+1},<_{i+1})$,
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] If $q_{i+1}$ is obtained from $q_i$ by a query transition, then this holds obviously.
-
-    \item[-] Else, if $q_{i+1}$ is obtained from $q_i$ by a update transition. Then we can see that $(repD_i,msgs_i,<_i) {\xrightarrow{m(a,b,r)}} (repD_{i+1},msgs_{i+1}=msgs \cup \{ (dat,r,r') \vert  r' \in RId \wedge r \neq r' \},<_{i+1} = <_i \otimes dat)$.
-
-        Since we add messages $\{ (dat,r,r') \vert  r' \in RId \wedge r \neq r' \}$ into $msgs_i$, we can see that $P_1$ holds.
-
-        To satisfy $P_2$ and $P_3$, we need to make newly add messages maximal w.r.t $<$ and still keep transitivity, which is done by $<_i \otimes dat$.
-
-    \item[-] Else, $q_{i+1}$ is obtained from $q_i$ by a applying transition. Then we can see that $(repD_i,msgs_i,<_i) {\xrightarrow{apply(m=(dat,r_1,r))}} (repD_{i+1},msgs_{i+1} = msgs_i - \{ m \}, <_{i+1} = <_i \otimes m )$, where $m$ is minimal w.r.t $<_i$ among messages in $msgs_i(r)$.
-
-        Since we use one message $m$ in this process and remove it from $msgs_i$, we can see that $P_1$ holds.
-
-        Applying message will introduce new visibility relation. To satisfy $P_2$ and $P_3$, we need to first forget $m$, record the newly introduced visibility relation, and still keep transitivity. This is done by $<_i \otimes m$.
-    \end{itemize}
+First, by Lemma \ref{lemma:all possible L of insert are ordered by time stamp}, it is easy to see that the order of $\mathit{level}(S,0) \cup \ldots \cup \mathit{level}(S,k)$ elements in $\textit{str}_k$ is same as that in $\textit{str}'_k$.
 \end{itemize}
 
 This completes the proof of this lemma. $\qed$
 \end {proof}
 }
-
-
-
 
 
