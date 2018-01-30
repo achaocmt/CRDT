@@ -59,7 +59,7 @@ Given an LTS $A_1$ and a deterministic LTS $A_2$ and functions $f_s,f_t$, such t
 \subsection{Example of Simulation Relations}
 \label{subsec:collection specification with calusal delivery}
 
-{\color {red}We prove simulation relation for three algorithms: OR-Set of \cite{Shapiro:2011}, OR-Set of \cite{Bieniusa:2012} and replicated growable array of \cite{Attiya:2016}. They all use collection specifications. The first and third algorithms assume causal-delivery, while the second algorithm does not assume causal-delivery. In this subsection, we take the OR-set of \cite{Shapiro:2011} and RGA as example to see that for collection specification with causal delivery, how to construct its simulation relation $R_{\mathit{sim}}$, and how to construct functions $f_s$ and $f_t$ for it.} 
+{\color {red}We prove simulation relation for three algorithms: OR-Set of \cite{Shapiro:2011}, OR-Set of \cite{Bieniusa:2012} and RGA of \cite{Attiya:2016}. They all use collection specifications. The first and third algorithms assume causal-delivery, while the second algorithm does not assume causal-delivery. Their proof can be found in Appendix \ref{subsec:example of or-set algorithm that assumes causal delivery}, Appendix \ref{subsec:example of or-set algorithm that does not assumes causal delivery} and Appendix \ref{subsec:example of rga algorithm that assumes causal delivery}, respectively. In this subsection, we take the OR-set of \cite{Shapiro:2011} and RGA as example to see that for collection specification with causal delivery, how to construct its simulation relation $R_{\mathit{sim}}$, and how to construct functions $f_s$ and $f_t$ for it.}
 
 
 %implementations in Table \ref{tab:checked implementations}. Here the first three implementations is more complex and worth consideration. In this subsection, we take the OR-set of \cite{Shapiro:2011} and RGA as example to see that for collection specification with causal delivery, how to construct its simulation relation $R_{\mathit{sim}}$, and how to construct functions $f_s$ and $f_t$ for it.
@@ -89,11 +89,11 @@ For example: The inductive invariant of $q_{\mathit{imp}}$ requires that (1) For
 
 \noindent - A method to check whether an ``operation'' of $\Sigma_e$ is redundant. If it is, then applying messages of this operation does not change local state.
 
-Example: $(a,\mathit{id})$ is redundant, if for each replica $r$, $(a,\mathit{id}) \notin \mathit{data}[r].S$, and $(a,\mathit{id},\_,\_) \notin \mathit{msgs}$. $(a,S',r)$ is redundant, if for each $\mathit{id} \in S'$, $(a,\mathit{id})$ is redundant. 
+Example: $(a,\mathit{id})$ is redundant, if for each replica $r$, $(a,\mathit{id}) \notin \mathit{data}[r].S$, and $(a,\mathit{id},\_,\_) \notin \mathit{msgs}$. $(a,S',r)$ is redundant, if for each $\mathit{id} \in S'$, $(a,\mathit{id})$ is redundant.
 
 \noindent - A map $f$ between non-redundant elements of $\Sigma_e$ and $O$.%, where $O_s$ is union of $O$ and operations in arbitration order.
 
-Example: $f$ maps $(a,(r,c))$ that are not redundant into $\mathit{add}(a)$ of replica $r$ and maps $(a,S',r)$ that are no redundant into $\mathit{rem}(a)$ of replica $r$. 
+Example: $f$ maps $(a,(r,c))$ that are not redundant into $\mathit{add}(a)$ of replica $r$ and maps $(a,S',r)$ that are no redundant into $\mathit{rem}(a)$ of replica $r$.
 
 %\noindent - We require that $f(f_{arb}(data,msgs))$ be a sup-sequence of $\mathit{arb}$.
 
@@ -107,7 +107,7 @@ Example: Given $x=(a,S',r)$: for each $\mathit{id} \in S'$, $f(x) \in \mathit{Fs
 
 Example: $(a,\mathit{id}) \in data[r].S$, if and only if $f((a,\mathit{id})) \in \mathit{visTo}(O,r,\mathit{vis})$, and for each $o_r \in \mathit{FstRem}(O,\mathit{vis},f((a,\mathit{id})))$, $o_r \notin \mathit{visTo}(O,r,\mathit{vis})$.
 
-\noindent - {\color {red}$\mathit{msghb}$ record the happen before relation of messages. Given $m_1,m_2 \in \mathit{msgs}$ and assume that their ``operations in $\Sigma_e$'' is $x_1$ and $x_2$, respectively. $(m_1,m_2) \in \mathit{msghb}$ indicates that the corresponding operation of $x_1$ happens before that of $x_2$. If both $x_1$ and $x_2$ are in domain of $f$, then we have $(f(x_1),f(x_2)) \in \mathit{hb}$. $(m_1,r) \in \mathit{msghb}$ indicates that the corresponding operation of $x_1$ is delivered to replica $r$. If $x_1$ is in domain of $f$, then we have $(f(x_1),r) \in \mathit{del}$.}  
+\noindent - {\color {red}$\mathit{msghb}$ record the happen before relation of messages. Given $m_1,m_2 \in \mathit{msgs}$ and assume that their ``operations in $\Sigma_e$'' is $x_1$ and $x_2$, respectively. $(m_1,m_2) \in \mathit{msghb}$ indicates that the corresponding operation of $x_1$ happens before that of $x_2$. If both $x_1$ and $x_2$ are in domain of $f$, then we have $(f(x_1),f(x_2)) \in \mathit{hb}$. $(m_1,r) \in \mathit{msghb}$ indicates that the corresponding operation of $x_1$ is delivered to replica $r$. If $x_1$ is in domain of $f$, then we have $(f(x_1),r) \in \mathit{del}$.}
 
 
 
@@ -128,10 +128,18 @@ Let us explain how to construct function $f_s$. $f_s$ is used to translate imple
 \setlength{\itemsep}{0.5pt}
 \item[-] $\alpha = apply(m)$: Let $m$ be message of $x \in \Sigma_e$. If $x$ is redundant, then $f_s(q_{\mathit{imp}},q_s,\alpha) = \epsilon$; Else, $f_s(q_{\mathit{imp}},q_s,\alpha) = addDel(f(x),r)$, where $r$ is the destination replica of $m$.
 
-\item[-] $\alpha = (m,a,b,r,\mathit{arb}_{\mathit{imp}})$: $f_s(q_{\mathit{imp}},q_s,\alpha) = (m,a,b,r,\mathit{arb}'_s)$. If $m \in \mathbb{Q} \cup \{ \mathit{rem} \}$, then $\mathit{arb}'_s$ is same as the arbitration order of $q_s$; Else, assume the arbitration of $q'_{\mathit{imp}}$ is obtained from that of $q'_{\mathit{imp}}$ by inserting a new element in the $k$-th position, then $\mathit{arb}'_s$ is obtained from the arbitration order of $q_s$ by inserting $o$ at the $k$-th position, where $o=(m(a)\Rightarrow b,r,)$ is the unique possible operation for newly generated $m(a)\Rightarrow b$.
+\item[-] $\alpha = (m,a,b,r,\mathit{arb}_{\mathit{imp}})$: $f_s(q_{\mathit{imp}},q_s,\alpha) = (m,a,b,r,\mathit{arb}'_s)$, where $\mathit{arb}'_s = f( \mathit{arb}_{\mathit{imp}} )$. 
 \end{itemize}
 
-Here we implicitly assume that, when we comes to a pair of states, we change $f$ by only inserting or removing pairs of operations, not by changing existing pairs of operations. Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $\mathit{Sem}(\mathit{imp})$, function $f_t(t) = \beta_k$ works as follows: From the initial states $q_0^{\mathit{imp}}$ of $\mathit{Sem}(\mathit{imp})$, the initial state $q_0^{s}$ of $\mathit{SRImp}(\mathit{Spec})$, and $\alpha_1$, work as $f_s$ to obtain transition label $\beta_1$ and a new state $q_q^{s}$ of $\mathit{SRImp}(\mathit{Spec})$, and so on. The detailed definition can be found in Appendix \ref{sec:appendix definitions and proofs of section simulation and refinement}. It is easy to see that functions $f_s$ and $f_t$ hold as required.
+Here we implicitly assume that, when we comes to a pair of states, we change $f$ by only inserting or removing pairs of operations, not by changing existing pairs of operations. Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $\mathit{Sem}(\mathit{imp})$, function $f_t(t) = \beta_k$ do $k$ transitions from the initial state of specification $q_0 {\xrightarrow{\beta_1}} q_1 \ldots {\xrightarrow{\beta_k}} q_k$, where for each $u$
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] If $\alpha_u = \mathit{apply}(\mathit{msg})$, then either $\beta_u = \epsilon$, or $\beta_u = \mathit{addDel}(o,r)$, where $r$ is the destination replica of $\mathit{m}$ and $o$ is in $q_u$.   
+
+\item[-] If $\alpha_u = (m,a,b,r,\mathit{arb})$: then $\beta_u =  (m,a,b,r,\mathit{arb}')$ for some $\mathit{arb}'$. 
+\end{itemize}
+
 }
 
 

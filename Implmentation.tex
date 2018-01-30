@@ -87,7 +87,7 @@ An trace of $\mathit{imp}$ satisfies causal delivery, if given $o_1 <_{\mathit{h
 \setlength{\itemsep}{0.5pt}
 \item[-] $\mathbb{L} = \{ (N,T) \vert N$ is a TI tree, $T \in \mathbb{D} \}$.
 
-\item[-] $(N,T) \xrightarrow[\mathit{mgs} = \{ (\mathit{add},a,t,p,r,r') \vert r' \neq r \}]{(\mathit{add},a,\mathit{pos},r)}_o (N \cup \{ (a,t=(\mathit{max}(\mathit{ts}(N))+1,r),p) \}, T)$. If $\mathit{pos} \neq 0$, then $p = \mathit{trav}(N,T)[\mathit{pos}]$; Else, $p = \circ$.
+\item[-] If $(a,\_,\_) \notin N$, then $(N,T) \xrightarrow[\mathit{mgs} = \{ (\mathit{add},a,t,p,r,r') \vert r' \neq r \}]{(\mathit{add},a,\mathit{pos},r)}_o (N \cup \{ (a,t=(\mathit{max}(\mathit{ts}(N))+1,r),p) \}, T)$. If $\mathit{pos} \neq 0$, then $p = \mathit{trav}(N,T)[\mathit{pos}]$; Else, $p = \circ$.
 
 \item[-] If there exists $(a,t,p) \in N \wedge (a,\_,\_) \notin T$, then $(N,T) \xrightarrow[\mathit{msgs} = \{ (\mathit{rem},a,r,r') \vert r' \neq r \} ]{(\mathit{rem},a,r)}_o (N,T \cup \{ a \})$.
 
@@ -100,7 +100,7 @@ An trace of $\mathit{imp}$ satisfies causal delivery, if given $o_1 <_{\mathit{h
 \item[-] $d_0 = (\emptyset,0)$.
 
 \item[-] $\Sigma_e$ is the union of (1) identifier $(\mathit{add},a,t)$ in $N$, $T$, and in $(\mathit{add},a,\_,\_,\_,\_) \in \mathit{msgs}$, and (2) $(\mathit{rem},a,r)$ for $(\mathit{rem},a,r,\_) \in \mathit{msgs}$.
-\item[-] $f_{\mathit{arb}}$ return a sequence that is obtained as follows: Let $S$ be the union of $\mathit{data}[r].N$ for each replica. $f_{\mathit{arb}}$ traverses $S$ with prefix order and returns identifiers of nodes.
+\item[-] $f_{\mathit{arb}}$ return a sequence that is obtained as follows: Let $S$ be the union of $\mathit{data}[r].N$ for each replica. $f_{\mathit{arb}}$ traverses $S$ with prefix order visit the children in decreasing time stamp order, and returns identifiers of nodes.
 \end{itemize}
 }
 

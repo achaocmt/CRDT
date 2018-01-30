@@ -659,6 +659,16 @@ This completes the proof of this lemma. $\qed$
 
 
 
+\subsection{Example of OR-Set Algorithm of \cite{Bieniusa:2012}}
+\label{subsec:example of or-set algorithm that does not assumes causal delivery}
+
+
+
+
+
+
+
+
 
 
 \section{Definitions and Proofs of Section \ref{sec:simulation relation for CRDT implementations}}
@@ -683,6 +693,20 @@ Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $Sem(imp)$, $f_t(t)$
 
 
 
+
+
+
+
+Let us explain how to construct function $f_s$. $f_s$ is used to translate implementation transition label into specification transition label. It uses function $f$ to find operation of a message and to construct arbitration order. It ignores translating applying message of redundant operations. Formally, given implementation state $q_{\mathit{imp}}$, specification state $q_s$, where $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, $f$ is the map between $\Sigma_e$ of $q_{\mathit{imp}}$ and operations of $q_s$, and $q_{\mathit{imp}} {\xrightarrow{\alpha}} q'_{\mathit{imp}}$. Then,
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $\alpha = apply(m)$: Let $m$ be message of $x \in \Sigma_e$. If $x$ is redundant, then $f_s(q_{\mathit{imp}},q_s,\alpha) = \epsilon$; Else, $f_s(q_{\mathit{imp}},q_s,\alpha) = addDel(f(x),r)$, where $r$ is the destination replica of $m$.
+
+\item[-] $\alpha = (m,a,b,r,\mathit{arb}_{\mathit{imp}})$: $f_s(q_{\mathit{imp}},q_s,\alpha) = (m,a,b,r,\mathit{arb}'_s)$. If $m \in \mathbb{Q} \cup \{ \mathit{rem} \}$, then $\mathit{arb}'_s$ is same as the arbitration order of $q_s$; Else, assume the arbitration of $q'_{\mathit{imp}}$ is obtained from that of $q'_{\mathit{imp}}$ by inserting a new element in the $k$-th position, then $\mathit{arb}'_s$ is obtained from the arbitration order of $q_s$ by inserting $o$ at the $k$-th position, where $o=(m(a)\Rightarrow b,r,)$ is the unique possible operation for newly generated $m(a)\Rightarrow b$.
+\end{itemize}
+
+Here we implicitly assume that, when we comes to a pair of states, we change $f$ by only inserting or removing pairs of operations, not by changing existing pairs of operations. Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $\mathit{Sem}(\mathit{imp})$, function $f_t(t) = \beta_k$ works as follows: From the initial states $q_0^{\mathit{imp}}$ of $\mathit{Sem}(\mathit{imp})$, the initial state $q_0^{s}$ of $\mathit{SRImp}(\mathit{Spec})$, and $\alpha_1$, work as $f_s$ to obtain transition label $\beta_1$ and a new state $q_q^{s}$ of $\mathit{SRImp}(\mathit{Spec})$, and so on. The detailed definition can be found in Appendix \ref{sec:appendix definitions and proofs of section simulation and refinement}. It is easy to see that functions $f_s$ and $f_t$ hold as required.
 
 
 
