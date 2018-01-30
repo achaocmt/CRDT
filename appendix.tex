@@ -489,16 +489,16 @@ Given a state $q_{\mathit{imp}} = (\mathit{data},\mathit{msgs},\mathit{msghb})$ 
 
 \item[-] $C_{\mathit{vis}}$: $(a,\mathit{id}) \in data[r].S$, if and only if $f((a,\mathit{id})) \in \mathit{visTo}(O,r,\mathit{vis})$, and for each $o_r \in \mathit{FstRem}(O,\mathit{vis},f((a,\mathit{id})))$, $o_r \notin \mathit{visTo}(O,r,\mathit{vis})$.
 
-\item[-] $C_{\mathit{mhv}}$: Given $m_1,m_2 \in \mathit{msgs}$ and assume that their operations are $x_1$ and $x_2$, respectively. If $x_1$ and $x_2$ are both non-redundant, then, $(m_1,m_2) \in \mathit{msghb}$, if and only if $f(x_1)$ happens before $f(x_2)$, and $(m_1,r) \in \mathit{msghb}$, if and only if $(f(x_1),r) \in \mathit{del}$.
+\item[-] $C_{\mathit{mhb}}$: Given $m_1,m_2 \in \mathit{msgs}$ and assume that their operations are $x_1$ and $x_2$, respectively. If $x_1$ and $x_2$ are both non-redundant, then, $(m_1,m_2) \in \mathit{msghb}$, if and only if $f(x_1)$ happens before $f(x_2)$, and $(m_1,r) \in \mathit{msghb}$, if and only if $(f(x_1),r) \in \mathit{del}$.
 \end{itemize}
 
 
-Let $\mathit{imp}_{\mathit{ORS}}^{cd}$ be the implementation of OR-Set Algorithm of \cite{Shapiro:2011} defined in Section \ref{sec:implementation}. The following lemma states that $R_{\mathit{ORS}}^{\mathit{cd}}$ is a $f_s$-simulation relation between $\mathit{Sem}( \mathit{imp}_{\mathit{ORS}}^{cd} )_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{ORS}})$.
+Let $\mathit{imp}_{\mathit{ORS}}^{cd}$ be the implementation of OR-Set Algorithm of \cite{Shapiro:2011} defined in Section \ref{sec:implementation}. The following lemma states that $R_{\mathit{ORS}}^{\mathit{cd}}$ is a $f_s$-simulation relation between $\mathit{Sem}( \mathit{imp}_{\mathit{ORS}}^{cd} )_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{ORS}})_{\mathit{cd}}$.
 
 
 \begin{lemma}
 \label{lemma:ROrscd is a fs simulation between orset causal delivery algorithm and orset specification}
-$R_{\mathit{ORS}}^{\mathit{cd}}$ is a $f_s$-simulation relation between $\mathit{Sem}( \mathit{imp}_{\mathit{ORS}}^{cd} )_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{ORS}})$.
+$R_{\mathit{ORS}}^{\mathit{cd}}$ is a $f_s$-simulation relation between $\mathit{Sem}( \mathit{imp}_{\mathit{ORS}}^{cd} )_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{ORS}})_{\mathit{cd}}$.
 \end{lemma}
 
 \begin {proof}
@@ -525,7 +525,7 @@ If there exists a $\mathit{add}(a)$ operation $o_a$, such that $o_a$ is maximal 
 
     Let $S'' = S''_a \cup S''_r$ be the set of elements that becomes redundant during this process, while $S''_a$ contains all $\mathit{add}$ in $S''$, and $S''_r$ contains all $\mathit{rem}$ in $S''$. Let $f'$ be obtained from $f$ by minus the domain by $S''$.
 
-    By $C_{\mathit{hb}}$, we can see that $f((a,S',r))$ is the minimal w.r.t not in $\mathit{visTo}(O,\mathit{vis},r)$. therefore, we can do $q_s \xrightarrow{\mathit{addDel}( f(a,S',r),r' )}_s q'_s$. By $C_{\mathit{FM}}$ and $C_{\mathit{msg}}$, we can see that $\{ o \vert \exists x \in S'', f(S'') = o \}$ is the set that becomes ``can be forgotten'' during this process in $q_s$. We use $f''$ for $(q'_{\mathit{imp}},q'_s)$. Then, we can see that $C_{\mathit{map}}$ and $C_{\mathit{rdt}}$ holds for $(q'_{\mathit{imp}},q'_s)$.
+    By $C_{\mathit{hb}}$, we can see that $f((a,S',r))$ is the minimal w.r.t not in $\mathit{visTo}(O,\mathit{vis},r)$. therefore, we can do $q_s \xrightarrow{\mathit{addDel}( f(a,S',r),r' )}_s q'_s$. By $C_{\mathit{FM}}$ and $C_{\mathit{msg}}$, we can see that $\{ o \vert \exists x \in S'', f(S'') = o \}$ is the set that becomes ``can be forgotten'' during this process in $q_s$. We use $f'$ for $(q'_{\mathit{imp}},q'_s)$. Then, we can see that $C_{\mathit{map}}$ and $C_{\mathit{rdt}}$ holds for $(q'_{\mathit{imp}},q'_s)$.
 
     Since forgetting does not change visibility for the remanning operations, it is easy to see that $C_{\mathit{FM}}$ and $C_{\mathit{vis}}$ hold for $(q'_{\mathit{imp}},q'_s)$. It is easy to see that the change of message happen before of $q_{\mathit{imp}}$ corresponding to the change of happen before of $q_s$, and then $C_{\mathit{mhb}}$ holds for $(q'_{\mathit{imp}},q'_s)$. It is obvious that $C_{\mathit{ind}}$ still holds for $(q'_{\mathit{imp}},q'_s)$. Therefore, $(q'_{\mathit{imp}},q'_s) \in R_{\mathit{ORS}}^{\mathit{cd}}$.
 
@@ -539,7 +539,7 @@ If there exists a $\mathit{add}(a)$ operation $o_a$, such that $o_a$ is maximal 
 
     Let $S'' = S''_a \cup S''_r$ be the set of elements that becomes redundant during this process, while $S''_a$ contains all $\mathit{add}$ in $S''$, and $S''_r$ contains all $\mathit{rem}$ in $S''$. Let $f'$ be obtained from $f$ by minus the domain by $S''$.
 
-    We already know that $S' \neq \emptyset$. By $C_{\mathit{vis}}$ and similar to the case of $\mathit{contains}(a) \Rightarrow \mathit{true}$, we can do $q_s \xrightarrow{( \mathit{rem},a,r,\emptyset )}_s q'_s$. By $C_{\mathit{FM}}$ and $C_{\mathit{msg}}$, we can see that $\{ o \vert \exists x \in S'', f(S'') = o \}$ is the set that becomes ``can be forgotten'' during this process in $q_s$. We use $f''$ for $(q'_{\mathit{imp}},q'_s)$.
+    We already know that $S' \neq \emptyset$. By $C_{\mathit{vis}}$ and similar to the case of $\mathit{contains}(a) \Rightarrow \mathit{true}$, we can do $q_s \xrightarrow{( \mathit{rem},a,r,\emptyset )}_s q'_s$. By $C_{\mathit{FM}}$ and $C_{\mathit{msg}}$, we can see that $\{ o \vert \exists x \in S'', f(S'') = o \}$ is the set that becomes ``can be forgotten'' during this process in $q_s$. We use $f'$ for $(q'_{\mathit{imp}},q'_s)$.
 
     Since forgetting does not change visibility for the remanning operations, it is easy to see that $C_{\mathit{FM}}$, $C_{\mathit{vis}}$ and $C_{\mathit{msg}}$ hold for $(q'_{\mathit{imp}},q'_s)$. It is easy to see that the change of message happen before of $q_{\mathit{imp}}$ corresponding to the change of happen before of $q_s$, and then $C_{\mathit{mhb}}$ holds for $(q'_{\mathit{imp}},q'_s)$. By $C_{\mathit{vis}}$ and $C_{\mathit{msg}}$, we can see that $C_{\mathit{ind}}$ holds for $(q'_{\mathit{imp}},q'_s)$. Therefore, $(q'_{\mathit{imp}},q'_s) \in R_{\mathit{ORS}}^{\mathit{cd}}$.
 \end{itemize}
@@ -570,25 +570,89 @@ Given a state $q_{\mathit{imp}} = (\mathit{data},\mathit{msgs},\mathit{msghb})$ 
     \setlength{\itemsep}{0.5pt}
     \item[-] If $a \in \mathit{data}[r].T$, then $(a,\_,\_) \in \mathit{data}[r].N$. 
     
-    \item[-] 
+    \item[-] For each $a$, there exists at most one $t$, one $p$ and one $r$, such that $t = (\_,r)$, $(a,t,p) \in \mathit{data}[r'].N$ for some $r$, or $(\mathit{add},a,t,p,r,\_) \in \mathit{msgs}$. 
+    
+    %\item[-] If $a$ is in $\mathit{data} \cup \mathit{msgs}$, then for each replica $r$, either $(a,\_,\_) \in \mathit{data}[r].N$, or $(\mathit{add},a,\_,\_,\_,r) \in \mathit{msgs}$. 
     \end{itemize}
 
-\item[-] $C_{\mathit{rdt}}$: $(a,\mathit{id})$ is redundant, if $(a,\mathit{id},\_,\_) \notin \mathit{msgs}$, and for each replica $r$, $(a,\mathit{id}) \notin \mathit{data}[r].S$. $(a,S',r)$ is redundant, if for each $\mathit{id} \in S'$, $(a,\mathit{id})$ is redundant. Moreover, if $(a,S',r)$ is redundant, and there exists a message $(a,S',r,r') \in \mathit{msgs}$, then applying this message does not change local state.
+\item[-] $C_{\mathit{rdt}}$: $(\mathit{add},a,t)$ is redundant, if for each replica $r$, $(a,t,\_) \in \mathit{data}[r].N \wedge a \in \mathit{data}[r].T$. $(\mathit{rem},a,r)$ is redundant, if $(\mathit{add},a,t)$ is redundant for some $t$. 
 
-\item[-] $C_{\mathit{map}}$: $f$ maps $(a,(r,\_))$ that are not redundant into $\mathit{add}(a)$ of replica $r$, and maps $(a,S',r)$ that are not redundant into $\mathit{rem}(a)$ of replica $r$.
+\item[-] $C_{\mathit{map}}$: $f$ maps $(\mathit{add},a,(\_,r))$ that are not redundant into $\mathit{add}(a)$ of replica $r$, and maps $(\mathit{rem},a,r)$ that are not redundant into $\mathit{rem}(a)$ of replica $r$.
 
-\item[-] $C_{\mathit{msg}}$: For non redundant $(a,\mathit{id})$, $(a,\mathit{id},\_,r) \in \mathit{msgs}$, if and only if $f((a,\mathit{id})) \notin \mathit{visTo}(O,\mathit{vis},r)$. For non redundant $(a,S',r)$, $(a,S',r,r') \in \mathit{msgs}$, if and only if $f((a,S',r)) \notin \mathit{visTo}(O,\mathit{vis},r)$.
+\item[-] $C_{\mathit{msg}}$: For non redundant $(\mathit{add},a,t)$, $(\mathit{add},a,t,\_,\_,r) \in \mathit{msgs}$, if and only if $f((\mathit{add},a,r)) \notin \mathit{visTo}(O,\mathit{vis},r)$. For non redundant $(\mathit{rem},a,r)$, $(\mathit{rem}a,r,r') \in \mathit{msgs}$, if and only if $f((\mathit{rem},a,r)) \notin \mathit{visTo}(O,\mathit{vis},r)$. 
 
-\item[-] $C_{\mathit{FM}}$: For each $\mathit{id} \in S'$, $f((a,S',r)) \in \mathit{FstRem}(O,\mathit{vis},f(a,\mathit{id}))$; while for each $\mathit{id} \notin S'$, $f((a,S',r)) \notin \mathit{FstRem}(O,\mathit{vis},f(a,\mathit{id}))$.
+\item[-] $C_{\mathit{FM}}$: $f((\mathit{rem},a,\_)) \in \mathit{FstRem}(O,\mathit{vis},f( \mathit{add},a,\_ ))$; for each $ \neq a$, $f((\mathit{rem},b,\_)) \notin \mathit{FstRem}(O,\mathit{vis},f( \mathit{add},a,\_ ))$. 
 
-\item[-] $C_{\mathit{vis}}$: $(a,\mathit{id}) \in data[r].S$, if and only if $f((a,\mathit{id})) \in \mathit{visTo}(O,r,\mathit{vis})$, and for each $o_r \in \mathit{FstRem}(O,\mathit{vis},f((a,\mathit{id})))$, $o_r \notin \mathit{visTo}(O,r,\mathit{vis})$.
+\item[-] $C_{\mathit{vis}}$: $(a,t,p) \in data[r].N$, if and only if $f((\mathit{add},a,t)) \in \mathit{visTo}(O,r,\mathit{vis})$ while $t = (\_,r)$. $a \in data[r].T$, if and only if for some $t = (\_,r)$, we have $f((\mathit{add},a,t)) \in \mathit{visTo}(O,r,\mathit{vis})$, $o_r \in \mathit{FstRem}(O,\mathit{vis},f((\textit{add},a,t)))$, and $o_r \notin \mathit{visTo}(O,r,\mathit{vis})$.
 
-\item[-] $C_{\mathit{mhv}}$: Given $m_1,m_2 \in \mathit{msgs}$ and assume that their operations are $x_1$ and $x_2$, respectively. If $x_1$ and $x_2$ are both non-redundant, then, $(m_1,m_2) \in \mathit{msghb}$, if and only if $f(x_1)$ happens before $f(x_2)$, and $(m_1,r) \in \mathit{msghb}$, if and only if $(f(x_1),r) \in \mathit{del}$.
+\item[-] $C_{\mathit{mhb}}$: Same as that of Appendix \ref{subsec:example of or-set algorithm that assumes causal delivery}. 
+
+\item[-] $C_{\mathit{arb}}$: $\mathit{arb}$ equals applying $f$ on non-redundant elements of $f_{\mathit{arb}}(\mathit{data},\mathit{msgs})$. 
+
+\item[-] $C_{\mathit{rely}}$: If $m_1 = (\mathit{add},a,t,p,\_,r), m_2 = (\mathit{add},\_,p,\_,\_,r) \in \mathit{msgs}$, then $(m_2,m_1) \in \mathit{msghb}$. If $(\mathit{add},a,t,p,\_,r) \in \mathit{msgs}$, then $(\mathit{add},\_,p,\_,\_,r) \in \mathit{msgs} \vee (\_,p,\_) \in \mathit{data}[r].N \vee \mathit{pos}=0$. If $(\mathit{rem},a,r,r') \in \mathit{msgs}$, then $(\mathit{add},a,\_,\_,\_,r') \in \mathit{msgs} \vee (a,\_,\_) \in \mathit{data}[r].N$. 
 \end{itemize}
 
 
+Let $\mathit{imp}_{\mathit{rga}}$ be the implementation of RGA Algorithm of \cite{Shapiro:2011} defined in Section \ref{sec:implementation}. The following lemma states that $R_{\mathit{RGA}}$ is a $f_s$-simulation relation between $\mathit{Sem}( \mathit{imp}_{\mathit{RGA}})_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{list}})_{\mathit{cd}}$. %Here we implicitly assume that in $q_{\mathit{imp}}$ or $q_s$, their is a ghost field that record the identifiers that can be inserted in future, and when we do $\mathit{add}(a)$, we need to ensure that $a$ is chosen from this field. This is use to enforce that each identifier is putted at most once globally. 
+
+\begin{lemma}
+\label{lemma:Rrga is a fs simulation between RGA causal delivery algorithm and list specification}
+$R_{\mathit{RGA}}$ is a $f_s$-simulation relation between $\mathit{Sem}( \mathit{imp}_{\mathit{RGA}})_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{list}})_{\mathit{cd}}$.
+\end{lemma}
+
+\begin {proof} 
+
+It is easy to see that the following property holds: 
+
+$\mathit{Prop}$: Given $k$ TI trees $x_1,\ldots,x_k$, let $x$ be their union. If $y$ (resp., $y_k$) is the sequence obtained by traversing $x$ (resp., $x_k$) with prefix order, then each $y_k$ is a sub-sequence of $y$.  
+
+Let $f_{\mathit{arb}}^v(\mathit{data},\mathit{msgs})$ be the sequences obtained from $f_{\mathit{arb}}(\mathit{data},\mathit{msgs})$ by removing redundant elements. 
+
+Assume $q_{\mathit{imp}} = (\mathit{data},\mathit{msgs},\mathit{msghb})$, $q_s = (O,\mathit{ro},\mathit{del},\mathit{arb})$, $(q_{\mathit{imp}},q_s) \in R_{\mathit{list}}$, and $q_{\mathit{imp}} \xrightarrow{\alpha}_i q'_{\mathit{imp}}$. We prove by consider all kinds of transitions. 
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] If $q_{\mathit{imp}} \xrightarrow{( \mathit{read},l,r,f_{\mathit{arb}}(\mathit{data},\mathit{msgs}) )}_i q_{\mathit{imp}}$: We can always do $q_s \xrightarrow{( \mathit{read},l',r,\mathit{arb} )}_s q_s$. $l = \mathit{trav}(\mathit{data}[r].N, \mathit{data}[r].T)$. By $C_{\mathit{vis}}$, $f(l)$ contains the same set of operations of $l'$. By $\mathit{Prop}$, $l$ is a subsequence of $f_{\mathit{arb}}^v(\mathit{data},\mathit{msgs})$, and thus, $f(l) = l'$. 
+
+\item[-] If $q_{\mathit{imp}} \xrightarrow{ \mathit{msg} = \mathit{apply}( \mathit{add},a,t,p,r,r' )}_i q'_{\mathit{imp}} = (\mathit{data}',\mathit{msgs} \setminus \{ \mathit{msg} \})$. Here $\mathit{data}'$ is obtained from $\mathit{data}$ by modifying $\mathit{data}[r'].N$ into $\mathit{data}[r'].N \cup \{ (a,t,p) \}$. By $C_{\mathit{rely}}$ and $C_{\mathit{mhb}}$, we can see that $(\_,p,\_) \in \mathit{data}[r'].N$, therefore, $\mathit{data}'[r'].N$ is still a TI tree. 
+    
+    By $C_{\mathit{vis}}$ and $C_{\mathit{mhb}}$, we can see that $f(\mathit{add},a,t)$ is minimal w.r.t $\mathit{hb}$ in non-$\mathit{visTo}(O,\mathit{vis},r')$. Therefore, we can do $q_s \xrightarrow{ \mathit{addDel}( f(\mathit{add},a,t),r' )}_s q'_s$. 
+    
+    We can see that the arbitration order of implementation and specification do not change. It is obvious that no new redundant operations are introduced in implementation and specification. By $C_{\mathit{vis}}$ and $C_{\mathit{msg}}$, we can see that $(a,t,p) \notin \mathit{data}[r'].N$, and then $C_{\mathit{vis}}$ still holds for $(q'_{\mathit{imp}},q'_s)$. It is easy to see that other conditions also hold. 
 
 
+\item[-] If $q_{\mathit{imp}} \xrightarrow{\mathit{apply}( \mathit{msg}=( \mathit{rem},a,r,r' ))}_i q'_{\mathit{imp}} = (\mathit{data}',\mathit{msgs} - \{ \mathit{msg} \},\mathit{msghb}')$, and $(\mathit{rem},a,r)$ is not redundant: Here $\mathit{data}'$ is obtained from $\mathit{data}$ by modifying $\mathit{data}[r'].T$ into $\mathit{data}[r'].T \cup \{ a \}$. 
+
+    Let $S'' = S''_a \cup S''_r$ be the set of elements that becomes redundant during this process, while $S''_a$ contains all $\mathit{add}$ in $S''$, and $S''_r$ contains all $\mathit{rem}$ in $S''$. Let $f'$ be obtained from $f$ by minus the domain by $S''$. 
+    
+    By $C_{\mathit{vis}}$ and $C_{\mathit{mhb}}$, we can see that $f(\mathit{add},a,t)$ is minimal w.r.t $\mathit{hb}$ in non-$\mathit{visTo}(O,\mathit{vis},r')$. Therefore, we can do $q_s \xrightarrow{ \mathit{addDel}( f(\mathit{rem},a,r),r' )}_s q'_s$. By $C_{\mathit{rely}}$, we can see that $(a,\_,\_) \in \mathit{data}[r'].N$, and $C_{\mathit{ind}}$ still holds for $(q'_{\mathit{imp}},q'_s)$. 
+    
+    By $C_{\mathit{FM}}$ and $C_{\mathit{msg}}$, we can see that $\{ o \vert \exists x \in S'', f(S'') = o \}$ is the set that becomes ``can be forgotten'' during this process in $q_s$. We use $f'$ for $(q'_{\mathit{imp}},q'_s)$. Then, we can see that $C_{\mathit{map}}$ and $C_{\mathit{rdt}}$ holds for $(q'_{\mathit{imp}},q'_s)$. 
+
+    Since forgetting does not change visibility for the remanning operations, it is easy to see that $C_{\mathit{FM}}$ and $C_{\mathit{vis}}$ hold for $(q'_{\mathit{imp}},q'_s)$. It is easy to see that the change of message happen before of $q_{\mathit{imp}}$ corresponding to the change of happen before of $q_s$, and then $C_{\mathit{mhb}}$ holds for $(q'_{\mathit{imp}},q'_s)$. Therefore, $(q'_{\mathit{imp}},q'_s) \in R_{\mathit{list}}$.
+
+\item[-] $q_{\mathit{imp}} \xrightarrow{\mathit{apply}( \mathit{msg}=( \mathit{rem},a,r,r' ))}_i q'_{\mathit{imp}} = (\mathit{data}',\mathit{msgs} - \{ \mathit{msg} \},\mathit{msghb}')$, and $(\mathit{rem},a,r)$ is redundant: By $C_{\mathit{rdt}}$, $\mathit{data}' = \mathit{data}$. Since the only change is applying a message, it is easy to see that $(q'_{\mathit{imp}},q_s) \in R_{\mathit{list}}$. 
+
+\item[-] If $q_{\mathit{imp}} \xrightarrow{(\mathit{add},a,\mathit{pos},r,\emptyset)}_i q'_{\mathit{imp}} = (\mathit{data}',\mathit{msgs}',\mathit{msghb}')$: Here $\mathit{data}'$ is obtained from $\mathit{data}$ by modifying $\mathit{data}[r'].N$ into $\mathit{data}[r'].N \cup \{ (a,t,p) \}$, where $t=(\mathit{max}(\mathit{ts}(\mathit{data}[r].N))+1,r)$, and $p = \mathit{trav}(\mathit{data}[r].N,\mathit{data}[r].T)[\mathit{pos}]$. Here $\mathit{msgs}' = \mathit{msgs} \cup \{ (\mathit{add},a,t,p,r,r') \vert r' \neq r \}$. 
+    
+    It is easy to see that from the perspective of replica $r$ of implementation, $(a,t,p)$ is at the $\mathit{pos}$-th position. %Let $\mathit{arb}'_i = f_{\mathit{arb}}(\mathit{data}',\mathit{msg}')$, and . 
+    It is easy to see that $a$ is previously not in $\mathit{data} \cup \mathit{msg}$, and therefore, $a$ is not in $q_s$. By $C_{\mathit{msg}}$ and $C_{\mathit{vis}}$, we can do $q_s \xrightarrow{( \mathit{add},a,\mathit{pos},r,\mathit{arb}' )}_i q'_s$ and let $o$ be the newly generated operations in $q'_s$, where $\mathit{arb}'$ is chosen to be $f_{\mathit{arb}}^v(\mathit{data}',\mathit{msgs}')$.
+    
+    It is obvious that no operation become redundant during this process. Let $f' = f \cup \{ ((a,id),,o) \}$. We use $f'$ for $(q'_{\mathit{imp}},q'_s)$. Similarly $C_{\mathit{mhb}}$ holds for $(q'_{\mathit{imp}},q'_s)$. Since there is no remove in $\mathit{FstRem}$ for $o$, and a new $\mathit{add}$ does not influence $\mathit{FstRem}$ for other operations, we have $C_{\mathit{FM}}$ holds for $(q'_{\mathit{imp}},q'_s)$. Since $p$ is in $\mathit{data}[r].N$ or $p = \circ$, $C_{\mathit{rely}}$ holds for $(q'_{\mathit{imp}},q'_s)$. It is easy to see that other condition also hold. Therefore, $(q'_{\mathit{imp}},q'_s) \in R_{\mathit{list}}$.
+
+\item[-] If $q_{\mathit{imp}} \xrightarrow{( \mathit{rem},a,r,\emptyset ))}_i q'_{\mathit{imp}} = (\mathit{data}',\mathit{msgs}',\mathit{msghb}')$: $\mathit{data}'$ is obtained from $\mathit{data}$ by modifying $\mathit{data}[r].T$ into $\mathit{data}[r].T \cup \{ a \}$, $\mathit{msg}' = \mathit{msg} \cup \{ (\mathit{rem},a,r,r') \vert r' \neq r \}$. 
+
+    Let $S'' = S''_a \cup S''_r$ be the set of elements that becomes redundant during this process, while $S''_a$ contains all $\mathit{add}$ in $S''$, and $S''_r$ contains all $\mathit{rem}$ in $S''$. Let $f'$ be obtained from $f$ by minus the domain by $S''$.
+
+    We already know that $(a,\_,\_) \in \mathit{data}[r].N \wedge a \notin \mathit{data}[r].T$. We already know that $f( f_{\mathit{arb}}^v(\mathit{data},\mathit{msgs}) ) = \mathit{arb}$, and it is obvious that $f_{\mathit{arb}}^v(\mathit{data}',\mathit{msgs}') = f_{\mathit{arb}}^v(\mathit{data},\mathit{msgs})$. 
+    
+    By $C_{\mathit{vis}}$ and $C_{\mathit{msg}}$, we can do $q_s \xrightarrow{( \mathit{rem},a,r,\mathit{arb} )}_s q'_s$. It is obvious that $C_{\mathit{arb}}$ holds for $(q'_{\mathit{imp}},q'_s)$. By $C_{\mathit{FM}}$ and $C_{\mathit{msg}}$, we can see that $\{ o \vert \exists x \in S'', f(S'') = o \}$ is the set that becomes ``can be forgotten'' during this process in $q_s$. We use $f'$ for $(q'_{\mathit{imp}},q'_s)$. It is obvious that $C_{\mathit{ind}}$ holds for $(q'_{\mathit{imp}},q'_s)$. 
+
+    Since forgetting does not change visibility for the remanning operations, it is easy to see that $C_{\mathit{FM}}$, $C_{\mathit{vis}}$ and $C_{\mathit{msg}}$ hold for $(q'_{\mathit{imp}},q'_s)$. It is easy to see that $C_{\mathit{mhb}}$ holds for $(q'_{\mathit{imp}},q'_s)$. By $C_{\mathit{ind}}$ and $C_{\mathit{hb}}$, we know that $C_{\mathit{rely}}$ holds for $(q'_{\mathit{imp}},q'_s)$. Therefore, $(q'_{\mathit{imp}},q'_s) \in R_{\mathit{ORS}}^{\mathit{cd}}$. 
+\end{itemize} 
+
+This completes the proof of this lemma. $\qed$
+\end {proof}
 
 
 
