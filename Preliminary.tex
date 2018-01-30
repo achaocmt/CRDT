@@ -34,26 +34,24 @@ infinite set $\mathbb{D}$ of argument and return values, the data
 domain.
 %
 We consider replicated data types which are distributed across a set
-of replicas $\mathbb{R}$, where we only consider replica identifiers.
-We assume that each replica contains a copy of the data type.
+of replicas; the set of replica identifiers is denoted by $\mathbb{R}$.
+We assume that each replica contains a copy of the data type state.
 Finally we have a infinite set $\mathbb{O}$ of operation identifiers,
 corresponding to each individual operation performed on the CRDT
 throughout an execution.
 %
 
-To simplify our presentation we will label operation with labels of
-the form \mbox{$m(a)\Rightarrow b$} with $m \in \mathbb{M}$ and $a,b \in
-\mathbb{D}$, indicating that the operation is a call to method $m$
-with arguments values $a$ and the result of the operation is the value
+Operation labels \mbox{$m(a)\Rightarrow b$} with $m \in \mathbb{M}$ and $a,b \in
+\mathbb{D}$, indicate that the operation is a call to method $m$
+with argument $a$ and the result of the operation is the value
 $b$.
 When $m$ does not use the argument (resp., return value), we write
 $m()\Rightarrow b$ (resp., $m(a)$) instead.
 We define an operation $o$ to be a tuple $(\ell,r,i)$, where $\ell$ is
 an operation label, $r \in \mathbb{R}$ is the identifier of the
-replica to receive the client's request and $i \in \mathbb{O}$ is a
-unique identifier for the operation.
-This definition extends naturally to the case when there are more than
-one arguments.
+replica to which the operation is submitted by the client, and $i \in \mathbb{O}$ is a
+unique operation identifier.
+%This definition extends naturally to the case when there are more than one arguments.
 We denote by $\mathit{lab}(o)$ the label $\ell$ whenever $o = (\ell,
 r, i)$.
 %
@@ -79,12 +77,14 @@ We require $\mathit{ro}$ to not relate operations with different replica identif
 We also require that for each operation $o \in O$,
 $\mathit{ro}^{-1}(o)$ is finite, meaning that the past of any replica
 is only finite.
-\fxnote{GP: This example has to be developed} {\color {red}An example
-  of distributed list history is shown in \figurename~\ref{fig:history,
-    annotated history and operation context} (a).}
+An example of a history of a CRDT maintaining a list of elements is shown in 
+\figurename~\ref{fig:history, annotated history and operation context} (a).
+This history contains a set of insert operations, e.g., $+(a,1)$ adding element $a$
+on position 1, and read operations returning a snapshot of the list, e.g., $r\Rightarrow b\cdot a \cdot c$ 
+returning the list $b\cdot a \cdot c$. These operations are submitted to two replicas.
 
 While histories provide the means to describe the behaviors of CRDTs,
-they are insufficient to describe the effects of the the delivery
+they are insufficient to describe the effects of the delivery
 policy among different replicas.
 %
 In other words, when does an operation become visible to another
