@@ -7,7 +7,7 @@
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\rightarrow_o: \mathbb{L} \times \mathbb{M} \times \mathbb{D} \times \mathbb{R} \rightarrow \mathbb{L} \times \mathbb{D} \times \mathit{Pow}(\mathbb{MSG})$ shows how method update local state and generate messages. $(d,m,a,r) \rightarrow_o (d',b,\mathit{msgs})$ represents that, when the local state of replica $r$ is $d$, if we call method $m$ with argument $a$ in replica $r$, then we obtain return value $b$, change the local state of replica $r$ into $d'$, and generate a set $\mathit{msgs}$ of messages. Here $\mathit{Pow}(\mathbb{MSG})$ is the power set of $\mathbb{MSG}$. If $m \in \mathbb{U}$, then $\mathit{msgs} = \{ (x,r,r') \vert r' \in \mathbb{R} \wedge r \neq r' \}$ for some $x$. Otherwise, $\mathit{msgs} = \emptyset$. {\color {red}The violation of pre-condition of method is modeled by mapping to $\mathit{undef}$.}
+\item[-] $\rightarrow_o: \mathbb{L} \times \mathbb{M} \times \mathbb{D} \times \mathbb{R} \rightarrow \mathbb{L} \times \mathbb{D} \times \mathit{Pow}(\mathbb{MSG})$ shows how method update local state and generate messages. $(d,m,a,r) \rightarrow_o (d',b,\mathit{mgs})$ represents that, when the local state of replica $r$ is $d$, if we call method $m$ with argument $a$ in replica $r$, then we obtain return value $b$, change the local state of replica $r$ into $d'$, and generate a set $\mathit{mgs}$ of messages. Here $\mathit{Pow}(\mathbb{MSG})$ is the power set of $\mathbb{MSG}$. If $m \in \mathbb{U}$, then $\mathit{mgs} = \{ (x,r,r') \vert r' \in \mathbb{R} \wedge r \neq r' \}$ for some $x$. Otherwise, $\mathit{mgs} = \emptyset$. {\color {red}The violation of pre-condition of method is modeled by mapping to $\mathit{undef}$.}
 
 \item[-] $\rightarrow_m: \mathbb{L} \times \mathbb{R} \times \mathbb{MSG} \rightarrow \mathbb{L}$. $(d,r,\mathit{msg}) \rightarrow_m d'$ represents that, if the local state of replica $r$ is $d$ and we apply message $\mathit{msg}$, then we obtain local state $d'$. {\color {red}The violation of pre-condition of applying a message is modeled by mapping to $\mathit{undef}$.}
 
@@ -37,7 +37,7 @@ The semantics of $\mathit{imp}$ is given as an LTS $\mathit{Sem}(\mathit{imp}) =
     \setlength{\itemsep}{0.5pt}
     \item[-] %{\color {red}When doing operations, we keep messages unique.}
 
-    $\begin{array}{l c} \bigfrac{ (\mathit{data}[r],m,a,r) \rightarrow_o (d,b,\mathit{msgs}'), \mathit{msg} \cap \mathit{msgs}' = \emptyset, f_{\mathit{arb}}((\mathit{data}[r:d], \mathit{msgs} \cup \mathit{msgs}')) = \mathit{arb}} {(\mathit{data},\mathit{msgs}) {\xrightarrow{(m,a,b,r,\mathit{arb})}} (\mathit{data}[r:d], \mathit{msgs} \cup \mathit{msgs}')} \end{array}$
+    $\begin{array}{l c} \bigfrac{ (\mathit{data}[r],m,a,r) \rightarrow_o (d,b,\mathit{mgs}'), \mathit{msgs} \cap \mathit{mgs}' = \emptyset, f_{\mathit{arb}}((\mathit{data}[r:d], \mathit{msgs} \cup \mathit{mgs}')) = \mathit{arb}} {(\mathit{data},\mathit{msgs}) {\xrightarrow{(m,a,b,r,\mathit{arb})}} (\mathit{data}[r:d], \mathit{msgs} \cup \mathit{mgs}')} \end{array}$
 
     \item[-] {\color {red} When a message is applied, we remove it from $\mathit{msgs}$.}
 
@@ -59,13 +59,13 @@ An trace of $\mathit{imp}$ satisfies causal delivery, if given $o_1 <_{\mathit{h
 \setlength{\itemsep}{0.5pt}
 \item[-] $\mathbb{L} = \{ (S,\mathit{ctr}) \vert S \subseteq \mathbb{D} \times (\mathbb{R} \times \mathbb{N}), \mathit{ctr} \in \mathbb{N} \}$. Elements of $S$ are of form $(a,id)$, and $\mathit{ctr}$ is per-replica counter to make $id$ unique.
 
-\item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{msgs} = \{ (a,\mathit{id},r,r') \vert r' \neq r \}]{(\mathit{add},a,r)}_o (S \cup \{ (a,\mathit{id}) \}, \mathit{ctr}+1)$ and $\mathit{id} = (r,\mathit{ctr})$.
+\item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{mgs} = \{ (a,\mathit{id},r,r') \vert r' \neq r \}]{(\mathit{add},a,r)}_o (S \cup \{ (a,\mathit{id}) \}, \mathit{ctr}+1)$ and $\mathit{id} = (r,\mathit{ctr})$.
 
-\item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{msgs} = \{ (a,S'',r,r') \vert r' \neq r \} ]{(\mathit{rem},a,r)}_o (S \setminus \{ (a,id) \in S \}, \mathit{ctr})$, $S'' = \{ id \vert (a,id) \in S \} \neq \emptyset$.
+\item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{mgs} = \{ (a,S'',r,r') \vert r' \neq r \} ]{(\mathit{rem},a,r)}_o (S \setminus \{ (a,id) \in S \}, \mathit{ctr})$, $S'' = \{ id \vert (a,id) \in S \} \neq \emptyset$.
 
-\item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{msgs} = \emptyset]{(\mathit{lookup},a,\mathit{true},r)}_o (S, \mathit{ctr})$, if there exists $\mathit{id}$ such that $(a,\mathit{id}) \in S$.
+\item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{mgs} = \emptyset]{(\mathit{lookup},a,\mathit{true},r)}_o (S, \mathit{ctr})$, if there exists $\mathit{id}$ such that $(a,\mathit{id}) \in S$.
 
-\item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{msgs} = \emptyset]{(\mathit{lookup},a,\mathit{false},r)}_o (S, \mathit{ctr})$, if $(a,\mathit{id}) \notin S$ for each $\mathit{id}$.
+\item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{mgs} = \emptyset]{(\mathit{lookup},a,\mathit{false},r)}_o (S, \mathit{ctr})$, if $(a,\mathit{id}) \notin S$ for each $\mathit{id}$.
 
 \item[-] $(S,\mathit{ctr}) \xrightarrow{\mathit{apply}((a,id,\_,r))}_m (S \cup \{ (a,id) \}, \mathit{ctr})$.
 
@@ -85,22 +85,22 @@ An trace of $\mathit{imp}$ satisfies causal delivery, if given $o_1 <_{\mathit{h
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\mathbb{L} = \{ (N,T) \vert N$ is a TI tree, $T \in \mathbb{D} \}$. 
+\item[-] $\mathbb{L} = \{ (N,T) \vert N$ is a TI tree, $T \in \mathbb{D} \}$.
 
-\item[-] $(N,T) \xrightarrow[\mathit{msgs} = \{ (\mathit{add},a,t,p,r,r') \vert r' \neq r \}]{(\mathit{add},a,\mathit{pos},r)}_o (N \cup \{ (a,t=(\mathit{max}(\mathit{ts}(N))+1,r),p) \}, T)$. If $\mathit{pos} \neq 0$, then $p = \mathit{tran}(N)[\mathit{pos}]$; Else, $p = \circ$.
+\item[-] $(N,T) \xrightarrow[\mathit{mgs} = \{ (\mathit{add},a,t,p,r,r') \vert r' \neq r \}]{(\mathit{add},a,\mathit{pos},r)}_o (N \cup \{ (a,t=(\mathit{max}(\mathit{ts}(N))+1,r),p) \}, T)$. If $\mathit{pos} \neq 0$, then $p = \mathit{tran}(N)[\mathit{pos}]$; Else, $p = \circ$.
 
 \item[-] If there exists $(a,t,p) \in N \wedge (a,\_,\_) \notin T$, then $(N,T) \xrightarrow[\mathit{msgs} = \{ (\mathit{rem},a,r,r') \vert r' \neq r \} ]{(\mathit{rem},a,r)}_o (N,T \cup \{ a \})$.
 
-\item[-] $(N,T) \xrightarrow[\mathit{msgs} = \emptyset]{(\mathit{read},\mathit{tran}(N),r)}_o (N,T)$. 
+\item[-] $(N,T) \xrightarrow[\mathit{mgs} = \emptyset]{(\mathit{read},\mathit{tran}(N),r)}_o (N,T)$.
 
-\item[-] $(N,T) \xrightarrow{\mathit{apply}((\mathit{add},a,t,p,\_,r))}_m (N \cup \{ (a,t,p) \},T)$. 
+\item[-] $(N,T) \xrightarrow{\mathit{apply}((\mathit{add},a,t,p,\_,r))}_m (N \cup \{ (a,t,p) \},T)$.
 
 \item[-] $(N,T) \xrightarrow{\mathit{apply}((\mathit{rem},a,\_,r))}_m (N,T \cup \{ a \})$.
 
 \item[-] $d_0 = (\emptyset,0)$.
 
 \item[-] $\Sigma_e$ is the union of (1) identifier $(\mathit{add},a,t)$ in $N$, $T$, and in $(\mathit{add},a,\_,\_,\_,\_) \in \mathit{msgs}$, and (2) $(\mathit{rem},a,r)$ for $(\mathit{rem},a,r,\_) \in \mathit{msgs}$.
-\item[-] $f_{\mathit{arb}}$ return a sequence that is obtained as follows: Let $S$ be the union of $\mathit{data}[r].N$ for each replica. $f_{\mathit{arb}}$ traverses $S$ with prefix order and returns identifiers of nodes. 
+\item[-] $f_{\mathit{arb}}$ return a sequence that is obtained as follows: Let $S$ be the union of $\mathit{data}[r].N$ for each replica. $f_{\mathit{arb}}$ traverses $S$ with prefix order and returns identifiers of nodes.
 \end{itemize}
 }
 

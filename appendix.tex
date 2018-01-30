@@ -519,31 +519,24 @@ Given a state $q_{\mathit{imp}} = (\mathit{data},\mathit{msgs},\mathit{msghb})$ 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $C_{\mathit{ind}}$: for $q_{\mathit{imp}}$: 
+\item[-] $C_{\mathit{ind}}$: For $q_s$: we use the inductive invariant $\mathit{Ind}(S_{\mathit{ORS}})(q)$ of Appendix \ref{sec:appendix definitions and proofs of section succinct reference implementations of collection data types}. For $q_{\mathit{imp}}$:
     
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
     \item[-] For each replica $r$: Let $\mathit{ID}_r = \{ k \vert \exists r' \in \mathbb{R}, (\_,(r,k)) \in \mathit{data}[r'].S \} \cup \{ k \vert (\_,(r,k),\_,\_) \in \mathit{msgs} \vee ( (\_,S',\_,\_) \in \mathit{msgs} \wedge (r,k) \in S' ) \}$. 
     
     \item[-] For each replica $r$: $(a,S',r,\_) \in \mathit{msgs}$, then for each $\mathit{id} \in S'$, $(a,\mathit{id}) \notin \mathit{data}[r].S \wedge (a,\mathit{id},\_,r) \notin \mathit{msgs}$. 
-    \end{itemize}
+    \end{itemize} 
+
+\item[-] $C_{\mathit{rdt}}$: $(a,\mathit{id})$ is redundant, if for each replica $r$, $a,\mathit{id}) \notin \mathit{data}[r].S$. 
+
+\item[-] $C_{\mathit{map}}$: $f$ maps $(a,\mathit{id})$ that are not redundant into $\mathit{add}(a)$ and maps $(a,S',r)$ into $\mathit{rem}(a)$. This map preserves replica. 
+
+\item[-] $C_{\mathit{msg}}$: $(a,\mathit{id},)$
     
 \end{itemize}
 
 
-\noindent - Inductive invariants for both $q_{\mathit{imp}}$ and $q_s$. 
-
-For example: The inductive invariant of $q_{\mathit{imp}}$ requires that (1) For each $\mathit{id} = (r,c)$ in $S \cup \mathit{msgs}$, $c$ is less or equal than counter of replica $r$, and (2) If $(a,S',r,\_)$ is in message, then for each $\mathit{id} \in S'$, $(a,\mathit{id}) \notin \mathit{data}[r].S \wedge (a,\mathit{id},\_,r) \notin \mathit{msgs}$; while The inductive invariants of $q_s$ requires each $\mathit{rem}$ operation is in $\mathit{FstRem}$ of some $\mathit{add}$ operation.
-
-\noindent - A method to check whether an ``$\mathit{add}$ operation'' of $\Sigma_e$ is redundant. If it is, then applying messages of this operation does not change local state.
-
-Example: $(a,\mathit{id})$ is redundant, if for each replica $r$, $(a,\mathit{id}) \notin \mathit{data}[r].S$.
-
-\noindent - A map $f$ between non-redundant elements of $\Sigma_e$ and $O$.%, where $O_s$ is union of $O$ and operations in arbitration order.
-
-Example: $f$ maps $(a,\mathit{id})$ that are not redundant into $\mathit{add}(a)$ and maps $(a,S',r)$ into $\mathit{rem}(a)$. This map preserves replica.
-
-%\noindent - We require that $f(f_{arb}(data,msgs))$ be a sup-sequence of $\mathit{arb}$.
 
 \noindent - There is a message of $x \in \Sigma_e$ waiting to be applied to replica $r$, if and only if $f(x) \notin \mathit{visTo}(O,r,\mathit{vis})$.
 
