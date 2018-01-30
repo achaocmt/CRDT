@@ -26,14 +26,103 @@
 
 %\todo{Define ``operation label'' which is $m(a,b)$ and denote operation labels by $\ell$. Operation content is not a good name.}
 
-Given a finite set $\mathbb{M}$ of method names, a possibly infinite set $\mathbb{D}$ of data domain for argument and return values, a finite set $\mathbb{R}$ of replica identifiers, and a infinite set $\mathbb{O}$ of operation identifiers. A operation label is a tuple $m(a)\Rightarrow b$ where $m \in \mathbb{M}$ and $a,b \in \mathbb{D}$. $m(a) \Rightarrow b$ represents that $m$ is called with argument $a$ and returns b. When $m$ does not use the argument (resp., return value), we write $m()\Rightarrow b$ (resp., $m(a)$) instead. An operation $o$ is a tuple $(\ell,r,i)$, where $\ell$ is a operation label, $r \in \mathbb{R},i \in \mathbb{O}$. Let $\mathit{lab}(o)$ be the operation label of $o$. This definition extends naturally to the case when there are more than one arguments. Methods of $\mathbb{M}$ can be divided into query methods with names in $\mathbb{Q}$ and update methods with names in $\mathbb{U}$.
+Let us start our formal development by introducing the definitions
+required to specify CRDTs.
+%
+We will consider a finite set $\mathbb{M}$ of method names; and a possibly
+infinite set $\mathbb{D}$ of argument and return values, the data
+domain.
+%
+We consider replicated data types which are distributed across a set
+of replicas $\mathbb{R}$, where we only consider replica identifiers.
+We assume that each replica contains a copy of the data type.
+Finally we have a infinite set $\mathbb{O}$ of operation identifiers,
+corresponding to each individual operation performed on the CRDT
+throughout an execution.
+%
 
-{\color {red}We use the notion of history to capture the user-observable behaviors, which contains operations and their order on each replica.} A history is a tuple $(O,\mathit{ro})$, where $O$ is a set of operations, and $\mathit{ro}$ is called the replica order. For each replica $r \in \mathbb{R}$, $\mathit{ro}$ is a irreflexive total order over operations with replica identifier $r$. $\mathit{ro}$ does not relate operations with different replica identifiers. %We also require that for each operation $o \in O$, $\mathit{ro}^{-1}(o)$ is finite.
-{\color {red}An example of distributed list history is shown in \figurename~\ref{fig:history, annotated history and operation context} (a).}
+To simplify our presentation we will label operation with labels of
+the form \mbox{$m(a)\Rightarrow b$} with $m \in \mathbb{M}$ and $a,b \in
+\mathbb{D}$, indicating that the operation is a call to method $m$
+with arguments values $a$ and the result of the operation is the value
+$b$.
+When $m$ does not use the argument (resp., return value), we write
+$m()\Rightarrow b$ (resp., $m(a)$) instead.
+We define an operation $o$ to be a tuple $(\ell,r,i)$, where $\ell$ is
+an operation label, $r \in \mathbb{R}$ is the identifier of the
+replica to receive the client's request and $i \in \mathbb{O}$ is a
+unique identifier for the operation.
+This definition extends naturally to the case when there are more than
+one arguments.
+We denote by $\mathit{lab}(o)$ the label $\ell$ whenever $o = (\ell,
+r, i)$.
+%
+Without loss of generality we will consider that the methods in
+$\mathbb{M}$ can be separated in two disjoint sets of $\mathbb{Q}$
+query methods, and $\mathbb{U}$ update methods.
 
-%CRDT has two kinds of method: query methods and update methods.
-{\color{red}To check the correctness of a history, we augment it with additional information to explain the observed operations. In this way we obtain annotated history.} An annotated history is a tuple $(O,\mathit{vis},\mathit{arb})$, where $O$ is a set of operations, $\mathit{vis}$ is called the visibility relation and is a irreflexive and acyclic relation over $O$ , and $\mathit{arb}$ is called the arbitration order and is a irreflexive total order over a subset of update operations of $O$. {\color {red} Visibility relation tells how update operations are delivered, and arbitration order represents some global orders that are used to determine return values on each replica, such as list order in \cite{Attiya:2016} or time stamp order.} We further require that for each operation $o \in O$, $\mathit{vis}^{-1}(o)$ is finite. {\color {red}The annotated history for history of \figurename~\ref{fig:history, annotated history and operation context} (a) is given in \figurename~\ref{fig:history, annotated history and operation context} (b).} % with arbitration order $\mathit{add}(b,1) \cdot \mathit{add}(c,2) \cdot \mathit{add}(a,1)$.}
+As customary, to capture the notion of client-observable effects of an
+execution over a CRDT, we will define the notion of \emph{history}.
+%
+A history contains a set of operations, and the order in which
+they were effected in each replica.
+% 
+Formally, histories are tuples of the form $(O,\mathit{ro})$ where $O$ is a set of
+operations, and $\mathit{ro}$ is the replica order. 
+%
+For each replica $r \in \mathbb{R}$, $\mathit{ro}|_{r}$ (that is the
+projection of $ro$ to operations of replica $r$) is an irreflexive
+total order over all the operations with replica identifier $r$.
+%
+We require $\mathit{ro}$ to not relate operations with different replica identifier. 
+%
+We also require that for each operation $o \in O$,
+$\mathit{ro}^{-1}(o)$ is finite, meaning that the past of any replica
+is only finite.
+\fxnote{GP: This example has to be developed} {\color {red}An example
+  of distributed list history is shown in \figurename~\ref{fig:history,
+    annotated history and operation context} (a).}
 
+While histories provide the means to describe the behaviors of CRDTs,
+they are insufficient to describe the effects of the the delivery
+policy among different replicas.
+%
+In other words, when does an operation become visible to another
+replica, and therefore to all operations being issued at that replica?
+%
+This is an important notion, since specifications sometimes rely on a
+certain delivery for their correctness.
+%
+To deal with this issue we will augment histories with additional
+information, indicating when operations become visible to other
+operations (i.e. the replica in which they are generated), and we
+shall call them \emph{annotated histories}.
+%
+
+An annotated history is a tuple $(O,\mathit{vis},\mathit{arb})$, where
+$O$ is a set of operations; $\mathit{vis}$ the visibility relation, is
+an irreflexive and acyclic relation over $O$ representing for each
+operation the set of operations which can affect its result
+(essentially for $o$, these are the operations that are in
+$\mathit{vis}^{-1}(o)$); and $\mathit{arb}$, the arbitration order, is
+a irreflexive total order over a subset of the update operations of
+$O$.
+An important aspect of CRDTs is that in the presence of conflicting
+operations (that is operations which if executed in different order
+change the resulting behavior), the convergence mechanism of the CRDT
+will determine the order in which the operations should be applied by
+all replicas, hence guaranteeing convergence.
+The order $\mathit{arb}$ plays this role in the definition of
+annotated histories.
+\fxnote{GP: Why only update at this point?. Add the cite to Burckhardt.}
+%
+
+{\color {red} Visibility relation tells how update operations are
+  delivered, and arbitration order represents some global orders that
+  are used to determine return values on each replica, such as list
+  order in \cite{Attiya:2016} or time stamp order.}
+We further require that for each operation $o \in O$, $\mathit{vis}^{-1}(o)$ is finite.
+{\color {red}The annotated history for history of \figurename~\ref{fig:history, annotated history and operation context} (a) is given in \figurename~\ref{fig:history, annotated history and operation context} (b).} % with arbitration order $\mathit{add}(b,1) \cdot \mathit{add}(c,2) \cdot \mathit{add}(a,1)$.}
 %\begin{itemize}
 %\setlength{\itemsep}{0.5pt}
 %\item[-] $O$ is a set of operations.
@@ -256,16 +345,7 @@ For OR-set, the operation context of annotated history is more complicated. {\co
 %A history $(O,\mathit{ro})$ is SRVC w.r.t $Spec$, if there exists $\mathit{vis}$ and $\mathit{arb}$, such that $(O,\mathit{ro},\mathit{vis},\mathit{arb})$ is SRVC consistent w.r.t $Spec$.
 %\end{definition}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "draft"
+%%% End:
