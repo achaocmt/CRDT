@@ -59,23 +59,26 @@ Given an LTS $A_1$ and a deterministic LTS $A_2$ and functions $f_s,f_t$, such t
 \subsection{Example of Simulation Relations}
 \label{subsec:collection specification with calusal delivery}
 
-{\color {red}We prove simulation relation for implementations in Table \ref{tab:checked implementations}. Here the first three implementations is more complex and worth consideration. In this subsection, we take the OR-set of \cite{Shapiro:2011} and RGA as example to see that for collection specification with causal delivery, how to construct its simulation relation $R_{\mathit{sim}}$, and how to construct functions $f_s$ and $f_t$ for it.}
+{\color {red}We prove simulation relation for three algorithms: OR-Set of \cite{Shapiro:2011}, OR-Set of \cite{Bieniusa:2012} and replicated growable array of \cite{Attiya:2016}. They all use collection specifications. The first and third algorithms assume causal-delivery, while the second algorithm does not assume causal-delivery. In this subsection, we take the OR-set of \cite{Shapiro:2011} and RGA as example to see that for collection specification with causal delivery, how to construct its simulation relation $R_{\mathit{sim}}$, and how to construct functions $f_s$ and $f_t$ for it.} 
 
-\begin{table}[h]
-	\centering
-	\begin{tabular}{|l|c|c|c|}\hline
-		%Implmenentations&\multicolumn{2}{c|}{A4 size paper}\\\hline
-        Implmenentations&Assumes causal delivery&Specification&Collection\\\hline
-		OR-Set of \cite{Shapiro:2011} &  $\surd$ & OR-set & $\surd$\\
-		OR-Set of \cite{Bieniusa:2012} & $\times$ & OR-set & $\surd$\\
-        %woot of \cite{Oster:2006} & $\times$ & list & $\surd$\\
-        replicated growable array of \cite{Attiya:2016} & $\surd$ & list & $\surd$\\
-        counter of \cite{Shapiro:2011} &  $\times$ & counter & $\times$\\
-        register of \cite{Shapiro:2011} &  $\times$ & register & $\times$\\\hline
-	\end{tabular}
-	\caption{Checked Implementations}
-	\label{tab:checked implementations}
-\end{table}
+
+%implementations in Table \ref{tab:checked implementations}. Here the first three implementations is more complex and worth consideration. In this subsection, we take the OR-set of \cite{Shapiro:2011} and RGA as example to see that for collection specification with causal delivery, how to construct its simulation relation $R_{\mathit{sim}}$, and how to construct functions $f_s$ and $f_t$ for it.
+
+%\begin{table}[h]
+%	\centering
+%	\begin{tabular}{|l|c|c|c|}\hline
+%		%Implmenentations&\multicolumn{2}{c|}{A4 size paper}\\\hline
+%        Implmenentations&Assumes causal delivery&Specification&Collection\\\hline
+%		OR-Set of \cite{Shapiro:2011} &  $\surd$ & OR-set & $\surd$\\
+%		OR-Set of \cite{Bieniusa:2012} & $\times$ & OR-set & $\surd$\\
+%        %woot of \cite{Oster:2006} & $\times$ & list & $\surd$\\
+%        replicated growable array of \cite{Attiya:2016} & $\surd$ & list & $\surd$\\
+%        %counter of \cite{Shapiro:2011} &  $\times$ & counter & $\times$\\
+%        %register of \cite{Shapiro:2011} &  $\times$ & register & $\times$\\\hline
+%	\end{tabular}
+%	\caption{Checked Implementations}
+%	\label{tab:checked implementations}
+%\end{table}
 
 %Let us take the OR-set algorithms of \cite{Shapiro:2011} as example to define the simulation relation $R_{\mathit{sim}}$.
 Given a state $q_{\mathit{imp}} = (\mathit{data},\mathit{msgs},\mathit{msghb})$ of implementation and a state $q_s = (O,\mathit{ro},\mathit{del},\mathit{arb})$ of specification, $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$ normally has the following requirements:
@@ -84,13 +87,13 @@ Given a state $q_{\mathit{imp}} = (\mathit{data},\mathit{msgs},\mathit{msghb})$ 
 
 For example: The inductive invariant of $q_{\mathit{imp}}$ requires that (1) For each $\mathit{id} = (r,c)$ in $S \cup \mathit{msgs}$, $c$ is less or equal than counter of replica $r$, and (2) If $(a,S',r,\_)$ is in message, then for each $\mathit{id} \in S'$, $(a,\mathit{id}) \notin \mathit{data}[r].S \wedge (a,\mathit{id},\_,r) \notin \mathit{msgs}$; while The inductive invariants of $q_s$ requires each $\mathit{rem}$ operation is in $\mathit{FstRem}$ of some $\mathit{add}$ operation.
 
-\noindent - A method to check whether an ``$\mathit{add}$ operation'' of $\Sigma_e$ is redundant. If it is, then applying messages of this operation does not change local state.
+\noindent - A method to check whether an ``operation'' of $\Sigma_e$ is redundant. If it is, then applying messages of this operation does not change local state.
 
-Example: $(a,\mathit{id})$ is redundant, if for each replica $r$, $(a,\mathit{id}) \notin \mathit{data}[r].S$.
+Example: $(a,\mathit{id})$ is redundant, if for each replica $r$, $(a,\mathit{id}) \notin \mathit{data}[r].S$, and $(a,\mathit{id},\_,\_) \notin \mathit{msgs}$. $(a,S',r)$ is redundant, if for each $\mathit{id} \in S'$, $(a,\mathit{id})$ is redundant. 
 
 \noindent - A map $f$ between non-redundant elements of $\Sigma_e$ and $O$.%, where $O_s$ is union of $O$ and operations in arbitration order.
 
-Example: $f$ maps $(a,\mathit{id})$ that are not redundant into $\mathit{add}(a)$ and maps $(a,S',r)$ into $\mathit{rem}(a)$. This map preserves replica.
+Example: $f$ maps $(a,(r,c))$ that are not redundant into $\mathit{add}(a)$ of replica $r$ and maps $(a,S',r)$ that are no redundant into $\mathit{rem}(a)$ of replica $r$. 
 
 %\noindent - We require that $f(f_{arb}(data,msgs))$ be a sup-sequence of $\mathit{arb}$.
 
@@ -104,7 +107,7 @@ Example: Given $x=(a,S',r)$: for each $\mathit{id} \in S'$, $f(x) \in \mathit{Fs
 
 Example: $(a,\mathit{id}) \in data[r].S$, if and only if $f((a,\mathit{id})) \in \mathit{visTo}(O,r,\mathit{vis})$, and for each $o_r \in \mathit{FstRem}(O,\mathit{vis},f((a,\mathit{id})))$, $o_r \notin \mathit{visTo}(O,r,\mathit{vis})$.
 
-\noindent - {\color {red}$\mathit{msghb}$ record the happen before relation of messages. Given $m_1,m_2 \in \mathit{msgs}$ and assume that their ``operations in $\Sigma_e$'' is $x_1$ and $x_2$, respectively. $(m_1,m_2) \in \mathit{msghb}$ indicates that the corresponding operation of $x_1$ happens before that of $x_2$. If both $x_1$ and $x_2$ are in domain of $f$, then we have $(f(x_1),f(x_2)) \in \mathit{hb}$.} 
+\noindent - {\color {red}$\mathit{msghb}$ record the happen before relation of messages. Given $m_1,m_2 \in \mathit{msgs}$ and assume that their ``operations in $\Sigma_e$'' is $x_1$ and $x_2$, respectively. $(m_1,m_2) \in \mathit{msghb}$ indicates that the corresponding operation of $x_1$ happens before that of $x_2$. If both $x_1$ and $x_2$ are in domain of $f$, then we have $(f(x_1),f(x_2)) \in \mathit{hb}$. $(m_1,r) \in \mathit{msghb}$ indicates that the corresponding operation of $x_1$ is delivered to replica $r$. If $x_1$ is in domain of $f$, then we have $(f(x_1),r) \in \mathit{del}$.}  
 
 
 
