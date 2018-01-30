@@ -44,7 +44,7 @@ $A_2$ refines $A_1$ w.r.t $f_t$, if for each trace $t_1 = \alpha_1 \cdot \ldots 
 
 We say that $f_s$ and $f_t$ are compatible, if for each deterministic $A_2$, the following holds: For each execution %\todo{execution}
 $q_{0}^1 {\xrightarrow{\alpha_1}}_1 q_{1}^1 \ldots {\xrightarrow{\alpha_k}}_1 q_{k}^1$ of $A_1$ and each $1 \leq u \leq k$, we have $f_t(\alpha_1 \cdot \ldots \cdot \alpha_{u+1}) = f_s(q_{u}^1,q_{u}^2,\alpha_{u+1})$, here $q_v^2$ is a state obtained by $q_{0}^2 {\xrightarrow{f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_v) }}_2 q_v^2$. %\todo{write it explicitly using the extension of $\xrightarrow{\alpha_1}$ to words}
-The following theorem states that if $f_s$ and $f_t$ are compatible, then $f_s$-simulation is equivalent to refinement w.r.t $f_t$. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section simulation and refinement} and is similar to that in \cite{Abadi:1991,Lynch:1995}.
+The following theorem states that if $f_s$ and $f_t$ are compatible, then $f_s$-simulation is equivalent to refinement w.r.t $f_t$. Its proof can be found in Appendix \ref{subsec:proof of theorem equivalence of our simulation and refinement} and is similar to that in \cite{Abadi:1991,Lynch:1995}.
 
 %If $B$ is deterministic, then we defined a property $P_{(f_s,f_t)}$ as follows: For each transitions \todo{execution} $q_{0A} {\xrightarrow{\alpha_1}}$ $q_{1A} \ldots {\xrightarrow{\alpha_k}} q_{kA}$ of $A$, $\forall 1 \leq i < k$, $f_t(\alpha_1 \cdot \ldots \cdot \alpha_i \cdot \alpha_{i+1}) = f_s(q_{iA},q_{iB},\alpha_{i+1})$, where $q_{iB}$ is obtained from $q_{0B}$ by doing $f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_i)$ transitions \todo{write it explicitly using the extension of $\xrightarrow{\alpha_1}$ to words}. The following theorem states that when $P_{(f_s,f_t)}$ holds, $f_s$-simulation is equivalent to $f_t$-refinement. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section simulation and refinement} and is similar to that in \cite{Abadi:1991,Lynch:1995}.
 
@@ -90,7 +90,7 @@ Example: $(a,\mathit{id})$ is redundant, if for each replica $r$, $(a,\mathit{id
 
 \noindent - A map $f$ between non-redundant elements of $\Sigma_e$ and $O$.%, where $O_s$ is union of $O$ and operations in arbitration order.
 
-Example: $f$ maps $(a,\mathit{id})$ that are not redundant into $\mathit{add}(a)$ and maps $(a,S',r)$ into $\mathit{rem}(a)$. This map preserves replica. 
+Example: $f$ maps $(a,\mathit{id})$ that are not redundant into $\mathit{add}(a)$ and maps $(a,S',r)$ into $\mathit{rem}(a)$. This map preserves replica.
 
 %\noindent - We require that $f(f_{arb}(data,msgs))$ be a sup-sequence of $\mathit{arb}$.
 
@@ -137,19 +137,19 @@ Here we implicitly assume that, when we comes to a pair of states, we change $f$
 
 %In this subsection, we sketch the simulation relation for woot algorithm. The other part is similar to above subsection. For woot algorithm, $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, if
 
-Let us sketch the simulation relation for RGA. $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, if 
+Let us sketch the simulation relation for RGA. $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$, if
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
 \item[-] An inductive invariant: For each replica $r$, the union of $\mathit{data}[r].N$ should form a TI tree, which are consistent with the TI tree of each replica. And the identifier in $\mathit{data}[r].T$ is a subset of that in $\mathit{data}[r].N$.
 
-\item[-] An $\mathit{add}(a)$ is redundant, if for each replica $r$, identifier $a$ is in both $\mathit{data}[r].N$ and $\mathit{data}[r].T$. 
+\item[-] An $\mathit{add}(a)$ is redundant, if for each replica $r$, identifier $a$ is in both $\mathit{data}[r].N$ and $\mathit{data}[r].T$.
 
-\item[-] $f$ maps $(\mathit{add},a,t)$ into $\mathit{add}(a)$, and maps $(\mathit{rem},a,r)$ into $\mathit{rem}(a)$. This map preserves replica. 
+\item[-] $f$ maps $(\mathit{add},a,t)$ into $\mathit{add}(a)$, and maps $(\mathit{rem},a,r)$ into $\mathit{rem}(a)$. This map preserves replica.
 
-\item[-] Recognize the $\mathit{FstRem}$ relations: For each $a$, $f((\mathit{rem},a,\_)) \in \mathit{FstRem}(\mathit{add}(a))$. For each $b \neq a$, $f((\mathit{rem},b,\_)) \notin \mathit{FstRem}(\mathit{add}(a))$. 
+\item[-] Recognize the $\mathit{FstRem}$ relations: For each $a$, $f((\mathit{rem},a,\_)) \in \mathit{FstRem}(\mathit{add}(a))$. For each $b \neq a$, $f((\mathit{rem},b,\_)) \notin \mathit{FstRem}(\mathit{add}(a))$.
 
-\item[-] Recognize the visibility relation: $(a,t,p) \in \mathit{data}[r].N$, if and only if $f((\mathit{add},a,t)) \in \mathit{visTo}(O,r,\mathit{vis})$. $a \in \mathit{data}[r].T$, if and only if there exists $(a,t,p)$ and $o_r$, such that $f((\mathit{add},a,t)) \in \mathit{visTo}(O,r,\mathit{vis})$, $o_r \in \mathit{FstRem}(f((\mathit{add},a,t)))$, and $o_r \in \mathit{visTo}(O,r,\mathit{vis})$. 
+\item[-] Recognize the visibility relation: $(a,t,p) \in \mathit{data}[r].N$, if and only if $f((\mathit{add},a,t)) \in \mathit{visTo}(O,r,\mathit{vis})$. $a \in \mathit{data}[r].T$, if and only if there exists $(a,t,p)$ and $o_r$, such that $f((\mathit{add},a,t)) \in \mathit{visTo}(O,r,\mathit{vis})$, $o_r \in \mathit{FstRem}(f((\mathit{add},a,t)))$, and $o_r \in \mathit{visTo}(O,r,\mathit{vis})$.
 
 \item[-] Arbitration order: We require that the arbitration order of $q_s$ is a sub-sequence of $f(f_{\mathit{arb}}(data,msgs))$.
 \end{itemize}

@@ -232,17 +232,17 @@ Given a state $q = (O,\mathit{ro},\mathit{del},\mathit{arb})$ of $\mathit{RImp}(
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\mathit{Ind}(S_{\mathit{list}})(q)$: For each $a$, there is at most one $\mathit{add}(a) \in O$, and for each replica $r$, there is at most one $o = \mathit{rem}(a) \in \mathit{visTo}(O,\mathit{vis},r)$. 
+\item[-] $\mathit{Ind}(S_{\mathit{list}})(q)$: For each $a$, there is at most one $\mathit{add}(a) \in O$, and for each replica $r$, there is at most one $o = \mathit{rem}(a) \in \mathit{visTo}(O,\mathit{vis},r)$.
 \end{itemize}
 
-From now on, for $\mathit{RImp}( S_{\mathit{list}} )$, we only consider its states that satisfy $\mathit{Ind}(S_{\mathit{list}})$. We slightly modify the second requirement of collection into the following: 
+From now on, for $\mathit{RImp}( S_{\mathit{list}} )$, we only consider its states that satisfy $\mathit{Ind}(S_{\mathit{list}})$. We slightly modify the second requirement of collection into the following:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
 \item[-] For each annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, where $S$ can be forgotten from $O$. For each operation label $\ell$ and extension $x' = (O',\mathit{vis}',\mathit{arb}')$ of $x$, let $y'$ be the operation context of $x'$ and a maximal $o \in O$, and let $y''$ be the operation context of $frg(x',S) = (O'',\mathit{vis}'',\mathit{arb}'')$ and $o$. Here we only permit $o$ to have argument $\mathit{pos}$ (if it is $\mathit{add}$) while such argument for other operations are ignored by definition. Then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$.
 \end{itemize}
 
-With this modified collection, we can similarly define Lemma \ref{lemma:RImpSpec is simulated by SRimpSpec} and Lemma \ref{lemma:SRImpSpec is simulated by RimpSpec}. 
+With this modified collection, we can similarly define Lemma \ref{lemma:RImpSpec is simulated by SRimpSpec} and Lemma \ref{lemma:SRImpSpec is simulated by RimpSpec}.
 
 Then, let us prove Lemma \ref{lemma:list is collection specification} as follows.
 
@@ -265,11 +265,11 @@ Let us prove the requirements of collection specification one by one:
 
 \item[-] Requirement $3$: If $\mathit{frg}(q,S) = q' \wedge \mathit{frg}(q',S') = q''$, then $\mathit{frg}(q,S \cup S') =q''$.
 
-    Proof of requirement $3$: It is easy to see that $S \cap S' = \emptyset$. this holds since the identifiers in $S$ and $S'$ are different. 
+    Proof of requirement $3$: It is easy to see that $S \cap S' = \emptyset$. this holds since the identifiers in $S$ and $S'$ are different.
 
 \item[-] Requirement $4$: Given an annotated history $x = (O,\_,\_)$ and its extension $x' = (O',\_,\_)$. Assume $S$ can be removed from the set of operations of $x$, and $x''$ is obtained from $x'$ by adding or removing pairs in $\{ (o_1,o_2) \vert o_1 \in S, o_2 \in O' \setminus O \}$. Then the set of operations that can be forgotten of $x'$ is the same as that of $x''$.
 
-    Proof of requirement $4$: This holds since each value is putted only once globally, and removed only once for each replica.  
+    Proof of requirement $4$: This holds since each value is putted only once globally, and removed only once for each replica.
 \end{itemize}
 
 This completes the proof of this lemma. $\qed$
@@ -292,7 +292,7 @@ The semantics of $\mathit{imp}$ with causal delivery is given as an LTS $\mathit
 \begin {itemize}
 \setlength{\itemsep}{0.5pt}
 \item[-] Each state of $Q_{\mathit{cd}}$ is for the from $(\mathit{data},\mathit{msgs},\mathit{msghb})$, where $\mathit{data}$ and $\mathit{msgs}$ is the same as that in $\mathit{Sem}(\mathit{imp})$, and $\mathit{msghb} \subseteq (\mathit{msgs} \times \mathit{msgs}) \cup (\mathit{msgs} \times \mathbb{R})$ is a transitive, acyclic and irreflexive relation. $\mathit{msghb}$ is used to record the happen-before relation between ``operations'' of messages. %$(m_1,m_2) \in <$ represents that the $op(m_1)$ happen before $op(m_2)$, while $(m,r) \in <$ represents that $op(m)$ is visible to replica $r$ and does not happen before any operation of replica $r$ that we could know.
-    $(\mathit{msg}_1,\mathit{msg}_2) \in \mathit{msghb}$, if the operation generating $\mathit{msg}_1$ happens before the operation generating $\mathit{msg}_2$, and $\mathit{msg}_1$ and $\mathit{msg}_2$ have same destination replica. $(\mathit{msg},r) \in \mathit{hb}$ represents that the operation generating $\mathit{msg}$ is visible to replica $r$ and does not happen before any operation of replica $r$ currently. 
+    $(\mathit{msg}_1,\mathit{msg}_2) \in \mathit{msghb}$, if the operation generating $\mathit{msg}_1$ happens before the operation generating $\mathit{msg}_2$, and $\mathit{msg}_1$ and $\mathit{msg}_2$ have same destination replica. $(\mathit{msg},r) \in \mathit{hb}$ represents that the operation generating $\mathit{msg}$ is visible to replica $r$ and does not happen before any operation of replica $r$ currently.
 
 \item[-] $\rightarrow_{\mathit{cd}}$ is the transition relation:
 
@@ -335,16 +335,16 @@ The semantics of $\mathit{imp}$ with causal delivery is given as an LTS $\mathit
 %\item[-] $q_0$ is the initial state, which maps each replica identifier into $(InitD,\emptyset,\emptyset)$.
 \end{itemize}
 
-The following lemma states that, $\mathit{Sem}(\mathit{imp})_{\mathit{cd}}$ contains the set of causal delivery executions of $\mathit{Sem}(\mathit{imp})$. 
+The following lemma states that, $\mathit{Sem}(\mathit{imp})_{\mathit{cd}}$ contains the set of causal delivery executions of $\mathit{Sem}(\mathit{imp})$.
 
 \begin{lemma}
 \label{lemma:semantics of imp cd contains the set of causal delivery executions of semantics of imp}
 $\mathit{trace}( \mathit{Sem}(\mathit{imp})_{\mathit{cd}} ) = \{ t \vert t \in \mathit{trace}( \mathit{Sem}(\mathit{imp}) ) \wedge t$ satisfies causal delivery $\}$.
 \end{lemma}
 
-\begin {proof} 
+\begin {proof}
 
-Let $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ be the execution of $t = \alpha_1 \cdot \ldots \in \mathit{trace}( \mathit{Sem}(\mathit{imp})_{\mathit{cd}} )$. Let $\alpha[1,u] = \alpha_1 \cdot \ldots \cdot \alpha_u$. We need to prove the following properties: On each state $q_i=(\mathit{data}_i,\mathit{msgs}_i,<_i)$, 
+Let $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ be the execution of $t = \alpha_1 \cdot \ldots \in \mathit{trace}( \mathit{Sem}(\mathit{imp})_{\mathit{cd}} )$. Let $\alpha[1,u] = \alpha_1 \cdot \ldots \cdot \alpha_u$. We need to prove the following properties: On each state $q_i=(\mathit{data}_i,\mathit{msgs}_i,<_i)$,
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
@@ -352,10 +352,10 @@ Let $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ be the execution of $t = \alpha_1 
 
 \item[-] $\mathit{Prop}_2$: $\mathit{msg}_1 <_i \mathit{msg}_2$, iff $\mathit{msg}_1$ and $\mathit{msg}_2$ have same destination replica, and the operation generating $\mathit{msg}_1$ happens before the operation generating $\mathit{msg}_2$ in $t[1,i]$.
 
-\item[-] $\mathit{Prop}_3$: $\mathit{msg} <_i r$, iff the destination replica of $\mathit{msg}$ is not $r$, and the operation generating $\mathit{msg}$ is visible to replica $r$ in $t[1,i]$, and does not happen before ``any operation that launched by replica $r$'' in $t[1,i]$. 
+\item[-] $\mathit{Prop}_3$: $\mathit{msg} <_i r$, iff the destination replica of $\mathit{msg}$ is not $r$, and the operation generating $\mathit{msg}$ is visible to replica $r$ in $t[1,i]$, and does not happen before ``any operation that launched by replica $r$'' in $t[1,i]$.
 \end{itemize}
 
-By definition it is easy to see that each trace of $\mathit{trace}( \mathit{Sem}(\mathit{imp})_{\mathit{cd}} )$ is also a trace of $\mathit{trace}( \mathit{Sem}(\mathit{imp}) )$. Once we prove that $\mathit{Prop}_1$, $\mathit{Prop}_2$ and $\mathit{Prop}_3$ holds for each $q_i$, let us prove this lemma by contradiction: Assume that update operations $o_1 <_{hb} o_2$, messages of $o_1$ are $\{ (d_1,r_1,\_) \}$, messages of $o_2$ are \{ $(d_2,r_2,\_) \}$, $\alpha_i = apply((d_2,r_2,r'))$, and no $apply((d_1,r_1,r'))$ happens earlier than $\alpha_i$ in $t$. Then in $q_i=(\mathit{data}_i,\mathit{msgs}_i,<_i)$, since $o_1 <_{hb} o_2$ and transition rules of $\mathit{trace}( \mathit{Sem}(\mathit{imp})_{\mathit{cd}} )$, we could not launch $apply((d_2,r_2,r'),)$ transition, which is the contradiction. 
+By definition it is easy to see that each trace of $\mathit{trace}( \mathit{Sem}(\mathit{imp})_{\mathit{cd}} )$ is also a trace of $\mathit{trace}( \mathit{Sem}(\mathit{imp}) )$. Once we prove that $\mathit{Prop}_1$, $\mathit{Prop}_2$ and $\mathit{Prop}_3$ holds for each $q_i$, let us prove this lemma by contradiction: Assume that update operations $o_1 <_{hb} o_2$, messages of $o_1$ are $\{ (d_1,r_1,\_) \}$, messages of $o_2$ are \{ $(d_2,r_2,\_) \}$, $\alpha_i = apply((d_2,r_2,r'))$, and no $apply((d_1,r_1,r'))$ happens earlier than $\alpha_i$ in $t$. Then in $q_i=(\mathit{data}_i,\mathit{msgs}_i,<_i)$, since $o_1 <_{hb} o_2$ and transition rules of $\mathit{trace}( \mathit{Sem}(\mathit{imp})_{\mathit{cd}} )$, we could not launch $apply((d_2,r_2,r'),)$ transition, which is the contradiction.
 
 
 Let us begin to prove that each state $q_i=(\mathit{data}_i,\mathit{msgs}_i,<_i)$ satisfies properties $\mathit{Prop}_1$, $\mathit{Prop}_2$ and $\mathit{Prop}_3$. We prove this by induction on $t$.
@@ -366,7 +366,7 @@ Let us begin to prove that each state $q_i=(\mathit{data}_i,\mathit{msgs}_i,<_i)
 
 \item[-] Since $\alpha_1$ must be either a query transition or an update transition, it is easy to see that $<_1 = \emptyset$ and $q_1$ satisfies properties $\mathit{Prop}_1$, $\mathit{Prop}_2$ and $\mathit{Prop}_3$.
 
-\item[-] Assume that $q_k=(\mathit{data}_k,\mathit{msgs}_k,<_k)$ satisfies properties $\mathit{Prop}_1$, $\mathit{Prop}_2$ and $\mathit{Prop}_3$. let us consider $q_{k+1}= (\mathit{data}_{k+1},\mathit{msgs}_{k+1},<_{k+1})$, 
+\item[-] Assume that $q_k=(\mathit{data}_k,\mathit{msgs}_k,<_k)$ satisfies properties $\mathit{Prop}_1$, $\mathit{Prop}_2$ and $\mathit{Prop}_3$. let us consider $q_{k+1}= (\mathit{data}_{k+1},\mathit{msgs}_{k+1},<_{k+1})$,
 
     \begin{itemize}
     \setlength{\itemsep}{0.5pt}
@@ -376,13 +376,13 @@ Let us begin to prove that each state $q_i=(\mathit{data}_i,\mathit{msgs}_i,<_i)
 
         Since we add messages $\{ (\mathit{da},r,r') \vert  r' \in \mathbb{R} \wedge r \neq r' \}$ into $\mathit{msgs}_i$, we can see that $\mathit{Prop}_1$ holds.
 
-        To satisfy $\mathit{Prop}_2$ and $\mathit{Prop}_3$, we need to make newly add messages maximal w.r.t $<$ and still keep transitivity, which is done by $<_k \otimes \{ (\mathit{da},r,r') \vert  r' \in \mathbb{R} \wedge r \neq r' \}$. 
+        To satisfy $\mathit{Prop}_2$ and $\mathit{Prop}_3$, we need to make newly add messages maximal w.r.t $<$ and still keep transitivity, which is done by $<_k \otimes \{ (\mathit{da},r,r') \vert  r' \in \mathbb{R} \wedge r \neq r' \}$.
 
     \item[-] Else, $q_{k+1}$ is obtained from $q_k$ by a applying transition. Then we can see that $(\mathit{data}_k,msgs_k,<_k) {\xrightarrow{apply(\mathit{msg}=(\mathit{da},r_1,r))}} (\mathit{data}_{k+1},\mathit{msgs}_{k+1} = \mathit{msgs}_k \setminus \{ \mathit{msg} \}, <_{k+1} = <_k \otimes \mathit{msg} )$, where $\mathit{msg}$ is minimal w.r.t $<_k$ among messages in $\mathit{msgs}_i(r)$.
 
         Since we use one message $\mathit{msg}$ in this process and remove it from $\mathit{msgs}_i$, we can see that $\mathit{Prop}_1$ holds.
 
-        Applying message will introduce new visibility relation. To satisfy $\mathit{Prop}_2$ and $\mathit{Prop}_3$, we need to first forget $\mathit{msg}$, record the newly introduced visibility relation, and still keep transitivity. This is done by $<_k \otimes \mathit{msg}$. 
+        Applying message will introduce new visibility relation. To satisfy $\mathit{Prop}_2$ and $\mathit{Prop}_3$, we need to first forget $\mathit{msg}$, record the newly introduced visibility relation, and still keep transitivity. This is done by $<_k \otimes \mathit{msg}$.
     \end{itemize}
 \end{itemize}
 
@@ -410,24 +410,7 @@ This completes the proof of this lemma. $\qed$
 
 
 
-\section{Definitions and Proofs of Section \ref{sec:simulation relation for CRDT implementations}}
-\label{sec:appendix definitions and proofs of section simulation relation for CRDT implementations}
 
-
-Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $Sem(imp)$, $f_t(t)$ works as follows:
-
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] We have a state $q_s$ and a map $\mathit{map}$. Their initial value is the initial state of $SRImp(Spec)$ and $\emptyset$, respectively.
-
-\item[-] Assume we have already dealt with $\alpha_1 \cdot \ldots \cdot \alpha_{u-1}$.
-
-\item[-] If $\alpha_u = apply(m)$, where $m$ is of element $x$ and its destination replica is $r$: $\beta_u = addDel(map(x),r)$, and update $q_s$ with $\beta_u$.
-
-\item[-] If $\alpha_u = (m,a,b,r,\mathit{arb}_{\mathit{imp}})$: Let $\mathit{arb}_{u-1}^s$ is the arbitration of $q_s$. If $m$ is a query or $\mathit{rem}$ operation, then $\beta_u = (m,a,b,r,\mathit{arb}_{u-1}^s)$; Else, $\beta_u = (m,a,b,r,\mathit{arb}_{u-1}^{'s})$, where $\mathit{arb}_{u-1}^{'s}$ is obtained from $\mathit{arb}_{u-1}^s$ by inserting the $add$ operation at some place, while consistent with $\mathit{arb}_{\mathit{imp}}$. After we obtain $\beta_u$, we update $q_s$ with $\beta_u$.
-
-\item[-] $f_t(t) = \beta_k$.
-\end{itemize}
 
 
 
@@ -472,7 +455,13 @@ Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $Sem(imp)$, $f_t(t)$
 
 
 \section{Definitions and Proofs of Section \ref{sec:simulation and refinement}}
-\label{sec:appendix definitions and proofs of section simulation and refinement}
+\label{sec:appendix definitions and proofs of section simulation and refinement} 
+
+
+
+
+\subsection{Proof of Theorem \ref{theorem:equivalence of our simulation and refinement}}
+\label{subsec:proof of theorem equivalence of our simulation and refinement} 
 
 
 {\noindent \bf Theorem \ref{theorem:equivalence of our simulation and refinement}}: Given LTS $A$ and deterministic $B$, and functions $f_s,f_t$, such that $P_{(f_s,f_t)}$ holds. Then, B $f_t$-refines $A$, if and only if there exists a $f_s$-simulation relation between $A$ and $B$.
@@ -516,7 +505,96 @@ Let us now prove that $R_t$ is a $f_s$-simulation relation. Assume that $q_A {\x
 By assumption, $B$ $f_t$-refines $A$. Therefore, $f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k) \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha)$ is an execution of $B$. Since $B$ is deterministic, we can see that $\exists q'_B$, such that $q_{0B} {\xrightarrow{f_t(\alpha_1)}}_b q_{1B} \ldots$ ${\xrightarrow{f_t(\alpha_1 \cdot \cdot \ldots \cdot \alpha_{k-1})}}_b q_{k-1B} {\xrightarrow{f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)}}_b q_B {\xrightarrow{f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha)}}_b q'_B$. By definition, we can see that $(q'_A,q'_B) \in R_t$.
 
 Since $P_{(f_s,f_t)}$ holds, we have that $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha) = f_s(q_A,q''_B,\alpha)$, where $q''_B$ is obtained from $q_{0B}$ by doing $f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_k)$ transitions. Since $B$ is deterministic, we can see that $q''_B = q_B$ and $f_t(\alpha_1 \cdot \ldots \cdot \alpha_k \cdot \alpha) = f_s(q_A,q_B,\alpha)$. We can see that $q_B {\xrightarrow{f_s(q_A,q_B,\alpha)}}_b q'_B$. Therefore, $R_t$ is a $f_s$-simulation relation. \qed
-\end {proof}
+\end {proof} 
+
+
+
+
+
+\subsection{Example of OR-Set Algorithm of \cite{Shapiro:2011}}
+\label{subsec:example of or-set algorithm that assumes causal delivery} 
+
+
+Given a state $q_{\mathit{imp}} = (\mathit{data},\mathit{msgs},\mathit{msghb})$ of implementation and a state $q_s = (O,\mathit{ro},\mathit{del},\mathit{arb})$ of specification, $(q_{\mathit{imp}},q_s) \in R_{\mathit{sim}}$ normally has the following requirements:
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $C_{\mathit{ind}}$: for $q_{\mathit{imp}}$: 
+    
+    \begin{itemize}
+    \setlength{\itemsep}{0.5pt}
+    \item[-] For each replica $r$: Let $\mathit{ID}_r = \{ k \vert \exists r' \in \mathbb{R}, (\_,(r,k)) \in \mathit{data}[r'].S \} \cup \{ k \vert (\_,(r,k),\_,\_) \in \mathit{msgs} \vee ( (\_,S',\_,\_) \in \mathit{msgs} \wedge (r,k) \in S' ) \}$. 
+    
+    \item[-] For each replica $r$: $(a,S',r,\_) \in \mathit{msgs}$, then for each $\mathit{id} \in S'$, $(a,\mathit{id}) \notin \mathit{data}[r].S \wedge (a,\mathit{id},\_,r) \notin \mathit{msgs}$. 
+    \end{itemize}
+    
+\end{itemize}
+
+
+\noindent - Inductive invariants for both $q_{\mathit{imp}}$ and $q_s$. 
+
+For example: The inductive invariant of $q_{\mathit{imp}}$ requires that (1) For each $\mathit{id} = (r,c)$ in $S \cup \mathit{msgs}$, $c$ is less or equal than counter of replica $r$, and (2) If $(a,S',r,\_)$ is in message, then for each $\mathit{id} \in S'$, $(a,\mathit{id}) \notin \mathit{data}[r].S \wedge (a,\mathit{id},\_,r) \notin \mathit{msgs}$; while The inductive invariants of $q_s$ requires each $\mathit{rem}$ operation is in $\mathit{FstRem}$ of some $\mathit{add}$ operation.
+
+\noindent - A method to check whether an ``$\mathit{add}$ operation'' of $\Sigma_e$ is redundant. If it is, then applying messages of this operation does not change local state.
+
+Example: $(a,\mathit{id})$ is redundant, if for each replica $r$, $(a,\mathit{id}) \notin \mathit{data}[r].S$.
+
+\noindent - A map $f$ between non-redundant elements of $\Sigma_e$ and $O$.%, where $O_s$ is union of $O$ and operations in arbitration order.
+
+Example: $f$ maps $(a,\mathit{id})$ that are not redundant into $\mathit{add}(a)$ and maps $(a,S',r)$ into $\mathit{rem}(a)$. This map preserves replica.
+
+%\noindent - We require that $f(f_{arb}(data,msgs))$ be a sup-sequence of $\mathit{arb}$.
+
+\noindent - There is a message of $x \in \Sigma_e$ waiting to be applied to replica $r$, if and only if $f(x) \notin \mathit{visTo}(O,r,\mathit{vis})$.
+
+\noindent - Recognize the $\mathit{FstRem}$ relations for elements of $\Sigma_e$.
+
+Example: Given $x=(a,S',r)$: for each $\mathit{id} \in S'$, $f(x) \in \mathit{FstRem}(O,\mathit{vis},f(a,\mathit{id}))$; while for each $\mathit{id} \notin S'$, $f(x) \notin \mathit{FstRem}(O,\mathit{vis},f(a,\mathit{id}))$.
+
+\noindent - Recognize the visibility relation for elements of $\Sigma_e$.
+
+Example: $(a,\mathit{id}) \in data[r].S$, if and only if $f((a,\mathit{id})) \in \mathit{visTo}(O,r,\mathit{vis})$, and for each $o_r \in \mathit{FstRem}(O,\mathit{vis},f((a,\mathit{id})))$, $o_r \notin \mathit{visTo}(O,r,\mathit{vis})$.
+
+\noindent - {\color {red}$\mathit{msghb}$ record the happen before relation of messages. Given $m_1,m_2 \in \mathit{msgs}$ and assume that their ``operations in $\Sigma_e$'' is $x_1$ and $x_2$, respectively. $(m_1,m_2) \in \mathit{msghb}$ indicates that the corresponding operation of $x_1$ happens before that of $x_2$. If both $x_1$ and $x_2$ are in domain of $f$, then we have $(f(x_1),f(x_2)) \in \mathit{hb}$.}
+
+
+
+
+
+
+
+\section{Definitions and Proofs of Section \ref{sec:simulation relation for CRDT implementations}}
+\label{sec:appendix definitions and proofs of section simulation relation for CRDT implementations}
+
+
+Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $Sem(imp)$, $f_t(t)$ works as follows:
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] We have a state $q_s$ and a map $\mathit{map}$. Their initial value is the initial state of $SRImp(Spec)$ and $\emptyset$, respectively.
+
+\item[-] Assume we have already dealt with $\alpha_1 \cdot \ldots \cdot \alpha_{u-1}$.
+
+\item[-] If $\alpha_u = apply(m)$, where $m$ is of element $x$ and its destination replica is $r$: $\beta_u = addDel(map(x),r)$, and update $q_s$ with $\beta_u$.
+
+\item[-] If $\alpha_u = (m,a,b,r,\mathit{arb}_{\mathit{imp}})$: Let $\mathit{arb}_{u-1}^s$ is the arbitration of $q_s$. If $m$ is a query or $\mathit{rem}$ operation, then $\beta_u = (m,a,b,r,\mathit{arb}_{u-1}^s)$; Else, $\beta_u = (m,a,b,r,\mathit{arb}_{u-1}^{'s})$, where $\mathit{arb}_{u-1}^{'s}$ is obtained from $\mathit{arb}_{u-1}^s$ by inserting the $add$ operation at some place, while consistent with $\mathit{arb}_{\mathit{imp}}$. After we obtain $\beta_u$, we update $q_s$ with $\beta_u$.
+
+\item[-] $f_t(t) = \beta_k$.
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \forget
 {
