@@ -2,15 +2,83 @@
 \section{Introduction}
 \label{sec:introduction}
 
+Conflict-Free Replicated Data Types (CRDTs)~\cite{ShapiroPBZ11} have
+emerged as the most promising solution to the problem of ensuring
+some degree of consistency in highly-available distributed systems.
+%
+The key idea is that while a CRDT might not be consistent at all times
+thought the whole system during an execution, but the state of the
+data type will \emph{eventually} converge to a unique state (c.f.
+eventual consistency~\cite{Burkhardt}).
+%
+All the while, all participants of the systems can issue operations
+which are immediately performed in a single replica without need to
+synchronize with other participants, thus achieving high-availability,
+even under partitions.
 
-I am introduction. 
+While CRDTs offer great advantages in terms of performance and
+availability, their semantics and implementation are far from simple,
+often involving sophisticated specifications~\cite{ShapiroPBZ11,
+  Burkhardt}, and even more involved implementations.
+%
+As a testament to this claim, we remark that the discovery of a single
+CRDT implementation often deserves a paper itself~\cite{RAG, WOOT,
+  ...}.
+%
+A consequence of the complexity of CRDT implementations is that it is
+often hard to gain confidence on their correctness.
+%
+In this paper we consider a generic methodology to the verification of
+CRDTs implementing collection data structures.
+
+\fxnote*{Not sure} { 
+  Some of the most important data types in
+  distributed programming are lists, tables, etc.
+}
+We consider the problem of formally verifying that a certain
+implementation of a CRDT satisfies a formal specification given in the
+style of~\cite{Burkhardt}.
+%
+Unlike prior approaches to the verification of CRDTs we
+\fxwarning*{Complete}{what is it that is remarkably new here?}.
+%
+To that end, we develop the following methodology:
+\begin{itemize}[$\bullet$]
+\item Starting from a specification in the style of~\cite{Burkhardt},
+  we provide a reference operational semantics of the CDT which is
+  then used as the definitive correctness condition for any
+  implementation of the data structure, 
+\item we then show how we can simplify the specifications by removing
+  unnecessary information from the specification whenever possible,
+  this step can greatly reduce the complexity of the specifications,
+  and thus be instrumental in the proofs to be carried out later. 
+\item we take well known implementations of sophisticated CRDTs: WOOT,
+  RGA, and show how simulation relations w.r.t. the reference
+  semantics above-mentioned can easily be built for each of them, 
+\item we show that the simulation above actually implies the
+  correctness of the implementations. 
+  % 
+  This conclusively shows the conformance of the implementations with
+  the specification. 
+\end{itemize}
+
+\fxfatal*{Do we?}{
+While this paper deals only with a few CRDT implementations, we
+believe that the approach is general enough to cover most CRDT
+existing implementations.
+%
+To the best of our knowledge ...
+}
+
+
+\fxnote{GP: Should we compare to others here?}
+
+\paragraph{{\bf Paper Outline}:} \fxnote{Todo}
 
 
 
 
-
-
-
-
-
-
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "draft"
+%%% End:

@@ -1,6 +1,38 @@
 %!TEX root = draft.tex
 \begin{abstract}
-We propose a correctness condition called Convergent Return-Value Consistency. We give a uniform method of generating abstract implementations from specifications, and a method of constructing succinct abstract implementation by forgetting redundant operations. Then, we propose a method to prove simulation between implementation and abstract implementation, and shows such simulation is equivalent to a certain kinds of trace refinement.   
+  We propose a proof methodology to verify the
+  implementation of collection Conflict-Free Replicated Data Types
+  CRDTs.
+  %
+  We firstly provide means to define the observable actions from the
+  abstract specification of a CRDT by providing reference operational
+  semantics for different CRDTs.
+  %
+  We then show how specifications can be made minimal by removing
+  redundant information and retaining only the fundamental information
+  to define the specification.
+  This helps in simplifying our specifications.
+  %
+  Using these specifications we then show a generic technique to prove
+  simulation relations between the specification and the implementation,
+  hence establishing the correctness of the implementation.
+  %
+  To justify our approach we prove preexisting implementations of the
+  operation-based RGA and WOOT algorithms, as well as other simpler
+  algorithms.
+
+  % We propose a correctness condition called Convergent Return-Value
+  % Consistency.
+  % We give a uniform method of generating abstract implementations from
+  % specifications, and a method of constructing succinct abstract
+  % implementation by forgetting redundant operations.
+  % Then, we propose a method to prove simulation between implementation
+  % and abstract implementation, and shows such simulation is equivalent
+  % to a certain kinds of trace refinement.
 \end{abstract}
 
 
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "draft"
+%%% End:
