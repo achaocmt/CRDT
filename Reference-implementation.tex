@@ -5,7 +5,10 @@
 
 %In this section, we propose an abstract implementation called reference implementation, which will be used as specification in simulation proof of later section.
 
-An labeled transition system (LTS, for short) is a tuple $A = (Q,\Sigma,\rightarrow,q_0)$, where $Q$ is a set of states, $\Sigma$ is an alphabet of transition labels, $\rightarrow \subseteq Q \times \Sigma \times Q$ is a transition relation and $q_0$ is the initial state. A execution of $A$ is a sequences of transitions and states starting from the initial state $q_0$, and a trace is a sequence of transition labels of an execution. We say that $A$ is deterministic, if for each state $q$ and each transition label $\alpha$, $q$ has at most one $\rightarrow$ successor with transition label $\alpha$.
+We present a generic definition of CRDT reference implementations as labeled transition systems. This definition is parametrized by a specification $Spec$ defining the abstract semantics of the CRDT's operations.
+%sec:specifications and consistencies
+
+A labeled transition system (LTS, for short) is a tuple $A = (Q,\Sigma,\rightarrow,q_0)$, where $Q$ is a set of states, $\Sigma$ is an alphabet of transition labels, $\rightarrow \subseteq Q \times \Sigma \times Q$ is a transition relation and $q_0$ is the initial state. An execution of $A$ is defined as usual by a sequence of transitions starting from the initial state $q_0$. A trace is the sequence of transition labels from an execution. We say that $A$ is deterministic, if for each state $q$ and each transition label $\alpha$, $q$ has at most one $\rightarrow$ successor with transition label $\alpha$.
 
 
 \begin{figure}[t]
@@ -16,18 +19,24 @@ An labeled transition system (LTS, for short) is a tuple $A = (Q,\Sigma,\rightar
   \label{fig:reference implementation for OR-set}
 \end{figure}
 
-{\color {red}Let us use the example of \figurename~\ref{fig:reference implementation for OR-set} to explain how to model specification $\mathit{Spec}$ as a deterministic LTS $\mathit{RImp}(\mathit{Spec})$.
+Each state of the reference implementation is a history, which for succinctness, contains only update operations, together with an arbitration order (which has the same meaning as in annotated histories) and a \emph{delivery} relation $del$ which is a ``more succinct'' substitute of the visibility relation: for two operations $o_1$ and $o_2$ submitted at replicas $r_1$ and $r_2$, respectively, $del(o_1,o_2)$ denotes the fact that $o_2$ is the first operation submitted to $r_2$ after the operation $o_1$ is delivered to $r_2$. We write $del(o_1,r_2)$ when $o_1$ is delivered after the last operation submitted to $r_2$. For instance, consider the execution fragment depicted in \figurename~\ref{fig:reference implementation for OR-set} (this is extracted from a reference implementation of the OR-set). In state $q_1$, $(+a_2,r_1) \in \mathit{del}$ means that the effect of $+a_2$ is delivered to replica $r_1$ after all the operations submitted at $r_1$ ($+a_1$ and $-a_1$) happened while $(+a_1,-a_2) \in \mathit{del}$ means that the effect of $+a_1$ is delivered to replica $r_2$ at a time point earlier than when $-a_2$ is submitted and later than when $+a_2$ is submitted. The visibility relation can be obtained as the union of $\mathit{ro}$ and the composition of $\mathit{del}$ with $\mathit{ro}$. The reference implementation has two kinds of transitions: transitions labeled by operations which may increase the history and possibly the arbitration order (query operations leave the history stored in the state unchanged) and transitions labeled by $del(\_,\_)$ which increase the delivery relation. A transition labeled by an $\ell$ operation submitted to replica $r$ is enabled when the operation context at the newest time-point of replica $r$ is in $\mathit{Spec}(\ell)$. An example of such a transition is the one from $q_1$ to $q_2$ in \figurename~\ref{fig:reference implementation for OR-set} or the self-loops in $q_2$ and $q_3$. The transition from $q_2$ to $q_3$ is an example of a transition that increases the delivery relation. Such transitions make the reference implementation deterministic.
 
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] Each state of $\mathit{Spec}$ is an annotated history. Since CRDT normally does not use speculative execution, the annotated history increase monotonously during transitions of $\mathit{Spec}$. For simplicity these annotated history only contains update operations. We introduce a new relation $\mathit{del}$ called delivery relation to capture the intuition that CRDT only broadcast effect of one operation.
-
-    In $q_1$ of \figurename~\ref{fig:reference implementation for OR-set}, $(+a_2,r_1) \in \mathit{del}$ represents that the effect of $+a_2$ is delivered to replica $r_1$ after all operations of $r_1$ ($+a_1$ and $-a_1$) happens. While in $q_1$ of \figurename~\ref{fig:reference implementation for OR-set}, $(+a_1,-a_2) \in \mathit{del}$ represents that the effect of $+a_1$ is delivered to replica $r_2$ at a time point earlier than $-a_2$ happens and later than $+a_2$ happens. The visibility relation $\mathit{vis}$ of annotated history is defined as the composition of composition zero or one time of $\mathit{del}$ and one time of $\mathit{ro}$.
-
-\item[-] To do a $\ell$ operation on replica $r$, we check whether the operation context of the newest time-point of replica $r$ is in $\mathit{Spec}(\ell)$. If $\ell$ is query, then we have a loop transition, as the self-loop of $q_2$ in \figurename~\ref{fig:reference implementation for OR-set}; if $\ell$ is update, we increasing the annotated history by put a $\ell$ operation in the newest time-point of replica $r$, as the transition from $q_1$ to $q_2$ in \figurename~\ref{fig:reference implementation for OR-set}.
-
-\item[-] To make LTS be deterministic, we make the event of when a operation becomes visible to a replica also transition label. For example, the transition from $q_2$ to $q_3$ in \figurename~\ref{fig:reference implementation for OR-set} represents that $-a_2$ begins to be visible to replica $r_1$. Thus, every change to visibility relation is explicitly.
-\end{itemize} }
+%%We introduce a new relation $\mathit{del}$ called delivery relation to capture the intuition that CRDT only broadcast effect of one operation.
+%
+%%Since CRDTs normally does not use speculative execution, the annotated history increase monotonously during transitions of $\mathit{Spec}$.
+%
+%
+%{\color {red}Let us use the example of \figurename~\ref{fig:reference implementation for OR-set} to explain how to model specification $\mathit{Spec}$ as a deterministic LTS $\mathit{RImp}(\mathit{Spec})$.
+%
+%\begin{itemize}
+%\setlength{\itemsep}{0.5pt}
+%\item[-] Each state of $\mathit{Spec}$ is an annotated history. Since CRDT normally does not use speculative execution, the annotated history increase monotonously during transitions of $\mathit{Spec}$. For simplicity these annotated history only contains update operations. We introduce a new relation $\mathit{del}$ called delivery relation to capture the intuition that CRDT only broadcast effect of one operation.
+%
+%
+%\item[-] To do a $\ell$ operation on replica $r$, we check whether the operation context of the newest time-point of replica $r$ is in $\mathit{Spec}(\ell)$. If $\ell$ is query, then we have a loop transition, as the self-loop of $q_2$ in \figurename~\ref{fig:reference implementation for OR-set}; if $\ell$ is update, we increasing the annotated history by put a $\ell$ operation in the newest time-point of replica $r$, as the transition from $q_1$ to $q_2$ in \figurename~\ref{fig:reference implementation for OR-set}.
+%
+%\item[-] To make LTS be deterministic, we make the event of when a operation becomes visible to a replica also transition label. For example, the transition from $q_2$ to $q_3$ in \figurename~\ref{fig:reference implementation for OR-set} represents that $-a_2$ begins to be visible to replica $r_1$. Thus, every change to visibility relation is explicitly.
+%\end{itemize} }
 
 Formally, the reference implementation $\mathit{RImp}(\mathit{Spec}) = (Q,\Sigma,\rightarrow,q_0)$ is constructed as follows:
 
@@ -35,7 +44,7 @@ Formally, the reference implementation $\mathit{RImp}(\mathit{Spec}) = (Q,\Sigma
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] {\color {red}Each state $(O,\mathit{ro},\mathit{del},\mathit{arb}) \in Q$ contains four tuples: $O$ is a set of update operations, $\mathit{ro}$ is the replica order, $\mathit{del} \subseteq (O \times O) \cup (O \times \mathbb{R})$ is the delivery order, and $\mathit{arb}$ is the arbitration order.}
+\item[-] Each state $(O,\mathit{ro},\mathit{del},\mathit{arb}) \in Q$ contains four tuples: $O$ is a set of update operations, $\mathit{ro}$ is the replica order, $\mathit{del} \subseteq (O \times O) \cup (O \times \mathbb{R})$ is the delivery order, and $\mathit{arb}$ is the arbitration order.
 
 %Each state of $Q$ records the set of updates already executed, when they were delivered to the different replicas, and the arbitration order.
 
@@ -47,7 +56,7 @@ Formally, the reference implementation $\mathit{RImp}(\mathit{Spec}) = (Q,\Sigma
 
 %\item[-] $\Sigma$ contains two kinds of transition labels: The first is operation labels tagged with replica identifier and modification of arbitration order, in the form $(m,a,b,r,ind)$, where $m \in \mathbb{M}, a,b \in \mathbb{D}, r \in \mathbb{R}$, and $ind \in \mathbb{N}$. Here $ind = 0$ means that the arbitration order does not change, while $ind >0$ means that the arbitration order is changed by inserting the newly generated operations into $ind$-th position; The second kind is events representing the points in time where operations are delivered, in the form $addDel(o,r)$, where $o \in \mathbb{O}, r \in \mathbb{R}$.
 
-\item[-] {\color {red}$\Sigma$ contains two kinds of transition labels: $m(a,b,r,\mathit{arb})$ represents that a $m(a) \Rightarrow b$ operation is done in replica $r$ and the arbitration order is changed into $\mathit{arb}$. The reason of using $\mathit{arb}$ is also to make $\mathit{RImp}(\mathit{Spec})$ deterministic. $\mathit{addDel}(o,r)$ represents that operation $o$ begins to be visible to replica $r$.}
+\item[-] $\Sigma$ contains two kinds of transition labels: $m(a,b,r,\mathit{arb})$ which represents the fact that an $m(a) \Rightarrow b$ operation is submitted at replica $r$ and the arbitration order is changed into $\mathit{arb}$ (the reason of using $\mathit{arb}$ in the transition label is to make $\mathit{RImp}(\mathit{Spec})$ deterministic) and $\mathit{addDel}(o,r)$ which represents the fact that operation $o$ begins to be visible to replica $r$. The transition label $m(a,b,r,\mathit{arb})$ could be simplified by giving just the index of this operation in the arbitration order instead of the full arbitration. We prefer this version to simplify the technical exposition.
 
 %$\Sigma$ contains two kinds of transition labels: The first is operation labels tagged with replica identifier and arbitration order, in the form $(m,a,b,r,\mathit{arb})$, where $m \in \mathbb{M}, a,b \in \mathbb{D}, r \in \mathbb{R}$, and $\mathit{arb}$ is the arbitration order. The second kind is events representing the points in time where operations are delivered, in the form $addDel(o,r)$, where $o \in \mathbb{O}, r \in \mathbb{R}$.
 
@@ -55,11 +64,14 @@ Formally, the reference implementation $\mathit{RImp}(\mathit{Spec}) = (Q,\Sigma
 
 
     \begin {itemize}
-    \item[-] {\color {red}Let $\mathit{visTo}(O,r,\mathit{vis}) = \{ vis^{-1}(o') \vert o'=(\_,r,\_) \in O \} \cup (vis^{-1}(r))$ be the set of operations that are visible to replica $r$ at the newest time point of replica $r$. Here we require $\mathit{vis}$ to be acyclic and irreflexive, and $\mathit{vis}^{-1}$ to be finite.}
+    
+    \item[-] $\mathit{visTo}(O,r,\mathit{del}) = \{ del^{-1}(o') \vert o'=(\_,r,\_) \in O \} \cup (del^{-1}(r))$ is the set of operations that are currently visible to replica $r$. 
+    %Here we require $\mathit{vis}$ to be acyclic and irreflexive, and $\mathit{vis}^{-1}$ to be finite.
 
     %Let $\mathit{vis} = \mathit{del} \cdot \mathit{ro}$ be the visibility relation. We further require $\mathit{vis}$ to be acyclic and irreflexive, and $\mathit{vis}^{-1}$ to be finite. Let $visTo(O,r,\mathit{vis}) = \{ vis^{-1}(o') \vert o'=(\_,r,\_) \in O \} \cup (vis^{-1}(r))$ be the set of operations that are visible to newest time point of replica $r$ or some operations of replica $r$.
 
-    \item[-] {\color {red}$f_{\mathit{ctxt}}$ is a function that generate possible operation contexts if $o$ is done. It needs to guess new arbitration relation if necessary:} Given $q = (O,\mathit{ro},\mathit{del},\mathit{arb})$ and $o=(\_,r,\_) \notin O$, $f_{\mathit{ctxt}}(q,o)$ returns a set of elements, while each of them is a operation context of $o$ in an annotated history $(O',\mathit{vis}',\mathit{arb}')$, where $O'$ is fixed to $\mathit{visTo}(O,r,\mathit{vis}) \cup \{ o \}$, $\mathit{vis}'$ is fixed to $\mathit{vis} \uparrow_{O'} \cup \{ (o',o) \vert (o',r) \in \mathit{vis} \}$, and $\mathit{arb}'$ is obtained from $\mathit{arb} \uparrow_{O'}$ by possibly insert update operation $o$ into some place.
+    \item[-] %{\color {red}$f_{\mathit{ctxt}}$ is a function that generate possible operation contexts if $o$ is done. It needs to guess new arbitration relation if necessary:} 
+      given $q = (O,\mathit{ro},\mathit{del},\mathit{arb})$ and $o=(\_,r,\_) \notin O$, ${\mathit{ctxt}}(q,o)$ returns the potential operation context of $o$ in a state reached from $q$ by an $o$ labeled transition, i.e., a tuple $(O',\mathit{vis}',\mathit{arb}')$, where $O' = \mathit{visTo}(O,r,\mathit{del})$, $\mathit{vis}'$ is the projection of $\mathit{vis}=(\mathit{del}\circ\mathit{ro})\cup\mathit{ro}$ on $O'$, and $\mathit{arb}'$ is the projection of $\mathit{arb}$ on $O'$.
 
         %\begin{itemize}
         %\setlength{\itemsep}{0.5pt}
@@ -72,23 +84,23 @@ Formally, the reference implementation $\mathit{RImp}(\mathit{Spec}) = (Q,\Sigma
         %\end{itemize}
 
     %\item[-] $f_{\mathit{ar}}(\mathit{arb},o)$ returns an arbitration order that is obtained from $\mathit{arb}$ by possibly adding relations between $O$ and $\{ o \}$.
-    \item[-] {\color {red}$\mathit{rand}(\mathit{arb},o)$ randomly returns an arbitration order that is obtained from $\mathit{arb}$ by either do nothing or insert update $o$ into some place.}
+%    \item[-] {\color {red}$\mathit{rand}(\mathit{arb},o)$ randomly returns an arbitration order that is obtained from $\mathit{arb}$ by either do nothing or insert update $o$ into some place.}
 
-    \item[-] $ro \oplus o = ro \cup \{ (o',o) \vert o' = (\_,r,\_) \in O \}$. $del \oplus o$ returns a new delivery order obtained from $del$ by transforming each $(o',r)$ into $(o',o)$.
+    \item[-] $ro \oplus o = ro \cup \{ (o',o) \vert o' = (\_,r,\_) \in O \}$ and $del \oplus o$ returns a new delivery relation obtained from $del$ by transforming each $(o',r)$ into $(o',o)$.
 
     %\item[-] $pos(l,a)$ returns the position of $a$ in list $l$.
     \end{itemize}
 
-    {\color {red}Note that the arbitration order may be changed only when new operation happens, while delivery does not change arbitration order.}
+%    {\color {red}Note that the arbitration order may be changed only when new operation happens, while delivery does not change arbitration order.}
 
 \item[-] $q_0=(\emptyset,\emptyset,\emptyset,\emptyset)$ is the initial state.
 \end{itemize}
 
 \begin{figure}[ht]
-
+Transitions increasing the delivery relation:
 \[
 \begin{array}{l c}
-\bigfrac{ o \in O, (o,r)\notin visTo(O,r,\mathit{vis}) }
+\bigfrac{ o \in O\quad (o,r)\notin visTo(O,r,\mathit{del}) }
 { (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{addDel(o,r)}} (O,\mathit{ro},\mathit{del} \cup \{ (o,r) \},\mathit{arb}) } %{\mathit{Delivery}}
 \end{array}
 \]
@@ -100,11 +112,11 @@ Formally, the reference implementation $\mathit{RImp}(\mathit{Spec}) = (Q,\Sigma
 %{ (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,\mathit{arb})}} (O,\mathit{ro},\mathit{del},\mathit{arb}) } {\mathit{Query}}
 %\end{array}
 %\]
-
+Transitions for submitting query operations:
 \[
 \begin{array}{l c}
-\bigfrac{ m \in \mathbb{Q}, \ell = m(a) \Rightarrow b, o=(\ell,r,\_) \notin O, \exists x, x \in f_{\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}),o) \wedge x \in Spec(\ell) }
-{ (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,\mathit{arb})}} (O,\mathit{ro},\mathit{del},\mathit{arb}) } %{\mathit{Query}}
+\bigfrac{ m \in \mathbb{Q}\quad \ell = m(a) \Rightarrow b\quad o=(\ell,r,\_) \notin O\quad {\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}'),o) \in Spec(\ell) }
+{ (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,\mathit{arb}')}} (O,\mathit{ro},\mathit{del},\mathit{arb}') } %{\mathit{Query}}
 \end{array}
 \]
 
@@ -115,11 +127,11 @@ Formally, the reference implementation $\mathit{RImp}(\mathit{Spec}) = (Q,\Sigma
 %{ (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,f_{\mathit{ar}}(\mathit{arb},o))}} (O \cup \{ o \},\mathit{ro} \oplus o ,\mathit{del} \oplus %o,f_{\mathit{ar}}(\mathit{arb},o)) } {\mathit{Update}}
 %\end{array}
 %\]
-
+Transitions for submitting updates:
 \[
 \begin{array}{l c}
-\bigfrac{ m \in \mathbb{U}, \ell = m(a) \Rightarrow b, o = (\ell,r,\_) \notin O, \exists y=\mathit{rand}(\mathit{arb},o), x = (O',\_,y \uparrow_{O'} ) \in f_{\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}),o) \wedge x \in Spec(\ell) }
-{ (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,y)}} (O \cup \{ o \},\mathit{ro} \oplus o ,\mathit{del} \oplus o,y) } %{\mathit{Update}}
+\bigfrac{ m \in \mathbb{U}\quad \ell = m(a) \Rightarrow b\quad o = (\ell,r,\_) \notin O\quad {\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}'),o) \in Spec(\ell) }
+{ (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,\mathit{arb}')}} (O \cup \{ o \},\mathit{ro} \oplus o ,\mathit{del} \oplus o,\mathit{arb}') } %{\mathit{Update}}
 \end{array}
 \]
 
