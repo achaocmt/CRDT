@@ -57,23 +57,23 @@ An trace of $\mathit{imp}$ satisfies causal delivery, if given $o_1 <_{\mathit{h
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\mathbb{L} = \{ (S,\mathit{ctr}) \vert S \subseteq \mathbb{D} \times (\mathbb{R} \times \mathbb{N}), \mathit{ctr} \in \mathbb{N} \}$. Elements of $S$ are of form $(a,id)$, and $\mathit{ctr}$ is per-replica counter to make $id$ unique.
+\item[-] $\mathbb{L} = \{ (S,\mathit{ctr}) \vert S \subseteq \mathbb{D} \times (\mathbb{R} \times \mathbb{N}), \mathit{ctr} \in \mathbb{N} \}$. Elements of $S$ are of form $(a,\mathit{id})$, and $\mathit{ctr}$ is per-replica counter to make $\mathit{id}$ unique.
 
 \item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{mgs} = \{ (a,\mathit{id},r,r') \vert r' \neq r \}]{(\mathit{add},a,r)}_o (S \cup \{ (a,\mathit{id}) \}, \mathit{ctr}+1)$ and $\mathit{id} = (r,\mathit{ctr})$.
 
-\item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{mgs} = \{ (a,S'',r,r') \vert r' \neq r \} ]{(\mathit{rem},a,r)}_o (S \setminus \{ (a,id) \in S \}, \mathit{ctr})$, $S'' = \{ id \vert (a,id) \in S \} \neq \emptyset$.
+\item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{mgs} = \{ (a,S'',r,r') \vert r' \neq r \} ]{(\mathit{rem},a,r)}_o (S \setminus \{ (a,\mathit{id}) \in S \}, \mathit{ctr})$, $S'' = \{ \mathit{id} \vert (a,\mathit{id}) \in S \} \neq \emptyset$.
 
 \item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{mgs} = \emptyset]{(\mathit{lookup},a,\mathit{true},r)}_o (S, \mathit{ctr})$, if there exists $\mathit{id}$ such that $(a,\mathit{id}) \in S$.
 
 \item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{mgs} = \emptyset]{(\mathit{lookup},a,\mathit{false},r)}_o (S, \mathit{ctr})$, if $(a,\mathit{id}) \notin S$ for each $\mathit{id}$.
 
-\item[-] $(S,\mathit{ctr}) \xrightarrow{\mathit{apply}((a,id,\_,r))}_m (S \cup \{ (a,id) \}, \mathit{ctr})$.
+\item[-] $(S,\mathit{ctr}) \xrightarrow{\mathit{apply}((a,\mathit{id},\_,r))}_m (S \cup \{ (a,\mathit{id}) \}, \mathit{ctr})$.
 
-\item[-] $(S,\mathit{ctr}) \xrightarrow{\mathit{apply}((a,S',\_,r))}_m (S \setminus \{ (a,id) \vert id \in S' \}, \mathit{ctr})$.
+\item[-] $(S,\mathit{ctr}) \xrightarrow{\mathit{apply}((a,S',\_,r))}_m (S \setminus \{ (a,\mathit{id}) \vert \mathit{id} \in S' \}, \mathit{ctr})$.
 
 \item[-] $d_0 = (\emptyset,0)$.
 
-\item[-] $\Sigma_e$ is the union of (1) $(a,id)$ in either $\mathit{data}[\_].S$, or $\exists (a,S',\_,\_) \in \mathit{msgs}$ and $id \in S'$, and (2) $(a,S',r)$ in $\mathit{msgs}$.
+\item[-] $\Sigma_e$ is the union of (1) $(a,\mathit{id})$ in either $\mathit{data}[\_].S$, or $(a,\mathit{id},\_,\_) \in \mathit{msgs}$, or $\exists (a,S',\_,\_) \in \mathit{msgs}$ and $\mathit{id} \in S'$, and (2) $(a,S',r)$ in $\mathit{msgs}$.
 
 \item[-] $f_{\mathit{arb}}$ always return $\emptyset$.
 \end{itemize}

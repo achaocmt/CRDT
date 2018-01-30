@@ -662,6 +662,32 @@ This completes the proof of this lemma. $\qed$
 \subsection{Example of OR-Set Algorithm of \cite{Bieniusa:2012}}
 \label{subsec:example of or-set algorithm that does not assumes causal delivery}
 
+The OR-set algorithms of \cite{Bieniusa:2012} algorithm does not assumes causal delivery. Its tuple are as follows:
+
+\begin{itemize}
+\setlength{\itemsep}{0.5pt}
+\item[-] $\mathbb{L} = \{ (E,T,\mathit{ctr}) \vert S,T \subseteq \mathbb{D} \times (\mathbb{R} \times \mathbb{N}), \mathit{ctr} \in \mathbb{N} \}$. Elements of $E$ and $T$ are of form $(a,id)$, and $\mathit{ctr}$ is per-replica counter to make $id$ unique. 
+
+\item[-] $(E,T,\mathit{ctr}) \xrightarrow[\mathit{mgs} = \{ (a,\mathit{id},r,r') \vert r' \neq r \}]{(\mathit{add},a,r)}_o (E \cup \{ (a,\mathit{id}) \}, T, \mathit{ctr}+1)$ and $\mathit{id} = (r,\mathit{ctr})$.
+
+\item[-] $(E,T,\mathit{ctr}) \xrightarrow[\mathit{mgs} = \{ (a,S,r,r') \vert r' \neq r \} ]{(\mathit{rem},a,r)}_o (E \setminus \{ (a,\mathit{id}) \in E \}, T \cup \{ (a,\mathit{id}) \in E \}, \mathit{ctr})$, $S = \{ \mathit{id} \vert (a,\mathit{id}) \in E \} \neq \emptyset$.
+
+\item[-] $(E,T,\mathit{ctr}) \xrightarrow[\mathit{mgs} = \emptyset]{(\mathit{lookup},a,\mathit{true},r)}_o (E,T,\mathit{ctr})$, if there exists $\mathit{id}$ such that $(a,\mathit{id}) \in E$. 
+
+\item[-] $(E,T,,\mathit{ctr}) \xrightarrow[\mathit{mgs} = \emptyset]{(\mathit{lookup},a,\mathit{false},r)}_o (E,T, \mathit{ctr})$, if $(a,\mathit{id}) \notin E$ for each $\mathit{id}$. 
+
+\item[-] $(E,T,\mathit{ctr}) \xrightarrow[\mathit{mgs} = \emptyset]{(\mathit{elements},S,r)}_o (E,T,\mathit{ctr})$, where $S = \{ a \vert \exists \mathit{id}, (a,\mathit{id}) \in E \}$. 
+
+\item[-] $(E,T,\mathit{ctr}) \xrightarrow{\mathit{apply}((a,\mathit{id},\_,r))}_m (E \cup \{ (a,\mathit{id}) \} \setminus T, T,\mathit{ctr})$. 
+
+\item[-] $(E,T,\mathit{ctr}) \xrightarrow{\mathit{apply}((a,S,\_,r))}_m (S \setminus \{ (a,\mathit{id}) \vert \mathit{id} \in S \}, T \cup \{ (a,\mathit{id}) \vert \mathit{id} \in S \}, \mathit{ctr})$.
+
+\item[-] $d_0 = (\emptyset, \emptyset, 0)$.
+
+\item[-] $\Sigma_e$ is the union of (1) $(a,\mathit{id})$ in either $\mathit{data}[\_].E$, $\mathit{data}[\_].T$, or $\exists (a,S',\_,\_) \in \mathit{msgs}$ and $\mathit{id} \in S'$, and (2) $(a,S,r)$ in $\mathit{msgs}$. 
+
+\item[-] $f_{\mathit{arb}}$ always return $\emptyset$. 
+\end{itemize}
 
 
 
@@ -671,6 +697,30 @@ This completes the proof of this lemma. $\qed$
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\forget{
 \section{Definitions and Proofs of Section \ref{sec:simulation relation for CRDT implementations}}
 \label{sec:appendix definitions and proofs of section simulation relation for CRDT implementations}
 
@@ -707,6 +757,22 @@ Let us explain how to construct function $f_s$. $f_s$ is used to translate imple
 \end{itemize}
 
 Here we implicitly assume that, when we comes to a pair of states, we change $f$ by only inserting or removing pairs of operations, not by changing existing pairs of operations. Given a trace $t = \alpha_1 \cdot \ldots \cdot \alpha_k$ of $\mathit{Sem}(\mathit{imp})$, function $f_t(t) = \beta_k$ works as follows: From the initial states $q_0^{\mathit{imp}}$ of $\mathit{Sem}(\mathit{imp})$, the initial state $q_0^{s}$ of $\mathit{SRImp}(\mathit{Spec})$, and $\alpha_1$, work as $f_s$ to obtain transition label $\beta_1$ and a new state $q_q^{s}$ of $\mathit{SRImp}(\mathit{Spec})$, and so on. The detailed definition can be found in Appendix \ref{sec:appendix definitions and proofs of section simulation and refinement}. It is easy to see that functions $f_s$ and $f_t$ hold as required.
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
