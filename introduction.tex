@@ -2,14 +2,14 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Conflict-Free Replicated Data Types (CRDTs)~\cite{ShapiroPBZ11} have
+Conflict-Free Replicated Data Types (CRDTs)~\cite{Shapiro:2011} have
 emerged as a most promising solution to the problem of ensuring
 some degree of consistency in highly-available distributed systems.
 %
 The key idea is that while a CRDT might not be consistent at all times
 through the whole system during an execution, the state of the
 data type will \emph{eventually} converge to a unique state (c.f.
-eventual consistency~\cite{Burkhardt}).
+eventual consistency~\cite{Burckhardt:2014b}).
 %
 All the while, all participants of the systems can issue operations
 which are immediately performed in a single replica without need to
@@ -18,11 +18,11 @@ even under partitions.
 
 While CRDTs offer great advantages in terms of performance and
 availability, their semantics and implementation are far from simple,
-often involving sophisticated specifications~\cite{Burkhardt}, and
-even more involved implementations~\cite{ShapiroPBZ11}.
+often involving sophisticated specifications~\cite{Burckhardt:2014b}, and
+even more involved implementations~\cite{Shapiro:2011}.
 %
 As a testament to this claim, we remark that the discovery of a single
-CRDT implementation often deserves a paper on itself~\cite{RAG, WOOT,
+CRDT implementation often deserves a paper on itself~\cite{RohJKL11, WOOT,
   ...}.
 %
 A consequence of the complexity of CRDT implementations is that it is
@@ -37,7 +37,7 @@ CRDTs implementing collection data structures.
 }
 We consider the problem of formally verifying that a certain
 implementation of a CRDT satisfies a specification given in the
-style of~\cite{Burkhardt}.
+style of~\cite{Burckhardt:2014}.
 %
 Unlike prior approaches to this problem we proceed by
 proving simulations between the implementation, and operational
@@ -65,7 +65,7 @@ delivery.
 In a nutshell our methodology is based on the following concepts and
 contributions:
 \begin{itemize}[$\bullet$]
-\item Starting from a specification in the style of~\cite{Burkhardt}
+\item Starting from a specification in the style of~\cite{Burckhardt:2014}
   we provide a reference operational semantics of the CRDT which is
   then used as the definitive correctness condition for any
   implementation of the data structure;

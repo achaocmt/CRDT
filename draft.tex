@@ -12,6 +12,7 @@
 %\newdef{example}[theorem]{Example}
 
 
+\usepackage{hyperref}
 
 \usepackage{epsfig}
 \usepackage{amsmath}
@@ -35,7 +36,6 @@
 %\usepackage[linesnumbered,ruled,procnumbered,vlined]{algorithm2e}
 \usepackage[linesnumbered,ruled,procnumbered,noend]{algorithm2e}
 \usepackage{stmaryrd}
-%\usepackage{hyperref}
 %added by Wang Chao%
 %\usepackage{mathrsfs}
 %\usepackage{extarrows}
@@ -214,6 +214,8 @@
 
 \input{Simulation-relation}
 
+\input{RelWork}
+
 %\input{simulation-CRDT}
 
 
@@ -224,65 +226,66 @@
 %\bibliography{biblio_cat.bib}
 
 
-\begin{thebibliography}{50}
-\bibitem{Bouajjani:2014}
-Bouajjani, A., Enea, C., Hamza, J.:
-\newblock Verifying eventual consistency of optimistic replication systems.
-\newblock In: POPL 2014, pp. 285--296. ACM (2014)
-%\end{thebibliography}
+\bibliographystyle{plainurl}
+\bibliography{draft}
+
+% \begin{thebibliography}{50}
+% % \bibitem{Bouajjani:2014}
+% % Bouajjani, A., Enea, C., Hamza, J.:
+% % \newblock Verifying eventual consistency of optimistic replication systems.
+% % \newblock In: POPL 2014, pp. 285--296. ACM (2014)
+% %\end{thebibliography}
 
 
-\bibitem{Abadi:1991}
-Abadi, M., Lamport, L.:
-\newblock The Existence of Refinement Mappings.
-\newblock In: Theor. Comput. Sci 1991, pp. 253--284.  (1991)
+% % \bibitem{Abadi:1991}
+% % Abadi, M., Lamport, L.:
+% % \newblock The Existence of Refinement Mappings.
+% % \newblock In: Theor. Comput. Sci 1991, pp. 253--284.  (1991)
 
 
-\bibitem{Lynch:1995}
-Lynch, N. A., Vaandrager, F. W.:
-\newblock Forward and Backward Simulations: I. Untimed Systems.
-\newblock In: Inf. Comput 1995, pp. 214--233.  (1995)
+% % \bibitem{Lynch:1995}
+% % Lynch, N. A., Vaandrager, F. W.:
+% % \newblock Forward and Backward Simulations: I. Untimed Systems.
+% % \newblock In: Inf. Comput 1995, pp. 214--233.  (1995)
 
 
-\bibitem{Attiya:2016}
-Attiya, H., Burckhardt, S., Gotsman A., Morrison, A., Yang, H., Zawirski, M.:
-\newblock Specification and Complexity of Collaborative Text Editing.
-\newblock In: PODC 2016, pp. 259--268. ACM (2016)
+% % \bibitem{Attiya:2016}
+% % Attiya, H., Burckhardt, S., Gotsman A., Morrison, A., Yang, H., Zawirski, M.:
+% % \newblock Specification and Complexity of Collaborative Text Editing.
+% % \newblock In: PODC 2016, pp. 259--268. ACM (2016)
 
 
-\bibitem{Lamport:1978}
-Lamport, L.:
-\newblock Time, Clocks, and the Ordering of Events in a Distributed System.
-\newblock In: Commun. ACM 1978, pp. 558--565. (1978)
+% % \bibitem{Lamport:1978}
+% % Lamport, L.:
+% % \newblock Time, Clocks, and the Ordering of Events in a Distributed System.
+% % \newblock In: Commun. ACM 1978, pp. 558--565. (1978)
+
+% % \bibitem{Shapiro:2011}
+% % Shapiro M, Preguica N, Baquero C.:
+% % \newblock A comprehensive study of Convergent and Commutative Replicated Data Types.
+% % \newblock In: HAL - INRIA 2011, pp. 67--88. (2011)
+
+% % \bibitem{Bieniusa:2012}
+% % Bieniusa A, Zawirski M, Preguica N.:
+% % \newblock An optimized conflict-free replicated set.
+% % \newblock In: HAL - INRIA 2012. (2011)
 
 
-\bibitem{Shapiro:2011}
-Shapiro M, Preguica N, Baquero C.:
-\newblock A comprehensive study of Convergent and Commutative Replicated Data Types.
-\newblock In: HAL - INRIA 2011, pp. 67--88. (2011)
+% % \bibitem{Attiya:2016}
+% % Attiya H, Burckhardt S, Gotsman A, Morrison A, Yang H, Zawirski M.:
+% % \newblock Specification and Complexity of Collaborative Text Editing.
+% % \newblock In: PODC 2016, pp 259-268. ACM (2011)
 
+% % \bibitem{Oster:2006}
+% % Oster, G., Urso, P., Molli, P., Imine, A.:
+% % \newblock Data consistency for P2P collaborative editing.
+% % \newblock In: CSCW 2006, pp. 259--268. ACM (2006)
 
-\bibitem{Bieniusa:2012}
-Bieniusa A, Zawirski M, Preguica N.:
-\newblock An optimized conflict-free replicated set.
-\newblock In: HAL - INRIA 2012. (2011)
-
-
-\bibitem{Attiya:2016}
-Attiya H, Burckhardt S, Gotsman A, Morrison A, Yang H, Zawirski M.:
-\newblock Specification and Complexity of Collaborative Text Editing.
-\newblock In: PODC 2016, pp 259-268. ACM (2011)
-
-\bibitem{Oster:2006}
-Oster, G., Urso, P., Molli, P., Imine, A.:
-\newblock Data consistency for P2P collaborative editing.
-\newblock In: CSCW 2006, pp. 259--268. ACM (2006)
-
-\bibitem{Burckhardt:2014}
-Burckhardt, S., Gotsman, A., Yang, H., Zawirski, M.:
-\newblock Replicated data types: specification, verification, optimality.
-\newblock In: POPL 2014, pp. 271--284. ACM (2014)
-\end{thebibliography}
+% % \bibitem{Burckhardt:2014}
+% % Burckhardt, S., Gotsman, A., Yang, H., Zawirski, M.:
+% % \newblock Replicated data types: specification, verification, optimality.
+% % \newblock In: POPL 2014, pp. 271--284. ACM (2014)
+% \end{thebibliography}
 \newpage
 
 \appendix
