@@ -78,11 +78,14 @@ We require $\mathit{ro}$ to not relate operations with different replica identif
 We also require that for each operation $o \in O$,
 $\mathit{ro}^{-1}(o)$ is finite, meaning that the past of any replica
 is only finite.
-\fxwarning*{Check that everything is defined before}{\color {red}
-An example of a history of a CRDT of list is shown in
+An example of a history of a list CRDT is shown in
 \figurename~\ref{fig:history, annotated history and operation context} (a).
-The $\mathit{add}(a,1)$ operation intends to add element $a$
-on position 1 of the list of current replica, and $\mathit{read}(b\cdot a \cdot c)$ operations returns a snapshot of the list, e.g., $r\Rightarrow b\cdot a \cdot c$. These operations are submitted to two replicas.}
+The $\mathit{add}(a,1)$ operation adds element $a$
+on position 1 of the list, and $\mathit{read}(b\cdot a \cdot c)$
+represents the fact that a read operation obtained the snapshot
+$b\cdot a \cdot c$ of the list, where we denote by $s \cdot s'$ the
+composition of sequences $s$ and $s'$. These operations are submitted
+to two replicas. 
 
 While histories provide the means to describe the behaviors of CRDTs,
 they are insufficient to describe the effects of the delivery
@@ -96,7 +99,7 @@ certain delivery for their correctness.
 %
 To deal with this issue we will augment histories with additional
 information, indicating when operations become visible to other
-operations (i.e. the replica in which they are generated), and we
+operations i.e. the replica in which they are generated, and we
 shall call them \emph{annotated histories}.
 %
 
@@ -115,9 +118,10 @@ will determine the order in which the operations should be applied by
 all replicas, hence guaranteeing convergence.
 The order $\mathit{arb}$ plays this role in the definition of
 annotated histories.
-\fxnote{GP: Why only update at this point?. Add the cite to Burckhardt.} \fxwarning{GP: \c@Chao explain or remove}
-{\color {red}The annotated history for history of \figurename~\ref{fig:history, annotated history and operation context} (a) is given in \figurename~\ref{fig:history, annotated
-history and operation context} (b). Here we use arbitration order $\mathit{add}(b,1) < \mathit{add}(a,1) < \mathit{add}(c,1) < \mathit{add}(d,4))$.}
+% \fxnote{GP: Why only update at this point?. Add the cite to
+%   Burckhardt.} 
+The annotated history for history corresponding to \figurename~\ref{fig:history, annotated history and operation context} (a) is given in \figurename~\ref{fig:history, annotated
+  history and operation context} (b). Here we use the arbitration order $\mathit{add}(b,1) < \mathit{add}(a,1) < \mathit{add}(c,1) < \mathit{add}(d,4))$.
 %
 
 % {\color {red} Visibility relation tells how update operations are
@@ -145,7 +149,7 @@ history and operation context} (b). Here we use arbitration order $\mathit{add}(
   \centering
   \includegraphics[width=1 \textwidth]{figures/PIC-his-anhis-context-1.pdf}
 %\vspace{-10pt}
-  \caption{{\color {red}A history of list, its annotated history, and an operation context of $\mathit{add}(d,4)$.}}
+  \caption{{A history of list, its annotated history, and an operation context of $\mathit{add}(d,4)$.}}
 
   %Here $+(a,1)$ represents $\mathit{add}(a,1)$, $r(b \cdot a \cdot c)$ represents $\mathit{read}(b \cdot a \cdot c)$; $+a_1$ and $-a_1$ represents $\mathit{add}(a)$ and $\mathit{rem}(a)$, respectively, while the subscript number is used to distinguish different $\mathit{add(a)}$; $(a,\surd)$ represents $\mathit{contains}(a,\mathit{true})$. In annotated history (b), we use arbitration order $\mathit{add}(b,1) \cdot \mathit{add}(a,1) \cdot \mathit{add}(c,1) \cdot \mathit{add}(d,4)$. Assume that the visibility relation contains the replica order.}
   \label{fig:history, annotated history and operation context}
@@ -217,16 +221,21 @@ which returns a context $(O', <, \mathit{arb'})$ such that:
 see the same set of operations, i.e. $O_1 = O_2$, then $ctxt(o_1) = ctxt(o_2)$.
 %
 This is consistent with the commutativity requirement of CRDTs.
-\fxwarning*{GP: @Chao explain better the examples}{For example,
-  \figurename~\ref{fig:history, annotated history and operation context}
-  (c) is the operation context of $o = \mathit{add}(d,4)$ in
-  \figurename~\ref{fig:history, annotated history and operation context}
-  (b).{\color {red} Here the operations visible to $o$ are $\{ \mathit{add}(a,a), \mathit{add}(b,1), \mathit{add}(c,1)\}$, and the arbitration order is same as that of \figurename~\ref{fig:history, annotated history and operation context}
-  (b).}
-  Similarly, this definition modifies that of \cite{Burckhardt:2014}
-  to deal with list.}
+For example, \figurename~\ref{fig:history, annotated history and
+  operation context} 
+(c) is the operation context of $o = \mathit{add}(d,4)$ in
+\figurename~\ref{fig:history, annotated history and operation context}
+(b).
+Here the operations visible to $o$ are $\{
+\mathit{add}(a,1), \mathit{add}(b,1), \mathit{add}(c,1)\}$, and the
+arbitration order is the same as that of \figurename~\ref{fig:history, annotated history and operation context}
+(b).
+Similarly, this definition modifies that of \cite{Burckhardt:2014}
+to deal with list.
 %
-\fxfatal*{GP: No idea what this means.}{\color {red}The process of obtaining operation context from annotated history for OR-set is a little different and we discuss it in Remark \ref{remark: operation context of OR-set}.}
+To obtain the operation context from annotated history for OR-set
+requires a little care as it will be explained in Remark \ref{remark:
+  operation context of OR-set}.
 
 %Note that the uniformly
 %  method of obtaining operation context from annotated history is
@@ -235,10 +244,11 @@ This is consistent with the commutativity requirement of CRDTs.
 %  Remark \ref{remark: operation context of OR-set}.}
   % To comply with the commutativity intuition of CRDT algorithm, we further require that, given an annotated history $(O,\mathit{vis},\mathit{arb})$ and $o_1,o_2 \in O$, if $\mathit{vis}^{-1}(o_1) = \mathit{vis}^{-1}(o_2)$, then $<_1 = <_2$, where $ctxt(o_1)=(O_1,<_1,\mathit{arb}_1)$ and $ctxt(o_2)=(O_2,<_2,\mathit{arb}_2)$.
 
-\fxfatal{GP: How is this different from RVal Consistency from~\cite{Burckhardt:2014}?}
-The notion of Convergent Return-Value Consistency (CRVC, for short)
-requires the return value of each operation to correspond to its
-specification, and it is defined as follows:
+% \fxfatal{GP: How is this different from RVal Consistency from~\cite{Burckhardt:2014}?}
+The notion of Convergent Return-Value Consistency (CRVC, for short) is
+similar to that of~\cite{Burckhardt:2014} and it requires the return
+value of each operation to correspond to its specification, and it is
+defined as follows: 
 
 \begin{definition}[Convergent Return-Value Consistency]
 \label{definition:strong return value consistency}
@@ -259,7 +269,7 @@ consistent w.r.t $\mathit{Spec}$.
   \centering
   \includegraphics[width=1 \textwidth]{figures/PIC-his-anhis-context-2.pdf}
 %\vspace{-10pt}
-  \caption{{\color {red} Generating operation context from annotated history for OR-set.}}
+  \caption{Generating operation context from annotated history for OR-set.}
 
   %Here $+(a,1)$ represents $\mathit{add}(a,1)$, $r(b \cdot a \cdot c)$ represents $\mathit{read}(b \cdot a \cdot c)$; $+a_1$ and $-a_1$ represents $\mathit{add}(a)$ and $\mathit{rem}(a)$, respectively, while the subscript number is used to distinguish different $\mathit{add(a)}$; $(a,\surd)$ represents $\mathit{contains}(a,\mathit{true})$. In annotated history (b), we use arbitration order $\mathit{add}(b,1) \cdot \mathit{add}(a,1) \cdot \mathit{add}(c,1) \cdot \mathit{add}(d,4)$. Assume that the visibility relation contains the replica order.}
   \label{fig:generating operation context from annotated history for OR-set}
@@ -270,7 +280,14 @@ consistent w.r.t $\mathit{Spec}$.
 
 \noindent {\bf Example 1. OR-set}:
 %
-{\color {red} Observed-Remove Set (OR-set for short) \cite{Shapiro:2011,Bieniusa:2012} maintains the view of a set in each replica. Each $\mathit{rem}(a)$ can only cancel the $\mathit{add}(a)$ that are visible to it. Therefore, given two current (not visible to each other) operations $\mathit{add}(a)$ and $\mathit{rem}(a)$, the $\mathit{add}(a)$ take precedence.} OR-set contains four methods: (1)
+The Observed-Remove Set CRDT (OR-set for short)
+\cite{Shapiro:2011,Bieniusa:2012} maintains the view of a set in
+each replica. Each $\mathit{rem}(a)$ can only cancel an
+$\mathit{add}(a)$ that has been made visible to it. Therefore, given
+two current (not visible to each other) operations $\mathit{add}(a)$
+and $\mathit{rem}(a)$, the $\mathit{add}(a)$ can always take
+precedence. 
+OR-set contains four methods: (1)
 $\mathit{add}(a)$ inserts $a$ into the set, (2) $\mathit{rem}(a)$
 removes $a$ from set, (3) \mbox{$\mathit{lookup}(a)\Rightarrow
   \mathit{true}$} (resp., \mbox{$\mathit{lookup}(a)\Rightarrow
@@ -308,12 +325,13 @@ specification of OR-set, $S_{\mathit{ORS}}$, is as follows:
  Thus, we can observe that the specification $S_{\mathit{ORS}}$ makes
  $\mathit{rem}$ cancel only $\mathit{add}$ operations ``visible'' to
  them.
- \fxwarning*{GP: @Chao clarify}{\color {red}
  For example, \figurename~\ref{fig:generating operation context from annotated history for OR-set} (b) is in $S_{\mathit{ORS}}(\mathit{lookup}(a)
- \Rightarrow \mathit{true})$, since there is a $\mathit{add}(a)$ that is maximal w.r.t $<$. Here the subscript $1$ of $\mathit{add}(a)_1$ is used to distinguish several $\mathit{add}(a)_1$.}
+ \Rightarrow \mathit{true})$, since there is an $\mathit{add}(a)$ that
+ is maximal w.r.t $<$. Here the subscript $1$ of $\mathit{add}(a)_1$
+ is used to distinguish several $\mathit{add}(a)$ operations.
 
 \bigskip
-\noindent {\bf Example 2. Distributed list}: {\color {red} The Distributed List CRDT~\cite{Attiya:2016} mains the view of a list in each replica.} It contains three methods: (1)
+\noindent {\bf Example 2. Distributed list}: The Distributed List CRDT~\cite{Attiya:2016} mains the view of a list in each replica. It contains three methods: (1)
 $\mathit{add}(a,\mathit{pos})$ inserts value $a$ into position
 $\mathit{pos} \in \mathbb{N}$ of the list, (2) $\mathit{rem}(a)$ removes the
 value $a$ from the list, and (3) $\mathit{read}() \Rightarrow l$
@@ -340,21 +358,56 @@ Given an annotated history $ah = (O,<,\mathit{arb})$, we say that $ ah
     \item $\ell = read() \Rightarrow l$, and $l$ is obtained by using $\mathit{lab}$ on $\mathit{seq}$.
     \end{inparaenum}
   \end{inparaenum}
-\fxwarning{GP: Using lab on seq??}
+% \fxwarning{GP: Using lab on seq??}
   % \todo{Give a declarative specification of the list, like for OR-set. Descriptions which look like ``imperative programs'', e.g., "We can go through operations", "During this process".}
 In a nutshell, this specification indicates that we use the list order
 of strong list specification in \cite{Attiya:2016} as the arbitration
-order. \fxwarning*{GP: @Chao explain?}{\color {red}
+order. 
+%
 For example, \figurename~\ref{fig:history, annotated history and
   operation context} (c) is in specification of $o =
-\mathit{add}(d,4)$, where no identifiers are removed, and the active list content is $\mathit{seq} = \mathit{add}(b,1) \cdot \mathit{add}(a,1) \cdot \mathit{add}(c,1) \mathit{add}(d,4)$, and $\mathit{seq}[4]$ is $o$.}
+\mathit{add}(d,4)$, where no identifiers are removed, and the active list content is $\mathit{seq} = \mathit{add}(b,1) \cdot \mathit{add}(a,1) \cdot \mathit{add}(c,1) \mathit{add}(d,4)$, and $\mathit{seq}[4]$ is $o$.
 
 
 
-\fxnote{Contains or lookup: gotta make up our mind.}
-\fxfatal{GP: I have no idea of what this means. Has to be rewritten.}
+% \fxnote{Contains or lookup: gotta make up our mind.}
+% \fxfatal{GP: I have no idea of what this means. Has to be rewritten.}
 \begin{remark}
-  \label{remark: operation context of OR-set} {\color {red} The process of generating operation context of an annotated history for OR-set is more complicated, since some orders of  visibility relation need to be ignored. For instance, given the annotated history \figurename~\ref{fig:generating operation context from annotated history for OR-set} (a). Here note that visibility relation on same replica (replica order) is transitive. Then what should be the operation context $(O,<,\emptyset)$ of operation $\mathit{lookup}(a) \Rightarrow \mathit{true}$? Obviously $O = \{ \mathit{add}(a)_1, \mathit{rem}(a)_2 \}$. If we choose $<$ to be the visibility relation, then we have $(\mathit{add}(a)_1, \mathit{rem}(a)_2) \in <$. However, this is wrong, since $\mathit{rem}(a)_2$ does not cancel $\mathit{add}(a)_1$, but cancels $\mathit{add}(a)_2$ instead. To deal with this, we let $< = \emptyset$ and ignores the visibility relation between $\mathit{add}(a)_1$ and $\mathit{rem}(a)_2$. Formally, given $o_1$ with $\mathit{lab}(o_1) = \mathit{add}(a)$, let $\mathit{FstRem}(o_1)$ be the set of $\mathit{rem}(a)$ operations $o_2$, such that $o_1$ is visible to $o_2$ and their is no $\mathit{rem}(a)$ operations $o_3$ that satisfies ($(o_1,o_3),(o_3,o_2) \in \mathit{vis}$). When we generating $<$ from $\mathit{vis}$, such pairs $(o_1,o_2)$ will be ignored: $o_2 \notin \mathit{FstRem}(o_1)$, and there exists operation $o_3$, such that $(o_1,o_3),(o_3,o_2) \in \mathit{vis}$, while $o_3 \notin O$. In  \figurename~\ref{fig:generating operation context from annotated history for OR-set} (a), such ignored pair is $(\mathit{add}(a)_1,\mathit{rem}(a)_2)$, since $\mathit{rem}(a)_2 \notin \mathit{FstRem}(\mathit{add}(a)_1)$, $(\mathit{add}(a)_1,\mathit{rem}(a)_1), (\mathit{rem}(a)_1,\mathit{rem}(a)_2) \in \mathit{vis}$ while $\mathit{rem}(a_1)$ is not visible to $\mathit{lookup}(a) \Rightarrow \mathit{true}$.}
+  \label{remark: operation context of OR-set} Extracting
+  operation contexts of an annotated history for OR-set is more
+  complicated, since some orders in the visibility relation need to
+  be ignored. For instance, consider the annotated history
+  \figurename~\ref{fig:generating operation context from annotated
+    history for OR-set} (a). We remark that that the visibility
+  relation on same replica (replica order) is transitive. 
+  Then what should be the operation context $(O,<,\emptyset)$ of
+  operation $\mathit{lookup}(a) \Rightarrow \mathit{true}$?
+  Obviously $O = \{ \mathit{add}(a)_1, \mathit{rem}(a)_2 \}$. If we
+  choose $<$ to be the visibility relation, then we have
+  $(\mathit{add}(a)_1, \mathit{rem}(a)_2) \in <$. However, this is
+  wrong, since $\mathit{rem}(a)_2$ does not cancel
+  $\mathit{add}(a)_1$, but cancels $\mathit{add}(a)_2$ instead. To
+  deal with this, we let $<\ =\ \emptyset$ and hence we ignore the
+  visibility relation between $\mathit{add}(a)_1$ and
+  $\mathit{rem}(a)_2$. Formally, given $o_1$ with $\mathit{lab}(o_1)
+  = \mathit{add}(a)$, let $\mathit{FstRem}(o_1)$ be the set of
+  $\mathit{rem}(a)$ operations, say $o_2$, such that $o_1$ is visible to
+  $o_2$, and such that there is no other $\mathit{rem}(a)$ operations $o_3$ that
+  satisfies ($(o_1,o_3),(o_3,o_2) \in \mathit{vis}$). 
+  % 
+  \fxnote*{GP: @Chao, can you rephrase this one?}{
+    When we extract $<$ from $\mathit{vis}$, such pairs $(o_1,o_2)$ will be
+    ignored: $o_2 \notin \mathit{FstRem}(o_1)$, and there exists
+    operation $o_3$, such that $(o_1,o_3),(o_3,o_2) \in \mathit{vis}$,
+    while $o_3 \notin O$.} 
+  In \figurename~\ref{fig:generating
+    operation context from annotated history for OR-set} (a), one
+  such ignored pair is $(\mathit{add}(a)_1,\mathit{rem}(a)_2)$, since
+  $\mathit{rem}(a)_2 \notin \mathit{FstRem}(\mathit{add}(a)_1)$,
+  $(\mathit{add}(a)_1,\mathit{rem}(a)_1),
+  (\mathit{rem}(a)_1,\mathit{rem}(a)_2) \in \mathit{vis}$ and
+  $\mathit{rem}(a_1)$ is not visible to $\mathit{lookup}(a)
+  \Rightarrow \mathit{true}$.
 \end{remark}
 
 \forget{
