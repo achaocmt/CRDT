@@ -9,9 +9,9 @@ Let $\mathbb{L}$ be the set of replica states and $\mathbb{MSG}$ the set of mess
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\rightarrow_o: \mathbb{L} \times \mathbb{M} \times \mathbb{D} \times \mathbb{R} \rightarrow \mathbb{L} \times \mathbb{D} \times 2^{\mathbb{MSG}})$ shows how operations update the local state of the replica and generate messages (to be broadcasted to the other replicas). A transition $(d,m,a,r) \rightarrow_o (d',b,\mathit{mgs})$ means that an invocation of $m$ with input $a$ updates the replica state from $d$ to $d'$, returns value $b$, and generates the set of messages $\mathit{mgs}$. 
-%represents that, when the local state of replica $r$ is $d$, if we call method $m$ with argument $a$ in replica $r$, then we obtain return value $b$, change the local state of replica $r$ into $d'$, and generate a set $\mathit{mgs}$ of messages. Here $\mathit{Pow}(\mathbb{MSG})$ is the power set of $\mathbb{MSG}$. 
-If $m \in \mathbb{U}$, then $\mathit{mgs} = \{ (x,r,r') \vert r' \in \mathbb{R} \wedge r \neq r' \}$ for some payload $x$. Otherwise, $\mathit{mgs} = \emptyset$. 
+\item[-] $\rightarrow_o: \mathbb{L} \times \mathbb{M} \times \mathbb{D} \times \mathbb{R} \rightarrow \mathbb{L} \times \mathbb{D} \times 2^{\mathbb{MSG}})$ shows how operations update the local state of the replica and generate messages (to be broadcasted to the other replicas). A transition $(d,m,a,r) \rightarrow_o (d',b,\mathit{mgs})$ means that an invocation of $m$ with input $a$ updates the replica state from $d$ to $d'$, returns value $b$, and generates the set of messages $\mathit{mgs}$.
+%represents that, when the local state of replica $r$ is $d$, if we call method $m$ with argument $a$ in replica $r$, then we obtain return value $b$, change the local state of replica $r$ into $d'$, and generate a set $\mathit{mgs}$ of messages. Here $\mathit{Pow}(\mathbb{MSG})$ is the power set of $\mathbb{MSG}$.
+If $m \in \mathbb{U}$, then $\mathit{mgs} = \{ (x,r,r') \vert r' \in \mathbb{R} \wedge r \neq r' \}$ for some payload $x$. Otherwise, $\mathit{mgs} = \emptyset$.
 %The violation of pre-condition of method is modeled by mapping to $\mathit{undef}$.
 
 \item[-] $\rightarrow_m: \mathbb{L} \times \mathbb{R} \times \mathbb{MSG} \rightarrow \mathbb{L}$ shows how the replica state is updated when a message is received. A transition $(d,r,\mathit{msg}) \rightarrow_m d'$ means that ``applying'' the message $\mathit{msg}$ updates the replica state from $d$ to $d'$
@@ -83,10 +83,16 @@ A trace of $[|\mathit{Imp}|]$ satisfies causal delivery if given $o_1 <_{\mathit
 
 
 
-\noindent {\bf Example 7 [Replicated growable array (RGA, for short)~\cite{Attiya:2016}]} Each replica stores a set $N$ of tuples $(a,t,p)$, where $a$ is an input value added to the array, $t$ is its unique timestamp, and $p < t$ is the timestamp of its ``parent''. The elements of $N$ are required to form a tree by following the ``parent'' field (a special time stamp value $\circ$ represents the root). 
-%Let $\circ$ be a special time stamp value representing the root. The elements of $N$ are required to form a time stamped insertion tree (TI tree, for short), while the parent of each element in $N$ is still in $N$, each element of $N$ can tract to root by several times of checking parent field, and the time stamp of parent is less than its descendants. 
-%We can see that the union of multiple TI tree is also a TI tree.  
-Each replica also manages a set of ``tombstones'' $T$, which are identifiers of values that were removed from the array. We define an order $<_{\mathit{ts}}$ between timestamps by $(x_1,r_1) <_{\mathit{ts}} (x_2,r_2)$ iff $x_1 < x_2 \vee (x_1 = x_2 \wedge r_1 < r_2)$. Let $\mathit{ts}(N)$ be the set of timestamps in $N$ and let $\mathit{trav}(N,T)$ be the sequences obtained by traversing $N$ in prefix order (children are visited in decreasing timestamp order) and keeping only identifiers of nodes that are not in $T$.
+\noindent {\bf Example 7 [Replicated growable array (RGA, for short)~\cite{Attiya:2016}]} Each replica stores a set $N$ of tuples $(a,t,p)$, where $a$ is an input value added to the array, $t$ is its unique timestamp, and $p < t$ is the timestamp of its ``parent''. The elements of $N$ are required to form a tree by following the ``parent'' field (a special time stamp value $\circ$ represents the root).
+%Let $\circ$ be a special time stamp value representing the root. The elements of $N$ are required to form a time stamped insertion tree (TI tree, for short), while the parent of each element in $N$ is still in $N$, each element of $N$ can tract to root by several times of checking parent field, and the time stamp of parent is less than its descendants.
+%We can see that the union of multiple TI tree is also a TI tree.
+Each replica also manages a set of ``tombstones'' $T$, which are identifiers of values that were removed from the array. {\color {red} $\mathit{trav}(N,T)$ is the list of this replica, and is obtained by traversing $N$ in prefix order (children are visited in decreasing time stamp order) and keeping only identifiers of nodes that are not in $T$. To insert $a$ into position $\mathit{pos}$, we put $(a,t,p)$ into $N$, where $p = \mathit{trav}(N,T)[\mathit{pos}]$, and $t$ is larger than anyone of $N$. This make $(a,t,p)$ the first child of $p$ in the tree of $N$. We remove $a$ by putting it into $T$. The process of applying $\mathit{add}$ and $\mathit{rem}$ message is similar. We define an order $<_{\mathit{ts}}$ between time stamps by $(x_1,r_1) <_{\mathit{ts}} (x_2,r_2)$ iff $x_1 < x_2 \vee (x_1 = x_2 \wedge r_1 < r_2)$. Let $\mathit{ts}(N)$ be the set of timestamps in $N$. 
+%and let $\mathit{trav}(N,T)$ be the sequences obtained by traversing $N$ in prefix order (children are visited in decreasing timestamp order) and keeping only identifiers of nodes that are not in $T$.
+}
+
+
+
+
 
 
 
