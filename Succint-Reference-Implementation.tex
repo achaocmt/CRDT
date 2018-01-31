@@ -14,41 +14,42 @@ We define a class of reference implementations, that compared to the ones define
   \label{fig:succinct reference implementation for OR-set}
 \end{figure}
 
-
-
-Given a specification $\mathit{Spec}$ with two update methods $\mathit{add}$ and $\mathit{rem}$, we define the following notations:
-
+Given a specification $\mathit{Spec}$ with two update methods $\mathit{add}$ and $\mathit{rem}$ and a state $q=(O,\mathit{ro},\mathit{del},\mathit{arb})$ of the reference implementations in Section~\ref{sec:reference implementation}, we define the following notations:
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] Given a $\mathit{add}$ operation $o_a \in O$ with $lab(o_a)= \mathit{add}(a)$, let $\mathit{FstRem}(O,\mathit{vis},o_a) = \{ o_r \vert lab(o_r)=\mathit{rem}(a),(o_a,o_r) \in \mathit{vis}$, $ \neg \exists o'_r, lab(o'_r) = rem(a), (o_a,o'_r),(o'_r,o_r) \in \mathit{vis} \}$ be the set of first visible matching remove of $o_a$.
+\item[-] For an $\mathit{add}(a)$ operation $o_a \in O$, let $\mathit{FstRem}(q,o_a)$ be the set of $\mathit{rem}(a)$ operations $o_r$ to which $o_a$ is visible and which are minimal in the visibility order, i.e., $(o_a,o_r) \in \mathit{vis}$ and there exists no other $\mathit{rem}(a)$ operation $o_r'$ such that $\{(o_a,o'_r),(o'_r,o_r)\} \subseteq \mathit{vis}$.
+%= \{ o_r \vert lab(o_r)=\mathit{rem}(a),(o_a,o_r) \in \mathit{vis}$, $ \neg \exists o'_r, lab(o'_r) = rem(a), (o_a,o'_r),(o'_r,o_r) \in \mathit{vis} \}$ be the set of first visible matching remove of $o_a$.
 
-\item[-] Let $\mathit{RdtA}(O,\mathit{vis})$ be the set of redundant $add$ operations of $O$: $o_a\in \mathit{Redt}(O,\mathit{vis})$, if for each replica $r$, there exists $o_r \in \mathit{FstRem}(O,\mathit{vis},o_a)$, such that $o_a,o_r \in \mathit{visTo}(O,r,\mathit{vis})$.
+\item[-] Let $\mathit{RdtA}(q)$ be the set of obsolete $add$ operations in $q$: $o_a\in \mathit{Redt}(O,\mathit{vis})$ if for each replica $r$, there exists $o_r \in \mathit{FstRem}(q,o_a)$, such that $\{o_a,o_r\} \subseteq \mathit{visTo}(O,r,\mathit{del})$.
 
-\item[-] Given an annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, let $\mathit{frg}(x,S)$ be a annotated history $(O',\mathit{vis}',\mathit{arb})$ obtained from $x$ by forgetting operations in $S$ when $S$ can be forgotten from $O$. $S$ can be forgotten from $O$, if $S$ is a union of $\mathit{add}$ operations $S_a$ and $\mathit{rem}$ operations $S_r$, such that $S_a \subseteq \mathit{RdtA}(O,\mathit{vis})$, and $S_r = \{ o_r \vert  \{ o_a \vert o_r \in \mathit{FstRem}(O,\mathit{vis},o_a) \} \subseteq S_a \}$. By forgetting $S$, we have $O' = O \setminus S$ and $\mathit{vis}' = \mathit{vis} \uparrow_{O'}$, and $\mathit{arb}' = \mathit{arb} \uparrow_{O'}$.
+\item[-] For a set of operations $S\subseteq q$, let $\mathit{frg}(q,S)$ be a state $(O',\mathit{ro}',\mathit{vis}',\mathit{arb}')$ obtained from $q$ by forgetting the operations in $S$. We assume that $S$ is a union of $\mathit{add}$ operations $S_a\subseteq \mathit{RdtA}(O,\mathit{vis})$ and $\mathit{rem}$ operations $S_r= \{ o_r \vert  \{ o_a \vert o_r \in \mathit{FstRem}(O,\mathit{vis},o_a) \} \subseteq S_a \}$. We have $O' = O \setminus S$ and $\mathit{vis}' = \mathit{vis} \cap O'\times O'$, and $\mathit{arb}' = \mathit{arb} \cap O'\times O'$.
 \end{itemize}
 
-For example, in state $q_1$ of \figurename~\ref{fig:reference implementation for OR-set}, $\mathit{FstRem}(+a_1) = \{ -a_1,-a_2 \}$, $+a_1 \in \mathit{RdtA}(q_1,+a_1)$, and $S_a = \{ +a \}$ and $S_r = \{ -a_1 \}$. So, we could forget $+a_1$ and $-a_1$, and obtain state $q'_1$ of \figurename~\ref{fig:succinct reference implementation for OR-set}.
+For example, in \figurename~\ref{fig:reference implementation for OR-set}, $\mathit{FstRem}(q_1,\mathit{add}(a)_1) = \{ rem(a)_1,rem(a)_2 \}$, $add(a)_1 \in \mathit{RdtA}(q_1)$, and there exists a set $S$ satisfying the constraints in $\mathit{frg}(q_1,S)$ defined as $S_a = \{ add(a)_1 \}$ and $S_r = \{ rem(a)_1 \}$. Also, $\mathit{frg}(q_1,S)$ is the state $q'_1$ in  \figurename~\ref{fig:succinct reference implementation for OR-set}. The extension of these notations to annotated histories (instead of reference implementation states) is straightforward. 
 
-An extension of an annotated history $(O,\mathit{vis},\mathit{arb})$ is another annotated history $(O',\mathit{vis}',\mathit{arb}')$, such that $O \subseteq O'$, $\mathit{arb}$ is the projection of $\mathit{arb}'$ over $O$ , $\mathit{vis} \subseteq \mathit{vis}'$, $\mathit{vis}' \cap ( (O'-O) \times O ) = \emptyset$ and $\mathit{vis}' \uparrow_{O} = \mathit{vis}$. Formally, $\mathit{Spec}$ is a collection, if
-
+We now state the conditions under which forgetting obsolete operations as explained above is sound. These conditions are stated on the set of annotated histories admitted by a data type (which depends solely on the specification $\mathit{Spec}$). An extension of an annotated history $(O,\mathit{vis},\mathit{arb})$ is another annotated history $(O',\mathit{vis}',\mathit{arb}')$, such that $O \subseteq O'$, $\mathit{arb}$ (resp., $\mathit{vis}$) is the projection of $\mathit{arb}'$ (resp., $\mathit{vis}'$) on $O\times O$ , and no operations in $O'\setminus O$ are visible to operations in $O$, i.e., $\mathit{vis}' \cap ( (O'-O) \times O ) = \emptyset$. The latter ensures that the extension is ``monotonic'' and corresponds to a real-time extension. We say that a data type defined by a specification $\mathit{Spec}$ is a \emph{collection} if
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] Given an annotated history $x$ if $S$ can be forgotten from the set of operations of $x$, then for each extension $x'$ of $x$, $S$ can be forgotten from the set of operations of $x'$.
+\item[-] For any annotated history $h$ and set of operations $S$, if $\mathit{frg}(h,S)$ is defined, then $\mathit{frg}(h',S)$ is defined for each extension $h'$ of $h$. 
+%for each extension $x'$ of $x$, $S$ can be forgotten from the set of operations of $x'$.
 
-\item[-] For each annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, where $S$ can be forgotten from $O$: For each operation label $\ell$ and extension $x'$ of $x$, let $y'$ be the operation context of $x'$ and a maximal $o \in O$, and let $y''$ be the operation context of $frg(x',S)$ and $o$, then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$.
+\item[-] For any annotated history $h$, if $\mathit{frg}(h,S) = h' \wedge \mathit{frg}(h',S') = h''$, then $\mathit{frg}(h,S \cup S') =h''$.
 
-\item[-] If $\mathit{frg}(q,S) = q' \wedge \mathit{frg}(q',S') = q''$, then $\mathit{frg}(q,S \cup S') =q''$.
+\item[-] The removal of obsolete operations is sound for history extensions, i.e., for each annotated history $h$ and set of operations $S$ such that $frg(h,S)$ is defined and each extension $h'$ of $h$, $ctxt_{h'}(o)\in Spec(\mathit{lab}(o))$ iff $ctxt_{frg(h',S)}(o)\in Spec(\mathit{lab}(o))$, for each $o$ maximal in the visibility order of $h$ (we index the operation context function $ctxt$ with the history to which it applies).
 
-\item[-] Given an annotated history $x = (O,\_,\_)$ and its extension $x' = (O',\_,\_)$. Assume $S$ can be removed from the set of operations of $x$, and $x''$ is obtained from $x'$ by adding or removing pairs in $\{ (o_1,o_2) \vert o_1 \in S, o_2 \in O' \setminus O \}$. Then the set of operations that can be forgotten of $x'$ is the same as that of $x''$.
+%For each annotated history $x = (O,\mathit{vis},\mathit{arb})$ and $S \subseteq O$, where $S$ can be forgotten from $O$: For each operation label $\ell$ and extension $x'$ of $x$, let $y'$ be the operation context of $x'$ and a maximal $o \in O$, and let $y''$ be the operation context of $frg(x',S)$ and $o$, then $y' \in Spec(\ell)$, if and only if $y'' \in Spec(\ell)$.
+\item[-] The delivery of operations considered obsolete in a given history $h$ cannot affect the obsoleteness of operations in any of its extensions, i.e., for any annotated history $h = (O,\_,\_)$ and an extension $h' = (O',\_,\_)$ of $h$, and any set $S$ such that $\mathit{frg}(h,S)$ is defined, if $h''$ is defined from $h'$ by increasing the visibility relation with pairs $(o_1,o_2)$ where $o_1 \in S$ and $o_2 \in O' \setminus O$, then $\mathit{frg}(h'',S')$ is defined iff $\mathit{frg}(h',S')$ is defined, for every $S'$.
+% Assume $S$ can be removed from the set of operations of $x$, and $x''$ is obtained from $x'$ by adding or removing pairs in $\{ (o_1,o_2) \vert o_1 \in S, o_2 \in O' \setminus O \}$. Then the set of operations that can be forgotten of $x'$ is the same as that of $x''$.
 \end{itemize}
 
-
-Similarly, we can forget operations $S$ from a state $(O,\mathit{ro},\mathit{del},\mathit{vis})$ by deleting $S$ from $O$, $\mathit{ro}$, $\mathit{del}$ and $\mathit{arb}$. Given a state $q = (O,\mathit{ro},\mathit{del},\mathit{vis})$ of $\mathit{RImp}(\mathit{Spec})$, let $\mathit{frg}^*(q)$ be obtained from $q$ by forgetting $\mathit{RdtA}(O,\mathit{vis}) \cup \{ o_r \vert  \{ o_a \vert o_r \in f_R(O,\mathit{vis},o_a) \} \subseteq \mathit{RdtA}(O,\mathit{vis}) \}$. Given a collection specification $\mathit{Spec}$, its succinct reference implementation is given as an LTS $\mathit{SRImp}(\mathit{Spec}) = (Q_s,\Sigma,\rightarrow_s,q_0)$, which can be obtained from $\mathit{RImp}(\mathit{Spec}) = (Q,\Sigma,\rightarrow,q_0)$ as follows:
+%Similarly, we can forget operations $S$ from a state $(O,\mathit{ro},\mathit{del},\mathit{vis})$ by deleting $S$ from $O$, $\mathit{ro}$, $\mathit{del}$ and $\mathit{arb}$. 
+Given a state $q = (O,\mathit{ro},\mathit{del},\mathit{vis})$ of $\mathit{RImp}(\mathit{Spec})$, let $\mathit{frg}^*(q)=\mathit{frg}(q,S)$ for a maximal $S$. 
+Given a collection data type with specification $\mathit{Spec}$, its \emph{succinct} reference implementation is given by an LTS $\mathit{SRImp}(\mathit{Spec}) = (Q_s,\Sigma,\rightarrow_s,q_0)$, which can be obtained from $\mathit{RImp}(\mathit{Spec}) = (Q,\Sigma,\rightarrow,q_0)$ as follows:
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $Q_s$ is the set of $(O,\mathit{ro},\mathit{del},\mathit{arb})$ that does not contain redundant $\mathit{add}$ operations. %Here we permit $\mathit{arb}$ to contain more operations than $O$.
-\item[-] $q_1 {\xrightarrow{\alpha}}_s q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{\alpha}} q_3 \wedge q_2 = \mathit{frg}^*(q_3)$. %Here $\rightarrow$ temporarily does not need modification.
+\item[-] $Q_s$ is the set of states in $Q$ that don't contain any obsolete $\mathit{add}$ operation. %Here we permit $\mathit{arb}$ to contain more operations than $O$.
+\item[-] $q_1\ {\xrightarrow{\alpha}}_s\ q_2$, if there exists $q_3$ such that $q_1 {\xrightarrow{\alpha}} q_3 \wedge q_2 = \mathit{frg}^*(q_3)$. %Here $\rightarrow$ temporarily does not need modification.
 
 %\item[-] $q_1 {\xrightarrow{addDel(o,r)}}_s q_2$, if $\exists q_3$, such that $q_1 {\xrightarrow{addDel(o,r)}} q_3 \wedge q_2 = suct(q_3)$.
 
@@ -60,25 +61,21 @@ Similarly, we can forget operations $S$ from a state $(O,\mathit{ro},\mathit{del
 
 %The following theorem states that the annotated history of traces of $SRImp(Spec)$ are CRVC w.r.t $Spec$. Its obvious from the definition of annotated histories of traces of $SRImp(Spec)$ and from Theorem \ref{theorem:executions of reference implementation are SRV consistent}.
 
-Let $\mathit{his}(\mathit{SRImp}(\mathit{Spec}))$ be the set of histories of $\mathit{SRImp}(\mathit{Spec})$. The following theorem states that $\mathit{SRImp}(\mathit{Spec})$ and $\mathit{RImp}(\mathit{Spec})$ have same set of histories.
+Let $\mathit{his}(\mathit{SRImp}(\mathit{Spec}))$ be the set of histories of $\mathit{SRImp}(\mathit{Spec})$. The following theorem states that $\mathit{SRImp}(\mathit{Spec})$ and $\mathit{RImp}(\mathit{Spec})$ have the same set of histories.
 \begin{theorem}
 \label{theorem:SRIMPSpec and RIMPSpec have same history}
 $\mathit{his}(\mathit{RImp}(\mathit{Spec})) = \mathit{his}(\mathit{SRImp}(\mathit{Spec}))$.
 \end{theorem}
 
-\noindent {\bf Example 4.}: %Assume in state of $\mathit{RImp}(S_{\mathit{list}})$, for each identifier $a$, there is at most one $o_a = \mathit{add}(a)$ in $O$, and each $o_r = \mathit{rem}(a)$ is in $\mathit{FstRem}(O,\mathit{vis},o_a)$.
-The following two lemma states that OR-set specification and list specification are collection specification. Their proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}. To prove Lemma \ref{lemma:list is collection specification}, we slightly modify the second requirement of collection to deal with list, where the non-maximal operation need not be checked.
-
-
-
-
+%\noindent {\bf Example 4.}: %Assume in state of $\mathit{RImp}(S_{\mathit{list}})$, for each identifier $a$, there is at most one $o_a = \mathit{add}(a)$ in $O$, and each $o_r = \mathit{rem}(a)$ is in $\mathit{FstRem}(O,\mathit{vis},o_a)$.
+The following lemma states that the data types OR-set and distributed list defined in Examples~\ref{} are collections (see Appendix \ref{sec:appendix definitions and proofs of section succinct reference implementations of collection data types} for a proof). To simplify the technical development, the succinct reference implementation of a distributed list records $\mathit{add}$ operations without the index given as input.
+%To prove Lemma \ref{lemma:list is collection specification}, we slightly modify the second requirement of collection to deal with list, where the non-maximal operation need not be checked.
 %OR-set is a collection specification. %, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given an operation $o_a \in O$ with $lab(o_a) = add(a)$, $f_R(O,\mathit{vis},o_a) = Minus(O,\mathit{vis},o)$.
 %The following lemma states that our definition of $\mathit{FstRem}$ for OR-set satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
-
 \begin{lemma}
 \label{lemma:OR-set is collection specification}
-OR-set specification $S_{\mathit{ORS}}$ is a collection specification.
+The data types defined by $S_{\mathit{ORS}}$ and $S_{\mathit{list}}$ are collections.
 \end{lemma}
 
 
@@ -86,23 +83,23 @@ OR-set specification $S_{\mathit{ORS}}$ is a collection specification.
 %The following lemma states that our definition of $\mathit{FstRem}$ for distributed list satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 
 
-{\color {red}
-\begin{remark}
-\label{remark: RImp for list}
-To comply with the simplification in next section, in construction $\mathit{RImp}(S_{\mathit{list}})$, in state $(Q,\mathit{ro},\mathit{del},\mathit{vis})$, elements of $Q$ are not a complete operations, they are without argument $\mathit{pos}$. Or we could say, elements of $Q$ are $(\ell,r,i)$ where $\ell$ is ${add}(a)$ or $\mathit{rem}(a)$ for $a \in \mathbb{R}$.
-\end{remark}
-}
+%{\color {red}
+%\begin{remark}
+%\label{remark: RImp for list}
+%To comply with the simplification in next section, in construction $\mathit{RImp}(S_{\mathit{list}})$, in state $(Q,\mathit{ro},\mathit{del},\mathit{vis})$, elements of $Q$ are not a complete operations, they are without argument $\mathit{pos}$. Or we could say, elements of $Q$ are $(\ell,r,i)$ where $\ell$ is ${add}(a)$ or $\mathit{rem}(a)$ for $a \in \mathbb{R}$.
+%\end{remark}
+%}
+%
+%
+%\begin{lemma}
+%\label{lemma:list is collection specification}
+%Distributed list specification $S_{\mathit{list}}$ is a collection specification.
+%\end{lemma}
 
 
-\begin{lemma}
-\label{lemma:list is collection specification}
-Distributed list specification $S_{\mathit{list}}$ is a collection specification.
-\end{lemma}
 
-
-
-\noindent {\bf Causal Delivery}: The succinct reference implementation of collection specification $\mathit{Spec}$ with causal delivery is given as an LTS $\mathit{SRImp}(\mathit{Spec})_{\mathit{cd}} = (Q,\Sigma,\rightarrow_{\mathit{cd}},q_0)$. $\mathit{CRImp}(\mathit{Spec})_{\mathit{cd}}$ can be obtained from $\mathit{SRImp}(\mathit{Spec}) = (Q,\Sigma,\rightarrow_s,q_0)$ by changing the $\mathit{addDel}$ transition rule as follows: $q_1 {\xrightarrow{\mathit{addDel}(o,r)}}_{cd} q_2$ if $q_1 {\xrightarrow{\mathit{addDel}(o,r)}}_s q_2 \wedge o$ is minimal w.r.t $<_{hb}$ among operations not in $\mathit{visTo}(O,r,\mathit{vis})$. %visible to replica $r$ nor operation of replica $r$ in $q_1 \}$.
-Note that, for the operations been forgotten, we can not control their delivery. However, from the definition of collection specification, we could see that, adding more delivery relation for the forgotten operations does not changing the operation context any more, and also does not change the operation set can be removed any more.
+%\noindent {\bf Causal Delivery}: The succinct reference implementation of a collection with causal delivery is given as an LTS $\mathit{SRImp}(\mathit{Spec})_{\mathit{cd}} = (Q,\Sigma,\rightarrow_{\mathit{cd}},q_0)$. $\mathit{CRImp}(\mathit{Spec})_{\mathit{cd}}$ can be obtained from $\mathit{SRImp}(\mathit{Spec}) = (Q,\Sigma,\rightarrow_s,q_0)$ by changing the $\mathit{addDel}$ transition rule as follows: $q_1 {\xrightarrow{\mathit{addDel}(o,r)}}_{cd} q_2$ if $q_1 {\xrightarrow{\mathit{addDel}(o,r)}}_s q_2 \wedge o$ is minimal w.r.t $<_{hb}$ among operations not in $\mathit{visTo}(O,r,\mathit{vis})$. %visible to replica $r$ nor operation of replica $r$ in $q_1 \}$.
+%Note that, for the operations been forgotten, we can not control their delivery. However, from the definition of collection specification, we could see that, adding more delivery relation for the forgotten operations does not changing the operation context any more, and also does not change the operation set can be removed any more.
 
 
 
