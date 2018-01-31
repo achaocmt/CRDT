@@ -78,12 +78,11 @@ We require $\mathit{ro}$ to not relate operations with different replica identif
 We also require that for each operation $o \in O$,
 $\mathit{ro}^{-1}(o)$ is finite, meaning that the past of any replica
 is only finite.
-\fxwarning*{Check that everything is defined before}{
-An example of a history of a CRDT maintaining a list of elements is shown in
+\fxwarning*{Check that everything is defined before}{\color {red}
+An example of a history of a CRDT of list is shown in
 \figurename~\ref{fig:history, annotated history and operation context} (a).
-This history contains a set of insert operations, e.g., $+(a,1)$ adding element $a$
-on position 1, and read operations returning a snapshot of the list, e.g., $r\Rightarrow b\cdot a \cdot c$
-returning the list $b\cdot a \cdot c$. These operations are submitted to two replicas.}
+The $\mathit{add}(a,1)$ operation intends to add element $a$
+on position 1 of the list of current replica, and $\mathit{read}(b\cdot a \cdot c)$ operations returns a snapshot of the list, e.g., $r\Rightarrow b\cdot a \cdot c$. These operations are submitted to two replicas.}
 
 While histories provide the means to describe the behaviors of CRDTs,
 they are insufficient to describe the effects of the delivery
@@ -116,7 +115,9 @@ will determine the order in which the operations should be applied by
 all replicas, hence guaranteeing convergence.
 The order $\mathit{arb}$ plays this role in the definition of
 annotated histories.
-\fxnote{GP: Why only update at this point?. Add the cite to Burckhardt.}
+\fxnote{GP: Why only update at this point?. Add the cite to Burckhardt.} \fxwarning{GP: \c@Chao explain or remove}
+{\color {red}The annotated history for history of \figurename~\ref{fig:history, annotated history and operation context} (a) is given in \figurename~\ref{fig:history, annotated
+history and operation context} (b). $(\mathit{add}(a,1),\mathit{add}(d,4))$ in visibility represents that $\mathit{add}(a,1)$ is visible when submitting $\mathit{add}(d,4))$.}
 %
 
 % {\color {red} Visibility relation tells how update operations are
@@ -124,9 +125,11 @@ annotated histories.
 %   are used to determine return values on each replica, such as list
 %   order in \cite{Attiya:2016} or time stamp order.}
 % We further require that for each operation $o \in O$, $\mathit{vis}^{-1}(o)$ is finite.
-\fxwarning{GP: \c@Chao explain or remove}
-{\color {red}The annotated history for history of \figurename~\ref{fig:history, annotated history and operation context} (a) is given in \figurename~\ref{fig:history, annotated
-history and operation context} (b).} % with arbitration order $\mathit{add}(b,1) \cdot \mathit{add}(c,2) \cdot \mathit{add}(a,1)$.}
+
+%\fxwarning{GP: \c@Chao explain or remove}
+%{\color {red}The annotated history for history of \figurename~\ref{fig:history, annotated history and operation context} (a) is given in \figurename~\ref{fig:history, annotated
+%history and operation context} (b). $(\mathit{add}(a,1),\mathit{add}(d,4))$ in visibility represents that $\mathit{add}(a,1)$ is visible when submitting $\mathit{add}(d,4))$.} % with arbitration order $\mathit{add}(b,1) \cdot \mathit{add}(c,2) \cdot \mathit{add}(a,1)$.}
+
 %\begin{itemize}
 %\setlength{\itemsep}{0.5pt}
 %\item[-] $O$ is a set of operations.
@@ -140,9 +143,11 @@ history and operation context} (b).} % with arbitration order $\mathit{add}(b,1)
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.75 \textwidth]{figures/PIC-his-anhis-context.pdf}
+  \includegraphics[width=0.9 \textwidth]{figures/PIC-his-anhis-context-1.pdf}
 %\vspace{-10pt}
-  \caption{A history, an annotated history, and an operation context. Here $+(a,1)$ represents $\mathit{add}(a,1)$, $r(b \cdot a \cdot c)$ represents $\mathit{read}(b \cdot a \cdot c)$; $+a_1$ and $-a_1$ represents $\mathit{add}(a)$ and $\mathit{rem}(a)$, respectively, while the subscript number is used to distinguish different $\mathit{add(a)}$; $(a,\surd)$ represents $\mathit{contains}(a,\mathit{true})$. In annotated history (b), we use arbitration order $\mathit{add}(b,1) \cdot \mathit{add}(a,1) \cdot \mathit{add}(c,1) \cdot \mathit{add}(d,4)$. Assume that the visibility relation contains the replica order.}
+  \caption{{\color {red}A history of list, its annotated history, and an operation context of $\mathit{add}(d,4)$.}} 
+  
+  %Here $+(a,1)$ represents $\mathit{add}(a,1)$, $r(b \cdot a \cdot c)$ represents $\mathit{read}(b \cdot a \cdot c)$; $+a_1$ and $-a_1$ represents $\mathit{add}(a)$ and $\mathit{rem}(a)$, respectively, while the subscript number is used to distinguish different $\mathit{add(a)}$; $(a,\surd)$ represents $\mathit{contains}(a,\mathit{true})$. In annotated history (b), we use arbitration order $\mathit{add}(b,1) \cdot \mathit{add}(a,1) \cdot \mathit{add}(c,1) \cdot \mathit{add}(d,4)$. Assume that the visibility relation contains the replica order.}
   \label{fig:history, annotated history and operation context}
 \end{figure}
 
@@ -160,7 +165,7 @@ $(O,<,\mathit{arb})$, where $O$ is a set of update operations, $<$ is
 a pre-order a subset of $O$ such that $o \notin O$ and $\mathit{arb}$
 is an irreflexive total order over a subset of the update
 operations\footnote{Notice that unlike~\cite{Burkhardt:2014}, we
-  consider that $o \notin O$.} of $O \cup \{o\}$.
+  consider that $o \notin O$. } of $O \cup \{o\}$.
 %
 \fxnote{GP: Have no idea why!}
 %
@@ -171,14 +176,14 @@ visible to the operating through $\mathit{vis}$.
 We can now formally define the specification function $\mathit{Spec}$
 as in~\cite{Burkhardt:2014}.
 $\mathit{Spec}$ takes an operation name $m \in \mathbb{B}$, arguments
-$a$, and a context $(O, <, \mathit{arb})$, and it returns a value $b$:
+$a$, and {\color {red}a context $(O, <, \mathit{arb})$ of operation $o$}, and it returns a value $b$:
 $\mathit{Spec}(m, a, (O, <, \mathit{arb})) = b$.
 %
 We shall in the rest of the paper overload the function name
 $\mathit{Spec}$ parameterized lables and adopt the notation $Spec(m(a)
 \Rightarrow b)$ to denote the set of contexts that generate that
 label, that is:
-\[Spec(m(a) \Rightarrow b) \triangleq \{\ (O, <, \mathit{arb})\ |\ Spec(m, a, (O, <, \mathit{arb})) = b\ \}\]
+\[Spec(m(a) \Rightarrow b) \triangleq \{\ (O, <, \mathit{arb})\ |\ Spec(m, a, (O, <, \mathit{arb})) = b\ \wedge \mathit{lab}(o)=m(a) \Rightarrow b\}\]
 %
 We recall at this point that since specifications are deterministic,
 $\mathit{Spec}$ is a function.
