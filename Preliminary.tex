@@ -152,7 +152,7 @@ history and operation context} (b). $(\mathit{add}(a,1),\mathit{add}(d,4))$ in v
 \end{figure}
 
 
-Following~\cite{Burkhardt:2014} we provide the formal specification of
+Following~\cite{Burckhardt:2014} we provide the formal specification of
 CRDT by means of a specification function $\mathit{Spec}$ which takes
 an operation name, a set of arguments corresponding to the arity and
 the types of the operation, and a \emph{context} representing the
@@ -164,17 +164,17 @@ The context of an operation $o$ here is a triple of the form
 $(O,<,\mathit{arb})$, where $O$ is a set of update operations, $<$ is
 a pre-order a subset of $O$ such that $o \notin O$ and $\mathit{arb}$
 is an irreflexive total order over a subset of the update
-operations\footnote{Notice that unlike~\cite{Burkhardt:2014}, we
+operations\footnote{Notice that unlike~\cite{Burckhardt:2014}, we
   consider that $o \notin O$. } of $O \cup \{o\}$.
 %
 \fxnote{GP: Have no idea why!}
 %
 The intuitive meaning of the relation $<$ is that encodes the
-happens-before relation~\cite{Lamport} over the updates that are
+happens-before relation~\cite{Lamport:1978} over the updates that are
 visible to the operating through $\mathit{vis}$.
 
 We can now formally define the specification function $\mathit{Spec}$
-as in~\cite{Burkhardt:2014}.
+as in~\cite{Burckhardt:2014}.
 $\mathit{Spec}$ takes an operation name $m \in \mathbb{B}$, arguments
 $a$, and a context $(O, <, \mathit{arb})$, and it returns a value $b$
 (written $\mathit{Spec}(m, a, (O, <, \mathit{arb})) = b$).

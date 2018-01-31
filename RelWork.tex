@@ -1,4 +1,3 @@
-
 \section{Related Work}
 \label{sec:related-work}
 
@@ -8,12 +7,38 @@ under diverse delivery assumptions of the underlying network.
 %
 
 There have been many efforts in formalizing the semantics of
-replicated data types~\cite{Burckhardt:2014,Burckhardt14b,ZellerBP14}.
+replicated data types~\cite{Burckhardt:2014,Burckhardt:2014b,ZellerBP14}.
 %
-Unlike these approaches, our proofs are based on standard simulation
-arguments, common to proofs in programming languages
+Unlike the approach in~\cite{Burckhardt:2014,Burckhardt:2014b}, our
+proofs are based on standard simulation arguments, common to proofs in
+programming languages.
+%
 
+In~\cite{ZellerBP14}, the proofs provided are based on state-based
+implementations of CRDTs, our work is concerned with operation-based
+implementations.
+%
+Moreover, ~\cite{ZellerBP14} does not have a proof of RGA~\cite{RohJKL11}.
 
+An important difference between our work and the aforementioned is
+that to be able to express a simulation relation, we need to export at
+the level of the operational specification the delivery assumptions of
+the system.
+%
+In turn this means that our proofs are with respect to a more concrete
+specification than these other works, since the delivery assumptions
+are not apparent in their specifications.
+%
+We will consider in future work how to prove that out reference
+semantics preserves the specifications \'a la~\cite{Burckhardt:2014}
+where the delivery conditions have been removed.
+%
+
+There are works on the verification of program properties about
+CRDTs~\cite{GotsmanYFNS16}.
+%
+We consider our work to be orthogonal to
+those.
 
 %%% Local Variables:
 %%% mode: latex
