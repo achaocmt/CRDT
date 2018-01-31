@@ -172,10 +172,9 @@ To abstract CRDT implementations that assume causal delivery of messages (which 
 
 %The reference implementation with causal delivery of $Spec$ is given as an LTS $RImp(Spec)_{\mathit{cd}} = (Q,\Sigma,q_0,\rightarrow)$. $RImp_{\mathit{cd}}(Spec)$ can be obtained from $RImp(Spec)$ by only changing the transition rules of delivery into the following:
 
-\begin {itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] $\begin{array}{l c} \bigfrac{o \in O\quad o\mbox{ is minimal w.r.t $<_{\mathit{hb}}$ in }\{ o' \vert o' \in O \wedge o' \notin \mathit{visTo}(O,r,\mathit{del}) \}} {(O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{addDel(o,r)}} (O,\mathit{ro},\mathit{del} \cup \{ (o,r) \},\mathit{arb})} \end{array}$
-\end{itemize}
+\medskip
+%\setlength{\itemsep}{0.5pt}
+$\begin{array}{l c} \bigfrac{o \in O\quad o\mbox{ is minimal w.r.t $<_{\mathit{hb}}$ in }\{ o' \vert o' \in O \wedge o' \notin \mathit{visTo}(O,r,\mathit{del}) \}} {(O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{addDel(o,r)}} (O,\mathit{ro},\mathit{del} \cup \{ (o,r) \},\mathit{arb})} \end{array}$
 
 %The following lemma states that $RImp(Spec)_{\mathit{cd}}$ contains all the traces of $RImp(Spec)$ that are causal delivery. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
 

@@ -3,15 +3,8 @@
 \section{Succinct Reference Implementations of Collection Data Types}
 \label{sec:succinct reference implementations of collection data types}
 
-{\color {red}
-\begin{remark}
-\label{remark: RImp for list}
-To comply with the simplification in next section, in construction $\mathit{RImp}(S_{\mathit{list}})$, in state $(Q,\mathit{ro},\mathit{del},\mathit{vis})$, elements of $Q$ are not a complete operations, they are without argument $\mathit{pos}$. Or we could say, elements of $Q$ are $(\ell,r,i)$ where $\ell$ is ${add}(a)$ or $\mathit{rem}(a)$ for $a \in \mathbb{R}$.
-\end{remark}
-}
-
-
-For a class of specifications called collection, we can further simplify the annotated history in states of $\mathit{RImp}(\mathit{Spec})$. OR-set locates in this class, and \figurename~\ref{fig:succinct reference implementation for OR-set} is a simplified version for the same states and transitions of \figurename~\ref{fig:reference implementation for OR-set}. For example, in state $q_1$ of \figurename~\ref{fig:reference implementation for OR-set}, each replica sees $+a_1$ and has a corresponding $\mathit{rem}(a)$ in $\mathit{FstRem}(+a_1)$ ($-a_1$ and $-a_2$). Therefore $+a_1$ is redundant and could be forgotten, and so does its corresponding $\mathit{rem}$ $-a_1$. However, $-a_2$ can not be forgotten since it is also a corresponding $\mathit{rem}$ of $+a_2$, and forgetting $-a_2$ will influence $+a_2$. Therefore, we simplify $q_1$ by forgetting $+a_1$, $-a_1$ and related relations, even when $-a_1$ is still not delivered to replica $r_2$. The process of simplify state $q_3$ of \figurename~\ref{fig:reference implementation for OR-set} is similar.
+We define a class of reference implementations, that compared to the ones defined in Section~\ref{sec:reference implementation} are allowed to ``forget'' update operations when they become obsolete. Such implementations can be defined for some class of data types that we call \emph{collections} where the set of update methods consists of a method $\mathit{add}$ used to add elements to the collection and a method $\mathit{rem}$ used to remove elements from the collection. Roughly, an add of an element $a$ becomes obsolete when itself and at least one remove operation that removes $a$ have been delivered to all replicas. Also, a remove of an element $a$ becomes obsolete when itself and all the adds of element $a$ visible to it have been delivered to all replicas. For example, in the case of the OR-set data type, in state $q_1$ of \figurename~\ref{fig:reference implementation for OR-set}, each replica sees $add(a)_1$ and a corresponding remove $\mathit{rem}(a)$ ($rem(a)_1$ and respectively, $rem(a)_2$). Therefore, $add(a)_1$ is redundant and could be forgotten, and so does its corresponding remove $rem(a)_1$. However, $rem(a)_2$ cannot be forgotten since $add(a)_2$ was also visible when it was submitted and forgetting it will lead to incorrect behaviors when $add(a)_2$ is delivered ($a$ will remain in the set since the remove operation $rem(a)_2$ will never be delivered). We formalize the criteria that define obsolete operations and we show that a reference implementation that forgets such operations is equivalent (w.r.t. the set of generated histories) to the original one.
+% it also a corresponding $\mathit{rem}$ of $+a_2$, and forgetting $-a_2$ will influence $+a_2$. Therefore, we simplify $q_1$ by forgetting $+a_1$, $-a_1$ and related relations, even when $-a_1$ is still not delivered to replica $r_2$. The process of simplify state $q_3$ of \figurename~\ref{fig:reference implementation for OR-set} is similar.
 
 \begin{figure}[t]
   \centering
@@ -91,6 +84,14 @@ OR-set specification $S_{\mathit{ORS}}$ is a collection specification.
 
 %\noindent {\bf Example 5. Distributed list}: Distributed list is a collection specification. %, while $add$ is the ADD method, and $rem$ is the REMOVE method. Given an operation $o_a \in O$ with $lab(o_a)=add(a,pos)$, $f_R(O,\mathit{vis},o_a) = \{ rem(a) \in O \}$.
 %The following lemma states that our definition of $\mathit{FstRem}$ for distributed list satisfies the requirements. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section reference implementation}.
+
+
+{\color {red}
+\begin{remark}
+\label{remark: RImp for list}
+To comply with the simplification in next section, in construction $\mathit{RImp}(S_{\mathit{list}})$, in state $(Q,\mathit{ro},\mathit{del},\mathit{vis})$, elements of $Q$ are not a complete operations, they are without argument $\mathit{pos}$. Or we could say, elements of $Q$ are $(\ell,r,i)$ where $\ell$ is ${add}(a)$ or $\mathit{rem}(a)$ for $a \in \mathbb{R}$.
+\end{remark}
+}
 
 
 \begin{lemma}
