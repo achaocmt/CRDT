@@ -1,63 +1,65 @@
 %!TEX root = draft.tex
 
-\section{Implementation}
+\section{CRDT Implementations}
 \label{sec:implementation}
 
-In CRDT algorithm, each replica has a local state. When a replica do a operation, it is done locally without synchronization with other replica. If this is an update operation, then this replica will broadcast a message to all other replicas. Let $\mathbb{L}$ be the set of local state, and $\mathbb{MSG}$ be the set of messages. Each message is of the form $(d,r_s,r_d)$ where $r_s \in \mathbb{R}$ is the identifier of replica that generates this message, and $r_d \in \mathbb{R}$ is the destination replica identifier of this message. A CRDT implementation $\mathit{imp}$ is defined as a tuple $(\rightarrow_o,\rightarrow_m,d_0,f_{\mathit{arb}}, \Sigma_e)$, where
+CRDT implementations can be viewed as communicating state machines where each state machine models the behavior of one replica. Each operation submitted to a replica updates the local state of that replica before being broadcasted to all the other replicas, in the case of update operations.
+
+Let $\mathbb{L}$ be the set of replica states and $\mathbb{MSG}$ the set of messages. Each message is of the form $(d,r_s,r_d)$ where $d$ is the payload, $r_s \in \mathbb{R}$ is the identifier of the sender, and $r_d \in \mathbb{R}$ is the identifier of the receiver. A CRDT implementation $\mathit{Imp}$ is defined as a tuple $(\rightarrow_o,\rightarrow_m,d_0,f_{\mathit{arb}}, \Sigma_e)$, where
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\rightarrow_o: \mathbb{L} \times \mathbb{M} \times \mathbb{D} \times \mathbb{R} \rightarrow \mathbb{L} \times \mathbb{D} \times \mathit{Pow}(\mathbb{MSG})$ shows how method update local state and generate messages. $(d,m,a,r) \rightarrow_o (d',b,\mathit{mgs})$ represents that, when the local state of replica $r$ is $d$, if we call method $m$ with argument $a$ in replica $r$, then we obtain return value $b$, change the local state of replica $r$ into $d'$, and generate a set $\mathit{mgs}$ of messages. Here $\mathit{Pow}(\mathbb{MSG})$ is the power set of $\mathbb{MSG}$. If $m \in \mathbb{U}$, then $\mathit{mgs} = \{ (x,r,r') \vert r' \in \mathbb{R} \wedge r \neq r' \}$ for some $x$. Otherwise, $\mathit{mgs} = \emptyset$. The violation of pre-condition of method is modeled by mapping to $\mathit{undef}$.
+\item[-] $\rightarrow_o: \mathbb{L} \times \mathbb{M} \times \mathbb{D} \times \mathbb{R} \rightarrow \mathbb{L} \times \mathbb{D} \times 2^{\mathbb{MSG}})$ shows how operations update the local state of the replica and generate messages (to be broadcasted to the other replicas). A transition $(d,m,a,r) \rightarrow_o (d',b,\mathit{mgs})$ means that an invocation of $m$ with input $a$ updates the replica state from $d$ to $d'$, returns value $b$, and generates the set of messages $\mathit{mgs}$. 
+%represents that, when the local state of replica $r$ is $d$, if we call method $m$ with argument $a$ in replica $r$, then we obtain return value $b$, change the local state of replica $r$ into $d'$, and generate a set $\mathit{mgs}$ of messages. Here $\mathit{Pow}(\mathbb{MSG})$ is the power set of $\mathbb{MSG}$. 
+If $m \in \mathbb{U}$, then $\mathit{mgs} = \{ (x,r,r') \vert r' \in \mathbb{R} \wedge r \neq r' \}$ for some payload $x$. Otherwise, $\mathit{mgs} = \emptyset$. 
+%The violation of pre-condition of method is modeled by mapping to $\mathit{undef}$.
 
-\item[-] $\rightarrow_m: \mathbb{L} \times \mathbb{R} \times \mathbb{MSG} \rightarrow \mathbb{L}$. $(d,r,\mathit{msg}) \rightarrow_m d'$ represents that, if the local state of replica $r$ is $d$ and we apply message $\mathit{msg}$, then we obtain local state $d'$. The violation of pre-condition of applying a message is modeled by mapping to $\mathit{undef}$.
+\item[-] $\rightarrow_m: \mathbb{L} \times \mathbb{R} \times \mathbb{MSG} \rightarrow \mathbb{L}$ shows how the replica state is updated when a message is received. A transition $(d,r,\mathit{msg}) \rightarrow_m d'$ means that ``applying'' the message $\mathit{msg}$ updates the replica state from $d$ to $d'$
+% if the local state of replica $r$ is $d$ and we apply message $\mathit{msg}$, then we obtain local state $d'$. The violation of pre-condition of applying a message is modeled by mapping to $\mathit{undef}$.
 
 \item[-] $d_0 \in \mathbb{L}$ is the initial local state.
 
-\item[-] $f_{\mathit{arb}}$ takes the local states of each replica, and a set of messages as arguments, and returns a total order over elements, while each element represents an operation. Let $\Sigma_e$ be the set of such elements.
-
+\item[-] the function $f_{\mathit{arb}}$ takes the local states of all replicas and a set of messages, and returns a total order over a set of operations in $\Sigma_e$. %Let $\Sigma_e$ be the set of such elements.
+%
     %To do this, we need a method to extract elements from local states and messages. Let the set of extracted elements to be $\Sigma_e$.
-
+%
 %\item[-] $f_{o}: \Sigma_{\mathtt{RD}}^{\vert \mathbb{R} \vert} \times Pow(\mathbb{MSG}) \Rightarrow Pow(\Sigma_o)$, where $\Sigma_o$ is a set of elements and each element represents an operation. Given replica data of each replica, $f_{o}$ is used to obtain the ``operations'' known by current state of implementation.
-
+%
 %\item[-] $f_{arb}: \Sigma_{\mathtt{RD}}^{\vert \mathbb{R} \vert} \times Pow(\mathbb{MSG}) \Rightarrow \Sigma_o^*$. Given replica data of each replica and messages, $f_{arb}$ is used to obtain the arbitration relation.
 \end{itemize}
 
 
-The semantics of $\mathit{imp}$ is given as an LTS $\mathit{Sem}(\mathit{imp}) = (Q,\Sigma,\rightarrow,q_0)$, where
+The semantics of $\mathit{Imp}$ is given as an LTS denoted $[|\mathit{Imp}|] = (Q,\Sigma,\rightarrow,q_0)$, where
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] Each state $(\mathit{data},\mathit{msgs}) \in Q$ contains two tuples: $\mathit{data}: \mathbb{R} \rightarrow \mathbb{L}$ is the local state of each replica, $\mathit{msgs} \subseteq \mathbb{MSG}$ is the set of messages that are waiting to be applied.
+\item[-] Each state $(\mathit{data},\mathit{msgs}) \in Q$ contains a tuple of replica states $\mathit{data}: \mathbb{R} \rightarrow \mathbb{L}$ and a set of messages $\mathit{msgs} \subseteq \mathbb{MSG}$ in transit (not yet received).
 
-\item[-] $\Sigma$ contains two kinds of transition labels. $m(a,b,r,\mathit{arb})$ represents that a $m(a) \Rightarrow b$ operation is done in replica $r$ and the arbitration order is changed into $\mathit{arb}$. $\mathit{apply}(\mathit{msg})$ represents applying message $\mathit{msg}$.
+\item[-] $\Sigma$ contains two kinds of transition labels: $m(a,b,r,\mathit{arb})$ represents that a $m(a) \Rightarrow b$ operation is done in replica $r$ and the arbitration order is changed into $\mathit{arb}$, and $\mathit{apply}(\mathit{msg})$ means applying message $\mathit{msg}$.
 
-\item[-] $\rightarrow$ is the transition relation and is defined as follows:
+\item[-] the transition relation $\rightarrow$ is defined as follows:
 
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-]
+\medskip
+    $\begin{array}{l c} \bigfrac{ (\mathit{data}(r),m,a,r) \rightarrow_o (d,b,\mathit{mgs}'), \mathit{msgs} \cap \mathit{mgs}' = \emptyset, f_{\mathit{arb}}((\mathit{data}[r:= d], \mathit{msgs} \cup \mathit{mgs}')) = \mathit{arb}} {(\mathit{data},\mathit{msgs}) {\xrightarrow{(m,a,b,r,\mathit{arb})}} (\mathit{data}[r:=d], \mathit{msgs} \cup \mathit{mgs}')} \end{array}$
 
-    $\begin{array}{l c} \bigfrac{ (\mathit{data}[r],m,a,r) \rightarrow_o (d,b,\mathit{mgs}'), \mathit{msgs} \cap \mathit{mgs}' = \emptyset, f_{\mathit{arb}}((\mathit{data}[r:d], \mathit{msgs} \cup \mathit{mgs}')) = \mathit{arb}} {(\mathit{data},\mathit{msgs}) {\xrightarrow{(m,a,b,r,\mathit{arb})}} (\mathit{data}[r:d], \mathit{msgs} \cup \mathit{mgs}')} \end{array}$
+\medskip
+    $\begin{array}{l c} \bigfrac{ \mathit{msg} = (\_,\_,r) \in \mathit{msgs},(\mathit{data}(r),r,\mathit{msg}) \rightarrow_m d } {(\mathit{data},\mathit{msgs}) {\xrightarrow{\mathit{apply}(\mathit{msg})}} (\mathit{data}[r:=d],\mathit{msgs} - \{ \mathit{msg} \})} \end{array}$
 
-    \item[-] When a message is applied, we remove it from $\mathit{msgs}$.
-
-    $\begin{array}{l c} \bigfrac{ \mathit{msg} = (\_,\_,r) \in \mathit{msgs},(\mathit{data}[r],r,\mathit{msg}) \rightarrow_m d } {(\mathit{data},\mathit{msgs}) {\xrightarrow{\mathit{apply}(\mathit{msg})}} (\mathit{data}[r:d],\mathit{msgs} - \{ \mathit{msg} \})} \end{array}$
-    \end{itemize}
-
+\medskip
+Above, $\mathit{data}[r:=d]$ denotes the function $\mathit{data}$ where only the local state of $r$ is changed to $d$.
 \item[-] $q_0 = (data_0,\emptyset)$ is the initial state, $data_0$ maps each replica identifier into $d_0$.
 \end{itemize}
 
-An trace of $\mathit{imp}$ satisfies causal delivery, if given $o_1 <_{\mathit{hb}} o_2$, then we can apply message generated by $o_2$ on a replica, if the message generated by $o_1$ has already been applied on this replica. The semantics of $\mathit{imp}$ with causal delivery is given as an LTS $\mathit{Sem}(\mathit{imp})_{\mathit{cd}}$, and we give its detailed definition in Appendix \ref{sec:appendix definitions and proofs of section implementation}. Each state of $\mathit{Sem}(\mathit{imp})_{\mathit{cd}}$ is a tuple $(\mathit{data},\mathit{msgs},\mathit{msghb})$. Here $\mathit{msghb}$ record the happen-before relation between messages with same destination replica, and we can only apply a minimal messages of $\mathit{msgs}$ w.r.t $\mathit{msghb}$.
+A trace of $[|\mathit{Imp}|]$ satisfies causal delivery if given $o_1 <_{\mathit{hb}} o_2$, the message generated by $o_2$ can be applied on a replica only if the message generated by $o_1$ has already been applied on this replica. The formalization of a version of $[|\mathit{Imp}|]$, denoted by $[|\mathit{Imp}|]_{cd}$, that satisfies causal delivery is given in Appendix \ref{sec:appendix definitions and proofs of section implementation}. Each state of $[|\mathit{Imp}|]_{cd}$ stores also a happens-before order between messages in $\mathit{msgs}$ sent to the same replica and the $\mathit{apply}(\mathit{msg})$ transitions are enabled only when $\mathit{msg}$ is minimal in this happens-before order.
 
 
 
-
-\noindent {\bf Example 6. OR-set algorithms of \cite{Shapiro:2011}}: The OR-set algorithm maintain tags each input value with a unique identifier. The observable pairs of value and identifiers are putted in a set $S$. To do $\mathit{rem}(a)$, all associated tags associated with $a$ in $S$ will be removed from $S$. This algorithm assumes causal delivery. The implementation $(\rightarrow_o,\rightarrow_m,d_0,f_{\mathit{arb}}, \Sigma_e)$ is defined as follows:
+\noindent {\bf Example 6 [OR-set algorithm~\cite{Shapiro:2011}]} The OR-set algorithm tags each value added to the set with a unique identifier. A replica stores in a set $S$ the tagged values that are generated when the client submits an $add$ operation or which are received from other replicas. A $\mathit{rem}(a)$ operation submitted at a replica $r$ removes all tagged versions of $a$ which are visible to $r$ when the operation is submitted. This algorithm assume causal delivery of messages. Formally, this implementation is defined by $(\rightarrow_o,\rightarrow_m,d_0,f_{\mathit{arb}}, \Sigma_e)$ where
 
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\mathbb{L} = \{ (S,\mathit{ctr}) \vert S \subseteq \mathbb{D} \times (\mathbb{R} \times \mathbb{N}), \mathit{ctr} \in \mathbb{N} \}$. Elements of $S$ are of form $(a,\mathit{id})$, and $\mathit{ctr}$ is per-replica counter to make $\mathit{id}$ unique.
+\item[-] $\mathbb{L} = \{ (S,\mathit{ctr}) \vert S \subseteq \mathbb{D} \times (\mathbb{R} \times \mathbb{N}), \mathit{ctr} \in \mathbb{N} \}$. The elements of $S$ are of the form $(a,\mathit{id})$, and $\mathit{ctr}$ is a per-replica counter used to generate unique identifiers $\mathit{id}$ for values.
 
 \item[-] $(S,\mathit{ctr}) \xrightarrow[\mathit{mgs} = \{ (a,\mathit{id},r,r') \vert r' \neq r \}]{(\mathit{add},a,r)}_o (S \cup \{ (a,\mathit{id}) \}, \mathit{ctr}+1)$ and $\mathit{id} = (r,\mathit{ctr})$.
 
@@ -81,7 +83,10 @@ An trace of $\mathit{imp}$ satisfies causal delivery, if given $o_1 <_{\mathit{h
 
 
 
-\noindent {\bf Example 7. Replicated growable array (RGA, for short) of \cite{Attiya:2016}}: Each replica stores a set $N$ of tuples $(a,t,p)$, where $a$ is input identifier, $t$ is its unique time stamp, and $p$ is the time stamp of its parent. Let $\circ$ be a special time stamp value represents root. The elements of $N$ is required to form a time stamped insertion tree (TI tree, for short), while the parent of each element in $N$ is still in $N$, each element of $N$ can tract to root by several times of checking parent field, and the time stamp of parent is less than its descendants. We can see that the union of multiple TI tree is also a TI tree.  In RGA algorithm, each replica also manage a tombstone $T$, which are set of identifiers. Let the order of time stamp be: $(x_1,r_1) <_{\mathit{ts}} (x_2,r_2)$, if $x_1 < x_2 \vee (x_1 = x_2 \wedge r_1 < r_2)$. Let $\mathit{ts}(N)$ returns the set of time stamp in $N$, let $\mathit{trav}(N,T)$ be the sequences obtained by traversing $N$ with prefix order (visit the children in decreasing time stamp order) and then returns identifiers of nodes that are not in $T$.
+\noindent {\bf Example 7 [Replicated growable array (RGA, for short)~\cite{Attiya:2016}]} Each replica stores a set $N$ of tuples $(a,t,p)$, where $a$ is an input value added to the array, $t$ is its unique timestamp, and $p < t$ is the timestamp of its ``parent''. The elements of $N$ are required to form a tree by following the ``parent'' field (a special time stamp value $\circ$ represents the root). 
+%Let $\circ$ be a special time stamp value representing the root. The elements of $N$ are required to form a time stamped insertion tree (TI tree, for short), while the parent of each element in $N$ is still in $N$, each element of $N$ can tract to root by several times of checking parent field, and the time stamp of parent is less than its descendants. 
+%We can see that the union of multiple TI tree is also a TI tree.  
+Each replica also manages a set of ``tombstones'' $T$, which are identifiers of values that were removed from the array. We define an order $<_{\mathit{ts}}$ between timestamps by $(x_1,r_1) <_{\mathit{ts}} (x_2,r_2)$ iff $x_1 < x_2 \vee (x_1 = x_2 \wedge r_1 < r_2)$. Let $\mathit{ts}(N)$ be the set of timestamps in $N$ and let $\mathit{trav}(N,T)$ be the sequences obtained by traversing $N$ in prefix order (children are visited in decreasing timestamp order) and keeping only identifiers of nodes that are not in $T$.
 
 
 
