@@ -106,7 +106,7 @@ an irreflexive and acyclic relation over $O$ representing for each
 operation the set of operations which can affect its result
 (essentially for $o$, these are the operations that are in
 $\mathit{vis}^{-1}(o)$); and $\mathit{arb}$, the arbitration order, is
-a irreflexive total order over a subset of the update operations of
+an irreflexive total order over a subset of the update operations of
 $O$.
 An important aspect of CRDTs is that in the presence of conflicting
 operations (that is operations which if executed in different order
@@ -153,7 +153,7 @@ history and operation context} (b). $(\mathit{add}(a,1),\mathit{add}(d,4))$ in v
 
 
 Following~\cite{Burkhardt:2014} we provide the formal specification of
-CRDTs by means of a specification function $\mathit{Spec}$ which takes
+CRDT by means of a specification function $\mathit{Spec}$ which takes
 an operation name, a set of arguments corresponding to the arity and
 the types of the operation, and a \emph{context} representing the
 information available to the replica executing the operation.
@@ -176,17 +176,23 @@ visible to the operating through $\mathit{vis}$.
 We can now formally define the specification function $\mathit{Spec}$
 as in~\cite{Burkhardt:2014}.
 $\mathit{Spec}$ takes an operation name $m \in \mathbb{B}$, arguments
-$a$, and {\color {red}a context $(O, <, \mathit{arb})$ of operation $o$}, and it returns a value $b$:
-$\mathit{Spec}(m, a, (O, <, \mathit{arb})) = b$.
+$a$, and a context $(O, <, \mathit{arb})$, and it returns a value $b$
+(written $\mathit{Spec}(m, a, (O, <, \mathit{arb})) = b$).
+%
+Moreover, assuming that the resulting operation from the call to
+$m(a)$ will be given the operation identifier $o \in \mathbb{O}$, we
+assume that $o\notin O$ (hence $lab(o) = m(a) \Rightarrow b$), and
+that $o$ can occur in $\mathit{arb}$.
 %
 We shall in the rest of the paper overload the function name
-$\mathit{Spec}$ parameterized lables and adopt the notation $Spec(m(a)
-\Rightarrow b)$ to denote the set of contexts that generate that
-label, that is:
-\[Spec(m(a) \Rightarrow b) \triangleq \{\ (O, <, \mathit{arb})\ |\ Spec(m, a, (O, <, \mathit{arb})) = b\ \wedge \mathit{lab}(o)=m(a) \Rightarrow b\}\]
+$\mathit{Spec}$ parameterized by labels, and adopt the notation
+\mbox{$Spec(m(a) \Rightarrow b)$} to denote the set of contexts that
+generate that label, that is:
+\[Spec(m(a) \Rightarrow b) \triangleq \{\ (O, <, \mathit{arb})\ |\
+  Spec(m, a, (O, <, \mathit{arb})) = b\ \}\]
 %
 We recall at this point that since specifications are deterministic,
-$\mathit{Spec}$ is a function.
+$\mathit{Spec}$ is a %%functi.
 
 % As in~Burkhardt:2014} we require specifications to be deterministic.
 % {\color {red}Similarly as in \cite{Burckhardt:2014}, in defining specification, we use the notion of operation context, which contains all information necessary to ensure the correctness of an operation.} A operation context of a operation $o$ is a tuple $(O,<,\mathit{arb})$, where $O$ is a set of update operations, $<$ is a relation over $O$, $o \notin O$, and $\mathit{arb}$ is a irreflexive total order over a subset of update operations of $O \cup \{ o \}$. {\color {red}Here we modified that of \cite{Burckhardt:2014} by making $o \notin O$ itself also contained in the arbitration order. This feature is used to deal with list specification.} A specification $\mathit{Spec}$ is a function that maps each operation label $\ell$ into a set of elements, while each of them is a operation context $(O,<,\mathit{arb})$ for some operation $o$ with $\mathit{lab}(o) = \ell$. {\color {red}
