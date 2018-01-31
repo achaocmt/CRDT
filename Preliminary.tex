@@ -64,23 +64,24 @@ execution over a CRDT, we will define the notion of \emph{history}.
 %
 A history contains a set of operations, and the order in which
 they were effected in each replica.
-% 
-Formally, histories are tuples of the form $(O,\mathit{ro})$ where $O$ is a set of
-operations, and $\mathit{ro}$ is the replica order. 
+%
+Formally, a history $h$ is a tuple of the form $h = (O,\mathit{ro})$
+where $O$ is a set of operations, and $\mathit{ro}$ is the replica
+order.
 %
 For each replica $r \in \mathbb{R}$, $\mathit{ro}|_{r}$ (that is the
 projection of $ro$ to operations of replica $r$) is an irreflexive
 total order over all the operations with replica identifier $r$.
 %
-We require $\mathit{ro}$ to not relate operations with different replica identifier. 
+We require $\mathit{ro}$ to not relate operations with different replica identifier.
 %
 We also require that for each operation $o \in O$,
 $\mathit{ro}^{-1}(o)$ is finite, meaning that the past of any replica
 is only finite.
-An example of a history of a CRDT maintaining a list of elements is shown in 
+An example of a history of a CRDT maintaining a list of elements is shown in
 \figurename~\ref{fig:history, annotated history and operation context} (a).
 This history contains a set of insert operations, e.g., $+(a,1)$ adding element $a$
-on position 1, and read operations returning a snapshot of the list, e.g., $r\Rightarrow b\cdot a \cdot c$ 
+on position 1, and read operations returning a snapshot of the list, e.g., $r\Rightarrow b\cdot a \cdot c$
 returning the list $b\cdot a \cdot c$. These operations are submitted to two replicas.
 
 While histories provide the means to describe the behaviors of CRDTs,
@@ -99,8 +100,8 @@ operations (i.e. the replica in which they are generated), and we
 shall call them \emph{annotated histories}.
 %
 
-An annotated history is a tuple $(O,\mathit{vis},\mathit{arb})$, where
-$O$ is a set of operations; $\mathit{vis}$ the visibility relation, is
+An annotated history $ah$ is a tuple $ah = (O,\mathit{vis},\mathit{arb})$, where
+$O$ is a set of operations; $\mathit{vis}$, the visibility relation, is
 an irreflexive and acyclic relation over $O$ representing for each
 operation the set of operations which can affect its result
 (essentially for $o$, these are the operations that are in
@@ -117,12 +118,14 @@ annotated histories.
 \fxnote{GP: Why only update at this point?. Add the cite to Burckhardt.}
 %
 
-{\color {red} Visibility relation tells how update operations are
-  delivered, and arbitration order represents some global orders that
-  are used to determine return values on each replica, such as list
-  order in \cite{Attiya:2016} or time stamp order.}
-We further require that for each operation $o \in O$, $\mathit{vis}^{-1}(o)$ is finite.
-{\color {red}The annotated history for history of \figurename~\ref{fig:history, annotated history and operation context} (a) is given in \figurename~\ref{fig:history, annotated history and operation context} (b).} % with arbitration order $\mathit{add}(b,1) \cdot \mathit{add}(c,2) \cdot \mathit{add}(a,1)$.}
+% {\color {red} Visibility relation tells how update operations are
+%   delivered, and arbitration order represents some global orders that
+%   are used to determine return values on each replica, such as list
+%   order in \cite{Attiya:2016} or time stamp order.}
+% We further require that for each operation $o \in O$, $\mathit{vis}^{-1}(o)$ is finite.
+\fxwarning{GP: \c@Chao explain or remove}
+{\color {red}The annotated history for history of \figurename~\ref{fig:history, annotated history and operation context} (a) is given in \figurename~\ref{fig:history, annotated
+history and operation context} (b).} % with arbitration order $\mathit{add}(b,1) \cdot \mathit{add}(c,2) \cdot \mathit{add}(a,1)$.}
 %\begin{itemize}
 %\setlength{\itemsep}{0.5pt}
 %\item[-] $O$ is a set of operations.
@@ -143,68 +146,208 @@ We further require that for each operation $o \in O$, $\mathit{vis}^{-1}(o)$ is 
 \end{figure}
 
 
-{\color {red}Similarly as in \cite{Burckhardt:2014}, in defining specification, we use the notion of operation context, which contains all information necessary to ensure the correctness of an operation.} A operation context of a operation $o$ is a tuple $(O,<,\mathit{arb})$, where $O$ is a set of update operations, $<$ is a relation over $O$, $o \notin O$, and $\mathit{arb}$ is a irreflexive total order over a subset of update operations of $O \cup \{ o \}$. {\color {red}Here we modified that of \cite{Burckhardt:2014} by making $o \notin O$ itself also contained in the arbitration order. This feature is used to deal with list specification.} A specification $\mathit{Spec}$ is a function that maps each operation label $\ell$ into a set of elements, while each of them is a operation context $(O,<,\mathit{arb})$ for some operation $o$ with $\mathit{lab}(o) = \ell$. {\color {red} For example, \figurename~\ref{fig:history, annotated history and operation context} (c) is in specification of $o = \mathit{add}(d,4)$.} A specification is deterministic, if there does not exists query method $m$ and tuple $(O,<,\mathit{arb})$, such that $(O,<,\mathit{arb})$ is in both $\mathit{Spec}(m(a) \Rightarrow b)$ and $\mathit{Spec}(m(a') \Rightarrow b')$, and $a \neq a' \vee b \neq b'$. From now on, we consider only deterministic specifications.
+Following~\cite{Burkhardt:2014} we provide the formal specification of
+CRDTs by means of a specification function $\mathit{Spec}$ which takes
+an operation name, a set of arguments corresponding to the arity and
+the types of the operation, and a \emph{context} representing the
+information available to the replica executing the operation.
+Provided with these parameters, $\mathit{Spec}$ returns a single value
+that results from executing the operation.
+%
+A context here is a triple of the form $(O,<,\mathit{arb})$, where $O$
+is a set of update operations, $<$ is a pre-order a subset of $O$ such
+that $o \notin O$ and $\mathit{arb}$ is an irreflexive total order
+over a subset of the update operations\footnote{Notice that
+  unlike~\cite{Burkhardt:2014}, we consider that $o \notin O$.}
+of $O \cup \{o\}$.
+%
+\fxnote{GP: Have no idea why!}
+%
+The intuitive meaning of the relation $<$ is that encodes the
+happens-before relation~\cite{Lamport} over the updates that are
+visible to the operating through $\mathit{vis}$.
 
-Given an annotated history $(O,\mathit{vis},\mathit{arb})$ and an operation $o \in O$, the operation context of $o$ is a obtained by a tuple $ctxt(o)=(O',<,\mathit{arb}')$, where $O'$ is the set of update operations in $\mathit{vis}^{-1}(o)$, $<$ is the projection of $\mathit{vis}$ over $O'$, and $\mathit{arb}'$ is the projection of $\mathit{arb}$ over update operations of $O' \cup \{ o \}$. Therefore, given an annotated history $(O,\mathit{vis},\mathit{arb})$ and $o_1,o_2 \in O$, if $o_1$ and $o_2$ see the same set of operations, %$\mathit{vis}^{-1}(o_1) = \mathit{vis}^{-1}(o_2)$,
-then $O_1 = O_2$ and $<_1 = <_2$, where $ctxt(o_1)=(O_1,<_1,\mathit{arb}_1)$ and $ctxt(o_2)=(O_2,<_2,\mathit{arb}_2)$. This comply with the commutativity intuition of CRDT algorithm. {\color {red} For example, \figurename~\ref{fig:history, annotated history and operation context} (c) is also the operation context of $o = \mathit{add}(d,4)$ in \figurename~\ref{fig:history, annotated history and operation context} (b).} {\color {red}Similarly, this definition modifies that of \cite{Burckhardt:2014} to deal with list.} Note that the uniformly method of obtaining operation context from annotated history is suitable for most specifications. For one special case, the OR-set, we shows how to deal with it in Remark \ref{remark: operation context of OR-set}.
+We can now formally define the specification function $\mathit{Spec}$
+as in~\cite{Burkhardt:2014}.
+$\mathit{Spec}$ takes an operation name $m \in \mathbb{B}$, arguments
+$a$, and a context $(O, <, \mathit{arb})$, and it returns a value $b$:
+$\mathit{Spec}(m, a, (O, <, \mathit{arb})) = b$.
+%
+We shall in the rest of the paper overload the function name
+$\mathit{Spec}$ parameterized lables and adopt the notation $Spec(m(a)
+\Rightarrow b)$ to denote the set of contexts that generate that
+label, that is:
+\[Spec(m(a) \Rightarrow b) \triangleq \{\ (O, <, \mathit{arb})\ |\ Spec(m, a, (O, <, \mathit{arb})) = b\ \}\]
+%
+We recall at this point that since specifications are deterministic,
+$\mathit{Spec}$ is a function.
 
-%To comply with the commutativity intuition of CRDT algorithm, we further require that, given an annotated history $(O,\mathit{vis},\mathit{arb})$ and $o_1,o_2 \in O$, if $\mathit{vis}^{-1}(o_1) = \mathit{vis}^{-1}(o_2)$, then $<_1 = <_2$, where $ctxt(o_1)=(O_1,<_1,\mathit{arb}_1)$ and $ctxt(o_2)=(O_2,<_2,\mathit{arb}_2)$.
+% As in~Burkhardt:2014} we require specifications to be deterministic.
+% {\color {red}Similarly as in \cite{Burckhardt:2014}, in defining specification, we use the notion of operation context, which contains all information necessary to ensure the correctness of an operation.} A operation context of a operation $o$ is a tuple $(O,<,\mathit{arb})$, where $O$ is a set of update operations, $<$ is a relation over $O$, $o \notin O$, and $\mathit{arb}$ is a irreflexive total order over a subset of update operations of $O \cup \{ o \}$. {\color {red}Here we modified that of \cite{Burckhardt:2014} by making $o \notin O$ itself also contained in the arbitration order. This feature is used to deal with list specification.} A specification $\mathit{Spec}$ is a function that maps each operation label $\ell$ into a set of elements, while each of them is a operation context $(O,<,\mathit{arb})$ for some operation $o$ with $\mathit{lab}(o) = \ell$. {\color {red}
 
-The notion of Convergent Return-Value Consistency (CRVC, for short) requires that the return value of each operation be correct, and is defined as follows:
-%\todo{Define ``an annotated history satisfying SRVC and then a history satisfying SRVC, i.e., there exists $\mathit{vis}$ and $\mathit{arb}$ such that the resulting annotated history satisfies SRVC.}
+\fxwarning*{GP: @Chao explain?}{
+For example, \figurename~\ref{fig:history, annotated history and
+  operation context} (c) is in specification of $o =
+\mathit{add}(d,4)$.}
+% A specification is deterministic, if there does not exists query
+% method $m$ and tuple $(O,<,\mathit{arb})$, such that
+% $(O,<,\mathit{arb})$ is in both $\mathit{Spec}(m(a) \Rightarrow b)$
+% and $\mathit{Spec}(m(a') \Rightarrow b')$, and $a \neq a' \vee b \neq
+% b'$.
+% From now on, we consider only deterministic specifications.
+
+Given an annotated history $ah = (O,\mathit{vis},\mathit{arb})$ and an
+operation $o \in O$, we define the context extracting function $ctxt(ah, o)$
+which returns a context $(O', <, \mathit{arb'})$ such that:
+\begin{inparaenum}[(i)]
+\item $O'$ is the set \emph{update} operations in $\mathit{vis}^{-1}(o)$,
+\item $<$ is the projection of $\mathit{vis}$ over $O'$, and
+\item $\mathit{arb'}$ is the projection of $\mathit{arb}$ over $O' \cup \{o\}$.
+\end{inparaenum} Therefore, given an annotated history $ab =
+(O,\mathit{vis},\mathit{arb})$ and $o_1,o_2 \in O$, if $o_1$ and $o_2$
+see the same set of operations, i.e. $O_1 = O_2$, then $ctxt(o_1) = ctxt(o_2)$.
+%
+This is consistent with the commutativity requirement of CRDTs.
+\fxwarning*{GP: @Chao explain better the examples}{For example,
+  \figurename~\ref{fig:history, annotated history and operation context}
+  (c) is also the operation context of $o = \mathit{add}(d,4)$ in
+  \figurename~\ref{fig:history, annotated history and operation context}
+  (b).
+  Similarly, this definition modifies that of \cite{Burckhardt:2014}
+  to deal with list.}
+%
+\fxfatal*{GP: No idea what this means.}{ Note that the uniformly
+  method of obtaining operation context from annotated history is
+  suitable for most specifications.
+  For one special case, the OR-set, we shows how to deal with it in
+  Remark \ref{remark: operation context of OR-set}.}
+  % To comply with the commutativity intuition of CRDT algorithm, we further require that, given an annotated history $(O,\mathit{vis},\mathit{arb})$ and $o_1,o_2 \in O$, if $\mathit{vis}^{-1}(o_1) = \mathit{vis}^{-1}(o_2)$, then $<_1 = <_2$, where $ctxt(o_1)=(O_1,<_1,\mathit{arb}_1)$ and $ctxt(o_2)=(O_2,<_2,\mathit{arb}_2)$.
+
+\fxfatal{GP: How is this different from RVal Consistency from~\cite{Burckhardt:2014}?}
+The notion of Convergent Return-Value Consistency (CRVC, for short)
+requires the return value of each operation to correspond to its
+specification, and it is defined as follows:
 
 \begin{definition}[Convergent Return-Value Consistency]
 \label{definition:strong return value consistency}
-An annotated history $(O,\mathit{vis},\mathit{arb})$ is CRVC w.r.t specification $\mathit{Spec}$, if there exists function $\mathit{ctxt}$, such that,
+An annotated history $ah = (O,\mathit{vis},\mathit{arb})$ is CRVC w.r.t specification $\mathit{Spec}$, if:
+\begin{enumerate}[(i)]
+\item $\mathit{vis}$ is acyclic, and
+\item $\forall o \in O$, $\mathit{ctxt}(o) \in Spec(\mathit{lab}(o))$.
+\end{enumerate}
 
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] $\mathit{vis}$ is acyclic.
-
-\item[-] $\forall o \in O$, $\mathit{ctxt}(o) \in Spec(\mathit{lab}(o))$.
-\end{itemize}
-
-A history $(O,\mathit{ro})$ is CRVC w.r.t $\mathit{Spec}$, if there exists $\mathit{vis}$ and $\mathit{arb}$, such that $\mathit{ro} \subseteq \mathit{vis}$, and $(O,\mathit{vis},\mathit{arb})$ is CRVC consistent w.r.t $\mathit{Spec}$.
+Moreover, a history $h = (O,\mathit{ro})$ is CRVC w.r.t $\mathit{Spec}$, if
+there exist $\mathit{vis}$ and $\mathit{arb}$, such that $\mathit{ro}
+\subseteq \mathit{vis}$, and $(O,\mathit{vis},\mathit{arb})$ is CRVC
+consistent w.r.t $\mathit{Spec}$.
 \end{definition}
 
 
-\noindent {\bf Example 1. OR-set}: Observed-Remove Set (OR-set for short) \cite{Shapiro:2011,Bieniusa:2012} contains four methods: (1) $\mathit{add}(a)$ inserts $a$ into set, (2) $\mathit{rem}(a)$ remove $a$ from set, (3) $\mathit{lookup}(a)\Rightarrow \mathit{true}$ (resp., $\mathit{lookup}(a)\Rightarrow \mathit{false}$) represents that $a$ is in set (resp., $a$ is not in set), and $\mathit{elements}() \Rightarrow S$ represents that the set content is $S$.
+\noindent {\bf Example 1. OR-set}:
+%
+Observed-Remove Set (OR-set for short)
+\cite{Shapiro:2011,Bieniusa:2012} contains four methods: (1)
+$\mathit{add}(a)$ inserts $a$ into the set, (2) $\mathit{rem}(a)$
+removes $a$ from set, (3) \mbox{$\mathit{lookup}(a)\Rightarrow
+  \mathit{true}$} (resp., \mbox{$\mathit{lookup}(a)\Rightarrow
+  \mathit{false}$}) represents the inclusion of the element $a$ in the
+set (resp. its exclusion), and $\mathit{elements}() \Rightarrow S$
+indicates that the contents of the set are $S$.
 
-%\todo{Why do you need $\top$ as argument ?? If it's because you want to use operation labels for messages as well, I don't like it. Each part of the formalism should be as clear as possible, without unnecessary junk.}
+% \todo{Why do you need $\top$ as argument ??
+%   If it's because you want to use operation labels for messages as
+%   well, I don't like it.
+%   Each part of the formalism should be as clear as possible, without
+%   unnecessary junk.}
+% Let $\Sigma_{\mathit{ORS}} = \{ add(a,\top),rem(\top,a) \vert a \in
+% \mathbb{D} \}$ be the set of contents of update operations.
+Given an annotated history $ah = (O, \textit{vis}, \emph{arb})$, the
+specification of OR-set, $S_{\mathit{ORS}}$, is as follows:
+\begin{inparaenum}[(1)]
+\item $S_{\mathit{ORS}}(\mathit{add}(a))$ is the set of all tuples
+  $(O,<,\emptyset)$,
+\item $S_{\mathit{ORS}}(\mathit{lookup}(a) \Rightarrow \mathit{true})$
+  is the set of all tuples $(O,<,\emptyset)$, such that the projection
+  of $<$ over $\mathit{add}(a)$ and $\mathit{rem}(a)$ in $O$ contains a
+  maximal element with operation label $\mathit{add}(a)$.
+  A similar definition can be given for $\mathit{lookup}(a)
+  \Rightarrow \mathit{false}$, where $O$, contains no maximal element
+  with operation label $\mathit{add}(a)$,
+\item $S_{\mathit{ORS}}(\mathit{rem}(a))$ is similar to
+  $\mathit{lookup}(a) \Rightarrow \mathit{true}$, and
+\item $S_{\mathit{ORS}}(\mathit{elements}() \Rightarrow S)$ are all
+  the tuples $(O,<,\emptyset)$ that are in
+  $S_{\mathit{ORS}}(\mathit{lookup}(a) \Rightarrow \mathit{true})$ for
+  each $a \in S$, and are in $S_{\mathit{ORS}}(\mathit{lookup}(a)
+  \Rightarrow \mathit{false})$ for each $a \notin S$.
+ \end{inparaenum}
+ Thus, we can observe that the specification $S_{\mathit{ORS}}$ makes
+ $\mathit{rem}$ cancel only $\mathit{add}$ operations ``visible'' to
+ them.
+ \fxwarning*{GP: @Chao clarify}{
+ For example, \figurename~\ref{fig:history, annotated history and
+   operation context} (e) is in $S_{\mathit{ORS}}(\mathit{lookup}(a)
+ \Rightarrow \mathit{true})$.}
 
-%Let $\Sigma_{\mathit{ORS}} = \{ add(a,\top),rem(\top,a) \vert a \in \mathbb{D} \}$ be the set of contents of update operations.
-The specification $S_{\mathit{ORS}}$ is as follows: (1) For $x=\mathit{add}(a)$, $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,\emptyset)$, (2) For $x=\mathit{lookup}(a) \Rightarrow \mathit{true}$ (resp., $x=\mathit{lookup}(a) \Rightarrow \mathit{false}$), $S_{\mathit{ORS}}(x)$ is the set of all tuples $(O,<,\emptyset)$, such that the projection of $<$ over $\mathit{add}(a)$ and $\mathit{rem}(a)$ in $O$ contains a maximal element with operation label $\mathit{add}(a)$ (resp., contains no maximal element with operation label $\mathit{add}(a)$), (3) For $x = \mathit{rem}(a)$, $S_{\mathit{ORS}}(x)$ is the same as $x = \mathit{lookup}(a) \Rightarrow \mathit{true}$, and (4) $S_{\mathit{ORS}}(\mathit{elements}() \Rightarrow S)$ is all the tuples $(O,<,\emptyset)$ that are in $S_{\mathit{ORS}}(\mathit{lookup}(a) \Rightarrow \mathit{true})$ for each $a \in S$, and are in $S_{\mathit{ORS}}(\mathit{lookup}(a)) \Rightarrow \mathit{false}$ for each $a \notin S$. {\color {red} $S_{\mathit{ORS}}$ make $\mathit{rem}$ cancel only $\mathit{add}$ operations ``visible'' to them. For example, \figurename~\ref{fig:history, annotated history and operation context} (e) is in $S_{\mathit{ORS}}(\mathit{lookup}(a) \Rightarrow \mathit{true})$.}
-
-\noindent {\bf Example 2. Distributed list}: Distributed list has three methods: (1) $\mathit{add}(a,\mathit{pos})$ inserts identifier $a$ into position $\mathit{pos} \in \mathbb{N}$, (2) $\mathit{rem}(a)$ removes the identifier $a$ from list, and (3) $\mathit{read}() \Rightarrow l$ returns the list content. Here intuitively, we assume that each identifier are putted at most once globally.
+\bigskip
+\noindent {\bf Example 2. Distributed list}:
+The Distributed List CRDT~\cite{...} has three methods: (1)
+$\mathit{add}(a,\mathit{pos})$ inserts value $a$ into position
+$\mathit{pos} \in \mathbb{N}$, (2) $\mathit{rem}(a)$ removes the
+value $a$ from the list, and (3) $\mathit{read}() \Rightarrow l$
+returns the list contents.
+%
+We assume that each value appears at most once, and therefore we shall
+call them identifiers.
 
 %Let $\Sigma_{\mathit{list}} = \{ add(a,pos,\top),rem(\top,a) \vert a \in \mathbb{D},pos \in \mathbb{N} \}$ be the set of contents of update operations.
-The specification $S_{\mathit{list}}$ is defined as follows: $(O,<,\mathit{arb}) \in S_{\mathit{list}}(\ell)$, if
+The specification $S_{\mathit{List}}$ of the distributed list is
+defined as follows.
+Given an annotated history $ah = (O,<,\mathit{arb})$, we say that $ ah
+\in S_{\mathit{list}}(\ell)$, if
+\begin{inparaenum}[(1)]
+% \setlength{\itemsep}{0.5pt}
+\item $arb$ is a total order over all of the $add$ operations in $O \cup \{ o \}$, where $o \notin O$, and
+\item letting \mbox{$R = \{\ i\ |\ \exists b,
+    (add(b),\_,i),(rem(b),\_,\_) \in O \}$} and $\mathit{seq} =
+  \mathit{arb}\!\!\!\uparrow_{( O \cup \{ o \} \setminus R)}$\footnote{We denote by $R \uparrow_{S}$ the projection $R$ on $S \times S$.}
+  then, either
+    \begin{inparaenum}[(i)]
+    \item $\ell = add(a,pos) \wedge \mathit{seq}[pos] = o$,
+    \item $\ell = rem(a) \wedge (add(a),\_,\_) \in O$, or
+    \item $\ell = read() \Rightarrow l$, and $l$ is obtained by using $\mathit{lab}$ on $\mathit{seq}$.
+    \end{inparaenum}
+  \end{inparaenum}
+\fxwarning{GP: Using lab on seq??}
+  % \todo{Give a declarative specification of the list, like for OR-set. Descriptions which look like ``imperative programs'', e.g., "We can go through operations", "During this process".}
+In a nutshell, this specification indicates that we use the list order
+of strong list specification in \cite{Attiya:2016} as the arbitration
+order.
 
-\begin{itemize}
-\setlength{\itemsep}{0.5pt}
-\item[-] %$<^{-1}$ contains finite elements, $<$ is acyclic and
-$arb$ is a total order of $add$ operations in $O \cup \{ o \}$, where $o \notin O$ and is in domain of $arb$.
-
-\item[-] Let $R = \{ i \vert \exists b, (add(b),\_,i),(rem(b),\_,\_) \in O \}$ and $\mathit{seq} = \mathit{arb} \uparrow_{ O \cup \{ o \} \setminus R }$. Then,
-
-    \begin{itemize}
-    \setlength{\itemsep}{0.5pt}
-    \item[-] Either $\ell = add(a,pos) \wedge \mathit{seq}[pos] = o$,
-
-    \item[-] Or $\ell = rem(a) \wedge (add(a),\_,\_) \in O$,
-
-    \item[-] Or $\ell = read() \Rightarrow l$ and $l$ is obtained by using $\mathit{lab}$ on $\mathit{seq}$.
-    \end{itemize}
-\end{itemize}
-
-%\todo{Give a declarative specification of the list, like for OR-set. Descriptions which look like ``imperative programs'', e.g., "We can go through operations", "During this process".}
-
-Where for a relation $R$, $R \uparrow_{S}$ means projection $R$ on $S \times S$. We essentially use the ist order of strong list specification in \cite{Attiya:2016} as the arbitration order.
-
-
+\fxnote{Contains or lookup: gotta make up our mind.}
+\fxfatal{GP: I have no idea of what this means. Has to be rewritten.}
 \begin{remark}
-\label{remark: operation context of OR-set}
-For OR-set, the operation context of annotated history is more complicated. {\color {red} For example, given the annotated history \figurename~\ref{fig:history, annotated history and operation context} (d), the operation context of $\mathit{contains}(a,\textit{true})$ in this annotated history should be \figurename~\ref{fig:history, annotated history and operation context} (e), since $-a_2$ does not cancel $+a_1$, and they should not be related.} Formally, given an annotated history $(O,\mathit{vis},\mathit{arb})$ and an operation $o$, $ctxt(o)=(O',<,\mathit{arb}')$, where $O'$ and $\mathit{vis}'$ is as before, and $<$ is defined as $\mathit{vis} \uparrow_{O'} - \{ (o_1,o_2) \vert o_2 \notin \mathit{FstRem}(O,\mathit{vis},o_1),$ $\exists o_3 \in O, (o_1,o_3), (o_3,o_2),(o_1,o_2) \in \mathit{vis}, o_1,o_2 \in O', o_3 \notin O' \}$. {\color {red}Here $\mathit{FstRem}$ records matched $\mathit{add}$ and $\mathit{rem}$ pairs like $(+a_1,-a_1)$,} and is defined as $\mathit{FstRem}(O,\mathit{vis},o) = \{o' \vert \mathit{lab}(o')=\mathit{rem}(a), (o,o') \in \mathit{vis}, \neg \exists o'',  lab(o'') = \mathit{rem}(a)  \wedge (o,o''),(o'',o') \in \mathit{vis} \}$ for $lab(o) = \mathit{add}(a)$.
+  \label{remark: operation context of OR-set} For the OR-set CRDT, the
+  operation context of an annotated history is more complicated.
+  For instance, given the annotated history
+  \figurename~\ref{fig:history, annotated history and operation context}
+  (d), the operation context of $\mathit{lookup}(a,\textit{true})$
+  should be the one depicted in \figurename~\ref{fig:history, annotated
+    history and operation context} (e), since $-a_2$ does not cancel
+  $+a_1$, and they should not be related.
+  Formally, given an annotated history $ah =
+  (O,\mathit{vis},\mathit{arb})$ and an operation $o$,
+  $ctxt(o)=(O',<,\mathit{arb}')$, where $O'$ and $\mathit{vis}'$ is as
+  before, and $<$ is defined as $\mathit{vis} \uparrow_{O'} - \{
+  (o_1,o_2) \vert o_2 \notin \mathit{FstRem}(O,\mathit{vis},o_1),$
+  $\exists o_3 \in O, (o_1,o_3), (o_3,o_2),(o_1,o_2) \in \mathit{vis},
+  o_1,o_2 \in O', o_3 \notin O' \}$.
+  {\color {red}Here $\mathit{FstRem}$ records matched $\mathit{add}$
+    and $\mathit{rem}$ pairs like $(+a_1,-a_1)$,} and is defined as
+  $\mathit{FstRem}(O,\mathit{vis},o) = \{o' \vert
+  \mathit{lab}(o')=\mathit{rem}(a), (o,o') \in \mathit{vis}, \neg
+  \exists o'', lab(o'') = \mathit{rem}(a) \wedge (o,o''),(o'',o') \in
+  \mathit{vis} \}$ for $lab(o) = \mathit{add}(a)$.
 \end{remark}
 
 
