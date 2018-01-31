@@ -3,6 +3,13 @@
 \section{Succinct Reference Implementations of Collection Data Types}
 \label{sec:succinct reference implementations of collection data types}
 
+{\color {red}
+\begin{remark}
+\label{remark: RImp for list}
+To comply with the simplification in next section, in construction $\mathit{RImp}(S_{\mathit{list}})$, in state $(Q,\mathit{ro},\mathit{del},\mathit{vis})$, elements of $Q$ are not a complete operations, they are without argument $\mathit{pos}$. Or we could say, elements of $Q$ are $(\ell,r,i)$ where $\ell$ is ${add}(a)$ or $\mathit{rem}(a)$ for $a \in \mathbb{R}$.
+\end{remark}
+}
+
 
 For a class of specifications called collection, we can further simplify the annotated history in states of $\mathit{RImp}(\mathit{Spec})$. OR-set locates in this class, and \figurename~\ref{fig:succinct reference implementation for OR-set} is a simplified version for the same states and transitions of \figurename~\ref{fig:reference implementation for OR-set}. For example, in state $q_1$ of \figurename~\ref{fig:reference implementation for OR-set}, each replica sees $+a_1$ and has a corresponding $\mathit{rem}(a)$ in $\mathit{FstRem}(+a_1)$ ($-a_1$ and $-a_2$). Therefore $+a_1$ is redundant and could be forgotten, and so does its corresponding $\mathit{rem}$ $-a_1$. However, $-a_2$ can not be forgotten since it is also a corresponding $\mathit{rem}$ of $+a_2$, and forgetting $-a_2$ will influence $+a_2$. Therefore, we simplify $q_1$ by forgetting $+a_1$, $-a_1$ and related relations, even when $-a_1$ is still not delivered to replica $r_2$. The process of simplify state $q_3$ of \figurename~\ref{fig:reference implementation for OR-set} is similar.
 
