@@ -78,11 +78,12 @@ We require $\mathit{ro}$ to not relate operations with different replica identif
 We also require that for each operation $o \in O$,
 $\mathit{ro}^{-1}(o)$ is finite, meaning that the past of any replica
 is only finite.
+\fxwarning*{Check that everything is defined before}{
 An example of a history of a CRDT maintaining a list of elements is shown in
 \figurename~\ref{fig:history, annotated history and operation context} (a).
 This history contains a set of insert operations, e.g., $+(a,1)$ adding element $a$
 on position 1, and read operations returning a snapshot of the list, e.g., $r\Rightarrow b\cdot a \cdot c$
-returning the list $b\cdot a \cdot c$. These operations are submitted to two replicas.
+returning the list $b\cdot a \cdot c$. These operations are submitted to two replicas.}
 
 While histories provide the means to describe the behaviors of CRDTs,
 they are insufficient to describe the effects of the delivery
@@ -154,12 +155,12 @@ information available to the replica executing the operation.
 Provided with these parameters, $\mathit{Spec}$ returns a single value
 that results from executing the operation.
 %
-A context here is a triple of the form $(O,<,\mathit{arb})$, where $O$
-is a set of update operations, $<$ is a pre-order a subset of $O$ such
-that $o \notin O$ and $\mathit{arb}$ is an irreflexive total order
-over a subset of the update operations\footnote{Notice that
-  unlike~\cite{Burkhardt:2014}, we consider that $o \notin O$.}
-of $O \cup \{o\}$.
+The context of an operation $o$ here is a triple of the form
+$(O,<,\mathit{arb})$, where $O$ is a set of update operations, $<$ is
+a pre-order a subset of $O$ such that $o \notin O$ and $\mathit{arb}$
+is an irreflexive total order over a subset of the update
+operations\footnote{Notice that unlike~\cite{Burkhardt:2014}, we
+  consider that $o \notin O$.} of $O \cup \{o\}$.
 %
 \fxnote{GP: Have no idea why!}
 %
