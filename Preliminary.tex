@@ -85,7 +85,7 @@ on position 1 of the list, and $\mathit{read}(b\cdot a \cdot c)$
 represents the fact that a read operation obtained the snapshot
 $b\cdot a \cdot c$ of the list, where we denote by $s \cdot s'$ the
 composition of sequences $s$ and $s'$. These operations are submitted
-to two replicas. 
+to two replicas.
 
 While histories provide the means to describe the behaviors of CRDTs,
 they are insufficient to describe the effects of the delivery
@@ -119,7 +119,7 @@ all replicas, hence guaranteeing convergence.
 The order $\mathit{arb}$ plays this role in the definition of
 annotated histories.
 % \fxnote{GP: Why only update at this point?. Add the cite to
-%   Burckhardt.} 
+%   Burckhardt.}
 The annotated history for history corresponding to \figurename~\ref{fig:history, annotated history and operation context} (a) is given in \figurename~\ref{fig:history, annotated
   history and operation context} (b). Here we use the arbitration order $\mathit{add}(b,1) < \mathit{add}(a,1) < \mathit{add}(c,1) < \mathit{add}(d,4))$.
 %
@@ -222,7 +222,7 @@ see the same set of operations, i.e. $O_1 = O_2$, then $ctxt(o_1) = ctxt(o_2)$.
 %
 This is consistent with the commutativity requirement of CRDTs.
 For example, \figurename~\ref{fig:history, annotated history and
-  operation context} 
+  operation context}
 (c) is the operation context of $o = \mathit{add}(d,4)$ in
 \figurename~\ref{fig:history, annotated history and operation context}
 (b).
@@ -248,7 +248,7 @@ requires a little care as it will be explained in Remark \ref{remark:
 The notion of Convergent Return-Value Consistency (CRVC, for short) is
 similar to that of~\cite{Burckhardt:2014} and it requires the return
 value of each operation to correspond to its specification, and it is
-defined as follows: 
+defined as follows:
 
 \begin{definition}[Convergent Return-Value Consistency]
 \label{definition:strong return value consistency}
@@ -286,7 +286,7 @@ each replica. Each $\mathit{rem}(a)$ can only cancel an
 $\mathit{add}(a)$ that has been made visible to it. Therefore, given
 two current (not visible to each other) operations $\mathit{add}(a)$
 and $\mathit{rem}(a)$, the $\mathit{add}(a)$ can always take
-precedence. 
+precedence.
 OR-set contains four methods: (1)
 $\mathit{add}(a)$ inserts $a$ into the set, (2) $\mathit{rem}(a)$
 removes $a$ from set, (3) \mbox{$\mathit{lookup}(a)\Rightarrow
@@ -362,7 +362,7 @@ Given an annotated history $ah = (O,<,\mathit{arb})$, we say that $ ah
   % \todo{Give a declarative specification of the list, like for OR-set. Descriptions which look like ``imperative programs'', e.g., "We can go through operations", "During this process".}
 In a nutshell, this specification indicates that we use the list order
 of strong list specification in \cite{Attiya:2016} as the arbitration
-order. 
+order.
 %
 For example, \figurename~\ref{fig:history, annotated history and
   operation context} (c) is in specification of $o =
@@ -379,7 +379,7 @@ For example, \figurename~\ref{fig:history, annotated history and
   be ignored. For instance, consider the annotated history
   \figurename~\ref{fig:generating operation context from annotated
     history for OR-set} (a). We remark that that the visibility
-  relation on same replica (replica order) is transitive. 
+  relation on same replica (replica order) is transitive.
   Then what should be the operation context $(O,<,\emptyset)$ of
   operation $\mathit{lookup}(a) \Rightarrow \mathit{true}$?
   Obviously $O = \{ \mathit{add}(a)_1, \mathit{rem}(a)_2 \}$. If we
@@ -393,13 +393,14 @@ For example, \figurename~\ref{fig:history, annotated history and
   = \mathit{add}(a)$, let $\mathit{FstRem}(o_1)$ be the set of
   $\mathit{rem}(a)$ operations, say $o_2$, such that $o_1$ is visible to
   $o_2$, and such that there is no other $\mathit{rem}(a)$ operations $o_3$ that
-  satisfies ($(o_1,o_3),(o_3,o_2) \in \mathit{vis}$). 
-  % 
-  \fxnote*{GP: @Chao, can you rephrase this one?}{
-    When we extract $<$ from $\mathit{vis}$, such pairs $(o_1,o_2)$ will be
-    ignored: $o_2 \notin \mathit{FstRem}(o_1)$, and there exists
-    operation $o_3$, such that $(o_1,o_3),(o_3,o_2) \in \mathit{vis}$,
-    while $o_3 \notin O$.} 
+  satisfies ($(o_1,o_3),(o_3,o_2) \in \mathit{vis}$).
+  %
+  \fxnote*{GP: @Chao, can you rephrase this one?}{\color {red}When we extract $<$ from $\mathit{vis}$, such pairs $(o_1,o_2)$ will be ignored: $o_2$ does not cancel $o_1$ ($o_2 \notin \mathit{FstRem}(o_1)$), and some intermediate operations between $o_1$ and $o_2$ w.r.t $\mathit{vis}$ is not in $O$.
+    %When we extract $<$ from $\mathit{vis}$, such pairs $(o_1,o_2)$ will be
+    %ignored: $o_2 \notin \mathit{FstRem}(o_1)$, and there exists
+    %operation $o_3$, such that $(o_1,o_3),(o_3,o_2) \in \mathit{vis}$,
+    %while $o_3 \notin O$.
+    }
   In \figurename~\ref{fig:generating
     operation context from annotated history for OR-set} (a), one
   such ignored pair is $(\mathit{add}(a)_1,\mathit{rem}(a)_2)$, since
