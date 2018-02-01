@@ -57,6 +57,28 @@ We consider our work to be orthogonal~\cite{GotsmanYFNS16} since we
 are proving the correctness of implementations w.r.t. the
 specification. 
 
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have developed a methodology to prove CRDT implementations correct
+w.r.t. their specifications given in the axiomatic style
+of~\cite{Burckhardt:2014}.
+%
+Our methodology constructs a reference implementation of the
+specification where we make apparent the assumptions of message
+delivery of the underlying network. 
+% 
+Based on these references implementations of the specification we
+provide simulation arguments to show that concrete implementations of
+the CRDT meet the specification, all the while taking into
+consideration the message delivery assumed by the specification and
+the implementation.
+%
+We show the practicality of our methodology by proving the correctness
+of RGA~\cite{RohJKL11} and two different OR-set
+implementations~\cite{Shapiro:2011,Bieniusa:2012}.
+
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "draft"
