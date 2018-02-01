@@ -9,7 +9,7 @@ Let $\mathbb{L}$ be the set of replica states and $\mathbb{MSG}$ the set of mess
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] $\rightarrow_o: \mathbb{L} \times \mathbb{M} \times \mathbb{D} \times \mathbb{R} \rightarrow \mathbb{L} \times \mathbb{D} \times 2^{\mathbb{MSG}})$ shows how operations update the local state of the replica and generate messages (to be broadcasted to the other replicas). A transition $(d,m,a,r) \rightarrow_o (d',b,\mathit{mgs})$ means that an invocation of $m$ with input $a$ updates the replica state from $d$ to $d'$, returns value $b$, and generates the set of messages $\mathit{mgs}$.
+\item[-] $\rightarrow_o: \mathbb{L} \times \mathbb{M} \times \mathbb{D} \times \mathbb{R} \rightarrow \mathbb{L} \times \mathbb{D} \times 2^{\mathbb{MSG}}$ shows how operations update the local state of the replica and generate messages (to be broadcasted to the other replicas). A transition $(d,m,a,r) \rightarrow_o (d',b,\mathit{mgs})$ means that an invocation of $m$ with input $a$ updates the replica state from $d$ to $d'$, returns value $b$, and generates the set of messages $\mathit{mgs}$.
 %represents that, when the local state of replica $r$ is $d$, if we call method $m$ with argument $a$ in replica $r$, then we obtain return value $b$, change the local state of replica $r$ into $d'$, and generate a set $\mathit{mgs}$ of messages. Here $\mathit{Pow}(\mathbb{MSG})$ is the power set of $\mathbb{MSG}$.
 If $m \in \mathbb{U}$, then $\mathit{mgs} = \{ (x,r,r') \vert r' \in \mathbb{R} \wedge r \neq r' \}$ for some payload $x$. Otherwise, $\mathit{mgs} = \emptyset$.
 %The violation of pre-condition of method is modeled by mapping to $\mathit{undef}$.

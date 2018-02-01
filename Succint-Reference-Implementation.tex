@@ -17,7 +17,7 @@ We define a class of reference implementations, that compared to the ones define
 Given a specification $\mathit{Spec}$ with two update methods $\mathit{add}$ and $\mathit{rem}$ and a state $q=(O,\mathit{ro},\mathit{del},\mathit{arb})$ of the reference implementations in Section~\ref{sec:reference implementation}, we define the following notations:
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] For an $\mathit{add}(a)$ operation $o_a \in O$, let $\mathit{FstRem}(q,o_a)$ be the set of $\mathit{rem}(a)$ operations $o_r$ to which $o_a$ is visible and which are minimal in the visibility order, i.e., $(o_a,o_r) \in \mathit{vis}$ and there exists no other $\mathit{rem}(a)$ operation $o_r'$ such that $\{(o_a,o'_r),(o'_r,o_r)\} \subseteq \mathit{vis}$.
+\item[-] For an $\mathit{add}(a)$ operation $o_a \in O$, let $\mathit{FstRem}(q,o_a)$ be the set of $\mathit{rem}(a)$ operations $o_r$ to which $o_a$ is visible and which are minimal in the visibility order, i.e., $(o_a,o_r) \in \mathit{vis}$ and there exists no other $\mathit{rem}(a)$ operation $o_r'$ such that\linebreak \mbox{$\{(o_a,o'_r),(o'_r,o_r)\} \subseteq \mathit{vis}$}.
 %= \{ o_r \vert lab(o_r)=\mathit{rem}(a),(o_a,o_r) \in \mathit{vis}$, $ \neg \exists o'_r, lab(o'_r) = rem(a), (o_a,o'_r),(o'_r,o_r) \in \mathit{vis} \}$ be the set of first visible matching remove of $o_a$.
 
 \item[-] Let $\mathit{RdtA}(q)$ be the set of obsolete $add$ operations in $q$: $o_a\in \mathit{Redt}(O,\mathit{vis})$ if for each replica $r$, there exists $o_r \in \mathit{FstRem}(q,o_a)$, such that $\{o_a,o_r\} \subseteq \mathit{visTo}(O,r,\mathit{del})$.
@@ -327,3 +327,8 @@ It is easy to see that $CRImp_{cd}(Spec)$ contains all the traces of $CRImp(Spec
 $\llbracket CRImp(Spec)_{cd} \rrbracket = \{ t \vert t \in \llbracket CRImp(Spec) \rrbracket \wedge t$ satisfies causal delivery $\}$.
 \end{lemma}
 }
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "draft"
+%%% End:
