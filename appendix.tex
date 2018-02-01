@@ -246,7 +246,13 @@ With this modified collection, we can similarly define Lemma \ref{lemma:RImpSpec
 
 Then, let us prove Lemma \ref{lemma:list is collection specification} as follows.
 
-{\noindent \bf Lemma \ref{lemma:list is collection specification}}: Distributed list specification $S_{\mathit{list}}$ is a collection specification.
+\begin{lemma}
+\label{lemma:list is collection specification}
+Distributed list specification $S_{\mathit{list}}$ is a collection specification.
+
+\end{lemma}
+
+%{\noindent \bf Lemma \ref{lemma:list is collection specification}}: Distributed list specification $S_{\mathit{list}}$ is a collection specification.
 
 \begin {proof}
 
@@ -738,13 +744,13 @@ If some $o_j$ is a $\mathit{rem}(a)$, then $o_j \in \mathit{FstRem}( f((a,\mathi
 
 \item[-] If $q_{\mathit{imp}} \xrightarrow{( \mathit{contain},a,\mathit{false},r,\emptyset )}_i q_{\mathit{imp}}$: For each $\mathit{id}$, $(a,id) \notin \mathit{data}[r].E$. Let $o \notin O$ be a $\mathit{contain}(a) \Rightarrow \mathit{false}$ operation of replica $r$. Let $c = (O_c,<_c,\emptyset) = f_{\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}),o)$
 
-If there exists a $\mathit{add}(a)$ operation $o_a$, such that $o_a$ is maximal w.r.t $<_c$. Obviously $o_a$ is not redundant, and by $C_{\mathit{vis}}$ this means that there exists $\mathit{id}$, such that $f((a,\mathit{id})) = o_a$, and $(a,\mathit{id}) \in \mathit{data}[r].E$. This contradicts the assumption. Therefore, no such $o_a$ exists. Since every  maximal element is $\mathit{rem}(a)$, we can see that $q_s \xrightarrow{( \mathit{contain},a,\mathit{false},r,\emptyset )}_i q_s$, and recall that $(q_{\mathit{imp}},q_s) \in R_{\mathit{ORS}}$. 
+If there exists a $\mathit{add}(a)$ operation $o_a$, such that $o_a$ is maximal w.r.t $<_c$. Obviously $o_a$ is not redundant, and by $C_{\mathit{vis}}$ this means that there exists $\mathit{id}$, such that $f((a,\mathit{id})) = o_a$, and $(a,\mathit{id}) \in \mathit{data}[r].E$. This contradicts the assumption. Therefore, no such $o_a$ exists. Since every  maximal element is $\mathit{rem}(a)$, we can see that $q_s \xrightarrow{( \mathit{contain},a,\mathit{false},r,\emptyset )}_i q_s$, and recall that $(q_{\mathit{imp}},q_s) \in R_{\mathit{ORS}}$.
 
-\item[-] If $q_{\mathit{imp}} \xrightarrow{( \mathit{elements},S,r,\emptyset )}_i q_{\mathit{imp}}$: This holds since the case of $q_{\mathit{imp}} \xrightarrow{( \mathit{contain},a,\mathit{true},r,\emptyset )}_i q_{\mathit{imp}}$ and $q_{\mathit{imp}} \xrightarrow{( \mathit{contain},a,\mathit{false},r,\emptyset )}_i q_{\mathit{imp}}$ hold. 
+\item[-] If $q_{\mathit{imp}} \xrightarrow{( \mathit{elements},S,r,\emptyset )}_i q_{\mathit{imp}}$: This holds since the case of $q_{\mathit{imp}} \xrightarrow{( \mathit{contain},a,\mathit{true},r,\emptyset )}_i q_{\mathit{imp}}$ and $q_{\mathit{imp}} \xrightarrow{( \mathit{contain},a,\mathit{false},r,\emptyset )}_i q_{\mathit{imp}}$ hold.
 
 \item[-] If $q_{\mathit{imp}} \xrightarrow{\mathit{apply}( \mathit{msg}=(a,\mathit{id},r,r') )}_i q'_{\mathit{imp}} = (\mathit{data}',\mathit{msgs} - \{ m \})$: Here $\mathit{data}'$ is obtained from $\mathit{data}$ by modifying $\mathit{data}[r'].E$ into $\mathit{data}[r'].E \cup \{ (a,\mathit{id}) \} \setminus \mathit{data}[r'].T$.
 
-    By $C_{\mathit{msg}}$ we can see that $f((a,\mathit{id})) \notin \mathit{visTo}(O,\mathit{vis},r')$. Since $f$ is a one to one map, by $C_{\mathit{msg}}$, we can do $q_s \xrightarrow{\mathit{addDel}( f(a,\mathit{id}),r' )}_s q'_s$. By $C_{\mathit{msg}}$, the transitions do not make new element to become redundant in $q_{\mathit{imp}}$ and $q_s$. It is easy to see that all conditions still holds between $q'_{\mathit{imp}}$ and $q'_s$. 
+    By $C_{\mathit{msg}}$ we can see that $f((a,\mathit{id})) \notin \mathit{visTo}(O,\mathit{vis},r')$. Since $f$ is a one to one map, by $C_{\mathit{msg}}$, we can do $q_s \xrightarrow{\mathit{addDel}( f(a,\mathit{id}),r' )}_s q'_s$. By $C_{\mathit{msg}}$, the transitions do not make new element to become redundant in $q_{\mathit{imp}}$ and $q_s$. It is easy to see that all conditions still holds between $q'_{\mathit{imp}}$ and $q'_s$.
 
 \item[-] If $q_{\mathit{imp}} \xrightarrow{\mathit{apply}( \mathit{msg}=(a,S,r,r' ))}_i q'_{\mathit{imp}} = (\mathit{data}',\mathit{msgs} - \{ m \})$, and $(a,S,r)$ is not redundant: Here $\mathit{data}'$ is obtained from $\mathit{data}$ by modifying $\mathit{data}[r'].E$ into $\mathit{data}[r'].E \setminus \{ (a,\mathit{id}) \vert \mathit{id} \in S\}$ and modifying $\mathit{data}[r'].T$ into $\mathit{data}[r'].T \cup \{ (a,\mathit{id}) \vert \mathit{id} \in S\}$.
 
@@ -758,7 +764,7 @@ If there exists a $\mathit{add}(a)$ operation $o_a$, such that $o_a$ is maximal 
 
 \item[-] If $q_{\mathit{imp}} \xrightarrow{(\mathit{add},a,r,\emptyset)}_i q'_{\mathit{imp}} = (\mathit{data}',\mathit{msgs}')$: Here $\mathit{data}'$ is obtained from $\mathit{data}$ by modifying $\mathit{data}[r'].E$ into $\mathit{data}[r'].E \cup \{ (a,\mathit{id} = (r,\mathit{data}[r].\mathit{ctr})) \}$, and modifying $\mathit{data}[r].\mathit{ctr}$ into $\mathit{data}[r].\mathit{ctr}+1$. Here $\mathit{msgs}' = \mathit{msgs} \cup \{ (a,\mathit{id},r,r') \vert r' \neq r \}$. By $C_{\mathit{ind}}$ we know that it does not need to modify $\mathit{data}[r'].T$. It is obvious that we can do $q_s \xrightarrow{( \mathit{add},a,r,\emptyset )}_i q'_s$ and let $o$ be the newly generated operations in $q'_s$. It is obvious that $(a,\mathit{id})$ is not redundant in $q'_{\mathit{imp}}$. Let $f' = f \cup \{ ((a,id),,o) \}$. We use $f'$ for $(q'_{\mathit{imp}},q'_s)$.
 
-    It is easy to see that no new operation becomes redundant in both implementation and specification. Since there is no remove in $\mathit{FstRem}$ for $o$, and a new $\mathit{add}$ does not influence $\mathit{FstRem}$ for other operations, we have $C_{\mathit{FM}}$ holds for $(q'_{\mathit{imp}},q'_s)$. It is easy to see that other condition also hold. Therefore, $(q'_{\mathit{imp}},q'_s) \in R_{\mathit{ORS}}$. 
+    It is easy to see that no new operation becomes redundant in both implementation and specification. Since there is no remove in $\mathit{FstRem}$ for $o$, and a new $\mathit{add}$ does not influence $\mathit{FstRem}$ for other operations, we have $C_{\mathit{FM}}$ holds for $(q'_{\mathit{imp}},q'_s)$. It is easy to see that other condition also hold. Therefore, $(q'_{\mathit{imp}},q'_s) \in R_{\mathit{ORS}}$.
 
 \item[-] If $q_{\mathit{imp}} \xrightarrow{( \mathit{rem},a,r,\emptyset ))}_i q'_{\mathit{imp}} = (\mathit{data}',\mathit{msgs}')$: Let $S' = \{ \mathit{id} \vert (a,\mathit{id}) \in \mathit{data}[r].E \}$. $\mathit{data}'$ is obtained from $\mathit{data}$ by modifying $\mathit{data}[r].E$ into $\mathit{data}[r].E \setminus \{ (a,\mathit{id}) \vert \mathit{id} \in S'\}$ and modifying $\mathit{data}[r].T$ into $\mathit{data}[r].T \cap \{ (a,\mathit{id}) \vert \mathit{id} \in S'\}$. Here $\mathit{msg}' = \mathit{msg} \cup \{ (a,S',r,r') \vert r' \neq r \}$.
 
