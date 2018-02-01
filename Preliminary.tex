@@ -331,7 +331,7 @@ specification of OR-set, $S_{\mathit{ORS}}$, is as follows:
  is used to distinguish several $\mathit{add}(a)$ operations.
 
 \bigskip
-\noindent {\bf Example 2. Distributed list}: The Distributed List CRDT~\cite{Attiya:2016} mains the view of a list in each replica. It contains three methods: (1)
+\noindent {\bf Example 2. Distributed list}: The Distributed List CRDT~\cite{Attiya:2016} maintains the view of a list in each replica. It contains three methods: (1)
 $\mathit{add}(a,\mathit{pos})$ inserts value $a$ into position
 $\mathit{pos} \in \mathbb{N}$ of the list, (2) $\mathit{rem}(a)$ removes the
 value $a$ from the list, and (3) $\mathit{read}() \Rightarrow l$
@@ -348,7 +348,7 @@ Given an annotated history $ah = (O,<,\mathit{arb})$, we say that $ ah
 \begin{inparaenum}[(1)]
 % \setlength{\itemsep}{0.5pt}
 \item $arb$ is a total order over all of the $add$ operations in $O \cup \{ o \}$, where $o \notin O$, and
-\item letting \mbox{$R = \{\ i\ |\ \exists b,
+\item letting\linebreak \mbox{$R = \{\ i\ |\ \exists b,
     (add(b),\_,i),(rem(b),\_,\_) \in O \}$} be the set of identifiers already removed identifiers and $\mathit{seq} =
   \mathit{arb}\!\!\!\uparrow_{( O \cup \{ o \} \setminus R)}$\footnote{We denote by $R \uparrow_{S}$ the projection $R$ on $S \times S$.} be the ``active'' list content
   then, either
