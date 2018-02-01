@@ -19,7 +19,7 @@ If $m \in \mathbb{U}$, then $\mathit{mgs} = \{ (x,r,r') \vert r' \in \mathbb{R} 
 
 \item[-] $d_0 \in \mathbb{L}$ is the initial local state.
 
-\item[-] the function $f_{\mathit{arb}}$ takes the local states of all replicas and a set of messages, and returns a total order over a set of operations in $\Sigma_e$. %Let $\Sigma_e$ be the set of such elements.
+\item[-] the function $f_{\mathit{arb}}$ takes the local states of all replicas and a set of messages, and returns a total order over a set of elements in $\Sigma_e$ (which intuitively, correspond to operations applied at a replica). %Let $\Sigma_e$ be the set of such elements.
 %
     %To do this, we need a method to extract elements from local states and messages. Let the set of extracted elements to be $\Sigma_e$.
 %
@@ -61,7 +61,7 @@ A trace of $[|\mathit{Imp}|]$ satisfies causal delivery if given $o_1 <_{\mathit
 
 
 
-\noindent {\bf Example 6 [OR-set algorithm~\cite{Shapiro:2011}]} The OR-set algorithm tags each value added to the set with a unique identifier. A replica stores in a set $S$ the tagged values that are generated when the client submits an $add$ operation or which are received from other replicas. A $\mathit{rem}(a)$ operation submitted at a replica $r$ removes all tagged versions of $a$ which are visible to $r$ when the operation is submitted. This algorithm assume causal delivery of messages. Formally, this implementation is defined by $(\rightarrow_o,\rightarrow_m,d_0,f_{\mathit{arb}}, \Sigma_e)$ where
+\noindent {\bf Example 3 [OR-set algorithm~\cite{Shapiro:2011}]} The OR-set algorithm tags each value added to the set with a unique identifier. A replica stores in a set $S$ the tagged values that are generated when the client submits an $add$ operation or which are received from other replicas. A $\mathit{rem}(a)$ operation submitted at a replica $r$ removes all tagged versions of $a$ which are visible to $r$ when the operation is submitted. This algorithm assume causal delivery of messages. Formally, this implementation is defined by $(\rightarrow_o,\rightarrow_m,d_0,f_{\mathit{arb}}, \Sigma_e)$ where
 
 
 \begin{itemize}
@@ -82,7 +82,7 @@ A trace of $[|\mathit{Imp}|]$ satisfies causal delivery if given $o_1 <_{\mathit
 
 \item[-] $d_0 = (\emptyset,0)$.
 
-\item[-] $\Sigma_e$ is the union of (1) $(a,\mathit{id})$ in either $\mathit{data}[\_].S$, or $(a,\mathit{id},\_,\_) \in \mathit{msgs}$, or $\exists (a,S',\_,\_) \in \mathit{msgs}$ and $\mathit{id} \in S'$, and (2) $(a,S',r)$ in $\mathit{msgs}$.
+\item[-] $\Sigma_e$ is the union of (1) $(a,\mathit{id})$ in either $\mathit{data}[\_].S$, or $(a,\mathit{id},\_,\_) \in \mathit{msgs}$, or $(a,S',\_,\_) \in \mathit{msgs}$ such that $\mathit{id} \in S'$, and (2) $(a,S',r)$ in $\mathit{msgs}$.
 
 \item[-] $f_{\mathit{arb}}$ always return $\emptyset$.
 \end{itemize}
@@ -90,12 +90,14 @@ A trace of $[|\mathit{Imp}|]$ satisfies causal delivery if given $o_1 <_{\mathit
 
 
 
-\noindent {\bf Example 7 [Replicated growable array (RGA, for short)~\cite{Attiya:2016}]} Each replica stores a set $N$ of tuples $(a,t,p)$, where $a$ is an input value added to the array, $t$ is its unique timestamp, and $p < t$ is the timestamp of its ``parent''. The elements of $N$ are required to form a tree by following the ``parent'' field (a special time stamp value $\circ$ represents the root).
+\noindent {\bf Example 4 [Replicated growable array (RGA, for short)~\cite{Attiya:2016}]} This is an implementation of a distributed list where each replica stores a set $N$ of tuples $(a,t,p)$, where $a$ is a value added to the list, $t$ is its unique timestamp, and $p < t$ is the timestamp of its ``parent''. The elements of $N$ are required to form a tree by following the ``parent'' field (a special time stamp value $\circ$ represents the root).
 %Let $\circ$ be a special time stamp value representing the root. The elements of $N$ are required to form a time stamped insertion tree (TI tree, for short), while the parent of each element in $N$ is still in $N$, each element of $N$ can tract to root by several times of checking parent field, and the time stamp of parent is less than its descendants.
 %We can see that the union of multiple TI tree is also a TI tree.
-Each replica also manages a set of ``tombstones'' $T$, which are identifiers of values that were removed from the array. {\color {red} $\mathit{trav}(N,T)$ is the list of this replica, and is obtained by traversing $N$ in prefix order (children are visited in decreasing time stamp order) and keeping only identifiers of nodes that are not in $T$. To insert $a$ into position $\mathit{pos}$, we put $(a,t,p)$ into $N$, where $p = \mathit{trav}(N,T)[\mathit{pos}]$, and $t$ is larger than anyone of $N$. This make $(a,t,p)$ the first child of $p$ in the tree of $N$. We remove $a$ by putting it into $T$. The process of applying $\mathit{add}$ and $\mathit{rem}$ message is similar. We define an order $<_{\mathit{ts}}$ between time stamps by $(x_1,r_1) <_{\mathit{ts}} (x_2,r_2)$ iff $x_1 < x_2 \vee (x_1 = x_2 \wedge r_1 < r_2)$. Let $\mathit{ts}(N)$ be the set of timestamps in $N$.
+Each replica also manages a set of ``tombstones'' $T$, which are identifiers of values that were removed from the array. The list that a replica ``sees'' is the sequence of elements obtained by traversing $N$ in prefix order (children are visited in decreasing time stamp order) and keeping only identifiers of nodes that are not in $T$. This list is denoted by $\mathit{trav}(N,T)$. 
+%$\mathit{trav}(N,T)$ is the list of this replica, and is obtained by traversing $N$ in prefix order (children are visited in decreasing time stamp order) and keeping only identifiers of nodes that are not in $T$. 
+To insert $a$ into position $\mathit{pos}$, we put $(a,t,p)$ into $N$, where $p = \mathit{trav}(N,T)[\mathit{pos}]$, and $t$ is a new timestamp. This makes $(a,t,p)$ be the first child of $p$ (in prefix order) in the tree represented by $N$. We remove an element $a$ by putting it into $T$. The process of applying messages generated by remote $\mathit{add}$ and $\mathit{rem}$ operations is similar. We define an order $<_{\mathit{ts}}$ between time stamps by $(x_1,r_1) <_{\mathit{ts}} (x_2,r_2)$ iff $x_1 < x_2 \vee (x_1 = x_2 \wedge r_1 < r_2)$. Let $\mathit{ts}(N)$ be the set of timestamps in $N$.
 %and let $\mathit{trav}(N,T)$ be the sequences obtained by traversing $N$ in prefix order (children are visited in decreasing timestamp order) and keeping only identifiers of nodes that are not in $T$.
-}
+
 
 
 
@@ -122,8 +124,8 @@ Each replica also manages a set of ``tombstones'' $T$, which are identifiers of 
 
 \item[-] $d_0 = (\emptyset,0)$.
 
-\item[-] $\Sigma_e$ is the union of (1) identifier $(\mathit{add},a,t)$ in $N$, $T$, and in $(\mathit{add},a,\_,\_,\_,\_) \in \mathit{msgs}$, and (2) $(\mathit{rem},a,r)$ for $(\mathit{rem},a,r,\_) \in \mathit{msgs}$.
-\item[-] $f_{\mathit{arb}}$ return a sequence that is obtained as follows: Let $S$ be the union of $\mathit{data}[r].N$ for each replica. $f_{\mathit{arb}}$ traverses $S$ with prefix order visit the children in decreasing time stamp order, and returns identifiers of nodes.
+\item[-] $\Sigma_e$ is the union of (1) elements $(\mathit{add},a,t)$ with $(a,t,p)\in N$ or $(\mathit{add},a,t,\_,\_,\_) \in \mathit{msgs}$, and (2) $(\mathit{rem},a,r)$ for $(\mathit{rem},a,r,\_) \in \mathit{msgs}$.
+\item[-] $f_{\mathit{arb}}$ returns a sequence that is obtained as follows: Let $S$ be the union of $\mathit{data}[r].N$ for each replica. $f_{\mathit{arb}}$ traverses $S$ in prefix order (as defined above), and returns $(\mathit{add},a,t)$ for each node $(a,t,p)$.
 \end{itemize}
 
 
