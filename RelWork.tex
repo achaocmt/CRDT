@@ -3,22 +3,25 @@
 
 To the best of our knowledge, we are the first to provide a generic
 operational framework for the characterization of CRDT specifications
+based on the axiomatic characterizations of~\cite{Burckhardt:2014}
 under diverse delivery assumptions of the underlying network.
 %
 
-There have been many efforts in formalizing the semantics of
-replicated data types~\cite{Burckhardt:2014,Burckhardt:2014b,ZellerBP14}.
+There have been many
+efforts~\cite{Burckhardt:2014,Burckhardt:2014b,ZellerBP14,MukundRS15}
+in formalizing the semantics of replicated data types.
 %
 Unlike the approach in~\cite{Burckhardt:2014,Burckhardt:2014b}, our
 proofs are based on standard simulation arguments, common to proofs in
 programming languages.
 %
+Moreover, unlike~\cite{Burckhardt:2014,Burckhardt:2014b}, we provide
+operational variants of the specifications which are instrumental in
+proving the correctness of implementations.
 
 In~\cite{ZellerBP14}, the proofs provided are based on state-based
 implementations of CRDTs, our work is concerned with operation-based
 implementations.
-%
-Moreover, ~\cite{ZellerBP14} does not have a proof of RGA~\cite{RohJKL11}.
 
 An important difference between our work and the aforementioned is
 that to be able to express a simulation relation, we need to export at
@@ -34,11 +37,47 @@ semantics preserves the specifications \'a la~\cite{Burckhardt:2014}
 where the delivery conditions have been removed.
 %
 
-There are works on the verification of program properties about
-CRDTs~\cite{GotsmanYFNS16}.
+Perhaps the work that is closer to ours is~\cite{MukundRS15,MukundRS15b} 
+since they also use LTS-based specifications. 
+Unlike those works, our specifications of CRDTs are given in the
+format of~\cite{Burckhardt:2014} and the reference implementing is
+obtained thereof.
 %
-We consider our work to be orthogonal to
-those.
+Moreover, while they propose a CEGAR methodology to carry out the
+proofs of the data type implementations, our proofs are based on
+simulation arguments.
+%
+Finally, they do not provide proofs of concrete algorithms in their
+work. 
+
+There are works on the verification of program properties about
+Credits~\cite{GotsmanYFNS16}.
+%
+We consider our work to be orthogonal~\cite{GotsmanYFNS16} since we
+are proving the correctness of implementations w.r.t. the
+specification. 
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have developed a methodology to prove CRDT implementations correct
+w.r.t. their specifications given in the axiomatic style
+of~\cite{Burckhardt:2014}.
+%
+Our methodology constructs a reference implementation of the
+specification where we make apparent the assumptions of message
+delivery of the underlying network. 
+% 
+Based on these references implementations of the specification we
+provide simulation arguments to show that concrete implementations of
+the CRDT meet the specification, all the while taking into
+consideration the message delivery assumed by the specification and
+the implementation.
+%
+We show the practicality of our methodology by proving the correctness
+of RGA~\cite{RohJKL11} and two different OR-set
+implementations~\cite{Shapiro:2011,Bieniusa:2012}.
+
 
 %%% Local Variables:
 %%% mode: latex
