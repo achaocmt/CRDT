@@ -293,11 +293,11 @@ This completes the proof of this lemma. $\qed$
 \section{Definitions and Proofs of Section \ref{sec:implementation}}
 \label{sec:appendix definitions and proofs of section implementation}
 
-The semantics of $\mathit{imp}$ with causal delivery is given as an LTS $\mathit{Sem}(\mathit{imp})_{\mathit{cd}} = (Q_{\mathit{cd}},\Sigma,\rightarrow_{\mathit{cd}},q_0)$, where
+The semantics of $\mathit{imp}$ with causal delivery is given as an LTS $[|\mathit{Imp}|]_{\mathit{cd}} = (Q_{\mathit{cd}},\Sigma,\rightarrow_{\mathit{cd}},q_0)$, where
 
 \begin {itemize}
 \setlength{\itemsep}{0.5pt}
-\item[-] Each state of $Q_{\mathit{cd}}$ is for the from $(\mathit{data},\mathit{msgs},\mathit{msghb})$, where $\mathit{data}$ and $\mathit{msgs}$ is the same as that in $\mathit{Sem}(\mathit{imp})$, and $\mathit{msghb} \subseteq (\mathit{msgs} \times \mathit{msgs}) \cup (\mathit{msgs} \times \mathbb{R})$ is a transitive, acyclic and irreflexive relation. $\mathit{msghb}$ is used to record the happen-before relation between ``operations'' of messages. %$(m_1,m_2) \in <$ represents that the $op(m_1)$ happen before $op(m_2)$, while $(m,r) \in <$ represents that $op(m)$ is visible to replica $r$ and does not happen before any operation of replica $r$ that we could know.
+\item[-] Each state of $Q_{\mathit{cd}}$ is for the from $(\mathit{data},\mathit{msgs},\mathit{msghb})$, where $\mathit{data}$ and $\mathit{msgs}$ is the same as that in $[|\mathit{Imp}|])$, and $\mathit{msghb} \subseteq (\mathit{msgs} \times \mathit{msgs}) \cup (\mathit{msgs} \times \mathbb{R})$ is a transitive, acyclic and irreflexive relation. $\mathit{msghb}$ is used to record the happen-before relation between ``operations'' of messages. %$(m_1,m_2) \in <$ represents that the $op(m_1)$ happen before $op(m_2)$, while $(m,r) \in <$ represents that $op(m)$ is visible to replica $r$ and does not happen before any operation of replica $r$ that we could know.
     $(\mathit{msg}_1,\mathit{msg}_2) \in \mathit{msghb}$, if the operation generating $\mathit{msg}_1$ happens before the operation generating $\mathit{msg}_2$, and $\mathit{msg}_1$ and $\mathit{msg}_2$ have same destination replica. $(\mathit{msg},r) \in \mathit{hb}$ represents that the operation generating $\mathit{msg}$ is visible to replica $r$ and does not happen before any operation of replica $r$ currently.
 
 \item[-] $\rightarrow_{\mathit{cd}}$ is the transition relation:
@@ -341,16 +341,16 @@ The semantics of $\mathit{imp}$ with causal delivery is given as an LTS $\mathit
 %\item[-] $q_0$ is the initial state, which maps each replica identifier into $(InitD,\emptyset,\emptyset)$.
 \end{itemize}
 
-The following lemma states that, $\mathit{Sem}(\mathit{imp})_{\mathit{cd}}$ contains the set of causal delivery executions of $\mathit{Sem}(\mathit{imp})$.
+The following lemma states that, $[|\mathit{Imp}|]_{\mathit{cd}}$ contains the set of causal delivery executions of $[|\mathit{Imp}|]$.
 
 \begin{lemma}
 \label{lemma:semantics of imp cd contains the set of causal delivery executions of semantics of imp}
-$\mathit{trace}( \mathit{Sem}(\mathit{imp})_{\mathit{cd}} ) = \{ t \vert t \in \mathit{trace}( \mathit{Sem}(\mathit{imp}) ) \wedge t$ satisfies causal delivery $\}$.
+$\mathit{trace}( [|\mathit{Imp}|]_{\mathit{cd}} ) = \{ t \vert t \in \mathit{trace}( [|\mathit{Imp}|] ) \wedge t$ satisfies causal delivery $\}$.
 \end{lemma}
 
 \begin {proof}
 
-Let $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ be the execution of $t = \alpha_1 \cdot \ldots \in \mathit{trace}( \mathit{Sem}(\mathit{imp})_{\mathit{cd}} )$. Let $\alpha[1,u] = \alpha_1 \cdot \ldots \cdot \alpha_u$. We need to prove the following properties: On each state $q_i=(\mathit{data}_i,\mathit{msgs}_i,<_i)$,
+Let $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ be the execution of $t = \alpha_1 \cdot \ldots \in \mathit{trace}( [|\mathit{Imp}|]_{\mathit{cd}} )$. Let $\alpha[1,u] = \alpha_1 \cdot \ldots \cdot \alpha_u$. We need to prove the following properties: On each state $q_i=(\mathit{data}_i,\mathit{msgs}_i,<_i)$,
 
 \begin{itemize}
 \setlength{\itemsep}{0.5pt}
@@ -361,7 +361,7 @@ Let $q_0 {\xrightarrow{\alpha_1}} q_1 \ldots$ be the execution of $t = \alpha_1 
 \item[-] $\mathit{Prop}_3$: $\mathit{msg} <_i r$, iff the destination replica of $\mathit{msg}$ is not $r$, and the operation generating $\mathit{msg}$ is visible to replica $r$ in $t[1,i]$, and does not happen before ``any operation that launched by replica $r$'' in $t[1,i]$.
 \end{itemize}
 
-By definition it is easy to see that each trace of $\mathit{trace}( \mathit{Sem}(\mathit{imp})_{\mathit{cd}} )$ is also a trace of $\mathit{trace}( \mathit{Sem}(\mathit{imp}) )$. Once we prove that $\mathit{Prop}_1$, $\mathit{Prop}_2$ and $\mathit{Prop}_3$ holds for each $q_i$, let us prove this lemma by contradiction: Assume that update operations $o_1 <_{hb} o_2$, messages of $o_1$ are $\{ (d_1,r_1,\_) \}$, messages of $o_2$ are \{ $(d_2,r_2,\_) \}$, $\alpha_i = apply((d_2,r_2,r'))$, and no $apply((d_1,r_1,r'))$ happens earlier than $\alpha_i$ in $t$. Then in $q_i=(\mathit{data}_i,\mathit{msgs}_i,<_i)$, since $o_1 <_{hb} o_2$ and transition rules of $\mathit{trace}( \mathit{Sem}(\mathit{imp})_{\mathit{cd}} )$, we could not launch $apply((d_2,r_2,r'),)$ transition, which is the contradiction.
+By definition it is easy to see that each trace of $\mathit{trace}( [|\mathit{Imp}|]_{\mathit{cd}} )$ is also a trace of $\mathit{trace}( [|\mathit{Imp}|] )$. Once we prove that $\mathit{Prop}_1$, $\mathit{Prop}_2$ and $\mathit{Prop}_3$ holds for each $q_i$, let us prove this lemma by contradiction: Assume that update operations $o_1 <_{hb} o_2$, messages of $o_1$ are $\{ (d_1,r_1,\_) \}$, messages of $o_2$ are \{ $(d_2,r_2,\_) \}$, $\alpha_i = apply((d_2,r_2,r'))$, and no $apply((d_1,r_1,r'))$ happens earlier than $\alpha_i$ in $t$. Then in $q_i=(\mathit{data}_i,\mathit{msgs}_i,<_i)$, since $o_1 <_{hb} o_2$ and transition rules of $\mathit{trace}( _{\mathit{cd}} )$, we could not launch $apply((d_2,r_2,r'),)$ transition, which is the contradiction.
 
 
 Let us begin to prove that each state $q_i=(\mathit{data}_i,\mathit{msgs}_i,<_i)$ satisfies properties $\mathit{Prop}_1$, $\mathit{Prop}_2$ and $\mathit{Prop}_3$. We prove this by induction on $t$.
@@ -499,12 +499,12 @@ Given a state $q_{\mathit{imp}} = (\mathit{data},\mathit{msgs},\mathit{msghb})$ 
 \end{itemize}
 
 
-Let $\mathit{imp}_{\mathit{ORS}}^{cd}$ be the implementation of OR-Set Algorithm of \cite{Shapiro:2011} defined in Section \ref{sec:implementation}. The following lemma states that $R_{\mathit{ORS}}^{\mathit{cd}}$ is a $f_s$-simulation relation between $\mathit{Sem}( \mathit{imp}_{\mathit{ORS}}^{cd} )_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{ORS}})_{\mathit{cd}}$.
+Let $\mathit{imp}_{\mathit{ORS}}^{cd}$ be the implementation of OR-Set Algorithm of \cite{Shapiro:2011} defined in Section \ref{sec:implementation}. The following lemma states that $R_{\mathit{ORS}}^{\mathit{cd}}$ is a $f_s$-simulation relation between $[|\mathit{imp}_{\mathit{ORS}}^{cd}|]_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{ORS}})_{\mathit{cd}}$.
 
 
 \begin{lemma}
 \label{lemma:ROrscd is a fs simulation between orset causal delivery algorithm and orset specification}
-$R_{\mathit{ORS}}^{\mathit{cd}}$ is a $f_s$-simulation relation between $\mathit{Sem}( \mathit{imp}_{\mathit{ORS}}^{cd} )_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{ORS}})_{\mathit{cd}}$.
+$R_{\mathit{ORS}}^{\mathit{cd}}$ is a $f_s$-simulation relation between $[|\mathit{imp}_{\mathit{ORS}}^{cd}|]_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{ORS}})_{\mathit{cd}}$.
 \end{lemma}
 
 \begin {proof}
@@ -599,11 +599,11 @@ Given a state $q_{\mathit{imp}} = (\mathit{data},\mathit{msgs},\mathit{msghb})$ 
 \end{itemize}
 
 
-Let $\mathit{imp}_{\mathit{rga}}$ be the implementation of RGA Algorithm of \cite{Shapiro:2011} defined in Section \ref{sec:implementation}. The following lemma states that $R_{\mathit{RGA}}$ is a $f_s$-simulation relation between $\mathit{Sem}( \mathit{imp}_{\mathit{RGA}})_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{list}})_{\mathit{cd}}$. %Here we implicitly assume that in $q_{\mathit{imp}}$ or $q_s$, their is a ghost field that record the identifiers that can be inserted in future, and when we do $\mathit{add}(a)$, we need to ensure that $a$ is chosen from this field. This is use to enforce that each identifier is putted at most once globally.
+Let $\mathit{imp}_{\mathit{rga}}$ be the implementation of RGA Algorithm of \cite{Shapiro:2011} defined in Section \ref{sec:implementation}. The following lemma states that $R_{\mathit{RGA}}$ is a $f_s$-simulation relation between $ [|\mathit{imp}_{\mathit{RGA}}|]_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{list}})_{\mathit{cd}}$. %Here we implicitly assume that in $q_{\mathit{imp}}$ or $q_s$, their is a ghost field that record the identifiers that can be inserted in future, and when we do $\mathit{add}(a)$, we need to ensure that $a$ is chosen from this field. This is use to enforce that each identifier is putted at most once globally.
 
 \begin{lemma}
 \label{lemma:Rrga is a fs simulation between RGA causal delivery algorithm and list specification}
-$R_{\mathit{RGA}}$ is a $f_s$-simulation relation between $\mathit{Sem}( \mathit{imp}_{\mathit{RGA}})_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{list}})_{\mathit{cd}}$.
+$R_{\mathit{RGA}}$ is a $f_s$-simulation relation between $ [|\mathit{imp}_{\mathit{RGA}}|]_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{list}})_{\mathit{cd}}$.
 \end{lemma}
 
 \begin {proof}
@@ -722,12 +722,12 @@ Given a state $q_{\mathit{imp}} = (\mathit{data},\mathit{msgs},\mathit{msghb})$ 
     $(a,\mathit{id}) \in data[r].T$, if and only if there exists $o_r \in \mathit{FstRem}(O,\mathit{vis},f((a,\mathit{id})))$, such that $o_r \in \mathit{visTo}(O,r,\mathit{vis})$.
 \end{itemize}
 
-Let $\mathit{imp}_{\mathit{ORS}}$ be the implementation we just defined in this subsection. The following lemma states that $R_{\mathit{ORS}}$ is a $f_s$-simulation relation between $\mathit{Sem}( \mathit{imp}_{\mathit{ORS}} )_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{ORS}})$.
+Let $\mathit{imp}_{\mathit{ORS}}$ be the implementation we just defined in this subsection. The following lemma states that $R_{\mathit{ORS}}$ is a $f_s$-simulation relation between $[|\mathit{imp}_{\mathit{ORS}}|]_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{ORS}})$.
 
 
 \begin{lemma}
 \label{lemma:ROrscd is a fs simulation between orset causal delivery algorithm and orset specification}
-$R_{\mathit{ORS}}$ is a $f_s$-simulation relation between $\mathit{Sem}( \mathit{imp}_{\mathit{ORS}} )_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{ORS}})$.
+$R_{\mathit{ORS}}$ is a $f_s$-simulation relation between $[|\mathit{imp}_{\mathit{ORS}}|]_{\mathit{cd}}$ and $\mathit{SRImp}(S_{\mathit{ORS}})$.
 \end{lemma}
 
 \begin {proof}
