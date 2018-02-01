@@ -395,12 +395,15 @@ For example, \figurename~\ref{fig:history, annotated history and
   $o_2$, and such that there is no other $\mathit{rem}(a)$ operations $o_3$ that
   satisfies ($(o_1,o_3),(o_3,o_2) \in \mathit{vis}$).
   %
-  \fxnote*{GP: @Chao, can you rephrase this one?}{\color {red}When we extract $<$ from $\mathit{vis}$, such pairs $(o_1,o_2)$ will be ignored: $o_2$ does not cancel $o_1$ ($o_2 \notin \mathit{FstRem}(o_1)$), and some intermediate operations between $o_1$ and $o_2$ w.r.t $\mathit{vis}$ is not in $O$.
-    %When we extract $<$ from $\mathit{vis}$, such pairs $(o_1,o_2)$ will be
-    %ignored: $o_2 \notin \mathit{FstRem}(o_1)$, and there exists
-    %operation $o_3$, such that $(o_1,o_3),(o_3,o_2) \in \mathit{vis}$,
-    %while $o_3 \notin O$.
-    }
+  When we
+  extract $<$ from $\mathit{vis}$, such pairs $(o_1,o_2)$ will be
+  ignored since $o_2$ does not cancel $o_1$ ($o_2 \notin
+  \mathit{FstRem}(o_1)$), and some intermediate operations between
+  $o_1$ and $o_2$ w.r.t $\mathit{vis}$ is not in $O$.
+  % When we extract $<$ from $\mathit{vis}$, such pairs $(o_1,o_2)$ will be
+  % ignored: $o_2 \notin \mathit{FstRem}(o_1)$, and there exists
+  % operation $o_3$, such that $(o_1,o_3),(o_3,o_2) \in \mathit{vis}$,
+  % while $o_3 \notin O$.
   In \figurename~\ref{fig:generating
     operation context from annotated history for OR-set} (a), one
   such ignored pair is $(\mathit{add}(a)_1,\mathit{rem}(a)_2)$, since

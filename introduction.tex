@@ -30,10 +30,10 @@ often hard to gain confidence on their correctness.
 In this paper we consider a generic methodology to the verification of
 CRDTs implementing collection data structures.
 
-\fxnote*{Not sure} {
-  Some of the most important data types in
-  distributed programming are lists, tables, etc.
-}
+% \fxnote*{Not sure} {
+%   Some of the most important data types in
+%   distributed programming are lists, tables, etc.
+% }
 We consider the problem of formally verifying that a certain
 implementation of a CRDT satisfies a specification given in the
 style of~\cite{Burckhardt:2014}.
@@ -55,11 +55,11 @@ delivery policy of the implementation respects our expectation on
 delivery. 
 
 
-\fxnote*{GP:}{It would be nice to have a simple example of spec/imp
-  here to illustrate the difficulty.}
+% \fxnote*{GP:}{It would be nice to have a simple example of spec/imp
+%   here to illustrate the difficulty.}
 
-\fxwarning*{Complete}{what is it that is remarkably new here?}.
-\fxwarning{Talk about + - operations?}
+% \fxwarning*{Complete}{what is it that is remarkably new here?}.
+% \fxwarning{Talk about + - operations?}
 
 In a nutshell our methodology is based on the following concepts and
 contributions:
@@ -81,9 +81,12 @@ contributions:
   % 
   This step can greatly reduce the complexity of the specifications
   and thus be instrumental in the proofs to be carried out;
-\item we take well known implementations of sophisticated CRDTs: \fxnote*{Check}{WOOT},
-  RGA, and show how simulation relations (w.r.t. the reference
-  semantics above-mentioned) can be easily built for each of them;
+\item we take well known implementations of sophisticated CRDTs:
+  RGA~\cite{RohJKL11}, and two OR-Set
+  implementations~\cite{Shapiro:2011} and show how simulation relations
+  (w.r.t. the reference semantics above-mentioned) can be easily built
+  for each of them;
+  \fxnote{Ref for OR-set?}
 \item we show that these simulations actually imply the correctness of
   the implementations.
   %
@@ -91,17 +94,17 @@ contributions:
   the specification.
 \end{itemize}
 
-\fxfatal*{Do we?}{
 While this paper deals only with a few CRDT implementations, we
 believe that the approach is general enough to cover most existing
 CRDTs.
 %
-To the best of our knowledge ...
-}
+% \fxfatal*{Do we?}{
+% To the best of our knowledge, no 
+% }
 
-\fxnote{GP: Should we compare to others here?}
+% \fxnote{GP: Should we compare to others here?}
 
-\paragraph{{\bf Paper Outline}:} \fxnote{Todo}
+% \paragraph{{\bf Paper Outline}:} \fxnote{Todo}
 
 %%% Local Variables:
 %%% mode: latex
