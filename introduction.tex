@@ -47,7 +47,7 @@ specifications need to include enough information about when each
 operation is made visible to other replicas participating in the
 system.
 %
-This is generally called the message delivery policy~\cite{}.
+This is generally called the message delivery policy.
 %
 We show how to encode the required delivery policy in the
 specification in order to facilitate the proof establishing that the
@@ -64,7 +64,7 @@ delivery.
 In a nutshell our methodology is based on the following concepts and
 contributions:
 \begin{itemize}[$\bullet$]
-\item Starting from a specification in the style of~\cite{Burckhardt:2014}
+\item starting from a specification in the style of~\cite{Burckhardt:2014}
   we provide a reference operational semantics of the CRDT which is
   then used as the definitive correctness condition for any
   implementation of the data structure;
@@ -83,7 +83,7 @@ contributions:
   and thus be instrumental in the proofs to be carried out;
 \item we take well known implementations of sophisticated CRDTs:
   RGA~\cite{RohJKL11}, and two OR-Set
-  implementations~\cite{Shapiro:2011, ,Bieniusa:2012} and show how
+  implementations~\cite{Shapiro:2011,Bieniusa:2012} and show how
   simulation relations (w.r.t. the reference semantics
   above-mentioned) can be easily built for each of them;
 \item we show that these simulations actually imply the correctness of
