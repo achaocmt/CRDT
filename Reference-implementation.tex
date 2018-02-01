@@ -5,7 +5,7 @@
 
 %In this section, we propose an abstract implementation called reference implementation, which will be used as specification in simulation proof of later section.
 
-We present a generic definition of CRDT reference implementations as labeled transition systems. This definition is parametrized by a specification $Spec$ defining the abstract semantics of the CRDT's operations.
+We present a generic definition of a CRDT reference implementations as labeled transition systems. This definition is parametrized by a specification $Spec$ defining the abstract semantics of the CRDT's operations.
 %sec:specifications and consistencies
 
 A labeled transition system (LTS, for short) is a tuple $A = (Q,\Sigma,\rightarrow,q_0)$, where $Q$ is a set of states, $\Sigma$ is an alphabet of transition labels, $\rightarrow \subseteq Q \times \Sigma \times Q$ is a transition relation and $q_0$ is the initial state. An execution of $A$ is defined as usual by a sequence of transitions starting from the initial state $q_0$. A trace is the sequence of transition labels from an execution. We say that $A$ is deterministic, if for each state $q$ and each transition label $\alpha$, $q$ has at most one $\rightarrow$ successor with transition label $\alpha$.

@@ -9,9 +9,9 @@
 \label{subsec:simulation and refinement}
 
 
-In this section, we will give simulation relations $R_{\mathit{sim}}$ between implementation and succinct reference implementation, or reference implementation if the specification is not collection. Such simulation relation will immediate imply history inclusion, and by Theorem \ref{theorem:histories of reference implementation are SRV consistent} and Theorem \ref{theorem:SRIMPSpec and RIMPSpec have same history}, this implies that such implementations are CRVC consistent w.r.t specification.
+In this section, we will give simulation relations $R_{\mathit{sim}}$ between implementation and succinct reference implementation, or reference implementation if the specification is not a collection. These simulation relations immediate imply history inclusion, and by Theorem \ref{theorem:histories of reference implementation are SRV consistent} and Theorem \ref{theorem:SRIMPSpec and RIMPSpec have same history}, this implies that the implementations are CRVC consistent w.r.t their specification.
 
-According to \cite{Abadi:1991,Lynch:1995}, forward simulation is equivalent to refinement provided the right-hand LTS is deterministic. Since the transition labels of $\mathit{Sem}(\mathit{imp})$ and $\mathit{SRImp}(\mathit{Spec})$ are different in message, delivery and arbitration order, $R_{\mathit{sim}}$ needs to do translation between two LTS. To solve this, we model $R_{\mathit{sim}}$ as an relation called $f_s$-simulation, where $f_s$ are used to do translation. We also propose the corresponding refinement $f_t$ of $f_s$-simulation. When $f_s$-simulation and refinement w.r.t $f_t$ satisfies a condition called compatibility, they become equivalent.
+According to \cite{Abadi:1991,Lynch:1995}, forward simulation is equivalent to refinement provided that the \fxnote*{??}{right-hand} LTS is deterministic. Since the transition labels of $\mathit{Sem}(\mathit{imp})$ and $\mathit{SRImp}(\mathit{Spec})$ are different in messages, delivery and arbitration order, $R_{\mathit{sim}}$ needs to do a translation between the two LTS. To that end, we model $R_{\mathit{sim}}$ as an relation called $f_s$-simulation, where $f_s$ represents this translation. We also propose the corresponding refinement $f_t$ of the $f_s$-simulation. When $f_s$-simulation and refinement w.r.t $f_t$ satisfies a condition called compatibility, they become equivalent.
 
 Given two LTS $A_1 = (Q_1,\Sigma_1,\rightarrow_1,q_{0}^1)$ and $A_2 = (Q_2,\Sigma_2,\rightarrow_2,q_{0}^2)$ and two functions $f_s: Q_1 \times Q_2 \times \Sigma_1 \rightarrow \Sigma_2$ and $f_t:\Sigma_1^* \rightarrow \Sigma_2$, we define our simulation and refinement relations as follows:
 
@@ -43,7 +43,8 @@ $A_2$ refines $A_1$ w.r.t $f_t$, if for each trace $t_1 = \alpha_1 \cdot \ldots 
 %\todo{Give a name to the property $P_{(f_s,f_t)}$, for instance: we say that $f_s$ and $f_t$ are compatible ... }
 
 We say that $f_s$ and $f_t$ are compatible, if for each deterministic $A_2$, the following holds: For each execution %\todo{execution}
-$q_{0}^1 {\xrightarrow{\alpha_1}}_1 q_{1}^1 \ldots {\xrightarrow{\alpha_k}}_1 q_{k}^1$ of $A_1$ and each $1 \leq u \leq k$, we have $f_t(\alpha_1 \cdot \ldots \cdot \alpha_{u+1}) = f_s(q_{u}^1,q_{u}^2,\alpha_{u+1})$, here $q_v^2$ is a state obtained by $q_{0}^2 {\xrightarrow{f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_v) }}_2 q_v^2$. %\todo{write it explicitly using the extension of $\xrightarrow{\alpha_1}$ to words}
+$q_{0}^1 {\xrightarrow{\alpha_1}}_1 q_{1}^1 \ldots {\xrightarrow{\alpha_k}}_1 q_{k}^1$ of $A_1$ and each $1 \leq u \leq k$, we have $f_t(\alpha_1 \cdot \ldots \cdot \alpha_{u+1}) = f_s(q_{u}^1,q_{u}^2,\alpha_{u+1})$, here $q_v^2$ is a state obtained by
+\mbox{$q_{0}^2 {\xrightarrow{f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_v) }}_2 q_v^2$}. %\todo{write it explicitly using the extension of $\xrightarrow{\alpha_1}$ to words}
 The following theorem states that if $f_s$ and $f_t$ are compatible, then $f_s$-simulation is equivalent to refinement w.r.t $f_t$. Its proof can be found in Appendix \ref{subsec:proof of theorem equivalence of our simulation and refinement} and is similar to that in \cite{Abadi:1991,Lynch:1995}.
 
 %If $B$ is deterministic, then we defined a property $P_{(f_s,f_t)}$ as follows: For each transitions \todo{execution} $q_{0A} {\xrightarrow{\alpha_1}}$ $q_{1A} \ldots {\xrightarrow{\alpha_k}} q_{kA}$ of $A$, $\forall 1 \leq i < k$, $f_t(\alpha_1 \cdot \ldots \cdot \alpha_i \cdot \alpha_{i+1}) = f_s(q_{iA},q_{iB},\alpha_{i+1})$, where $q_{iB}$ is obtained from $q_{0B}$ by doing $f_t(\alpha_1) \cdot \ldots \cdot f_t(\alpha_1 \cdot \ldots \cdot \alpha_i)$ transitions \todo{write it explicitly using the extension of $\xrightarrow{\alpha_1}$ to words}. The following theorem states that when $P_{(f_s,f_t)}$ holds, $f_s$-simulation is equivalent to $f_t$-refinement. Its proof can be found in Appendix \ref{sec:appendix definitions and proofs of section simulation and refinement} and is similar to that in \cite{Abadi:1991,Lynch:1995}.
@@ -399,3 +400,8 @@ $CRImp(Spec)$ trace refines $\llbracket imp \rrbracket_{pl}$, if and only if the
 \end{theorem}
 }
 
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "draft"
+%%% End:
