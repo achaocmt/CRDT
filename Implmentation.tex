@@ -38,13 +38,20 @@ The semantics of $\mathit{Imp}$ is given as an LTS denoted $[|\mathit{Imp}|] = (
 \item[-] $\Sigma$ contains two kinds of transition labels: $m(a,b,r,\mathit{arb})$ represents that a $m(a) \Rightarrow b$ operation is done in replica $r$ and the arbitration order is changed into $\mathit{arb}$, and $\mathit{apply}(\mathit{msg})$ means applying message $\mathit{msg}$.
 
 \item[-] the transition relation $\rightarrow$ is defined as follows:
+  \begin{center}
+% \medskip
+$\begin{array}{l c}
+   \bigfrac{ 
+   \begin{array}{c}
+     (\mathit{data}(r),m,a,r) \rightarrow_o (d,b,\mathit{mgs}')\\ 
+     \mathit{msgs} \cap \mathit{mgs}' = \emptyset\quad f_{\mathit{arb}}((\mathit{data}[r:= d], \mathit{msgs} \cup \mathit{mgs}')) = \mathit{arb}
+   \end{array}}
+     {(\mathit{data},\mathit{msgs}) {\xrightarrow{(m,a,b,r,\mathit{arb})}} (\mathit{data}[r:=d], \mathit{msgs} \cup \mathit{mgs}')}
+ \end{array}$
 
 \medskip
-    $\begin{array}{l c} \bigfrac{ (\mathit{data}(r),m,a,r) \rightarrow_o (d,b,\mathit{mgs}'), \mathit{msgs} \cap \mathit{mgs}' = \emptyset, f_{\mathit{arb}}((\mathit{data}[r:= d], \mathit{msgs} \cup \mathit{mgs}')) = \mathit{arb}} {(\mathit{data},\mathit{msgs}) {\xrightarrow{(m,a,b,r,\mathit{arb})}} (\mathit{data}[r:=d], \mathit{msgs} \cup \mathit{mgs}')} \end{array}$
-
-\medskip
-    $\begin{array}{l c} \bigfrac{ \mathit{msg} = (\_,\_,r) \in \mathit{msgs},(\mathit{data}(r),r,\mathit{msg}) \rightarrow_m d } {(\mathit{data},\mathit{msgs}) {\xrightarrow{\mathit{apply}(\mathit{msg})}} (\mathit{data}[r:=d],\mathit{msgs} - \{ \mathit{msg} \})} \end{array}$
-
+    $\begin{array}{l c} \bigfrac{ \mathit{msg} = (\_,\_,r) \in \mathit{msgs},(\mathit{data}(r),r,\mathit{msg}) \rightarrow_m d } {(\mathit{data},\mathit{msgs}) {\xrightarrow{\mathit{apply}(\mathit{msg})}} (\mathit{data}[r:=d],\mathit{msgs} - \{ \mathit{msg} \})} \end{array}$    
+  \end{center}
 \medskip
 Above, $\mathit{data}[r:=d]$ denotes the function $\mathit{data}$ where only the local state of $r$ is changed to $d$.
 \item[-] $q_0 = (data_0,\emptyset)$ is the initial state, $data_0$ maps each replica identifier into $d_0$.
@@ -86,7 +93,7 @@ A trace of $[|\mathit{Imp}|]$ satisfies causal delivery if given $o_1 <_{\mathit
 \noindent {\bf Example 7 [Replicated growable array (RGA, for short)~\cite{Attiya:2016}]} Each replica stores a set $N$ of tuples $(a,t,p)$, where $a$ is an input value added to the array, $t$ is its unique timestamp, and $p < t$ is the timestamp of its ``parent''. The elements of $N$ are required to form a tree by following the ``parent'' field (a special time stamp value $\circ$ represents the root).
 %Let $\circ$ be a special time stamp value representing the root. The elements of $N$ are required to form a time stamped insertion tree (TI tree, for short), while the parent of each element in $N$ is still in $N$, each element of $N$ can tract to root by several times of checking parent field, and the time stamp of parent is less than its descendants.
 %We can see that the union of multiple TI tree is also a TI tree.
-Each replica also manages a set of ``tombstones'' $T$, which are identifiers of values that were removed from the array. {\color {red} $\mathit{trav}(N,T)$ is the list of this replica, and is obtained by traversing $N$ in prefix order (children are visited in decreasing time stamp order) and keeping only identifiers of nodes that are not in $T$. To insert $a$ into position $\mathit{pos}$, we put $(a,t,p)$ into $N$, where $p = \mathit{trav}(N,T)[\mathit{pos}]$, and $t$ is larger than anyone of $N$. This make $(a,t,p)$ the first child of $p$ in the tree of $N$. We remove $a$ by putting it into $T$. The process of applying $\mathit{add}$ and $\mathit{rem}$ message is similar. We define an order $<_{\mathit{ts}}$ between time stamps by $(x_1,r_1) <_{\mathit{ts}} (x_2,r_2)$ iff $x_1 < x_2 \vee (x_1 = x_2 \wedge r_1 < r_2)$. Let $\mathit{ts}(N)$ be the set of timestamps in $N$. 
+Each replica also manages a set of ``tombstones'' $T$, which are identifiers of values that were removed from the array. {\color {red} $\mathit{trav}(N,T)$ is the list of this replica, and is obtained by traversing $N$ in prefix order (children are visited in decreasing time stamp order) and keeping only identifiers of nodes that are not in $T$. To insert $a$ into position $\mathit{pos}$, we put $(a,t,p)$ into $N$, where $p = \mathit{trav}(N,T)[\mathit{pos}]$, and $t$ is larger than anyone of $N$. This make $(a,t,p)$ the first child of $p$ in the tree of $N$. We remove $a$ by putting it into $T$. The process of applying $\mathit{add}$ and $\mathit{rem}$ message is similar. We define an order $<_{\mathit{ts}}$ between time stamps by $(x_1,r_1) <_{\mathit{ts}} (x_2,r_2)$ iff $x_1 < x_2 \vee (x_1 = x_2 \wedge r_1 < r_2)$. Let $\mathit{ts}(N)$ be the set of timestamps in $N$.
 %and let $\mathit{trav}(N,T)$ be the sequences obtained by traversing $N$ in prefix order (children are visited in decreasing timestamp order) and keeping only identifiers of nodes that are not in $T$.
 }
 
@@ -203,12 +210,7 @@ Let $s' = \mathit{subseq}(\mathit{str},c_p,c_n)$ \;
 \end{algorithm}
 }
 
-
-
-
-
-
-
-
-
-
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "draft"
+%%% End:

@@ -134,7 +134,14 @@ Transitions for submitting query operations:
 Transitions for submitting updates:
 \[
 \begin{array}{l c}
-\bigfrac{ m \in \mathbb{U}\quad \ell = m(a) \Rightarrow b\quad o = (\ell,r,\_) \notin O\quad \mathit{arb}'\in \{\mathit{arb}\}\cup \mathit{arb}\oplus o\quad{\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}'),o) \in Spec(\ell) }
+\bigfrac{ 
+\begin{array}{c}
+ m \in \mathbb{U}\quad \ell = m(a) \Rightarrow b\\
+o = (\ell,r,\_) \notin O\quad \mathit{arb}'\in \{\mathit{arb}\}\cup \mathit{arb}\oplus o
+\quad
+  {\mathit{ctxt}}((O,\mathit{ro},\mathit{del},\mathit{arb}'),o) \in Spec(\ell) 
+\end{array}
+  }
 { (O,\mathit{ro},\mathit{del},\mathit{arb}) {\xrightarrow{m(a,b,r,\mathit{arb}')}} (O \cup \{ o \},\mathit{ro} \oplus o ,\mathit{del} \oplus o,\mathit{arb}') } %{\mathit{Update}}
 \end{array}
 \]
@@ -237,3 +244,8 @@ Here $Minus(q,o_1)$ is defined as follows: (1) if $lab(o_1)=add(a)$, then $Minus
 
 
 
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "draft"
+%%% End:
